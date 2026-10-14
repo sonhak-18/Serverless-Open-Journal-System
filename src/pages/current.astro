@@ -31,41 +31,41 @@ const displayArticles = currentArticles.length > 0 ? currentArticles : allArticl
         </div>
 
         <div class="border-b-2 border-academic-gold pb-2">
-          <h1 class="text-xl md:text-2xl font-serif font-bold text-slate-900">
+          <h1 class="text-2xl md:text-3xl font-serif font-bold text-slate-900">
             Vol. {curVolume} No. {curIssue} ({curYear}): {curPeriod}
           </h1>
           {curTheme && (
-            <p class="text-xs text-slate-600 italic mt-0.5">
+            <p class="text-base text-slate-700 italic mt-1">
               Tema: {curTheme}
             </p>
           )}
         </div>
 
         <!-- Detail Terbitan & Cover -->
-        <div class="p-4 border border-slate-200 bg-white rounded-xs flex flex-col sm:flex-row gap-5 items-start">
+        <div class="p-6 border border-slate-200 bg-white rounded flex flex-col sm:flex-row gap-6 items-start shadow-2xs">
           {curCoverUrl ? (
             <img
               src={curCoverUrl}
               alt={`Cover ${journalConfig.shortName} Vol. ${curVolume} No. ${curIssue}`}
-              class="w-32 shrink-0 border border-slate-300 shadow-xs aspect-[3/4] object-cover rounded-xs"
+              class="w-36 shrink-0 border border-slate-300 shadow-xs aspect-[3/4] object-cover rounded"
             />
           ) : (
-            <div class="w-32 shrink-0 border border-slate-300 shadow-xs bg-[#0f284e] text-white p-3.5 flex flex-col justify-between aspect-[3/4] text-center rounded-2xs">
+            <div class="w-36 shrink-0 border border-slate-300 shadow-xs bg-[#0f284e] text-white p-4 flex flex-col justify-between aspect-[3/4] text-center rounded">
               <div>
-                <span class="text-[10px] font-bold uppercase tracking-widest block text-[#c89b3c]">JTAAP</span>
-                <span class="text-xs font-bold mt-2 block leading-tight">
+                <span class="text-xs font-bold uppercase tracking-widest block text-[#c89b3c]">JTAAP</span>
+                <span class="text-xs font-bold mt-2.5 block leading-tight">
                   JURNAL TERBUKA AUDIT, AKUNTANSI, PAJAK
                 </span>
               </div>
-              <div class="text-[10px] text-slate-300 border-t border-[#c89b3c]/40 pt-1 font-mono">
+              <div class="text-xs text-slate-300 border-t border-[#c89b3c]/40 pt-1 font-mono">
                 Vol. {curVolume} No. {curIssue} ({curYear})
               </div>
             </div>
           )}
 
-          <div class="text-sm text-slate-700 space-y-2.5 leading-relaxed">
-            <p class="font-medium text-slate-800">{curTheme}</p>
-            <div class="pt-2 text-xs sm:text-sm text-slate-600 border-t border-slate-100 space-y-1">
+          <div class="text-base text-slate-800 space-y-3 leading-relaxed">
+            <p class="font-medium text-slate-900">{curTheme}</p>
+            <div class="pt-3 text-sm text-slate-600 border-t border-slate-100 space-y-1.5">
               <div>
                 <strong>DOI Edisi:</strong>{' '}
                 <a href={`https://doi.org/${journalConfig.doiPrefix}.v${curVolume}i${curIssue}`} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
@@ -81,11 +81,11 @@ const displayArticles = currentArticles.length > 0 ? currentArticles : allArticl
 
         <!-- Daftar Naskah OJS -->
         <div class="mt-8 space-y-3">
-          <div class="border-b-2 border-academic-gold pb-1.5 flex justify-between items-baseline">
-            <h2 class="text-lg font-serif font-bold text-academic-navy">
+          <div class="border-b-2 border-academic-gold pb-2 flex justify-between items-baseline">
+            <h2 class="text-xl sm:text-2xl font-serif font-bold text-academic-navy">
               Articles
             </h2>
-            <span class="text-xs sm:text-sm text-slate-500 font-medium">
+            <span class="text-sm text-slate-600 font-medium">
               {displayArticles.length} Naskah Terbit
             </span>
           </div>

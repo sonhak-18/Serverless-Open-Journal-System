@@ -18,18 +18,18 @@ const abstractViews = await kvGetCounter(`stats:views:${article.slug}`, defaultV
 const pdfDownloads = await kvGetCounter(`stats:downloads:${article.slug}`, defaultDownloads, kv);
 ---
 
-<div class="py-4 border-b border-slate-200">
+<div class="py-5 border-b border-slate-200">
   <div class="flex items-baseline justify-between gap-4">
     <div class="flex-grow">
       <!-- Judul Artikel (Link Klasik OJS) -->
-      <h3 class="text-base sm:text-lg font-bold text-academic-navy hover:text-academic-teal leading-snug">
+      <h3 class="text-lg sm:text-xl font-bold text-academic-navy hover:text-academic-teal leading-snug">
         <a href={`/article/${article.slug}`}>
           {article.title}
         </a>
       </h3>
 
       <!-- Nama Penulis -->
-      <p class="text-sm text-slate-600 italic mt-1">
+      <p class="text-base text-slate-700 italic mt-1.5">
         {article.authors.map((author, index) => (
           <span>
             {author.name}
@@ -40,30 +40,30 @@ const pdfDownloads = await kvGetCounter(`stats:downloads:${article.slug}`, defau
     </div>
 
     <!-- Nomor Halaman di Kolom Kanan (Khas OJS) -->
-    <div class="text-xs sm:text-sm text-slate-600 font-mono shrink-0">
+    <div class="text-sm sm:text-base text-slate-600 font-mono shrink-0">
       {article.pages}
     </div>
   </div>
 
   <!-- Tombol PDF Klasik OJS & Statistik View -->
-  <div class="mt-3 flex flex-wrap items-center gap-3">
+  <div class="mt-3.5 flex flex-wrap items-center gap-3.5">
     <!-- Tombol PDF Abu-abu OJS -->
     <a
       href={pdfUrl}
       target="_blank"
       rel="noopener noreferrer"
       data-track-download={article.slug}
-      class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold rounded shadow-2xs transition-colors"
+      class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold rounded shadow-2xs transition-colors"
       title={`Unduh Naskah PDF (${article.pdfFileName})`}
     >
-      <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
         <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
       </svg>
       <span>PDF</span>
     </a>
 
     <!-- Indikator Metrik View / Download OJS Terhubung KV -->
-    <div class="flex items-center gap-2 text-xs text-slate-500 font-mono">
+    <div class="flex items-center gap-2.5 text-xs sm:text-sm text-slate-600 font-mono">
       <span class="inline-flex items-center gap-1" title="Jumlah pembaca abstrak (KV real-time)">
         <span class="text-emerald-700">📊</span>
         <span>Abstract View: {abstractViews}</span>

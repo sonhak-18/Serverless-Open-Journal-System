@@ -15,12 +15,12 @@ import { issues, getArticlesByIssue } from '../data/articles';
         </div>
 
         <div class="border-b-2 border-academic-gold pb-2">
-          <h1 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy">
+          <h1 class="text-3xl sm:text-4xl font-serif font-bold text-academic-navy">
             Archives
           </h1>
         </div>
 
-        <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
+        <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
           Seluruh volume dan nomor terbitan {journalConfig.name} diarsipkan secara permanen untuk mendukung aksesibilitas literatur akademik jangka panjang.
         </p>
 
@@ -28,25 +28,25 @@ import { issues, getArticlesByIssue } from '../data/articles';
           {issues.map((issue) => {
             const issueArticles = getArticlesByIssue(issue.volume, issue.issue);
             return (
-              <div class="p-5 border border-slate-300 bg-white rounded shadow-2xs">
-                <div class="border-b border-slate-200 pb-2 flex flex-wrap items-center justify-between gap-2">
-                  <h2 class="text-base sm:text-lg font-bold text-academic-navy">
+              <div class="p-6 border border-slate-300 bg-white rounded shadow-2xs space-y-3">
+                <div class="border-b border-slate-200 pb-2.5 flex flex-wrap items-center justify-between gap-2">
+                  <h2 class="text-lg sm:text-xl font-bold text-academic-navy">
                     <a href={issue.isCurrent ? '/current' : `/archives#vol-${issue.volume}`} class="hover:underline">
                       Vol. {issue.volume} No. {issue.issue} ({issue.year}): {issue.monthRange}
                     </a>
                   </h2>
-                  <span class="text-xs sm:text-sm text-slate-500 font-mono font-medium">
+                  <span class="text-sm text-slate-500 font-mono font-medium">
                     {issueArticles.length} Naskah
                   </span>
                 </div>
 
-                <p class="text-sm text-slate-600 mt-2.5 leading-relaxed">
+                <p class="text-base text-slate-700 leading-relaxed">
                   {issue.description}
                 </p>
 
-                <div class="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm text-slate-600">
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-sm text-slate-600">
                   <span>Terbit: {new Date(issue.publishDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                  <a href={issue.isCurrent ? '/current' : `/archives#vol-${issue.volume}`} class="text-academic-teal hover:underline font-semibold">
+                  <a href={issue.isCurrent ? '/current' : `/archives#vol-${issue.volume}`} class="text-academic-teal hover:underline font-bold">
                     Lihat Isi Terbitan →
                   </a>
                 </div>
