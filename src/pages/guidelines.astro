@@ -92,20 +92,148 @@ import { journalConfig } from '../config/journal';
           </p>
         </section>
 
-        <!-- Section 7: Template Download -->
-        <section id="template" class="p-5 bg-slate-50 border border-slate-200 rounded space-y-3">
-          <h2 class="text-base font-bold text-slate-900">
-            Unduh Template Manuskrip (Article Template)
-          </h2>
-          <p class="text-sm text-slate-600 leading-relaxed">
-            Penulis wajib menyesuaikan tata letak artikel dengan panduan template resmi sebelum penyerahan naskah.
-          </p>
-          <a
-            href="/submit"
-            class="inline-flex items-center gap-2 px-4 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white text-sm font-semibold rounded shadow-xs transition-colors"
-          >
-            <span>Unduh Template Naskah (.docx)</span>
-          </a>
+        <!-- Section 7: Template Download & Struktur Manuskrip -->
+        <section id="template" class="space-y-4">
+          <div class="p-6 bg-slate-50 border-2 border-academic-navy/20 rounded-md space-y-4 shadow-2xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-bold text-academic-navy">
+                  Unduh Template Manuskrip Resmi (Article Template .docx)
+                </h2>
+                <p class="text-sm text-slate-600 mt-1">
+                  Penulis wajib menyusun manuskrip mengikuti format resmi Microsoft Word (.docx) di bawah ini sebelum menyerahkan naskah ke redaksi.
+                </p>
+              </div>
+              <a
+                href="/template-jtaap.docx"
+                download="Template-Manuskrip-JTAAP.docx"
+                class="inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#0f284e] hover:bg-[#183e6d] text-white text-sm font-bold rounded shadow transition-all shrink-0 group"
+              >
+                <svg class="w-5 h-5 text-amber-400 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span>Unduh Berkas Template (.docx)</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Pratinjau Interaktif Panduan Struktur Template -->
+          <div class="border border-slate-200 rounded-md p-6 bg-white space-y-6 text-sm text-slate-800 leading-relaxed shadow-2xs">
+            <div class="border-b border-slate-200 pb-3">
+              <h3 class="text-base font-bold text-academic-navy">
+                Struktur & Format Standar Template Naskah JTAAP
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                Standar tipografi dokumen: Times New Roman, Spasi 1.15, Margin 2.54 cm (1 inci) di seluruh sisi.
+              </p>
+            </div>
+
+            <!-- Header Naskah -->
+            <div class="space-y-2 bg-slate-50 p-4 rounded border border-slate-200 text-center">
+              <div class="font-bold text-sm sm:text-base text-slate-900 uppercase">
+                JUDUL ARTIKEL DALAM BAHASA INDONESIA, ISTILAH ASING ITALIC
+              </div>
+              <div class="text-xs text-slate-500 italic">
+                (Judul: Huruf kapital, Times New Roman 12 pt, bold, singkat dan jelas, menggambarkan isi artikel, maksimal 10 kata, center)
+              </div>
+              <div class="font-bold italic text-sm text-slate-800 mt-2">
+                Article Title in English
+              </div>
+              <div class="font-bold text-xs sm:text-sm text-slate-900 pt-3">
+                Nama Penulis SATU<sup>1*</sup>, Nama Penulis DUA<sup>2</sup>
+              </div>
+              <div class="text-xs text-slate-500 italic">
+                (Nama Penulis: Huruf kapital setiap awal kata, semua kapital pada akhir nama, Times New Roman 11 pt, bold, center)
+              </div>
+              <div class="text-xs text-slate-600 pt-2 space-y-1">
+                <div><sup>1</sup> Nama fakultas/prodi, Nama Perguruan Tinggi/Afiliasi, Alamat Lengkap Perguruan Tinggi/Afiliasi</div>
+                <div><sup>2</sup> Nama fakultas/prodi, Nama Perguruan Tinggi/Afiliasi, Alamat Lengkap Perguruan Tinggi/Afiliasi</div>
+                <div class="italic text-slate-400 text-[11px]">*Catatan: jika seluruh penulis berasal dari afiliasi yang sama, tidak perlu diberi indeks angka.</div>
+              </div>
+              <div class="text-xs text-slate-700 pt-2 border-t border-slate-200 mt-3 space-y-0.5">
+                <div><strong>*Email korespondensi:</strong> email@institusi.ac.id</div>
+                <div><strong>No HP (WhatsApp):</strong> 08xx xxxx xxxx (hanya untuk korespondensi redaksi, tidak dicetak saat terbit)</div>
+                <div><strong>ORCID:</strong> https://orcid.org/0000-0000-0000-0000</div>
+              </div>
+            </div>
+
+            <!-- Tabel Info & Abstrak -->
+            <div class="grid grid-cols-1 md:grid-cols-12 border border-slate-300 rounded overflow-hidden text-xs">
+              <div class="md:col-span-4 bg-slate-50 p-3 border-b md:border-b-0 md:border-r border-slate-300 space-y-2">
+                <div class="font-bold text-slate-900 border-b border-slate-200 pb-1">Article Info</div>
+                <div>
+                  <span class="font-semibold block">Article History:</span>
+                  <span class="text-slate-600">Submission : dd-mm-yyyy<br/>Accepted : dd-mm-yyyy<br/>Online Publication : dd-mm-yyyy</span>
+                </div>
+                <div>
+                  <span class="font-semibold block">Keywords:</span>
+                  <span class="text-slate-600 italic">3-5 kata kunci dalam bahasa Inggris</span>
+                </div>
+                <div>
+                  <span class="font-semibold block">Citation, DOI, URL:</span>
+                  <span class="text-slate-400 italic">(Diterbitkan oleh pengelola jurnal)</span>
+                </div>
+              </div>
+              <div class="md:col-span-8 p-3 space-y-2 bg-white">
+                <div class="font-bold text-slate-900 border-b border-slate-200 pb-1">Abstract</div>
+                <p class="text-slate-700 italic leading-relaxed">
+                  (Times New Roman, 11 pt, 1 spasi) Abstrak ditulis dalam bahasa Inggris sekitar 200 kata dalam satu paragraf tanpa sitasi. Memuat tujuan penelitian, metode, hasil utama, kesimpulan, dan kebaruan (originalitas) secara informatif dan jelas.
+                </p>
+              </div>
+            </div>
+
+            <!-- Batang Tubuh Manuskrip -->
+            <div class="space-y-4 pt-2">
+              <div class="border-l-4 border-academic-navy pl-3 py-1">
+                <h4 class="font-bold text-academic-navy">1. PENDAHULUAN</h4>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                  Disusun dalam 3 paragraf runtut: Paragraf 1 (latar belakang fenomena audit/akuntansi/perpajakan didukung fakta terkini & sitasi ilmiah), Paragraf 2 (kesenjangan penelitian / research gap dari kajian terdahulu), dan Paragraf 3 (tujuan eksplisit dan kontribusi teoretis/praktis).
+                </p>
+              </div>
+
+              <div class="border-l-4 border-academic-navy pl-3 py-1">
+                <h4 class="font-bold text-academic-navy">2. TINJAUAN PUSTAKA DAN PENGEMBANGAN HIPOTESIS</h4>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                  Terbagi atas <strong>2.1 Landasan Teori</strong> (teori utama misal agensi, legitimasi, kepatuhan), <strong>2.2 Penelitian Terdahulu</strong> (sintesis tematik), dan <strong>2.3 Pengembangan Hipotesis</strong> (H1, H2, dst. dicetak pada paragraf tersendiri).
+                </p>
+              </div>
+
+              <div class="border-l-4 border-academic-navy pl-3 py-1">
+                <h4 class="font-bold text-academic-navy">3. METODE PENELITIAN</h4>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                  Memuat <strong>3.1 Desain Penelitian</strong>, <strong>3.2 Populasi dan Sampel</strong>, <strong>3.3 Definisi dan Pengukuran Variabel</strong> (lengkap dengan proksi rujukan), dan <strong>3.4 Teknik Analisis Data</strong> (rumus regresi bernomor di sisi kanan beserta keterangan parameter).
+                </p>
+              </div>
+
+              <div class="border-l-4 border-academic-navy pl-3 py-1">
+                <h4 class="font-bold text-academic-navy">4. HASIL DAN PEMBAHASAN</h4>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                  <strong>4.1 Hasil Penelitian</strong> (Tabel 1 Statistik Deskriptif, Tabel 2 Pengujian Hipotesis, Gambar minimal 300 dpi) dan <strong>4.2 Pembahasan</strong> (membahas <em>mengapa</em> temuan terjadi dan dikomparasikan dengan literatur terdahulu).
+                </p>
+              </div>
+
+              <div class="border-l-4 border-academic-navy pl-3 py-1">
+                <h4 class="font-bold text-academic-navy">5. KESIMPULAN</h4>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                  Menjawab tujuan penelitian tanpa mengulang abstrak, memuat <strong>5.1 Implikasi</strong> (regulator & praktisi) serta <strong>5.2 Keterbatasan dan Saran</strong> konkret.
+                </p>
+              </div>
+
+              <div class="border-l-4 border-academic-gold pl-3 py-1 bg-amber-50/50 rounded-r">
+                <h4 class="font-bold text-slate-900">PERNYATAAN (STATEMENTS)</h4>
+                <p class="text-xs text-slate-600 mt-1">
+                  Wajib menyertakan: Kontribusi Penulis, Sumber Pendanaan, Pernyataan Bebas Konflik Kepentingan, Ketersediaan Data, Penggunaan Alat AI, dan Ucapan Terima Kasih (opsional).
+                </p>
+              </div>
+
+              <div class="border-l-4 border-academic-navy pl-3 py-1">
+                <h4 class="font-bold text-academic-navy">DAFTAR PUSTAKA & LAMPIRAN</h4>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                  Referensi disusun alfabetis menggunakan format <strong>APA 7th Edition</strong> berbasis reference manager (Mendeley/Zotero). Lampiran 1 (Daftar Sampel), Lampiran 2 (Instrumen Kuesioner/Pedoman Wawancara), dan Lampiran 3 (Output Pengolahan Data Statistik).
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
       </main>
 

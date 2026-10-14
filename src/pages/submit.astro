@@ -87,10 +87,33 @@ const emailUrl = getEmailSubmissionUrl();
           </p>
           <ul class="text-sm text-slate-700 space-y-2.5 list-disc list-inside leading-relaxed">
             <li>Naskah belum pernah dipublikasikan sebelumnya dan tidak sedang dalam pertimbangan di jurnal ilmiah lain.</li>
-            <li>Format berkas manuskrip tersedia dalam format Microsoft Word (.docx).</li>
+            <li>
+              Format berkas manuskrip wajib menggunakan format resmi Microsoft Word (.docx).
+              <a
+                href="/template-jtaap.docx"
+                download="Template-Manuskrip-JTAAP.docx"
+                class="text-blue-700 hover:underline font-semibold inline-flex items-center gap-1 ml-1"
+              >
+                (Unduh Template .docx)
+              </a>
+            </li>
             <li>Teks mematuhi pedoman format penulisan dan sitasi APA 7th Edition yang tercantum dalam Author Guidelines.</li>
             <li>Hasil pemeriksaan orisinalitas Turnitin tidak melebihi ambang batas toleransi {journalConfig.submission.turnitinMaxSimilarity}%.</li>
           </ul>
+
+          <div class="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <span class="text-xs text-slate-500">Gunakan format resmi sebelum melakukan pengajuan manuskrip:</span>
+            <a
+              href="/template-jtaap.docx"
+              download="Template-Manuskrip-JTAAP.docx"
+              class="inline-flex items-center gap-2 px-3.5 py-2 bg-[#0f284e] hover:bg-[#183e6d] text-white text-xs font-bold rounded shadow-2xs transition-colors"
+            >
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span>Unduh Berkas Template (.docx)</span>
+            </a>
+          </div>
         </div>
       </main>
 
