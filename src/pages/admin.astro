@@ -19,7 +19,7 @@ const { editorInChief, editors, reviewers } = editorial;
     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-academic-border pb-5 mb-8 gap-4">
       <div>
         <div class="flex items-center gap-2">
-          <span class="academic-badge bg-[#1b4332] text-white">Editorial Studio (GUI)</span>
+          <span class="academic-badge bg-academic-navy text-white">Editorial Studio (GUI)</span>
           <span class="text-xs text-academic-ink-subtle">Sistem Pengelolaan Publikasi Mandiri Terintegrasi Database</span>
         </div>
         <h1 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy mt-1">
@@ -39,36 +39,44 @@ const { editorInChief, editors, reviewers } = editorial;
         <button
           type="button"
           id="btn-admin-logout"
-          class="hidden px-3 py-1 bg-red-700 hover:bg-red-800 text-white text-xs font-semibold rounded transition-colors shadow-2xs flex items-center gap-1.5"
+          class="hidden px-3.5 py-1.5 bg-rose-700 hover:bg-rose-800 text-white text-xs font-semibold rounded transition-colors shadow-2xs flex items-center gap-1.5"
           title="Keluar dari Panel Admin"
         >
-          <span>🚪</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
           <span>Keluar</span>
         </button>
       </div>
     </div>
 
     <!-- Alert Notifikasi Global -->
-    <div id="admin-toast" class="hidden mb-6 p-4 rounded-xs border text-xs font-semibold flex items-center justify-between transition-all">
+    <div id="admin-toast" class="hidden mb-6 p-4 rounded border text-xs sm:text-sm font-semibold flex items-center justify-between transition-all">
       <span id="admin-toast-msg"></span>
-      <button type="button" aria-label="Tutup notifikasi" onclick="document.getElementById('admin-toast').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 ml-4">✕</button>
+      <button type="button" aria-label="Tutup notifikasi" onclick="document.getElementById('admin-toast').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 ml-4 p-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
 
     <!-- Area Login Sederhana (Gerbang Admin) -->
     <div id="admin-login-lock" class="academic-card p-8 rounded border border-academic-border max-w-md mx-auto my-12 text-center shadow-sm">
-      <div class="w-12 h-12 rounded-full bg-academic-navy/10 text-academic-navy flex items-center justify-center mx-auto mb-4 text-xl">
-        🔒
+      <div class="w-12 h-12 rounded-full bg-academic-navy/10 text-academic-navy flex items-center justify-center mx-auto mb-4">
+        <svg class="w-6 h-6 text-academic-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
       </div>
       <h2 class="text-lg font-serif font-bold text-academic-navy">
         Akses Khusus Dewan Redaksi
       </h2>
-      <p class="text-xs text-academic-ink-muted mt-1 mb-6">
+      <p class="text-xs sm:text-sm text-academic-ink-muted mt-1 mb-6">
         Masukkan kata sandi atau PIN untuk masuk ke panel administrasi redaksi.
       </p>
 
       <form id="admin-login-form" class="space-y-4 text-left">
         <div>
-          <label for="admin-pin" class="block text-xs font-semibold text-academic-navy mb-1">
+          <label for="admin-pin" class="block text-sm font-semibold text-slate-800 mb-1">
             Kata Sandi / PIN Redaksi
           </label>
           <input
@@ -76,15 +84,15 @@ const { editorInChief, editors, reviewers } = editorial;
             id="admin-pin"
             required
             placeholder="Masukkan kata sandi / PIN"
-            class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson focus:ring-1 focus:ring-academic-crimson outline-none"
+            class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
           />
         </div>
-        <p id="login-error" class="text-xs text-red-600 hidden">
+        <p id="login-error" class="text-xs text-rose-600 hidden">
           Kata sandi salah. Silakan coba lagi.
         </p>
         <button
           type="submit"
-          class="w-full py-2.5 px-4 bg-academic-crimson hover:bg-academic-crimson-light text-white text-sm font-semibold rounded transition-colors shadow min-h-[44px]"
+          class="w-full py-2.5 px-4 bg-academic-navy hover:bg-academic-navy-light text-white text-sm font-semibold rounded transition-colors shadow min-h-[44px]"
         >
           Masuk ke Panel Redaksi
         </button>
@@ -97,10 +105,13 @@ const { editorInChief, editors, reviewers } = editorial;
       <div class="flex border-b border-academic-border text-xs sm:text-sm font-medium space-x-1 sm:space-x-3 overflow-x-auto pb-1" role="tablist">
         <button
           type="button"
-          class="admin-tab active py-2.5 px-3.5 border-b-2 border-academic-crimson text-academic-crimson font-bold shrink-0 min-h-[44px]"
+          class="admin-tab active py-2.5 px-3.5 border-b-2 border-academic-navy text-academic-navy font-bold shrink-0 min-h-[44px] flex items-center gap-1.5"
           data-tab="tab-add-article"
         >
-          + Terbitkan Naskah
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Terbitkan Naskah</span>
         </button>
         <button
           type="button"
@@ -160,10 +171,13 @@ const { editorInChief, editors, reviewers } = editorial;
         </button>
         <button
           type="button"
-          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px] flex items-center gap-1.5"
           data-tab="tab-security-settings"
         >
-          🔒 Keamanan & PIN
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <span>Keamanan & PIN</span>
         </button>
       </div>
 
@@ -183,26 +197,26 @@ const { editorInChief, editors, reviewers } = editorial;
             <!-- Judul & Rumpun -->
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
               <div class="md:col-span-8">
-                <label for="art-title" class="block text-xs font-semibold text-academic-navy mb-1">
-                  Judul Lengkap Artikel <span class="text-red-500">*</span>
+                <label for="art-title" class="block text-sm font-semibold text-slate-800 mb-1">
+                  Judul Lengkap Artikel <span class="text-rose-600">*</span>
                 </label>
                 <input
                   type="text"
                   id="art-title"
                   required
                   placeholder="Contoh: Analisis Kepatuhan Pajak atas Pemanfaatan Fasilitas Super Tax Deduction..."
-                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none"
+                  class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
                 />
               </div>
 
               <div class="md:col-span-4">
-                <label for="art-subject" class="block text-xs font-semibold text-academic-navy mb-1">
-                  Rumpun Keilmuan <span class="text-red-500">*</span>
+                <label for="art-subject" class="block text-sm font-semibold text-slate-800 mb-1">
+                  Rumpun Keilmuan <span class="text-rose-600">*</span>
                 </label>
                 <select
                   id="art-subject"
                   required
-                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none bg-white min-h-[40px]"
+                  class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none bg-white min-h-[44px]"
                 >
                   <option value="Audit">Audit & Investigasi Fraud</option>
                   <option value="Akuntansi">Akuntansi Keuangan & Manajemen</option>
@@ -211,97 +225,147 @@ const { editorInChief, editors, reviewers } = editorial;
               </div>
             </div>
 
-            <!-- Penulis & Afiliasi -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded border border-slate-200">
-              <div>
-                <label for="art-author" class="block text-xs font-semibold text-academic-navy mb-1">
-                  Nama Penulis Utama & Penulis Pendamping <span class="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="art-author"
-                  required
-                  placeholder="Contoh: Rahmat Hidayat, Siti Nurhaliza"
-                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none"
-                />
-                <span class="text-[11px] text-slate-500 mt-1 block">Pisahkan dengan koma jika lebih dari satu penulis.</span>
+            <!-- Panel Mandiri Penulis & Afiliasi -->
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 sm:p-5 space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                <div>
+                  <h3 class="text-sm font-bold text-academic-navy flex items-center gap-2">
+                    <svg class="w-4 h-4 text-academic-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Daftar Penulis & Afiliasi Naskah
+                  </h3>
+                  <p class="text-xs text-slate-600 mt-0.5">
+                    Konfigurasi mandiri penulis. Anda dapat menambah penulis pendamping secara dinamis dengan informasi lengkap.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  id="btn-add-author"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-academic-navy hover:bg-academic-navy-light text-white text-xs font-semibold rounded shadow-xs transition-colors self-start sm:self-auto"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span>+ Tambah Penulis</span>
+                </button>
               </div>
 
-              <div>
-                <label for="art-affiliation" class="block text-xs font-semibold text-academic-navy mb-1">
-                  Afiliasi / Universitas / Lembaga Riset <span class="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="art-affiliation"
-                  required
-                  placeholder="Contoh: Departemen Akuntansi, Universitas Indonesia"
-                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none"
-                />
+              <!-- Container Baris Penulis Dinamis -->
+              <div id="authors-container" class="space-y-3">
+                <div class="author-row bg-white p-4 rounded border border-slate-200 grid grid-cols-1 md:grid-cols-12 gap-3 items-end shadow-2xs">
+                  <div class="md:col-span-4">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">
+                      Nama Penulis Utama <span class="text-rose-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="author_name"
+                      required
+                      placeholder="Contoh: Dr. Rahmat Hidayat, M.Ak."
+                      class="author-name-input w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
+                    />
+                  </div>
+                  <div class="md:col-span-4">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">
+                      Afiliasi / Universitas / Lembaga Riset <span class="text-rose-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="author_affiliation"
+                      required
+                      placeholder="Contoh: Universitas Indonesia"
+                      class="author-affiliation-input w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
+                    />
+                  </div>
+                  <div class="md:col-span-3">
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">
+                      Email Korespondensi <span class="text-slate-400 font-normal">(Opsional)</span>
+                    </label>
+                    <input
+                      type="email"
+                      name="author_email"
+                      placeholder="rahmat@ui.ac.id"
+                      class="author-email-input w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono"
+                    />
+                  </div>
+                  <div class="md:col-span-1 flex justify-end">
+                    <button
+                      type="button"
+                      class="btn-remove-author p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+                      title="Hapus baris penulis ini"
+                      disabled
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
             <!-- Abstrak & Kata Kunci -->
             <div>
-              <label for="art-abstract" class="block text-xs font-semibold text-academic-navy mb-1">
-                Teks Abstrak (Bahasa Indonesia atau Inggris) <span class="text-red-500">*</span>
+              <label for="art-abstract" class="block text-sm font-semibold text-slate-800 mb-1">
+                Teks Abstrak (Bahasa Indonesia atau Inggris) <span class="text-rose-600">*</span>
               </label>
               <textarea
                 id="art-abstract"
                 rows="4"
                 required
                 placeholder="Tuliskan latar belakang singkat, tujuan, metode penelitian, dan kesimpulan temuan utama..."
-                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none"
+                class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
               ></textarea>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label for="art-keywords" class="block text-xs font-semibold text-academic-navy mb-1">
-                  Kata Kunci (Keywords) <span class="text-red-500">*</span>
+                <label for="art-keywords" class="block text-sm font-semibold text-slate-800 mb-1">
+                  Kata Kunci (Keywords) <span class="text-rose-600">*</span>
                 </label>
                 <input
                   type="text"
                   id="art-keywords"
                   required
                   placeholder="Contoh: Kepatuhan Pajak, Super Tax Deduction, Fiskal"
-                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none"
+                  class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
                 />
-                <span class="text-[11px] text-slate-500 mt-1 block">Pisahkan dengan koma (3-5 kata kunci).</span>
+                <span class="text-xs text-slate-500 mt-1 block">Pisahkan dengan koma (3-5 kata kunci).</span>
               </div>
 
               <div>
-                <label for="art-pdffile" class="block text-xs font-semibold text-academic-navy mb-1">
-                  Nama File PDF di Google Drive <span class="text-red-500">*</span>
+                <label for="art-pdffile" class="block text-sm font-semibold text-slate-800 mb-1">
+                  Nama File PDF di Google Drive <span class="text-rose-600">*</span>
                 </label>
                 <input
                   type="text"
                   id="art-pdffile"
                   required
                   placeholder="Contoh: jtaap-v1n1-04-rahmat-pajak.pdf"
-                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
+                  class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono"
                 />
-                <span class="text-[11px] text-slate-500 mt-1 block">Nama file yang diunggah ke Google Drive Index kamu.</span>
+                <span class="text-xs text-slate-500 mt-1 block">Nama file PDF naskah yang disimpan di Google Drive / Cloudflare R2.</span>
               </div>
             </div>
 
             <!-- Metadata Edisi & Halaman -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-50 p-4 rounded border border-slate-200 text-xs">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-50 p-4 rounded border border-slate-200 text-xs sm:text-sm">
               <div>
-                <label for="art-volume" class="block font-semibold text-academic-navy mb-1">Volume</label>
-                <input type="number" id="art-volume" value="1" min="1" class="w-full px-2 py-1.5 border border-slate-300 rounded" />
+                <label for="art-volume" class="block font-semibold text-slate-800 mb-1">Volume</label>
+                <input type="number" id="art-volume" value="1" min="1" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none" />
               </div>
               <div>
-                <label for="art-issue" class="block font-semibold text-academic-navy mb-1">Nomor Issue</label>
-                <input type="number" id="art-issue" value="1" min="1" class="w-full px-2 py-1.5 border border-slate-300 rounded" />
+                <label for="art-issue" class="block font-semibold text-slate-800 mb-1">Nomor Issue</label>
+                <input type="number" id="art-issue" value="1" min="1" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none" />
               </div>
               <div>
-                <label for="art-pages" class="block font-semibold text-academic-navy mb-1">Rentang Halaman</label>
-                <input type="text" id="art-pages" value="45-58" placeholder="Contoh: 45-58" class="w-full px-2 py-1.5 border border-slate-300 rounded" />
+                <label for="art-pages" class="block font-semibold text-slate-800 mb-1">Rentang Halaman</label>
+                <input type="text" id="art-pages" value="45-58" placeholder="Contoh: 45-58" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none" />
               </div>
               <div>
-                <label for="art-doi" class="block font-semibold text-academic-navy mb-1">DOI Suffix</label>
-                <input type="text" id="art-doi" value="10.5281/zenodo.jtaap.2026.1104" class="w-full px-2 py-1.5 border border-slate-300 rounded font-mono" />
+                <label for="art-doi" class="block font-semibold text-slate-800 mb-1">DOI Suffix</label>
+                <input type="text" id="art-doi" value="10.5281/zenodo.jtaap.2026.1104" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none font-mono" />
               </div>
             </div>
 
@@ -309,9 +373,12 @@ const { editorInChief, editors, reviewers } = editorial;
               <button
                 type="submit"
                 id="btn-submit-article"
-                class="px-6 py-2.5 bg-academic-crimson hover:bg-academic-crimson-light text-white text-sm font-semibold rounded transition-colors shadow min-h-[44px]"
+                class="px-6 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white text-sm font-semibold rounded transition-colors shadow min-h-[44px] flex items-center gap-2"
               >
-                💾 Simpan & Publikasikan ke Database
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                <span>Simpan & Publikasikan ke Database</span>
               </button>
             </div>
           </form>
@@ -668,9 +735,12 @@ const { editorInChief, editors, reviewers } = editorial;
             <div class="pt-4 flex justify-end">
               <button
                 type="submit"
-                class="px-6 py-2.5 bg-[#1b4332] hover:bg-[#143225] text-white font-semibold rounded text-xs transition-colors shadow min-h-[44px]"
+                class="px-6 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white font-semibold rounded text-sm transition-colors shadow min-h-[44px] flex items-center gap-2"
               >
-                💾 Simpan Profil Jurnal
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                <span>Simpan Profil Jurnal</span>
               </button>
             </div>
           </form>
@@ -764,9 +834,12 @@ const { editorInChief, editors, reviewers } = editorial;
             <div class="pt-4 flex justify-end">
               <button
                 type="submit"
-                class="px-6 py-2.5 bg-[#1b4332] hover:bg-[#143225] text-white font-semibold rounded text-xs transition-colors shadow min-h-[44px]"
+                class="px-6 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white font-semibold rounded text-sm transition-colors shadow min-h-[44px] flex items-center gap-2"
               >
-                💾 Simpan Terbitan Aktif
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                <span>Simpan Terbitan Aktif</span>
               </button>
             </div>
           </form>
@@ -841,9 +914,12 @@ const { editorInChief, editors, reviewers } = editorial;
             <div class="pt-4 flex justify-end">
               <button
                 type="submit"
-                class="px-6 py-2.5 bg-[#1b4332] hover:bg-[#143225] text-white font-semibold rounded text-xs transition-colors shadow min-h-[44px]"
+                class="px-6 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white font-semibold rounded text-sm transition-colors shadow min-h-[44px] flex items-center gap-2"
               >
-                💾 Simpan Pengumuman ke Database
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                <span>Simpan Pengumuman ke Database</span>
               </button>
             </div>
           </form>
@@ -967,9 +1043,12 @@ const { editorInChief, editors, reviewers } = editorial;
             <div class="pt-2 flex justify-end">
               <button
                 type="submit"
-                class="px-6 py-2.5 bg-[#1b4332] hover:bg-[#143225] text-white font-semibold rounded text-xs transition-colors shadow min-h-[44px]"
+                class="px-6 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white font-semibold rounded text-sm transition-colors shadow min-h-[44px] flex items-center gap-2"
               >
-                💾 Simpan Pengaturan Kontak & Jurnal
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                <span>Simpan Pengaturan Kontak & Jurnal</span>
               </button>
             </div>
           </form>
@@ -1073,7 +1152,7 @@ const { editorInChief, editors, reviewers } = editorial;
 
           <form id="form-gdrive" class="space-y-4">
             <div>
-              <label for="cfg-gdrive-url" class="block text-xs font-semibold text-academic-navy mb-1">
+              <label for="cfg-gdrive-url" class="block text-sm font-semibold text-slate-800 mb-1">
                 URL Worker Google Drive Index
               </label>
               <input
@@ -1082,16 +1161,19 @@ const { editorInChief, editors, reviewers } = editorial;
                 value={journalConfig.storage.gdriveIndexBaseUrl}
                 required
                 placeholder="https://cdn-papers.sektansia.workers.dev"
-                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
+                class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono"
               />
             </div>
 
             <div class="flex justify-end">
               <button
                 type="submit"
-                class="px-5 py-2 bg-academic-crimson hover:bg-academic-crimson-light text-white text-xs font-semibold rounded shadow transition-colors"
+                class="px-6 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white text-sm font-semibold rounded shadow transition-colors min-h-[44px] flex items-center gap-2"
               >
-                Simpan URL Google Drive
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+                <span>Simpan URL Google Drive</span>
               </button>
             </div>
           </form>
@@ -1105,14 +1187,14 @@ const { editorInChief, editors, reviewers } = editorial;
             <h2 class="text-lg font-serif font-bold text-academic-navy">
               Ganti Kata Sandi / PIN Panel Redaksi
             </h2>
-            <p class="text-xs text-academic-ink-muted mt-1">
+            <p class="text-xs sm:text-sm text-academic-ink-muted mt-1">
               Perbarui PIN untuk mengamankan akses panel administrasi jurnal.
             </p>
           </div>
 
           <form id="form-change-pin" class="space-y-4">
             <div>
-              <label for="current-pin" class="block text-xs font-semibold text-academic-navy mb-1">
+              <label for="current-pin" class="block text-sm font-semibold text-slate-800 mb-1">
                 PIN Saat Ini *
               </label>
               <input
@@ -1120,12 +1202,12 @@ const { editorInChief, editors, reviewers } = editorial;
                 id="current-pin"
                 required
                 placeholder="Masukkan PIN lama"
-                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
+                class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono"
               />
             </div>
 
             <div>
-              <label for="new-pin" class="block text-xs font-semibold text-academic-navy mb-1">
+              <label for="new-pin" class="block text-sm font-semibold text-slate-800 mb-1">
                 PIN Baru *
               </label>
               <input
@@ -1134,12 +1216,12 @@ const { editorInChief, editors, reviewers } = editorial;
                 required
                 minlength="4"
                 placeholder="Minimal 4 karakter"
-                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
+                class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono"
               />
             </div>
 
             <div>
-              <label for="confirm-new-pin" class="block text-xs font-semibold text-academic-navy mb-1">
+              <label for="confirm-new-pin" class="block text-sm font-semibold text-slate-800 mb-1">
                 Konfirmasi PIN Baru *
               </label>
               <input
@@ -1148,17 +1230,21 @@ const { editorInChief, editors, reviewers } = editorial;
                 required
                 minlength="4"
                 placeholder="Ketik ulang PIN baru"
-                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
+                class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono"
               />
             </div>
 
             <div class="pt-2 flex justify-end">
               <button
                 type="submit"
-                class="px-5 py-2.5 bg-academic-crimson hover:bg-academic-crimson-light text-white text-xs font-semibold rounded shadow transition-colors"
+                class="px-6 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white text-sm font-semibold rounded shadow transition-colors min-h-[44px] flex items-center gap-2"
               >
-                Simpan PIN Baru
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                <span>Simpan PIN Baru</span>
               </button>
+            </div>
             </div>
           </form>
         </div>
@@ -1333,9 +1419,9 @@ const { editorInChief, editors, reviewers } = editorial;
     tabs.forEach((t) => {
       if (t.getAttribute('data-tab') === targetId) {
         t.classList.remove('border-transparent', 'text-slate-600');
-        t.classList.add('border-academic-crimson', 'text-academic-crimson', 'font-bold');
+        t.classList.add('border-academic-navy', 'text-academic-navy', 'font-bold');
       } else {
-        t.classList.remove('border-academic-crimson', 'text-academic-crimson', 'font-bold');
+        t.classList.remove('border-academic-navy', 'text-academic-navy', 'font-bold');
         t.classList.add('border-transparent', 'text-slate-600');
       }
     });
@@ -1362,6 +1448,108 @@ const { editorInChief, editors, reviewers } = editorial;
     switchTab(savedTab);
   }
 
+  // Dynamic Authors Builder Logic
+  const authorsContainer = document.getElementById('authors-container');
+  const btnAddAuthor = document.getElementById('btn-add-author');
+
+  function updateRemoveButtonsState() {
+    if (!authorsContainer) return;
+    const rows = authorsContainer.querySelectorAll('.author-row');
+    rows.forEach((row) => {
+      const btnRemove = row.querySelector('.btn-remove-author') as HTMLButtonElement | null;
+      if (btnRemove) {
+        btnRemove.disabled = rows.length <= 1;
+        if (rows.length <= 1) {
+          btnRemove.classList.add('opacity-30', 'cursor-not-allowed');
+        } else {
+          btnRemove.classList.remove('opacity-30', 'cursor-not-allowed');
+        }
+      }
+    });
+  }
+
+  function bindRemoveEvent(btn: HTMLButtonElement) {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const rows = authorsContainer?.querySelectorAll('.author-row') || [];
+      if (rows.length > 1) {
+        const row = btn.closest('.author-row');
+        row?.remove();
+        updateRemoveButtonsState();
+      }
+    });
+  }
+
+  // Bind initial row's remove button
+  const initialRemoveBtn = authorsContainer?.querySelector('.btn-remove-author') as HTMLButtonElement | null;
+  if (initialRemoveBtn) {
+    bindRemoveEvent(initialRemoveBtn);
+  }
+  updateRemoveButtonsState();
+
+  btnAddAuthor?.addEventListener('click', () => {
+    if (!authorsContainer) return;
+    const currentCount = authorsContainer.querySelectorAll('.author-row').length + 1;
+    const newRow = document.createElement('div');
+    newRow.className = 'author-row bg-white p-4 rounded border border-slate-200 grid grid-cols-1 md:grid-cols-12 gap-3 items-end shadow-2xs animate-fadeIn';
+    newRow.innerHTML = `
+      <div class="md:col-span-4">
+        <label class="block text-xs font-semibold text-slate-700 mb-1">
+          Nama Penulis #${currentCount} <span class="text-rose-600">*</span>
+        </label>
+        <input
+          type="text"
+          name="author_name"
+          required
+          placeholder="Contoh: Nama Penulis Pendamping"
+          class="author-name-input w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
+        />
+      </div>
+      <div class="md:col-span-4">
+        <label class="block text-xs font-semibold text-slate-700 mb-1">
+          Afiliasi / Universitas / Lembaga Riset <span class="text-rose-600">*</span>
+        </label>
+        <input
+          type="text"
+          name="author_affiliation"
+          required
+          placeholder="Contoh: Universitas Gadjah Mada"
+          class="author-affiliation-input w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
+        />
+      </div>
+      <div class="md:col-span-3">
+        <label class="block text-xs font-semibold text-slate-700 mb-1">
+          Email Korespondensi <span class="text-slate-400 font-normal">(Opsional)</span>
+        </label>
+        <input
+          type="email"
+          name="author_email"
+          placeholder="penulis@ugm.ac.id"
+          class="author-email-input w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono"
+        />
+      </div>
+      <div class="md:col-span-1 flex justify-end">
+        <button
+          type="button"
+          class="btn-remove-author p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+          title="Hapus baris penulis ini"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      </div>
+    `;
+
+    const btnRemove = newRow.querySelector('.btn-remove-author') as HTMLButtonElement | null;
+    if (btnRemove) {
+      bindRemoveEvent(btnRemove);
+    }
+
+    authorsContainer.appendChild(newRow);
+    updateRemoveButtonsState();
+  });
+
   // 1. Simpan Naskah Baru (Database)
   const articleForm = document.getElementById('form-new-article');
   articleForm?.addEventListener('submit', async (e) => {
@@ -1369,25 +1557,32 @@ const { editorInChief, editors, reviewers } = editorial;
 
     const title = (document.getElementById('art-title') as HTMLInputElement).value;
     const subject = (document.getElementById('art-subject') as HTMLSelectElement).value;
-    const authorsRaw = (document.getElementById('art-author') as HTMLInputElement).value;
-    const affiliation = (document.getElementById('art-affiliation') as HTMLInputElement).value;
-    const abstract = (document.getElementById('art-abstract') as HTMLTextAreaElement).value;
-    const keywordsRaw = (document.getElementById('art-keywords') as HTMLInputElement).value;
-    const pdfFile = (document.getElementById('art-pdffile') as HTMLInputElement).value;
-    const volume = Number((document.getElementById('art-volume') as HTMLInputElement).value) || 1;
-    const issue = Number((document.getElementById('art-issue') as HTMLInputElement).value) || 1;
-    const pages = (document.getElementById('art-pages') as HTMLInputElement).value || '1-10';
-    const doi = (document.getElementById('art-doi') as HTMLInputElement).value;
 
-    const slug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '');
+    // Kumpulkan penulis dari konfigurasi panel mandiri
+    const authorRows = authorsContainer ? authorsContainer.querySelectorAll('.author-row') : [];
+    const authorsList: { name: string; affiliation: string; email?: string }[] = [];
 
-    const authorsList = authorsRaw.split(',').map((name) => ({
-      name: name.trim(),
-      affiliation: affiliation.trim(),
-    }));
+    authorRows.forEach((row) => {
+      const nameInput = row.querySelector('.author-name-input') as HTMLInputElement | null;
+      const affInput = row.querySelector('.author-affiliation-input') as HTMLInputElement | null;
+      const emailInput = row.querySelector('.author-email-input') as HTMLInputElement | null;
+
+      if (nameInput && nameInput.value.trim()) {
+        const item: { name: string; affiliation: string; email?: string } = {
+          name: nameInput.value.trim(),
+          affiliation: affInput ? affInput.value.trim() : '',
+        };
+        if (emailInput && emailInput.value.trim()) {
+          item.email = emailInput.value.trim();
+        }
+        authorsList.push(item);
+      }
+    });
+
+    if (authorsList.length === 0) {
+      showToast('Harap masukkan minimal satu nama penulis naskah!', true);
+      return;
+    }
 
     const keywordsList = keywordsRaw.split(',').map((k) => k.trim());
     const [firstP, lastP] = pages.split('-').map((p) => Number(p.trim()) || 1);

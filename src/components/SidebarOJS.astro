@@ -28,9 +28,12 @@ const sidebarIndexers = indexingList.filter((idx) => idx.showInSidebar);
     {sidebarLinks.map((item) => (
       <a
         href={item.href}
-        class="block w-full py-2 px-3 text-xs font-semibold text-white bg-[#1e4a7a] hover:bg-[#153457] border border-[#183c63] rounded-sm transition-colors shadow-xs"
+        class="block w-full py-2.5 px-3.5 text-sm font-semibold text-white bg-[#0f284e] hover:bg-[#183e6d] border border-[#0a1a33] rounded-sm transition-colors shadow-2xs flex items-center justify-between"
       >
-        {item.label}
+        <span>{item.label}</span>
+        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
       </a>
     ))}
   </div>
@@ -72,7 +75,7 @@ const sidebarIndexers = indexingList.filter((idx) => idx.showInSidebar);
   <!-- 3. Kotak ISSN & Barcode -->
   {journalConfig.features.showIssnBlock && (
     <div class="border border-slate-300 bg-white rounded-sm overflow-hidden">
-      <div class="bg-[#1e4a7a] text-white text-xs font-bold py-1 px-3">
+      <div class="bg-[#0f284e] text-white text-xs font-bold py-1.5 px-3">
         ISSN
       </div>
       <div class="p-4 text-center">
@@ -203,7 +206,7 @@ const sidebarIndexers = indexingList.filter((idx) => idx.showInSidebar);
   <!-- 6. Kotak Indexing (Indexed By - Bersih Tanpa Bocor Setup Link) -->
   {journalConfig.features.showIndexingBlock && (
     <div class="border border-slate-300 bg-white rounded-sm overflow-hidden">
-      <div class="bg-[#1e4a7a] text-white text-xs font-bold py-1.5 px-3">
+      <div class="bg-[#0f284e] text-white text-xs font-bold py-1.5 px-3">
         Indexed by :
       </div>
       <div class="p-3 bg-white space-y-2.5">
@@ -247,7 +250,7 @@ const sidebarIndexers = indexingList.filter((idx) => idx.showInSidebar);
 
   <!-- 7. Kotak Secretariat (Alamat & Kontak Redaksi) -->
   <div class="border border-slate-300 bg-white rounded-sm overflow-hidden">
-    <div class="bg-[#1e4a7a] text-white text-xs font-bold py-1.5 px-3">
+    <div class="bg-[#0f284e] text-white text-xs font-bold py-1.5 px-3">
       Secretariat
     </div>
     <div class="p-3 text-xs text-slate-700 space-y-2 leading-relaxed">

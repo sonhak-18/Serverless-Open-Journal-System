@@ -17,75 +17,78 @@ const navLinks = [
 ];
 ---
 
-<header class="border-b border-slate-300 bg-white">
-  <!-- Topmost Access Bar (Register / Login / Editorial Panel) -->
-  <div class="bg-[#1b4332] text-slate-200 text-xs py-1.5 px-4 border-b border-[#143225]">
+<header class="border-b border-slate-200 bg-white">
+  <!-- Topmost Access Bar (Publisher & Quick Action) -->
+  <div class="bg-[#0a1a33] text-slate-300 text-xs py-2 px-4 border-b border-[#152f52]">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <div class="text-[11px] text-emerald-200">
-        <span>{journalConfig.publisher}</span>
-        <span class="mx-1">/</span>
+      <div class="text-xs text-slate-300 font-medium flex items-center gap-1.5">
+        <span class="text-[#c89b3c] font-semibold">{journalConfig.publisher}</span>
+        <span class="text-slate-500">/</span>
         <span>{journalConfig.institution}</span>
       </div>
       <div class="flex items-center space-x-3 text-xs">
         <a href="/submit" class="hover:text-white transition-colors">Submit Paper</a>
-        <span class="text-emerald-500">|</span>
-        <a href="/admin" rel="nofollow" class="hover:text-white font-medium text-emerald-100 transition-colors">
-          Panel Redaksi (Admin)
+        <span class="text-slate-600">|</span>
+        <a href="/admin" rel="nofollow" class="hover:text-white font-medium text-slate-200 transition-colors flex items-center gap-1">
+          <svg class="w-3.5 h-3.5 text-[#c89b3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+          </svg>
+          <span>Panel Redaksi (Admin)</span>
         </a>
       </div>
     </div>
   </div>
 
-  <!-- Main OJS Journal Header Banner (Matching Image 2) -->
-  <div class="bg-[#1f543c] text-white py-6 px-4">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div class="flex items-center gap-4">
-        <!-- Journal Logo (Original Colors & Transparent Background) -->
+  <!-- Main Journal Header Banner (Clean White Background for True Logo Contrast) -->
+  <div class="bg-white py-6 px-4 border-b border-slate-100">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="flex items-center gap-6">
+        <!-- Journal Logo (Navy, Teal, Gold - Fully Sharp & Vibrant on White) -->
         <a href="/" class="flex-shrink-0 group" title={`Beranda ${journalConfig.name}`}>
           <img
             src="/images/logo.png"
             alt={`Logo ${journalConfig.shortName}`}
-            class="h-12 md:h-14 w-auto object-contain group-hover:opacity-90 transition-opacity"
+            class="h-14 md:h-16 w-auto object-contain group-hover:opacity-95 transition-opacity"
           />
         </a>
 
-        <!-- Title & Subtitles -->
-        <div class="border-l border-white/20 pl-4">
+        <!-- Title & Official Subtitles -->
+        <div class="border-l-2 border-slate-200 pl-5">
           <a href="/" class="hover:underline">
-            <h1 class="text-xl md:text-2xl font-serif font-bold text-white tracking-wide leading-tight">
+            <h1 class="text-2xl md:text-3xl font-bold text-[#0f284e] tracking-tight leading-tight">
               {journalConfig.name}
             </h1>
           </a>
-          <p class="text-xs md:text-sm text-emerald-100 font-serif italic mt-0.5">
+          <p class="text-sm text-slate-600 italic mt-1 font-medium">
             {journalConfig.nameEn}
           </p>
-          <div class="flex flex-wrap items-center gap-2 text-xs text-emerald-200 mt-1">
-            <span>{journalConfig.accreditedText}</span>
-            <span>•</span>
-            <span class="font-mono">e-ISSN {journalConfig.eIssn}</span>
-            <span>•</span>
-            <span class="font-mono">p-ISSN {journalConfig.pIssn}</span>
+          <div class="flex flex-wrap items-center gap-3 text-xs text-slate-600 mt-2 font-medium">
+            <span class="text-[#16707a] font-semibold">{journalConfig.accreditedText}</span>
+            <span class="text-slate-300">•</span>
+            <span class="font-mono bg-slate-100 text-slate-800 px-2 py-0.5 rounded-2xs border border-slate-200">e-ISSN: {journalConfig.eIssn}</span>
+            <span class="text-slate-300">•</span>
+            <span class="font-mono bg-slate-100 text-slate-800 px-2 py-0.5 rounded-2xs border border-slate-200">p-ISSN: {journalConfig.pIssn}</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Classic OJS Horizontal Navigation Menu Bar -->
-  <nav class="bg-[#2d3748] text-white text-xs border-b border-slate-700" aria-label="Navigasi Utama OJS">
+  <!-- Standard Academic Navy Navigation Bar -->
+  <nav class="bg-[#0f284e] text-white border-b border-[#0a1a33] shadow-xs" aria-label="Navigasi Utama Jurnal">
     <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
       <!-- Desktop Links -->
-      <ul class="hidden md:flex flex-wrap items-center font-medium">
+      <ul class="hidden md:flex flex-wrap items-center text-sm font-semibold">
         {navLinks.map((link) => {
           const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
           return (
             <li>
               <a
                 href={link.href}
-                class={`inline-block py-2.5 px-4 transition-colors border-r border-slate-600/50 ${
+                class={`inline-block py-3 px-4 transition-colors border-r border-[#1a3860] ${
                   isActive
-                    ? 'bg-[#1a202c] text-white font-bold'
-                    : 'text-slate-200 hover:bg-[#1a202c] hover:text-white'
+                    ? 'bg-[#183e6d] text-white font-bold border-b-2 border-[#c89b3c]'
+                    : 'text-slate-200 hover:bg-[#183e6d] hover:text-white'
                 }`}
               >
                 {link.label}
@@ -95,15 +98,22 @@ const navLinks = [
         })}
       </ul>
 
-      <div class="hidden md:flex items-center text-xs text-slate-300">
-        <a href="/submit" class="py-2.5 px-3 bg-[#b45309] hover:bg-[#92400e] text-white font-bold transition-colors">
-          Submit Naskah
+      <!-- Submit Naskah CTA Button (High Contrast Gold from Logo) -->
+      <div class="hidden md:flex items-center">
+        <a
+          href="/submit"
+          class="py-2 px-4 bg-[#c89b3c] hover:bg-[#b0842b] text-white font-bold text-xs uppercase tracking-wider rounded-xs shadow-xs transition-colors flex items-center gap-1.5"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Submit Naskah</span>
         </a>
       </div>
 
       <!-- Mobile Menu Toggle Button (tap target >= 44px) -->
-      <div class="md:hidden py-1 flex items-center justify-between w-full">
-        <span class="text-xs uppercase font-semibold text-slate-300">Menu Jurnal</span>
+      <div class="md:hidden py-1.5 flex items-center justify-between w-full">
+        <span class="text-xs uppercase font-bold tracking-wider text-slate-200">Menu Jurnal</span>
         <button
           type="button"
           id="ojs-mobile-menu-btn"
@@ -120,20 +130,28 @@ const navLinks = [
     </div>
 
     <!-- Mobile Drawer -->
-    <div id="ojs-mobile-menu" class="hidden md:hidden bg-[#1a202c] px-4 py-2 border-t border-slate-700 space-y-1">
+    <div id="ojs-mobile-menu" class="hidden md:hidden bg-[#0a1a33] px-4 py-2 border-t border-[#152f52] space-y-1">
       {navLinks.map((link) => {
         const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
         return (
           <a
             href={link.href}
             class={`block py-2.5 px-3 text-sm rounded ${
-              isActive ? 'bg-emerald-800 text-white font-bold' : 'text-slate-300 hover:bg-slate-800'
+              isActive ? 'bg-[#183e6d] text-white font-bold border-l-4 border-[#c89b3c]' : 'text-slate-300 hover:bg-[#152f52]'
             }`}
           >
             {link.label}
           </a>
         );
       })}
+      <div class="pt-2 pb-1">
+        <a
+          href="/submit"
+          class="block text-center py-2.5 px-3 bg-[#c89b3c] hover:bg-[#b0842b] text-white font-bold text-sm rounded shadow-xs"
+        >
+          Submit Naskah
+        </a>
+      </div>
     </div>
   </nav>
 </header>
