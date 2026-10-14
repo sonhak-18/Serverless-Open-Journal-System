@@ -20,28 +20,28 @@ const indexing = await getDbIndexing(d1);
           <a href="/" class="hover:underline">Home</a> &gt; <span>Abstracting and Indexing</span>
         </div>
 
-        <div class="border-b-2 border-amber-600 pb-2">
-          <h1 class="text-xl md:text-2xl font-serif font-bold text-slate-900">
+        <div class="border-b-2 border-academic-gold pb-2">
+          <h1 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy">
             Abstracting and Indexing
           </h1>
         </div>
 
-        <p class="text-xs text-slate-700 leading-relaxed">
+        <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
           {journalConfig.name} ({journalConfig.shortName}) berkomitmen untuk meningkatkan keterlihatan (*visibility*) dan keterjangkauan naskah ilmiah melalui pangkalan data akademik bereputasi nasional dan internasional. Seluruh artikel yang diterbitkan dipersiapkan dengan metadata sitasi standar untuk perayap mesin ilmiah.
         </p>
 
         <!-- Daftar Pengindeks Terstruktur -->
         <div class="space-y-4">
           {indexing.map((item) => (
-            <div class="p-4 border border-slate-200 bg-white rounded-xs shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div class="space-y-1">
+            <div class="p-5 border border-slate-200 bg-white rounded shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="space-y-1.5">
                 <div class="flex items-center gap-2">
-                  <h3 class="text-sm font-serif font-bold text-[#1b3d6d]">
+                  <h3 class="text-base font-bold text-academic-navy">
                     <a href={item.url} target="_blank" rel="noopener noreferrer" class="hover:underline">
                       {item.name}
                     </a>
                   </h3>
-                  <span class={`text-[10px] font-bold px-2 py-0.5 rounded-xs uppercase tracking-wider ${
+                  <span class={`text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
                     item.status === 'Indexed'
                       ? 'bg-emerald-100 text-emerald-800'
                       : item.status === 'In Process'
@@ -51,11 +51,11 @@ const indexing = await getDbIndexing(d1);
                     {item.status}
                   </span>
                 </div>
-                <p class="text-xs text-slate-600">
+                <p class="text-sm text-slate-600 leading-relaxed">
                   {item.description}
                 </p>
-                <div class="text-[11px] text-slate-500 font-mono">
-                  URL Portal: <a href={item.url} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline">{item.url}</a>
+                <div class="text-xs text-slate-500 font-mono">
+                  URL Portal: <a href={item.url} target="_blank" rel="noopener noreferrer" class="text-academic-teal hover:underline">{item.url}</a>
                 </div>
               </div>
 
@@ -63,7 +63,7 @@ const indexing = await getDbIndexing(d1);
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-xs border border-slate-300 text-center shrink-0"
+                class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-semibold rounded border border-slate-300 text-center shrink-0 transition-colors"
               >
                 Kunjungi Portal ↗
               </a>
@@ -72,14 +72,14 @@ const indexing = await getDbIndexing(d1);
         </div>
 
         <!-- Panduan Pengaturan Indexing untuk Admin & Redaksi -->
-        <div class="border border-slate-300 bg-slate-50 p-5 rounded-xs mt-8 space-y-3">
-          <h2 class="text-sm font-serif font-bold text-slate-900">
+        <div class="border border-slate-300 bg-slate-50 p-6 rounded mt-8 space-y-3.5 shadow-2xs">
+          <h2 class="text-base sm:text-lg font-bold text-academic-navy border-b border-slate-200 pb-2">
             Pengaturan & Verifikasi Pengindeksan Mandiri
           </h2>
-          <p class="text-xs text-slate-700 leading-relaxed">
+          <p class="text-sm text-slate-700 leading-relaxed">
             Untuk mendaftarkan atau memverifikasi pengindeksan artikel baru di mesin pencari akademik:
           </p>
-          <ul class="text-xs text-slate-700 space-y-2 list-disc list-inside">
+          <ul class="text-sm text-slate-700 space-y-2.5 list-disc list-inside leading-relaxed">
             <li>
               <strong>Google Scholar:</strong> Sistem sudah menyertakan tag sitasi lengkap (`citation_title`, `citation_pdf_url`, `citation_journal_title`). Google Scholar akan secara otomatis merayap situs ini dalam 1-2 minggu setelah domain terhubung.
             </li>

@@ -28,19 +28,19 @@ const displayArticles = currentArticles.length > 0 ? currentArticles : allArticl
       <main class="lg:col-span-8 space-y-6">
         <!-- Pengumuman Redaksi dari Database -->
         {journalConfig.announcement?.active && (
-          <div class="p-4 bg-amber-50/70 border border-amber-200/80 rounded-xs space-y-1">
+          <div class="p-4 sm:p-5 bg-amber-50/70 border border-amber-200/80 rounded space-y-1.5 shadow-2xs">
             <div class="flex items-center justify-between gap-2">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-100 px-2 py-0.5 rounded-2xs">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-900 bg-amber-100 px-2 py-0.5 rounded">
                 Pengumuman Redaksi
               </span>
-              <span class="text-[11px] text-slate-500 font-mono">
+              <span class="text-xs text-slate-500 font-mono">
                 {journalConfig.announcement.date}
               </span>
             </div>
-            <h2 class="text-sm font-serif font-bold text-academic-navy pt-0.5">
+            <h2 class="text-base sm:text-lg font-serif font-bold text-academic-navy pt-0.5">
               {journalConfig.announcement.title}
             </h2>
-            <p class="text-xs text-slate-700 leading-relaxed pt-1">
+            <p class="text-sm text-slate-700 leading-relaxed pt-1">
               {journalConfig.announcement.content}
             </p>
           </div>
@@ -48,31 +48,31 @@ const displayArticles = currentArticles.length > 0 ? currentArticles : allArticl
 
         <!-- Bagian Current Issue -->
         <div class="space-y-4">
-          <div class="border-b-2 border-academic-gold pb-1">
+          <div class="border-b-2 border-academic-gold pb-1.5">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
               Current Issue
             </span>
-            <h2 class="text-lg md:text-xl font-serif font-bold text-slate-900 mt-0.5">
+            <h2 class="text-xl md:text-2xl font-serif font-bold text-academic-navy mt-0.5">
               Vol. {curVolume} No. {curIssue} ({curYear}): {curPeriod}
             </h2>
             {curTheme && (
-              <p class="text-xs text-slate-600 italic mt-0.5">
+              <p class="text-sm text-slate-600 italic mt-0.5">
                 Tema: {curTheme}
               </p>
             )}
           </div>
 
           <!-- Cover Jurnal & Metadata Terbitan -->
-          <div class="p-4 border border-slate-200 bg-white rounded-xs flex flex-col sm:flex-row gap-5 items-start">
+          <div class="p-5 border border-slate-200 bg-white rounded flex flex-col sm:flex-row gap-5 items-start shadow-2xs">
             {curCoverUrl ? (
               <img
                 src={curCoverUrl}
                 alt={`Cover ${journalConfig.shortName} Vol. ${curVolume} No. ${curIssue}`}
-                class="w-32 sm:w-36 shrink-0 border border-slate-300 shadow-xs aspect-[3/4] object-cover rounded-xs"
+                class="w-32 sm:w-36 shrink-0 border border-slate-300 shadow-xs aspect-[3/4] object-cover rounded"
               />
             ) : (
               <!-- Cover Mockup Jurnal (Academic Navy & Gold) -->
-              <div class="w-32 sm:w-36 shrink-0 border border-slate-300 shadow-xs bg-[#0f284e] text-white p-3.5 flex flex-col justify-between aspect-[3/4] text-center rounded-2xs">
+              <div class="w-32 sm:w-36 shrink-0 border border-slate-300 shadow-xs bg-[#0f284e] text-white p-3.5 flex flex-col justify-between aspect-[3/4] text-center rounded">
                 <div>
                   <span class="text-[10px] font-bold uppercase tracking-widest block text-[#c89b3c]">JTAAP</span>
                   <span class="text-xs font-bold mt-2 block leading-tight">
@@ -86,14 +86,14 @@ const displayArticles = currentArticles.length > 0 ? currentArticles : allArticl
             )}
 
             <!-- Deskripsi & Info Resmi Terbitan -->
-            <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+            <div class="text-sm text-slate-700 space-y-2.5 leading-relaxed">
               <p>
                 <strong>{journalConfig.name} ({journalConfig.shortName})</strong> adalah jurnal ilmiah telaah sejawat (*peer-reviewed*) yang mempublikasikan hasil riset teoretis dan empiris di bidang pemeriksaan akuntansi, pelaporan keuangan, dan perpajakan.
               </p>
               <p class="text-slate-600">
                 {curTheme}
               </p>
-              <div class="pt-2 text-[11px] text-slate-600 border-t border-slate-100 space-y-1">
+              <div class="pt-2 text-xs sm:text-sm text-slate-600 border-t border-slate-100 space-y-1">
                 <div>
                   <strong>DOI Edisi:</strong>{' '}
                   <a href={`https://doi.org/${journalConfig.doiPrefix}.v${curVolume}i${curIssue}`} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
@@ -109,12 +109,12 @@ const displayArticles = currentArticles.length > 0 ? currentArticles : allArticl
         </div>
 
         <!-- Daftar Artikel (Articles Header dengan Garis Emas Akademik) -->
-        <div class="mt-8 space-y-2">
-          <div class="border-b-2 border-academic-gold pb-1 flex justify-between items-baseline">
-            <h2 class="text-base font-serif font-bold text-slate-900">
+        <div class="mt-8 space-y-3">
+          <div class="border-b-2 border-academic-gold pb-1.5 flex justify-between items-baseline">
+            <h2 class="text-lg font-serif font-bold text-academic-navy">
               Articles
             </h2>
-            <span class="text-xs text-slate-500">
+            <span class="text-xs sm:text-sm text-slate-500 font-medium">
               {displayArticles.length} Naskah Terbit
             </span>
           </div>

@@ -50,25 +50,25 @@ const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
 
         <!-- Header Artikel -->
         <div class="border-b border-slate-200 pb-5">
-          <h1 class="text-xl md:text-2xl font-serif font-bold text-slate-900 leading-snug">
+          <h1 class="text-2xl sm:text-3xl font-serif font-bold text-academic-navy leading-snug">
             {article.title}
           </h1>
 
           <!-- Daftar Penulis -->
-          <div class="mt-4 space-y-1">
+          <div class="mt-4 space-y-2">
             {article.authors.map((author) => (
-              <div class="text-xs">
-                <span class="font-bold text-[#1b3d6d]">{author.name}</span>
+              <div class="text-sm sm:text-base">
+                <span class="font-bold text-academic-navy">{author.name}</span>
                 {author.email && (
-                  <span class="text-slate-500 font-mono ml-1">({author.email})</span>
+                  <span class="text-slate-500 font-mono text-xs sm:text-sm ml-1.5">({author.email})</span>
                 )}
-                <p class="text-slate-600 italic">{author.affiliation}</p>
+                <p class="text-xs sm:text-sm text-slate-600 italic">{author.affiliation}</p>
               </div>
             ))}
           </div>
 
           <!-- Metadata Penerbitan OJS -->
-          <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-4 text-xs text-slate-600">
+          <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-4 text-xs sm:text-sm text-slate-600">
             <div>
               <strong>DOI:</strong>{' '}
               <a href={`https://doi.org/${article.doi}`} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
@@ -85,11 +85,11 @@ const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
         </div>
 
         <!-- Tombol Download PDF OJS Style & Statistik Real-Time -->
-        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xs space-y-3">
+        <div class="p-5 bg-slate-50 border border-slate-200 rounded space-y-3 shadow-2xs">
           <div class="flex items-center justify-between flex-wrap gap-3">
             <div>
-              <span class="block text-xs font-bold text-slate-800">Naskah Lengkap Artikel:</span>
-              <span class="text-[11px] text-slate-500 font-mono">{article.pdfFileName}</span>
+              <span class="block text-sm font-bold text-slate-800">Naskah Lengkap Artikel:</span>
+              <span class="text-xs text-slate-500 font-mono">{article.pdfFileName}</span>
             </div>
 
             <a
@@ -98,17 +98,17 @@ const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
               rel="noopener noreferrer"
               id="btn-download-pdf"
               data-track-download={article.slug}
-              class="inline-flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold rounded-xs tracking-wider shadow-xs transition-colors"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-academic-navy hover:bg-academic-navy-light text-white text-sm font-semibold rounded shadow-xs transition-colors tracking-wide"
             >
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
               </svg>
-              <span>UNDUH PDF</span>
+              <span>UNDUH / BACA PDF</span>
             </a>
           </div>
 
           <!-- Metrik Pembaca OJS (Real-Time Cloudflare KV) -->
-          <div class="pt-2 border-t border-slate-200 flex items-center gap-4 text-xs text-slate-500 font-mono">
+          <div class="pt-2 border-t border-slate-200 flex items-center gap-4 text-xs sm:text-sm text-slate-500 font-mono">
             <span class="inline-flex items-center gap-1.5" title="Jumlah pembaca abstrak (Edge KV)">
               <span class="text-emerald-700">📊</span>
               <span>Abstract Views: <strong id="stat-views" class="text-slate-800 font-bold">{initialViews}</strong></span>
@@ -123,20 +123,20 @@ const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
 
         <!-- Abstrak -->
         <div class="space-y-2">
-          <h2 class="text-sm font-serif font-bold uppercase tracking-wider text-slate-900 border-b border-slate-200 pb-1">
+          <h2 class="text-base font-serif font-bold uppercase tracking-wider text-academic-navy border-b border-slate-200 pb-1.5">
             Abstract
           </h2>
-          <p class="text-xs md:text-sm text-slate-700 leading-relaxed text-justify bg-white p-5 border border-slate-200 rounded-xs">
+          <p class="text-sm md:text-base text-slate-700 leading-relaxed text-justify bg-white p-5 sm:p-6 border border-slate-200 rounded shadow-2xs">
             {article.abstract}
           </p>
         </div>
 
         <!-- Kata Kunci -->
-        <div>
-          <h3 class="text-xs font-bold uppercase text-slate-800 mb-1.5">
+        <div class="space-y-1">
+          <h3 class="text-sm font-bold uppercase text-slate-800">
             Keywords:
           </h3>
-          <p class="text-xs text-slate-700 italic">
+          <p class="text-sm text-slate-700 italic">
             {article.keywords.join(', ')}
           </p>
         </div>

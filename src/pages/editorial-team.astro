@@ -19,45 +19,45 @@ const { editorInChief, editors, reviewers } = await getDbEditorial(d1);
           <a href="/" class="hover:underline">Home</a> &gt; <span>Editorial Team</span>
         </div>
 
-        <div class="border-b-2 border-amber-600 pb-2">
-          <h1 class="text-xl md:text-2xl font-serif font-bold text-slate-900">
+        <div class="border-b-2 border-academic-gold pb-2">
+          <h1 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy">
             Editorial Team
           </h1>
         </div>
 
         <!-- Editor in Chief -->
         <div class="space-y-3">
-          <h2 class="text-sm font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+          <h2 class="text-lg font-serif font-bold text-academic-navy border-b border-slate-200 pb-1.5">
             Editor-in-Chief
           </h2>
-          <div class="p-4 bg-white border border-slate-200 rounded-xs">
-            <h3 class="text-sm font-bold text-slate-900">
+          <div class="p-5 bg-white border border-slate-200 rounded shadow-2xs space-y-1">
+            <h3 class="text-base font-bold text-slate-900">
               {editorInChief.name}
             </h3>
-            <p class="text-xs text-slate-600 mt-0.5">
+            <p class="text-sm text-slate-600">
               {editorInChief.affiliation}
             </p>
-            <p class="text-xs text-slate-500 font-mono mt-1">
-              Email: <a href={`mailto:${editorInChief.email}`} class="text-blue-700 hover:underline">{editorInChief.email}</a>
+            <p class="text-xs sm:text-sm text-slate-500 font-mono pt-1">
+              Email: <a href={`mailto:${editorInChief.email}`} class="text-academic-teal hover:underline">{editorInChief.email}</a>
             </p>
           </div>
         </div>
 
         <!-- Managing & Associate Editors -->
         <div class="space-y-3">
-          <h2 class="text-sm font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+          <h2 class="text-lg font-serif font-bold text-academic-navy border-b border-slate-200 pb-1.5">
             Managing & Section Editors
           </h2>
-          <div class="space-y-2">
+          <div class="space-y-3">
             {editors.map((editor) => (
-              <div class="p-3 bg-white border border-slate-200 rounded-xs">
-                <h3 class="text-xs font-bold text-slate-900">
+              <div class="p-4 bg-white border border-slate-200 rounded shadow-2xs">
+                <h3 class="text-sm sm:text-base font-bold text-slate-900">
                   {editor.name}
                 </h3>
-                <p class="text-xs text-slate-500 font-medium">
+                <p class="text-xs sm:text-sm text-academic-teal font-semibold mt-0.5">
                   {editor.role}
                 </p>
-                <p class="text-xs text-slate-600">
+                <p class="text-sm text-slate-600 mt-0.5">
                   {editor.affiliation}
                 </p>
               </div>
@@ -67,16 +67,16 @@ const { editorInChief, editors, reviewers } = await getDbEditorial(d1);
 
         <!-- Peer Reviewers / Mitra Bestari -->
         <div id="reviewers" class="space-y-3">
-          <h2 class="text-sm font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+          <h2 class="text-lg font-serif font-bold text-academic-navy border-b border-slate-200 pb-1.5">
             Peer Reviewers (Mitra Bestari)
           </h2>
-          <div class="space-y-2">
+          <div class="space-y-3">
             {reviewers.map((reviewer) => (
-              <div class="p-3 bg-slate-50 border border-slate-200 rounded-xs">
-                <h3 class="text-xs font-bold text-slate-900">
+              <div class="p-4 bg-slate-50 border border-slate-200 rounded">
+                <h3 class="text-sm sm:text-base font-bold text-slate-900">
                   {reviewer.name}
                 </h3>
-                <p class="text-xs text-slate-600">
+                <p class="text-sm text-slate-600 mt-0.5">
                   {reviewer.affiliation}
                 </p>
               </div>

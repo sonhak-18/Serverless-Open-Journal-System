@@ -22,14 +22,14 @@ const pdfDownloads = await kvGetCounter(`stats:downloads:${article.slug}`, defau
   <div class="flex items-baseline justify-between gap-4">
     <div class="flex-grow">
       <!-- Judul Artikel (Link Klasik OJS) -->
-      <h3 class="text-sm md:text-base font-serif font-bold text-[#1b3d6d] hover:text-amber-700 leading-snug">
+      <h3 class="text-base sm:text-lg font-bold text-academic-navy hover:text-academic-teal leading-snug">
         <a href={`/article/${article.slug}`}>
           {article.title}
         </a>
       </h3>
 
       <!-- Nama Penulis -->
-      <p class="text-xs text-slate-600 italic mt-1">
+      <p class="text-sm text-slate-600 italic mt-1">
         {article.authors.map((author, index) => (
           <span>
             {author.name}
@@ -40,7 +40,7 @@ const pdfDownloads = await kvGetCounter(`stats:downloads:${article.slug}`, defau
     </div>
 
     <!-- Nomor Halaman di Kolom Kanan (Khas OJS) -->
-    <div class="text-xs text-slate-600 font-mono shrink-0">
+    <div class="text-xs sm:text-sm text-slate-600 font-mono shrink-0">
       {article.pages}
     </div>
   </div>
@@ -53,7 +53,7 @@ const pdfDownloads = await kvGetCounter(`stats:downloads:${article.slug}`, defau
       target="_blank"
       rel="noopener noreferrer"
       data-track-download={article.slug}
-      class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-600 hover:bg-slate-700 text-white text-xs font-bold rounded-xs tracking-wider shadow-2xs transition-colors"
+      class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold rounded shadow-2xs transition-colors"
       title={`Unduh Naskah PDF (${article.pdfFileName})`}
     >
       <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
@@ -63,7 +63,7 @@ const pdfDownloads = await kvGetCounter(`stats:downloads:${article.slug}`, defau
     </a>
 
     <!-- Indikator Metrik View / Download OJS Terhubung KV -->
-    <div class="flex items-center gap-2 text-[11px] text-slate-500 font-mono">
+    <div class="flex items-center gap-2 text-xs text-slate-500 font-mono">
       <span class="inline-flex items-center gap-1" title="Jumlah pembaca abstrak (KV real-time)">
         <span class="text-emerald-700">📊</span>
         <span>Abstract View: {abstractViews}</span>
