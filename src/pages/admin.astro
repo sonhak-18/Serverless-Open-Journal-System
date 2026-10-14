@@ -1,9 +1,15 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { journalConfig } from '../config/journal';
-import { articles } from '../data/articles';
+export const prerender = false;
 
-const { editorInChief, editors, reviewers } = journalConfig.editorial;
+import Layout from '../layouts/Layout.astro';
+import { getDbSettings, getDbArticles, getDbEditorial, getDbIndexing } from '../lib/db';
+
+const journalConfig = await getDbSettings();
+const articles = await getDbArticles();
+const editorial = await getDbEditorial();
+const indexing = await getDbIndexing();
+
+const { editorInChief, editors, reviewers } = editorial;
 ---
 
 <Layout title="Panel Redaksi & Admin Jurnal" description={`Halaman pengelolaan dan publikasi naskah ${journalConfig.name}`}>
@@ -12,24 +18,30 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-academic-border pb-5 mb-8 gap-4">
       <div>
         <div class="flex items-center gap-2">
-          <span class="academic-badge bg-academic-crimson text-white">Editorial Studio</span>
-          <span class="text-xs text-academic-ink-subtle">Sistem Pengelolaan Publikasi Mandiri</span>
+          <span class="academic-badge bg-[#1b4332] text-white">Editorial Studio (GUI)</span>
+          <span class="text-xs text-academic-ink-subtle">Sistem Pengelolaan Publikasi Mandiri Terintegrasi Database</span>
         </div>
         <h1 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy mt-1">
           Panel Administrasi & Redaksi JTAAP
         </h1>
         <p class="text-xs text-academic-ink-muted mt-1">
-          Kelola penerbitan artikel baru, konfigurasi kontak narahubung WhatsApp/Email, tim redaksi, dan pangkalan data indexing.
+          Semua pengaturan, penambahan artikel, kontak narahubung, dan dewan redaksi dapat dikelola langsung lewat antarmuka grafis (GUI) di bawah ini.
         </p>
       </div>
 
-      <!-- Status Mode -->
+      <!-- Status Database -->
       <div class="flex items-center gap-2 self-start sm:self-center">
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold">
           <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-          <span>Sistem Aktif (Edge / Cloudflare Ready)</span>
+          <span>Database Terhubung (D1 / SQLite)</span>
         </span>
       </div>
+    </div>
+
+    <!-- Alert Notifikasi Global -->
+    <div id="admin-toast" class="hidden mb-6 p-4 rounded-xs border text-xs font-semibold flex items-center justify-between transition-all">
+      <span id="admin-toast-msg"></span>
+      <button type="button" onclick="document.getElementById('admin-toast').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 ml-4">✕</button>
     </div>
 
     <!-- Area Login Sederhana (Gerbang Admin) -->
@@ -106,7 +118,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
           class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
           data-tab="tab-indexing-settings"
         >
-          Pengaturan Indexing ({journalConfig.indexing.length})
+          Pengaturan Indexing ({indexing.length})
         </button>
         <button
           type="button"
@@ -125,7 +137,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
               Formulir Penerbitan Artikel Ilmiah
             </h2>
             <p class="text-xs text-academic-ink-muted mt-1">
-              Isi data naskah yang telah lolos uji Turnitin dan review sejawat untuk diterbitkan pada portal jurnal.
+              Saat disimpan, naskah langsung masuk ke database dan tayang seketika pada halaman publik.
             </p>
           </div>
 
@@ -231,7 +243,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                   placeholder="Contoh: jtaap-v1n1-04-rahmat-pajak.pdf"
                   class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
                 />
-                <span class="text-[11px] text-slate-500 mt-1 block">Nama file ini yang diunggah ke Google Drive Index kamu.</span>
+                <span class="text-[11px] text-slate-500 mt-1 block">Nama file yang diunggah ke Google Drive Index kamu.</span>
               </div>
             </div>
 
@@ -255,38 +267,16 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
               </div>
             </div>
 
-            <div class="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-200">
+            <div class="pt-4 flex justify-end">
               <button
                 type="submit"
-                class="w-full sm:w-auto px-6 py-2.5 bg-academic-crimson hover:bg-academic-crimson-light text-white text-sm font-semibold rounded transition-colors shadow min-h-[44px]"
+                id="btn-submit-article"
+                class="px-6 py-2.5 bg-academic-crimson hover:bg-academic-crimson-light text-white text-sm font-semibold rounded transition-colors shadow min-h-[44px]"
               >
-                Simpan & Generate Kode Artikel
+                💾 Simpan & Publikasikan ke Database
               </button>
             </div>
           </form>
-        </div>
-
-        <!-- Output Generator Kode -->
-        <div id="output-generator-box" class="academic-card p-6 rounded border border-academic-border bg-slate-900 text-slate-200 hidden">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-700 mb-3">
-            <div>
-              <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">
-                ✓ Kode Naskah Berhasil Digenerate
-              </span>
-              <p class="text-xs text-slate-400 mt-0.5">
-                Salin blok kode di bawah ini lalu tempelkan ke dalam array di file <code>src/data/articles.ts</code>.
-              </p>
-            </div>
-            <button
-              type="button"
-              id="btn-copy-generated"
-              class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded text-xs font-semibold border border-slate-600 transition-colors"
-            >
-              Salin Kode
-            </button>
-          </div>
-
-          <pre id="generated-code" class="p-3 bg-slate-950 rounded text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed"></pre>
         </div>
       </div>
 
@@ -294,7 +284,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
       <div id="tab-articles-list" class="tab-panel hidden space-y-4">
         <div class="academic-card p-6 rounded border border-academic-border bg-white">
           <h2 class="text-lg font-serif font-bold text-academic-navy pb-3 border-b border-slate-200 mb-4">
-            Daftar Artikel yang Sedang Aktif di Portal
+            Daftar Artikel yang Sedang Aktif di Database ({articles.length})
           </h2>
 
           <div class="overflow-x-auto">
@@ -305,7 +295,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                   <th class="p-3 font-semibold">Penulis</th>
                   <th class="p-3 font-semibold">Bidang</th>
                   <th class="p-3 font-semibold">Edisi</th>
-                  <th class="p-3 font-semibold">Aksi</th>
+                  <th class="p-3 font-semibold text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
@@ -325,14 +315,21 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                     <td class="p-3 text-slate-600">
                       Vol. {item.volume} No. {item.issue}
                     </td>
-                    <td class="p-3">
+                    <td class="p-3 text-right space-x-2">
                       <a
                         href={`/article/${item.slug}`}
                         target="_blank"
-                        class="text-academic-crimson hover:underline font-semibold"
+                        class="text-blue-700 hover:underline font-semibold"
                       >
-                        Buka Halaman ↗
+                        Buka
                       </a>
+                      <button
+                        type="button"
+                        class="btn-delete-article text-red-600 hover:text-red-800 font-semibold"
+                        data-slug={item.slug}
+                      >
+                        Hapus
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -351,7 +348,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                 Kelola Dewan Redaksi & Mitra Bestari
               </h2>
               <p class="text-xs text-academic-ink-muted mt-0.5">
-                Konfigurasi ini ditampilkan pada halaman publik <code>/editorial-team</code> dan metadata jurnal.
+                Semua perubahan yang disimpan di sini langsung memperbarui halaman <code>/editorial-team</code> dan metadata publikasi.
               </p>
             </div>
             <a href="/editorial-team" target="_blank" class="text-xs font-semibold text-blue-700 hover:underline">
@@ -359,34 +356,58 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
             </a>
           </div>
 
-          <!-- Section A: Pemimpin Redaksi -->
+          <!-- Section A: Pemimpin Redaksi (Editor-in-Chief) -->
           <div class="bg-slate-50 p-4 rounded border border-slate-200 space-y-3">
             <span class="font-serif font-bold text-sm text-academic-navy block">
               1. Pemimpin Redaksi (Editor-in-Chief)
             </span>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <form id="form-eic" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs items-end">
               <div>
                 <label class="block font-semibold text-slate-700 mb-1">Nama Lengkap & Gelar</label>
-                <input type="text" id="cfg-eic-name" value={editorInChief.name} class="w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white font-medium" />
+                <input type="text" id="eic-name" value={editorInChief.name} required class="w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white font-medium" />
               </div>
               <div>
                 <label class="block font-semibold text-slate-700 mb-1">Afiliasi / Komunitas Riset</label>
-                <input type="text" id="cfg-eic-affil" value={editorInChief.affiliation} class="w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+                <input type="text" id="eic-affil" value={editorInChief.affiliation} required class="w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
               </div>
-              <div>
-                <label class="block font-semibold text-slate-700 mb-1">Alamat Email</label>
-                <input type="email" id="cfg-eic-email" value={editorInChief.email} class="w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white font-mono" />
+              <div class="flex gap-2 items-end">
+                <div class="flex-grow">
+                  <label class="block font-semibold text-slate-700 mb-1">Email Redaksi</label>
+                  <input type="email" id="eic-email" value={editorInChief.email} required class="w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white font-mono" />
+                </div>
+                <button type="submit" class="px-4 py-1.5 bg-[#1e4a7a] hover:bg-[#153457] text-white font-semibold rounded text-xs min-h-[34px] shrink-0">
+                  Simpan EIC
+                </button>
               </div>
-            </div>
+            </form>
           </div>
 
           <!-- Section B: Dewan Editor Bidang -->
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="font-serif font-bold text-sm text-academic-navy">
-                2. Dewan Editor Eksekutif ({editors.length} Anggota)
-              </span>
-            </div>
+          <div class="space-y-4">
+            <span class="font-serif font-bold text-sm text-academic-navy block">
+              2. Dewan Editor Eksekutif ({editors.length} Anggota)
+            </span>
+
+            <!-- Form Tambah Editor -->
+            <form id="form-add-editor" class="p-3 bg-slate-50 rounded border border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs items-end">
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Nama Editor</label>
+                <input type="text" id="new-ed-name" required placeholder="Nama & Gelar" class="w-full px-2 py-1.5 border border-slate-300 rounded bg-white" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Peran / Bidang</label>
+                <input type="text" id="new-ed-role" required placeholder="Contoh: Managing Editor" class="w-full px-2 py-1.5 border border-slate-300 rounded bg-white" />
+              </div>
+              <div class="flex gap-2 items-end">
+                <div class="flex-grow">
+                  <label class="block font-semibold text-slate-700 mb-1">Afiliasi</label>
+                  <input type="text" id="new-ed-affil" required placeholder="Nama Universitas / Lembaga" class="w-full px-2 py-1.5 border border-slate-300 rounded bg-white" />
+                </div>
+                <button type="submit" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded text-xs min-h-[34px] shrink-0">
+                  + Tambah
+                </button>
+              </div>
+            </form>
 
             <div class="border border-slate-200 rounded overflow-hidden">
               <table class="w-full text-xs text-left">
@@ -395,6 +416,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                     <th class="p-2.5">Nama</th>
                     <th class="p-2.5">Peran / Bidang</th>
                     <th class="p-2.5">Afiliasi</th>
+                    <th class="p-2.5 text-right">Aksi</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200">
@@ -403,6 +425,11 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                       <td class="p-2.5 font-bold text-slate-800">{ed.name}</td>
                       <td class="p-2.5 text-slate-600">{ed.role}</td>
                       <td class="p-2.5 text-slate-500">{ed.affiliation}</td>
+                      <td class="p-2.5 text-right">
+                        <button type="button" class="btn-delete-member text-red-600 hover:text-red-800 font-semibold" data-id={ed.id}>
+                          Hapus
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -411,10 +438,27 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
           </div>
 
           <!-- Section C: Mitra Bestari (Reviewers) -->
-          <div class="space-y-3">
+          <div class="space-y-4">
             <span class="font-serif font-bold text-sm text-academic-navy block">
               3. Mitra Bestari / Peer Reviewers ({reviewers.length} Penelaah)
             </span>
+
+            <!-- Form Tambah Reviewer -->
+            <form id="form-add-reviewer" class="p-3 bg-slate-50 rounded border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs items-end">
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Nama Reviewer</label>
+                <input type="text" id="new-rev-name" required placeholder="Nama Lengkap & Gelar" class="w-full px-2 py-1.5 border border-slate-300 rounded bg-white" />
+              </div>
+              <div class="flex gap-2 items-end">
+                <div class="flex-grow">
+                  <label class="block font-semibold text-slate-700 mb-1">Afiliasi Universitas / Lembaga</label>
+                  <input type="text" id="new-rev-affil" required placeholder="Nama Kampus / Lembaga Riset" class="w-full px-2 py-1.5 border border-slate-300 rounded bg-white" />
+                </div>
+                <button type="submit" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded text-xs min-h-[34px] shrink-0">
+                  + Tambah
+                </button>
+              </div>
+            </form>
 
             <div class="border border-slate-200 rounded overflow-hidden">
               <table class="w-full text-xs text-left">
@@ -422,6 +466,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                   <tr>
                     <th class="p-2.5">Nama Reviewer</th>
                     <th class="p-2.5">Afiliasi Universitas / Lembaga</th>
+                    <th class="p-2.5 text-right">Aksi</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200">
@@ -429,19 +474,16 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                     <tr class="hover:bg-slate-50">
                       <td class="p-2.5 font-bold text-slate-800">{rev.name}</td>
                       <td class="p-2.5 text-slate-600">{rev.affiliation}</td>
+                      <td class="p-2.5 text-right">
+                        <button type="button" class="btn-delete-member text-red-600 hover:text-red-800 font-semibold" data-id={rev.id}>
+                          Hapus
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </div>
-
-          <!-- Petunjuk Update Tim Redaksi -->
-          <div class="bg-slate-50 p-4 rounded border border-slate-200 text-xs text-slate-700 space-y-1">
-            <span class="font-bold text-slate-900 block">💡 Pengaturan Kode Tim Redaksi:</span>
-            <p>
-              Seluruh nama di atas tersimpan pada objek <code>editorial</code> di file <code>src/config/journal.ts</code>. Kamu bisa menambah anggota baru langsung dengan menyisipkan baris pada array <code>editors</code> atau <code>reviewers</code>.
-            </p>
           </div>
         </div>
       </div>
@@ -454,7 +496,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
               Pengaturan Narahubung Redaksi & Komunitas
             </h2>
             <p class="text-xs text-academic-ink-muted mt-1">
-              Atur nomor WhatsApp, email, dan alamat resmi yang tampil di tombol submit, floating kontak, dan footer.
+              Data ini langsung tersimpan ke database dan mengupdate tombol WhatsApp, email, dan footer.
             </p>
           </div>
 
@@ -463,16 +505,15 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-emerald-50/50 p-4 rounded border border-emerald-200">
               <div>
                 <label for="cfg-wa-num" class="block font-semibold text-emerald-950 mb-1">
-                  Nomor WhatsApp (Format API / wa.me) <span class="text-red-500">*</span>
+                  Nomor WhatsApp API (Format: 628xxxxxxxxxx) <span class="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   id="cfg-wa-num"
                   value={journalConfig.submission.whatsappNumber}
-                  placeholder="Contoh: 6281234567890"
+                  required
                   class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
                 />
-                <span class="text-[11px] text-slate-500 mt-1 block">Gunakan kode negara tanpa tanda plus atau strip (contoh: 62812...).</span>
               </div>
 
               <div>
@@ -483,21 +524,20 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                   type="text"
                   id="cfg-wa-display"
                   value={journalConfig.submission.whatsappDisplay}
-                  placeholder="Contoh: +62 812-3456-7890"
+                  required
                   class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
                 />
-                <span class="text-[11px] text-slate-500 mt-1 block">Teks nomor yang dibaca oleh pengunjung.</span>
               </div>
 
               <div class="sm:col-span-2">
                 <label for="cfg-email" class="block font-semibold text-emerald-950 mb-1">
-                  Alamat Surat Elektronik (Email) Redaksi <span class="text-red-500">*</span>
+                  Alamat Email Resmi Redaksi <span class="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
                   id="cfg-email"
                   value={journalConfig.submission.email}
-                  placeholder="redaksi@sektansia.org"
+                  required
                   class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
                 />
               </div>
@@ -518,7 +558,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
             <!-- Organisasi & Komunitas Riset -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded border border-slate-200">
               <div>
-                <label class="block font-semibold text-academic-navy mb-1">Nama Organisasi / Komunitas</label>
+                <label class="block font-semibold text-academic-navy mb-1">Nama Organisasi / Komunitas Riset</label>
                 <input type="text" id="cfg-org-name" value={journalConfig.institution} class="w-full px-3 py-2 border border-slate-300 rounded bg-white" />
               </div>
 
@@ -564,25 +604,13 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
 
             <div class="pt-2 flex justify-end">
               <button
-                type="button"
-                id="btn-gen-config"
-                class="px-5 py-2.5 bg-[#1b4332] hover:bg-[#143225] text-white font-semibold rounded text-xs transition-colors shadow min-h-[44px]"
+                type="submit"
+                class="px-6 py-2.5 bg-[#1b4332] hover:bg-[#143225] text-white font-semibold rounded text-xs transition-colors shadow min-h-[44px]"
               >
-                Generate & Salin Pembaruan Konfigurasi
+                💾 Simpan Pengaturan Kontak & Jurnal
               </button>
             </div>
           </form>
-
-          <!-- Output Box Konfigurasi -->
-          <div id="output-config-box" class="academic-card p-5 rounded border border-slate-700 bg-slate-900 text-slate-200 hidden">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-700 mb-2">
-              <span class="text-xs font-bold text-emerald-400">✓ Konfigurasi Berhasil Dibuat</span>
-              <button type="button" id="btn-copy-config-text" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded text-xs font-semibold border border-slate-600">
-                Salin Blok Konfigurasi
-              </button>
-            </div>
-            <pre id="pre-config-text" class="p-3 bg-slate-950 rounded text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed"></pre>
-          </div>
         </div>
       </div>
 
@@ -595,7 +623,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                 Kelola Pangkalan Data & Pengindeks Jurnal
               </h2>
               <p class="text-xs text-academic-ink-muted mt-1">
-                Daftar pengindeks yang tampil di sidebar kanan dan halaman direktori <code>/indexing</code>.
+                Centang pada kolom "Di Sidebar" untuk langsung menampilkan atau menyembunyikan logo pengindeks di bilah kanan.
               </p>
             </div>
             <a
@@ -615,12 +643,12 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                   <th class="p-2.5 font-semibold">Nama Pengindeks</th>
                   <th class="p-2.5 font-semibold">Kategori</th>
                   <th class="p-2.5 font-semibold">Status</th>
-                  <th class="p-2.5 font-semibold">Di Sidebar</th>
+                  <th class="p-2.5 font-semibold text-center">Tampil di Sidebar</th>
                   <th class="p-2.5 font-semibold">Tautan URL</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
-                {journalConfig.indexing.map((idx) => (
+                {indexing.map((idx) => (
                   <tr class="hover:bg-slate-50">
                     <td class="p-2.5 font-bold text-slate-900">{idx.name}</td>
                     <td class="p-2.5 text-slate-600">{idx.category}</td>
@@ -635,12 +663,13 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                         {idx.status}
                       </span>
                     </td>
-                    <td class="p-2.5">
-                      {idx.showInSidebar ? (
-                        <span class="text-emerald-700 font-bold">✓ Tampil</span>
-                      ) : (
-                        <span class="text-slate-400">Sembunyi</span>
-                      )}
+                    <td class="p-2.5 text-center">
+                      <input
+                        type="checkbox"
+                        class="toggle-index-sidebar cursor-pointer"
+                        data-name={idx.name}
+                        checked={idx.showInSidebar}
+                      />
                     </td>
                     <td class="p-2.5 font-mono text-slate-500 truncate max-w-xs">
                       <a href={idx.url} target="_blank" rel="noopener noreferrer" class="hover:underline text-blue-700">{idx.url}</a>
@@ -649,14 +678,6 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                 ))}
               </tbody>
             </table>
-          </div>
-
-          <!-- Petunjuk Edit Indexing -->
-          <div class="bg-slate-50 p-4 rounded border border-slate-200 text-xs text-slate-700 space-y-2">
-            <span class="font-bold text-slate-900 block">Cara Menambah atau Menampilkan Pengindeks di Sidebar:</span>
-            <p>
-              Buka file <code>src/config/journal.ts</code> pada bagian array <code>indexing: [...]</code>. Setiap item memiliki properti <code>showInSidebar: true/false</code> untuk menentukan apakah logonya muncul di bilah kanan beranda, atau hanya di halaman arsip pengindeks.
-            </p>
           </div>
         </div>
       </div>
@@ -669,11 +690,11 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
               Pengaturan Cloudflare Worker Google Drive Index
             </h2>
             <p class="text-xs text-academic-ink-muted mt-1">
-              Panduan integrasi file PDF artikel ilmiah agar terhubung langsung dengan Google Drive tanpa membebani server lokal.
+              Tentukan alamat Worker Google Drive Index untuk mengalirkan file PDF naskah.
             </p>
           </div>
 
-          <div class="space-y-4">
+          <form id="form-gdrive" class="space-y-4">
             <div>
               <label for="cfg-gdrive-url" class="block text-xs font-semibold text-academic-navy mb-1">
                 URL Worker Google Drive Index
@@ -682,32 +703,21 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
                 type="url"
                 id="cfg-gdrive-url"
                 value={journalConfig.storage.gdriveIndexBaseUrl}
+                required
                 placeholder="https://cdn-papers.sektansia.workers.dev"
                 class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
               />
-              <span class="text-xs text-slate-500 mt-1 block">
-                Alamat ini tersimpan di file <code>src/config/journal.ts</code> pada objek <code>storage.gdriveIndexBaseUrl</code>.
-              </span>
             </div>
 
-            <!-- Petunjuk Langkah Praktis -->
-            <div class="bg-slate-50 p-5 rounded border border-slate-200 text-xs text-slate-700 space-y-3">
-              <span class="font-bold text-academic-navy text-sm block">
-                3 Langkah Singkat Menghubungkan Google Drive:
-              </span>
-              <ol class="list-decimal list-inside space-y-2">
-                <li>
-                  <strong>Deploy Worker:</strong> Buka Cloudflare Dashboard, buat Worker baru menggunakan script dari repo GitLab <a href="https://gitlab.com/GoogleDriveIndex/Google-Drive-Index.git" target="_blank" rel="noopener noreferrer" class="text-academic-crimson underline">Google-Drive-Index</a>.
-                </li>
-                <li>
-                  <strong>Siapkan Folder Google Drive:</strong> Buat folder khusus (misal <code>/JTAAP/PDFs</code>) dan berikan izin akses ke Service Account / API Worker kamu.
-                </li>
-                <li>
-                  <strong>Unggah Naskah PDF:</strong> Setiap artikel yang terbit diberi nama file sesuai field <code>pdfFileName</code> (contoh: <code>jtaap-v1n1-01-faisal-audit-risiko.pdf</code>). Tombol unduh di web akan langsung mengarah ke Worker tersebut.
-                </li>
-              </ol>
+            <div class="flex justify-end">
+              <button
+                type="submit"
+                class="px-5 py-2 bg-academic-crimson hover:bg-academic-crimson-light text-white text-xs font-semibold rounded shadow transition-colors"
+              >
+                Simpan URL Google Drive
+              </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
@@ -715,7 +725,19 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
 </Layout>
 
 <script>
-  // Autentikasi Admin Sederhana & Navigasi Tab (R-26 & R-32)
+  function showToast(msg: string, isError = false) {
+    const toast = document.getElementById('admin-toast');
+    const toastMsg = document.getElementById('admin-toast-msg');
+    if (!toast || !toastMsg) return;
+    toastMsg.innerText = msg;
+    toast.className = `mb-6 p-4 rounded-xs border text-xs font-semibold flex items-center justify-between transition-all ${
+      isError ? 'bg-red-50 text-red-800 border-red-300' : 'bg-emerald-50 text-emerald-800 border-emerald-300'
+    }`;
+    toast.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Login Check
   const loginForm = document.getElementById('admin-login-form');
   const loginLock = document.getElementById('admin-login-lock');
   const dashboardContent = document.getElementById('admin-dashboard-content');
@@ -740,7 +762,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
     }
   });
 
-  // Tab switching logic
+  // Tab switching
   const tabs = document.querySelectorAll<HTMLButtonElement>('.admin-tab');
   const panels = document.querySelectorAll<HTMLElement>('.tab-panel');
 
@@ -766,13 +788,9 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
     });
   });
 
-  // Generator Kode Naskah Baru
+  // 1. Simpan Naskah Baru (Database)
   const articleForm = document.getElementById('form-new-article');
-  const outputBox = document.getElementById('output-generator-box');
-  const codePre = document.getElementById('generated-code');
-  const copyBtn = document.getElementById('btn-copy-generated');
-
-  articleForm?.addEventListener('submit', (e) => {
+  articleForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const title = (document.getElementById('art-title') as HTMLInputElement).value;
@@ -801,7 +819,7 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
     const [firstP, lastP] = pages.split('-').map((p) => Number(p.trim()) || 1);
     const today = new Date().toISOString().split('T')[0];
 
-    const generatedObject = {
+    const articleData = {
       slug,
       title,
       authors: authorsList,
@@ -822,87 +840,216 @@ const { editorInChief, editors, reviewers } = journalConfig.editorial;
       subject,
     };
 
-    const codeString = `  // Tambahkan objek ini ke dalam array articles di src/data/articles.ts:\n  ` + JSON.stringify(generatedObject, null, 2) + `,`;
-
-    if (codePre && outputBox) {
-      codePre.innerText = codeString;
-      outputBox.classList.remove('hidden');
-      outputBox.scrollIntoView({ behavior: 'smooth' });
-    }
-  });
-
-  copyBtn?.addEventListener('click', async () => {
-    if (!codePre) return;
     try {
-      await navigator.clipboard.writeText(codePre.innerText);
-      copyBtn.innerText = '✓ Berhasil Disalin!';
-      setTimeout(() => {
-        copyBtn.innerText = 'Salin Kode';
-      }, 2500);
-    } catch (err) {
-      console.error(err);
+      const res = await fetch('/api/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'add', article: articleData }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('✓ Artikel berhasil diterbitkan dan tersimpan di database!');
+        setTimeout(() => location.reload(), 1200);
+      } else {
+        showToast('Gagal menyimpan artikel: ' + json.error, true);
+      }
+    } catch (err: any) {
+      showToast('Terjadi kesalahan jaringan: ' + err.message, true);
     }
   });
 
-  // Generator Konfigurasi Kontak & Komunitas
-  const btnGenConfig = document.getElementById('btn-gen-config');
-  const outputConfigBox = document.getElementById('output-config-box');
-  const preConfigText = document.getElementById('pre-config-text');
-  const btnCopyConfigText = document.getElementById('btn-copy-config-text');
+  // Hapus Artikel
+  document.querySelectorAll<HTMLButtonElement>('.btn-delete-article').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const slug = btn.getAttribute('data-slug');
+      if (!slug || !confirm(`Apakah Anda yakin ingin menghapus artikel "${slug}"?`)) return;
 
-  btnGenConfig?.addEventListener('click', () => {
-    const waNum = (document.getElementById('cfg-wa-num') as HTMLInputElement).value;
-    const waDisplay = (document.getElementById('cfg-wa-display') as HTMLInputElement).value;
-    const email = (document.getElementById('cfg-email') as HTMLInputElement).value;
-    const waMsg = (document.getElementById('cfg-wa-msg') as HTMLInputElement).value;
-    const orgName = (document.getElementById('cfg-org-name') as HTMLInputElement).value;
-    const pubName = (document.getElementById('cfg-pub-name') as HTMLInputElement).value;
-    const address = (document.getElementById('cfg-address') as HTMLInputElement).value;
-    const eissn = (document.getElementById('cfg-eissn') as HTMLInputElement).value;
-    const pissn = (document.getElementById('cfg-pissn') as HTMLInputElement).value;
-    const showIdx = (document.getElementById('toggle-idx') as HTMLInputElement).checked;
-    const showTools = (document.getElementById('toggle-tools') as HTMLInputElement).checked;
-    const showIssn = (document.getElementById('toggle-issn') as HTMLInputElement).checked;
-
-    const snippet = `// Salin nilai ini ke file src/config/journal.ts:
-  institution: '${orgName}',
-  publisher: '${pubName}',
-  address: '${address}',
-  eIssn: '${eissn}',
-  pIssn: '${pissn}',
-
-  features: {
-    showIndexingBlock: ${showIdx},
-    showToolsBlock: ${showTools},
-    showIssnBlock: ${showIssn},
-  },
-
-  submission: {
-    email: '${email}',
-    whatsappNumber: '${waNum}',
-    whatsappDisplay: '${waDisplay}',
-    whatsappDefaultMessage: '${waMsg}',
-    turnitinMaxSimilarity: 20,
-    reviewTimeEstimate: '3 sampai 7 Hari Kerja',
-  },`;
-
-    if (preConfigText && outputConfigBox) {
-      preConfigText.innerText = snippet;
-      outputConfigBox.classList.remove('hidden');
-      outputConfigBox.scrollIntoView({ behavior: 'smooth' });
-    }
+      try {
+        const res = await fetch('/api/articles', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', slug }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast('✓ Artikel berhasil dihapus dari database!');
+          setTimeout(() => location.reload(), 1000);
+        }
+      } catch (err: any) {
+        showToast('Gagal menghapus: ' + err.message, true);
+      }
+    });
   });
 
-  btnCopyConfigText?.addEventListener('click', async () => {
-    if (!preConfigText) return;
+  // 2. Simpan Pemimpin Redaksi (EIC)
+  const formEic = document.getElementById('form-eic');
+  formEic?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = (document.getElementById('eic-name') as HTMLInputElement).value;
+    const affiliation = (document.getElementById('eic-affil') as HTMLInputElement).value;
+    const email = (document.getElementById('eic-email') as HTMLInputElement).value;
+
     try {
-      await navigator.clipboard.writeText(preConfigText.innerText);
-      btnCopyConfigText.innerText = '✓ Berhasil Disalin!';
-      setTimeout(() => {
-        btnCopyConfigText.innerText = 'Salin Blok Konfigurasi';
-      }, 2500);
-    } catch (err) {
-      console.error(err);
+      const res = await fetch('/api/editorial', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'update_eic', name, affiliation, email }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('✓ Data Pemimpin Redaksi (Editor-in-Chief) berhasil diperbarui di database!');
+      }
+    } catch (err: any) {
+      showToast('Gagal menyimpan: ' + err.message, true);
+    }
+  });
+
+  // Tambah Editor
+  const formAddEd = document.getElementById('form-add-editor');
+  formAddEd?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = (document.getElementById('new-ed-name') as HTMLInputElement).value;
+    const role = (document.getElementById('new-ed-role') as HTMLInputElement).value;
+    const affiliation = (document.getElementById('new-ed-affil') as HTMLInputElement).value;
+
+    try {
+      const res = await fetch('/api/editorial', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'add_member', type: 'editor', name, role, affiliation }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('✓ Anggota Dewan Editor berhasil ditambahkan ke database!');
+        setTimeout(() => location.reload(), 1000);
+      }
+    } catch (err: any) {
+      showToast('Gagal menambah editor: ' + err.message, true);
+    }
+  });
+
+  // Tambah Reviewer
+  const formAddRev = document.getElementById('form-add-reviewer');
+  formAddRev?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = (document.getElementById('new-rev-name') as HTMLInputElement).value;
+    const affiliation = (document.getElementById('new-rev-affil') as HTMLInputElement).value;
+
+    try {
+      const res = await fetch('/api/editorial', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'add_member', type: 'reviewer', name, affiliation }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('✓ Mitra Bestari (Reviewer) berhasil ditambahkan ke database!');
+        setTimeout(() => location.reload(), 1000);
+      }
+    } catch (err: any) {
+      showToast('Gagal menambah reviewer: ' + err.message, true);
+    }
+  });
+
+  // Hapus Anggota Tim Redaksi
+  document.querySelectorAll<HTMLButtonElement>('.btn-delete-member').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-id');
+      if (!id || !confirm('Hapus anggota tim ini?')) return;
+
+      try {
+        const res = await fetch('/api/editorial', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete_member', id }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast('✓ Anggota berhasil dihapus dari database!');
+          setTimeout(() => location.reload(), 1000);
+        }
+      } catch (err: any) {
+        showToast('Gagal menghapus: ' + err.message, true);
+      }
+    });
+  });
+
+  // 3. Simpan Kontak & Identitas Jurnal
+  const formContact = document.getElementById('form-contact-settings');
+  formContact?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const data = {
+      whatsappNumber: (document.getElementById('cfg-wa-num') as HTMLInputElement).value,
+      whatsappDisplay: (document.getElementById('cfg-wa-display') as HTMLInputElement).value,
+      whatsappMessage: (document.getElementById('cfg-wa-msg') as HTMLInputElement).value,
+      email: (document.getElementById('cfg-email') as HTMLInputElement).value,
+      institution: (document.getElementById('cfg-org-name') as HTMLInputElement).value,
+      publisher: (document.getElementById('cfg-pub-name') as HTMLInputElement).value,
+      address: (document.getElementById('cfg-address') as HTMLInputElement).value,
+      eIssn: (document.getElementById('cfg-eissn') as HTMLInputElement).value,
+      pIssn: (document.getElementById('cfg-pissn') as HTMLInputElement).value,
+      showIndexingBlock: (document.getElementById('toggle-idx') as HTMLInputElement).checked,
+      showToolsBlock: (document.getElementById('toggle-tools') as HTMLInputElement).checked,
+      showIssnBlock: (document.getElementById('toggle-issn') as HTMLInputElement).checked,
+    };
+
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('✓ Seluruh data kontak & pengaturan jurnal berhasil disimpan ke database!');
+      }
+    } catch (err: any) {
+      showToast('Gagal menyimpan kontak: ' + err.message, true);
+    }
+  });
+
+  // 4. Toggle Indexing Sidebar
+  document.querySelectorAll<HTMLInputElement>('.toggle-index-sidebar').forEach((chk) => {
+    chk.addEventListener('change', async () => {
+      const name = chk.getAttribute('data-name');
+      const showInSidebar = chk.checked;
+      if (!name) return;
+
+      try {
+        const res = await fetch('/api/indexing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, showInSidebar }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast(`✓ Status tampilan "${name}" di sidebar berhasil diperbarui!`);
+        }
+      } catch (err: any) {
+        showToast('Gagal mengupdate indexing: ' + err.message, true);
+      }
+    });
+  });
+
+  // 5. Simpan URL Google Drive
+  const formGDrive = document.getElementById('form-gdrive');
+  formGDrive?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const gdriveBaseUrl = (document.getElementById('cfg-gdrive-url') as HTMLInputElement).value;
+
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gdriveBaseUrl }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('✓ URL Google Drive Index berhasil disimpan ke database!');
+      }
+    } catch (err: any) {
+      showToast('Gagal menyimpan: ' + err.message, true);
     }
   });
 </script>

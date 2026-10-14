@@ -1,6 +1,7 @@
 ---
-import { journalConfig } from '../config/journal';
+import { getDbSettings } from '../lib/db';
 
+const journalConfig = await getDbSettings();
 const currentYear = new Date().getFullYear();
 ---
 

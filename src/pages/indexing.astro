@@ -1,9 +1,12 @@
 ---
+export const prerender = false;
+
 import Layout from '../layouts/Layout.astro';
 import SidebarOJS from '../components/SidebarOJS.astro';
-import { journalConfig } from '../config/journal';
+import { getDbSettings, getDbIndexing } from '../lib/db';
 
-const { indexing } = journalConfig;
+const journalConfig = await getDbSettings();
+const indexing = await getDbIndexing();
 ---
 
 <Layout title="Abstracting and Indexing" description={`Daftar pengindeks dan pangkalan data bibliografis ${journalConfig.name}`}>

@@ -1,7 +1,8 @@
 ---
-import { journalConfig, getWhatsAppSubmissionUrl } from '../config/journal';
+import { getDbSettings } from '../lib/db';
 
-const waUrl = getWhatsAppSubmissionUrl();
+const journalConfig = await getDbSettings();
+const waUrl = `https://wa.me/${journalConfig.submission.whatsappNumber}?text=${encodeURIComponent(journalConfig.submission.whatsappDefaultMessage)}`;
 
 const sidebarLinks = [
   { label: 'Focus and Scope', href: '/guidelines#focus-scope' },

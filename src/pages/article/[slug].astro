@@ -1,17 +1,19 @@
 ---
+export const prerender = false;
+
 import Layout from '../../layouts/Layout.astro';
 import SidebarOJS from '../../components/SidebarOJS.astro';
-import { articles } from '../../data/articles';
-import { journalConfig, getPdfDownloadUrl, getWhatsAppSubmissionUrl } from '../../config/journal';
+import { getDbArticleBySlug, getDbSettings } from '../../lib/db';
+import { getPdfDownloadUrl, getWhatsAppSubmissionUrl } from '../../config/journal';
 
-export function getStaticPaths() {
-  return articles.map((article) => ({
-    params: { slug: article.slug },
-    props: { article },
-  }));
+const { slug } = Astro.params;
+const article = slug ? await getDbArticleBySlug(slug) : null;
+
+if (!article) {
+  return Astro.redirect('/404');
 }
 
-const { article } = Astro.props;
+const journalConfig = await getDbSettings();
 const pdfUrl = getPdfDownloadUrl(article.pdfFileName);
 
 const firstAuthorLastName = article.authors[0].name.split(' ').slice(-1)[0];

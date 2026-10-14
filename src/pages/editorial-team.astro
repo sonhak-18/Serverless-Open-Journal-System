@@ -1,9 +1,12 @@
 ---
+export const prerender = false;
+
 import Layout from '../layouts/Layout.astro';
 import SidebarOJS from '../components/SidebarOJS.astro';
-import { journalConfig } from '../config/journal';
+import { getDbSettings, getDbEditorial } from '../lib/db';
 
-const { editorInChief, editors, reviewers } = journalConfig.editorial;
+const journalConfig = await getDbSettings();
+const { editorInChief, editors, reviewers } = await getDbEditorial();
 ---
 
 <Layout title="Editorial Team & Reviewers" description={`Dewan Redaksi dan Mitra Bestari ${journalConfig.name}`}>

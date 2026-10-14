@@ -1,12 +1,16 @@
 ---
+export const prerender = false;
+
 import Layout from '../layouts/Layout.astro';
 import SidebarOJS from '../components/SidebarOJS.astro';
 import ArticleItemOJS from '../components/ArticleItemOJS.astro';
-import { journalConfig } from '../config/journal';
-import { getCurrentIssue, getArticlesByIssue } from '../data/articles';
+import { getDbSettings, getDbArticles } from '../lib/db';
+import { getCurrentIssue } from '../data/articles';
 
+const journalConfig = await getDbSettings();
+const allArticles = await getDbArticles();
 const currentIssue = getCurrentIssue();
-const currentArticles = getArticlesByIssue(currentIssue.volume, currentIssue.issue);
+const currentArticles = allArticles.filter(a => a.volume === currentIssue.volume && a.issue === currentIssue.issue);
 ---
 
 <Layout title="Current Issue" description={`Terbitan terkini ${journalConfig.name} - ${currentIssue.title}`}>

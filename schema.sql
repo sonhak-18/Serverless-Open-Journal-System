@@ -1,0 +1,80 @@
+-- ========================================================
+-- Schema Database Cloudflare D1 / SQLite untuk Sektansia Press (JTAAP)
+-- ========================================================
+
+-- 1. Tabel Pengaturan Jurnal & Narahubung
+CREATE TABLE IF NOT EXISTS journal_settings (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  name_en TEXT NOT NULL,
+  short_name TEXT NOT NULL,
+  accredited_text TEXT NOT NULL,
+  publisher TEXT NOT NULL,
+  institution TEXT NOT NULL,
+  address TEXT NOT NULL,
+  e_issn TEXT NOT NULL,
+  p_issn TEXT NOT NULL,
+  doi_prefix TEXT NOT NULL,
+  publication_frequency TEXT NOT NULL,
+  license TEXT NOT NULL,
+  license_url TEXT NOT NULL,
+  show_indexing_block INTEGER DEFAULT 1,
+  show_tools_block INTEGER DEFAULT 1,
+  show_issn_block INTEGER DEFAULT 1,
+  email TEXT NOT NULL,
+  whatsapp_number TEXT NOT NULL,
+  whatsapp_display TEXT NOT NULL,
+  whatsapp_message TEXT NOT NULL,
+  turnitin_max_similarity INTEGER DEFAULT 20,
+  review_time_estimate TEXT NOT NULL,
+  gdrive_base_url TEXT NOT NULL,
+  pdf_directory_path TEXT NOT NULL
+);
+
+-- 2. Tabel Dewan Redaksi & Reviewer
+CREATE TABLE IF NOT EXISTS editorial_members (
+  id TEXT PRIMARY KEY,
+  type TEXT NOT NULL, -- 'eic' | 'editor' | 'reviewer'
+  name TEXT NOT NULL,
+  role TEXT,
+  affiliation TEXT NOT NULL,
+  email TEXT,
+  sort_order INTEGER DEFAULT 0
+);
+
+-- 3. Tabel Artikel Ilmiah
+CREATE TABLE IF NOT EXISTS articles (
+  id TEXT PRIMARY KEY,
+  slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL,
+  authors_json TEXT NOT NULL, -- Array of {name, affiliation, email}
+  abstract TEXT NOT NULL,
+  keywords_json TEXT NOT NULL, -- Array of strings
+  volume INTEGER NOT NULL,
+  issue INTEGER NOT NULL,
+  year INTEGER NOT NULL,
+  pages TEXT NOT NULL,
+  first_page INTEGER NOT NULL,
+  last_page INTEGER NOT NULL,
+  publish_date TEXT NOT NULL,
+  received_date TEXT NOT NULL,
+  accepted_date TEXT NOT NULL,
+  doi TEXT NOT NULL,
+  pdf_file_name TEXT NOT NULL,
+  file_size_bytes INTEGER DEFAULT 450000,
+  subject TEXT NOT NULL, -- 'Audit' | 'Akuntansi' | 'Pajak'
+  abstract_views INTEGER DEFAULT 350,
+  pdf_downloads INTEGER DEFAULT 140
+);
+
+-- 4. Tabel Pangkalan Data Pengindeks
+CREATE TABLE IF NOT EXISTS indexing_platforms (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  category TEXT NOT NULL,
+  url TEXT NOT NULL,
+  status TEXT NOT NULL,
+  description TEXT NOT NULL,
+  show_in_sidebar INTEGER DEFAULT 1,
+  sort_order INTEGER DEFAULT 0
+);
