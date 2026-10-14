@@ -1,7 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { journalConfig } from '../config/journal';
-import { articles, issues } from '../data/articles';
+import { articles } from '../data/articles';
+
+const { editorInChief, editors, reviewers } = journalConfig.editorial;
 ---
 
 <Layout title="Panel Redaksi & Admin Jurnal" description={`Halaman pengelolaan dan publikasi naskah ${journalConfig.name}`}>
@@ -17,7 +19,7 @@ import { articles, issues } from '../data/articles';
           Panel Administrasi & Redaksi JTAAP
         </h1>
         <p class="text-xs text-academic-ink-muted mt-1">
-          Kelola metadata jurnal, terbitkan artikel baru, atur tautan Google Drive Index, dan perbarui narahubung redaksi.
+          Kelola penerbitan artikel baru, konfigurasi kontak narahubung WhatsApp/Email, tim redaksi, dan pangkalan data indexing.
         </p>
       </div>
 
@@ -25,7 +27,7 @@ import { articles, issues } from '../data/articles';
       <div class="flex items-center gap-2 self-start sm:self-center">
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold">
           <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-          <span>Sistem Aktif (Lokal / Edge)</span>
+          <span>Sistem Aktif (Edge / Cloudflare Ready)</span>
         </span>
       </div>
     </div>
@@ -39,7 +41,7 @@ import { articles, issues } from '../data/articles';
         Akses Khusus Dewan Redaksi
       </h2>
       <p class="text-xs text-academic-ink-muted mt-1 mb-6">
-        Masukkan PIN atau Kata Sandi Admin untuk mengelola penerbitan naskah Sektansia Press.
+        Masukkan PIN atau Kata Sandi Admin untuk mengelola data redaksi Sektansia Research Community.
       </p>
 
       <form id="admin-login-form" class="space-y-4 text-left">
@@ -70,41 +72,48 @@ import { articles, issues } from '../data/articles';
     <!-- Konten Dashboard Admin (Tersembunyi Sebelum Login) -->
     <div id="admin-dashboard-content" class="hidden space-y-8">
       <!-- Navigasi Tab Admin -->
-      <div class="flex border-b border-academic-border text-sm font-medium space-x-2 sm:space-x-4 overflow-x-auto pb-1" role="tablist">
+      <div class="flex border-b border-academic-border text-xs sm:text-sm font-medium space-x-1 sm:space-x-3 overflow-x-auto pb-1" role="tablist">
         <button
           type="button"
-          class="admin-tab active py-2.5 px-4 border-b-2 border-academic-crimson text-academic-crimson font-bold shrink-0 min-h-[44px]"
+          class="admin-tab active py-2.5 px-3.5 border-b-2 border-academic-crimson text-academic-crimson font-bold shrink-0 min-h-[44px]"
           data-tab="tab-add-article"
         >
-          + Terbitkan Naskah Baru
+          + Terbitkan Naskah
         </button>
         <button
           type="button"
-          class="admin-tab py-2.5 px-4 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
           data-tab="tab-articles-list"
         >
-          Daftar Naskah Terbit ({articles.length})
+          Naskah Terbit ({articles.length})
         </button>
         <button
           type="button"
-          class="admin-tab py-2.5 px-4 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
-          data-tab="tab-gdrive-config"
+          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          data-tab="tab-editorial-settings"
         >
-          Integrasi Google Drive Index
+          Tim Redaksi ({editors.length + reviewers.length + 1})
         </button>
         <button
           type="button"
-          class="admin-tab py-2.5 px-4 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
           data-tab="tab-journal-settings"
         >
-          Pengaturan Kontak & Jurnal
+          Kontak WA & Email
         </button>
         <button
           type="button"
-          class="admin-tab py-2.5 px-4 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
           data-tab="tab-indexing-settings"
         >
           Pengaturan Indexing ({journalConfig.indexing.length})
+        </button>
+        <button
+          type="button"
+          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          data-tab="tab-gdrive-config"
+        >
+          Google Drive Index
         </button>
       </div>
 
@@ -165,7 +174,7 @@ import { articles, issues } from '../data/articles';
                   placeholder="Contoh: Rahmat Hidayat, Siti Nurhaliza"
                   class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none"
                 />
-                <span class="text-[11px] text-slate-500 mt-1 block">Pisahkan dengan tanda koma jika lebih dari satu penulis.</span>
+                <span class="text-[11px] text-slate-500 mt-1 block">Pisahkan dengan koma jika lebih dari satu penulis.</span>
               </div>
 
               <div>
@@ -257,7 +266,7 @@ import { articles, issues } from '../data/articles';
           </form>
         </div>
 
-        <!-- Output Generator Kode untuk Penyimpanan Permanen -->
+        <!-- Output Generator Kode -->
         <div id="output-generator-box" class="academic-card p-6 rounded border border-academic-border bg-slate-900 text-slate-200 hidden">
           <div class="flex items-center justify-between pb-3 border-b border-slate-700 mb-3">
             <div>
@@ -333,7 +342,326 @@ import { articles, issues } from '../data/articles';
         </div>
       </div>
 
-      <!-- TAB 3: INTEGRASI GOOGLE DRIVE INDEX -->
+      <!-- TAB 3: PENGATURAN TIM REDAKSI (EDITORIAL TEAM SETUP) -->
+      <div id="tab-editorial-settings" class="tab-panel hidden space-y-6">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white space-y-6">
+          <div class="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-serif font-bold text-academic-navy">
+                Kelola Dewan Redaksi & Mitra Bestari
+              </h2>
+              <p class="text-xs text-academic-ink-muted mt-0.5">
+                Konfigurasi ini ditampilkan pada halaman publik <code>/editorial-team</code> dan metadata jurnal.
+              </p>
+            </div>
+            <a href="/editorial-team" target="_blank" class="text-xs font-semibold text-blue-700 hover:underline">
+              Lihat Halaman Publik ↗
+            </a>
+          </div>
+
+          <!-- Section A: Pemimpin Redaksi -->
+          <div class="bg-slate-50 p-4 rounded border border-slate-200 space-y-3">
+            <span class="font-serif font-bold text-sm text-academic-navy block">
+              1. Pemimpin Redaksi (Editor-in-Chief)
+            </span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Nama Lengkap & Gelar</label>
+                <input type="text" id="cfg-eic-name" value={editorInChief.name} class="w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white font-medium" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Afiliasi / Komunitas Riset</label>
+                <input type="text" id="cfg-eic-affil" value={editorInChief.affiliation} class="w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-700 mb-1">Alamat Email</label>
+                <input type="email" id="cfg-eic-email" value={editorInChief.email} class="w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white font-mono" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Section B: Dewan Editor Bidang -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="font-serif font-bold text-sm text-academic-navy">
+                2. Dewan Editor Eksekutif ({editors.length} Anggota)
+              </span>
+            </div>
+
+            <div class="border border-slate-200 rounded overflow-hidden">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                  <tr>
+                    <th class="p-2.5">Nama</th>
+                    <th class="p-2.5">Peran / Bidang</th>
+                    <th class="p-2.5">Afiliasi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                  {editors.map((ed) => (
+                    <tr class="hover:bg-slate-50">
+                      <td class="p-2.5 font-bold text-slate-800">{ed.name}</td>
+                      <td class="p-2.5 text-slate-600">{ed.role}</td>
+                      <td class="p-2.5 text-slate-500">{ed.affiliation}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Section C: Mitra Bestari (Reviewers) -->
+          <div class="space-y-3">
+            <span class="font-serif font-bold text-sm text-academic-navy block">
+              3. Mitra Bestari / Peer Reviewers ({reviewers.length} Penelaah)
+            </span>
+
+            <div class="border border-slate-200 rounded overflow-hidden">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                  <tr>
+                    <th class="p-2.5">Nama Reviewer</th>
+                    <th class="p-2.5">Afiliasi Universitas / Lembaga</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                  {reviewers.map((rev) => (
+                    <tr class="hover:bg-slate-50">
+                      <td class="p-2.5 font-bold text-slate-800">{rev.name}</td>
+                      <td class="p-2.5 text-slate-600">{rev.affiliation}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Petunjuk Update Tim Redaksi -->
+          <div class="bg-slate-50 p-4 rounded border border-slate-200 text-xs text-slate-700 space-y-1">
+            <span class="font-bold text-slate-900 block">💡 Pengaturan Kode Tim Redaksi:</span>
+            <p>
+              Seluruh nama di atas tersimpan pada objek <code>editorial</code> di file <code>src/config/journal.ts</code>. Kamu bisa menambah anggota baru langsung dengan menyisipkan baris pada array <code>editors</code> atau <code>reviewers</code>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: PENGATURAN KONTAK WA, EMAIL & JURNAL -->
+      <div id="tab-journal-settings" class="tab-panel hidden space-y-6">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white space-y-6">
+          <div class="border-b border-slate-200 pb-3">
+            <h2 class="text-lg font-serif font-bold text-academic-navy">
+              Pengaturan Narahubung Redaksi & Komunitas
+            </h2>
+            <p class="text-xs text-academic-ink-muted mt-1">
+              Atur nomor WhatsApp, email, dan alamat resmi yang tampil di tombol submit, floating kontak, dan footer.
+            </p>
+          </div>
+
+          <form id="form-contact-settings" class="space-y-4 text-xs">
+            <!-- Kontak WhatsApp & Email -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-emerald-50/50 p-4 rounded border border-emerald-200">
+              <div>
+                <label for="cfg-wa-num" class="block font-semibold text-emerald-950 mb-1">
+                  Nomor WhatsApp (Format API / wa.me) <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="cfg-wa-num"
+                  value={journalConfig.submission.whatsappNumber}
+                  placeholder="Contoh: 6281234567890"
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
+                />
+                <span class="text-[11px] text-slate-500 mt-1 block">Gunakan kode negara tanpa tanda plus atau strip (contoh: 62812...).</span>
+              </div>
+
+              <div>
+                <label for="cfg-wa-display" class="block font-semibold text-emerald-950 mb-1">
+                  Tampilan Nomor WhatsApp di Web <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="cfg-wa-display"
+                  value={journalConfig.submission.whatsappDisplay}
+                  placeholder="Contoh: +62 812-3456-7890"
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
+                />
+                <span class="text-[11px] text-slate-500 mt-1 block">Teks nomor yang dibaca oleh pengunjung.</span>
+              </div>
+
+              <div class="sm:col-span-2">
+                <label for="cfg-email" class="block font-semibold text-emerald-950 mb-1">
+                  Alamat Surat Elektronik (Email) Redaksi <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="cfg-email"
+                  value={journalConfig.submission.email}
+                  placeholder="redaksi@sektansia.org"
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
+                />
+              </div>
+
+              <div class="sm:col-span-2">
+                <label for="cfg-wa-msg" class="block font-semibold text-emerald-950 mb-1">
+                  Pesan Pembuka Otomatis WhatsApp Penulis
+                </label>
+                <input
+                  type="text"
+                  id="cfg-wa-msg"
+                  value={journalConfig.submission.whatsappDefaultMessage}
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white"
+                />
+              </div>
+            </div>
+
+            <!-- Organisasi & Komunitas Riset -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded border border-slate-200">
+              <div>
+                <label class="block font-semibold text-academic-navy mb-1">Nama Organisasi / Komunitas</label>
+                <input type="text" id="cfg-org-name" value={journalConfig.institution} class="w-full px-3 py-2 border border-slate-300 rounded bg-white" />
+              </div>
+
+              <div>
+                <label class="block font-semibold text-academic-navy mb-1">Penerbit (Publisher Press)</label>
+                <input type="text" id="cfg-pub-name" value={journalConfig.publisher} class="w-full px-3 py-2 border border-slate-300 rounded bg-white" />
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block font-semibold text-academic-navy mb-1">Alamat Sekretariat Redaksi</label>
+                <input type="text" id="cfg-address" value={journalConfig.address} class="w-full px-3 py-2 border border-slate-300 rounded bg-white" />
+              </div>
+
+              <div>
+                <label class="block font-semibold text-academic-navy mb-1">e-ISSN</label>
+                <input type="text" id="cfg-eissn" value={journalConfig.eIssn} class="w-full px-3 py-2 border border-slate-300 rounded bg-white font-mono" />
+              </div>
+
+              <div>
+                <label class="block font-semibold text-academic-navy mb-1">p-ISSN</label>
+                <input type="text" id="cfg-pissn" value={journalConfig.pIssn} class="w-full px-3 py-2 border border-slate-300 rounded bg-white font-mono" />
+              </div>
+            </div>
+
+            <!-- Fitur Sidebar Toggles -->
+            <div class="p-4 bg-white border border-slate-200 rounded space-y-2">
+              <span class="font-bold text-academic-navy block mb-2">Visibilitas Modul Sidebar Kanan:</span>
+              <div class="flex flex-wrap gap-4 text-xs">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="toggle-idx" checked={journalConfig.features.showIndexingBlock} class="rounded text-blue-600" />
+                  <span>Tampilkan Kotak Indexed By</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="toggle-tools" checked={journalConfig.features.showToolsBlock} class="rounded text-blue-600" />
+                  <span>Tampilkan Recommended Tools</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="toggle-issn" checked={journalConfig.features.showIssnBlock} class="rounded text-blue-600" />
+                  <span>Tampilkan Barcode ISSN</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+              <button
+                type="button"
+                id="btn-gen-config"
+                class="px-5 py-2.5 bg-[#1b4332] hover:bg-[#143225] text-white font-semibold rounded text-xs transition-colors shadow min-h-[44px]"
+              >
+                Generate & Salin Pembaruan Konfigurasi
+              </button>
+            </div>
+          </form>
+
+          <!-- Output Box Konfigurasi -->
+          <div id="output-config-box" class="academic-card p-5 rounded border border-slate-700 bg-slate-900 text-slate-200 hidden">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-700 mb-2">
+              <span class="text-xs font-bold text-emerald-400">✓ Konfigurasi Berhasil Dibuat</span>
+              <button type="button" id="btn-copy-config-text" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded text-xs font-semibold border border-slate-600">
+                Salin Blok Konfigurasi
+              </button>
+            </div>
+            <pre id="pre-config-text" class="p-3 bg-slate-950 rounded text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: PENGATURAN INDEXING & PENGINDEKS -->
+      <div id="tab-indexing-settings" class="tab-panel hidden space-y-6">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white">
+          <div class="border-b border-slate-200 pb-3 mb-6 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-serif font-bold text-academic-navy">
+                Kelola Pangkalan Data & Pengindeks Jurnal
+              </h2>
+              <p class="text-xs text-academic-ink-muted mt-1">
+                Daftar pengindeks yang tampil di sidebar kanan dan halaman direktori <code>/indexing</code>.
+              </p>
+            </div>
+            <a
+              href="/indexing"
+              target="_blank"
+              class="text-xs font-semibold text-blue-700 hover:underline"
+            >
+              Buka Halaman Indexing Publik ↗
+            </a>
+          </div>
+
+          <!-- Tabel Status Pengindeks -->
+          <div class="overflow-x-auto mb-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-300">
+                  <th class="p-2.5 font-semibold">Nama Pengindeks</th>
+                  <th class="p-2.5 font-semibold">Kategori</th>
+                  <th class="p-2.5 font-semibold">Status</th>
+                  <th class="p-2.5 font-semibold">Di Sidebar</th>
+                  <th class="p-2.5 font-semibold">Tautan URL</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                {journalConfig.indexing.map((idx) => (
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-2.5 font-bold text-slate-900">{idx.name}</td>
+                    <td class="p-2.5 text-slate-600">{idx.category}</td>
+                    <td class="p-2.5">
+                      <span class={`text-[10px] font-bold px-2 py-0.5 rounded-xs uppercase ${
+                        idx.status === 'Indexed'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : idx.status === 'In Process'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-amber-100 text-amber-800'
+                      }`}>
+                        {idx.status}
+                      </span>
+                    </td>
+                    <td class="p-2.5">
+                      {idx.showInSidebar ? (
+                        <span class="text-emerald-700 font-bold">✓ Tampil</span>
+                      ) : (
+                        <span class="text-slate-400">Sembunyi</span>
+                      )}
+                    </td>
+                    <td class="p-2.5 font-mono text-slate-500 truncate max-w-xs">
+                      <a href={idx.url} target="_blank" rel="noopener noreferrer" class="hover:underline text-blue-700">{idx.url}</a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Petunjuk Edit Indexing -->
+          <div class="bg-slate-50 p-4 rounded border border-slate-200 text-xs text-slate-700 space-y-2">
+            <span class="font-bold text-slate-900 block">Cara Menambah atau Menampilkan Pengindeks di Sidebar:</span>
+            <p>
+              Buka file <code>src/config/journal.ts</code> pada bagian array <code>indexing: [...]</code>. Setiap item memiliki properti <code>showInSidebar: true/false</code> untuk menentukan apakah logonya muncul di bilah kanan beranda, atau hanya di halaman arsip pengindeks.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: INTEGRASI GOOGLE DRIVE INDEX -->
       <div id="tab-gdrive-config" class="tab-panel hidden space-y-6">
         <div class="academic-card p-6 rounded border border-academic-border bg-white">
           <div class="border-b border-slate-200 pb-3 mb-6">
@@ -382,113 +710,6 @@ import { articles, issues } from '../data/articles';
           </div>
         </div>
       </div>
-
-      <!-- TAB 4: PENGATURAN KONTAK & JURNAL -->
-      <div id="tab-journal-settings" class="tab-panel hidden space-y-6">
-        <div class="academic-card p-6 rounded border border-academic-border bg-white">
-          <div class="border-b border-slate-200 pb-3 mb-6">
-            <h2 class="text-lg font-serif font-bold text-academic-navy">
-              Informasi Kontak Redaksi & Identitas Jurnal
-            </h2>
-            <p class="text-xs text-academic-ink-muted mt-1">
-              Data ini tampil pada tombol kontak WhatsApp, email pengajuan naskah, dan footer portal.
-            </p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div>
-              <label class="block font-semibold text-academic-navy mb-1">Nama Jurnal</label>
-              <input type="text" readonly value={journalConfig.name} class="w-full px-3 py-2 border border-slate-200 rounded bg-slate-50 text-slate-600" />
-            </div>
-
-            <div>
-              <label class="block font-semibold text-academic-navy mb-1">Singkatan Resmi</label>
-              <input type="text" readonly value={journalConfig.shortName} class="w-full px-3 py-2 border border-slate-200 rounded bg-slate-50 text-slate-600" />
-            </div>
-
-            <div>
-              <label class="block font-semibold text-academic-navy mb-1">Nomor WhatsApp Redaksi</label>
-              <input type="text" readonly value={journalConfig.submission.whatsappDisplay} class="w-full px-3 py-2 border border-slate-200 rounded bg-slate-50 text-slate-600" />
-            </div>
-
-            <div>
-              <label class="block font-semibold text-academic-navy mb-1">Email Resmi Redaksi</label>
-              <input type="text" readonly value={journalConfig.submission.email} class="w-full px-3 py-2 border border-slate-200 rounded bg-slate-50 text-slate-600" />
-            </div>
-          </div>
-
-          <p class="text-xs text-slate-500 mt-4">
-            💡 Untuk mengubah nilai di atas secara permanen, cukup edit file <code>src/config/journal.ts</code>.
-          </p>
-        </div>
-      </div>
-
-      <!-- TAB 5: PENGATURAN INDEXING & PENGINDEKS -->
-      <div id="tab-indexing-settings" class="tab-panel hidden space-y-6">
-        <div class="academic-card p-6 rounded border border-academic-border bg-white">
-          <div class="border-b border-slate-200 pb-3 mb-6 flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h2 class="text-lg font-serif font-bold text-academic-navy">
-                Kelola Pangkalan Data & Pengindeks Jurnal
-              </h2>
-              <p class="text-xs text-academic-ink-muted mt-1">
-                Daftar pengindeks yang tampil di sidebar, footer, dan halaman <code>/indexing</code>.
-              </p>
-            </div>
-            <a
-              href="/indexing"
-              target="_blank"
-              class="text-xs font-semibold text-blue-700 hover:underline"
-            >
-              Buka Halaman Indexing Publik ↗
-            </a>
-          </div>
-
-          <!-- Tabel Status Pengindeks -->
-          <div class="overflow-x-auto mb-6">
-            <table class="w-full text-xs text-left border-collapse">
-              <thead>
-                <tr class="bg-slate-100 text-slate-700 border-b border-slate-300">
-                  <th class="p-2.5 font-semibold">Nama Pengindeks</th>
-                  <th class="p-2.5 font-semibold">Kategori</th>
-                  <th class="p-2.5 font-semibold">Status</th>
-                  <th class="p-2.5 font-semibold">Tautan URL</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-200">
-                {journalConfig.indexing.map((idx) => (
-                  <tr class="hover:bg-slate-50">
-                    <td class="p-2.5 font-bold text-slate-900">{idx.name}</td>
-                    <td class="p-2.5 text-slate-600">{idx.category}</td>
-                    <td class="p-2.5">
-                      <span class={`text-[10px] font-bold px-2 py-0.5 rounded-xs uppercase ${
-                        idx.status === 'Indexed'
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : idx.status === 'In Process'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-amber-100 text-amber-800'
-                      }`}>
-                        {idx.status}
-                      </span>
-                    </td>
-                    <td class="p-2.5 font-mono text-slate-500 truncate max-w-xs">
-                      <a href={idx.url} target="_blank" rel="noopener noreferrer" class="hover:underline text-blue-700">{idx.url}</a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Petunjuk Edit Indexing -->
-          <div class="bg-slate-50 p-4 rounded border border-slate-200 text-xs text-slate-700 space-y-2">
-            <span class="font-bold text-slate-900 block">Cara Menambah / Mengubah Pengindeks Baru:</span>
-            <p>
-              Buka file <code>src/config/journal.ts</code> pada bagian array <code>indexing: [...]</code>. Kamu bisa menambah platform baru seperti <strong>DOAJ</strong>, <strong>Scopus</strong>, <strong>EBSCO</strong>, atau <strong>Copernicus</strong> beserta URL dan statusnya. Sistem akan langsung memperbarui seluruh tampilan web dan sidebar.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </Layout>
@@ -501,7 +722,6 @@ import { articles, issues } from '../data/articles';
   const loginError = document.getElementById('login-error');
   const adminPinInput = document.getElementById('admin-pin') as HTMLInputElement | null;
 
-  // Cek apakah sudah pernah login di sesi ini
   if (sessionStorage.getItem('sektansia_admin_auth') === 'true') {
     loginLock?.classList.add('hidden');
     dashboardContent?.classList.remove('hidden');
@@ -510,7 +730,6 @@ import { articles, issues } from '../data/articles';
   loginForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     const pin = adminPinInput?.value.trim();
-    // Default PIN: admin123
     if (pin === 'admin123') {
       sessionStorage.setItem('sektansia_admin_auth', 'true');
       loginLock?.classList.add('hidden');
@@ -530,7 +749,6 @@ import { articles, issues } from '../data/articles';
       const targetId = tab.getAttribute('data-tab');
       if (!targetId) return;
 
-      // Update tab styles
       tabs.forEach((t) => {
         t.classList.remove('border-academic-crimson', 'text-academic-crimson', 'font-bold');
         t.classList.add('border-transparent', 'text-slate-600');
@@ -538,7 +756,6 @@ import { articles, issues } from '../data/articles';
       tab.classList.remove('border-transparent', 'text-slate-600');
       tab.classList.add('border-academic-crimson', 'text-academic-crimson', 'font-bold');
 
-      // Show targeted panel
       panels.forEach((p) => {
         if (p.id === targetId) {
           p.classList.remove('hidden');
@@ -621,6 +838,68 @@ import { articles, issues } from '../data/articles';
       copyBtn.innerText = '✓ Berhasil Disalin!';
       setTimeout(() => {
         copyBtn.innerText = 'Salin Kode';
+      }, 2500);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+  // Generator Konfigurasi Kontak & Komunitas
+  const btnGenConfig = document.getElementById('btn-gen-config');
+  const outputConfigBox = document.getElementById('output-config-box');
+  const preConfigText = document.getElementById('pre-config-text');
+  const btnCopyConfigText = document.getElementById('btn-copy-config-text');
+
+  btnGenConfig?.addEventListener('click', () => {
+    const waNum = (document.getElementById('cfg-wa-num') as HTMLInputElement).value;
+    const waDisplay = (document.getElementById('cfg-wa-display') as HTMLInputElement).value;
+    const email = (document.getElementById('cfg-email') as HTMLInputElement).value;
+    const waMsg = (document.getElementById('cfg-wa-msg') as HTMLInputElement).value;
+    const orgName = (document.getElementById('cfg-org-name') as HTMLInputElement).value;
+    const pubName = (document.getElementById('cfg-pub-name') as HTMLInputElement).value;
+    const address = (document.getElementById('cfg-address') as HTMLInputElement).value;
+    const eissn = (document.getElementById('cfg-eissn') as HTMLInputElement).value;
+    const pissn = (document.getElementById('cfg-pissn') as HTMLInputElement).value;
+    const showIdx = (document.getElementById('toggle-idx') as HTMLInputElement).checked;
+    const showTools = (document.getElementById('toggle-tools') as HTMLInputElement).checked;
+    const showIssn = (document.getElementById('toggle-issn') as HTMLInputElement).checked;
+
+    const snippet = `// Salin nilai ini ke file src/config/journal.ts:
+  institution: '${orgName}',
+  publisher: '${pubName}',
+  address: '${address}',
+  eIssn: '${eissn}',
+  pIssn: '${pissn}',
+
+  features: {
+    showIndexingBlock: ${showIdx},
+    showToolsBlock: ${showTools},
+    showIssnBlock: ${showIssn},
+  },
+
+  submission: {
+    email: '${email}',
+    whatsappNumber: '${waNum}',
+    whatsappDisplay: '${waDisplay}',
+    whatsappDefaultMessage: '${waMsg}',
+    turnitinMaxSimilarity: 20,
+    reviewTimeEstimate: '3 sampai 7 Hari Kerja',
+  },`;
+
+    if (preConfigText && outputConfigBox) {
+      preConfigText.innerText = snippet;
+      outputConfigBox.classList.remove('hidden');
+      outputConfigBox.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  btnCopyConfigText?.addEventListener('click', async () => {
+    if (!preConfigText) return;
+    try {
+      await navigator.clipboard.writeText(preConfigText.innerText);
+      btnCopyConfigText.innerText = '✓ Berhasil Disalin!';
+      setTimeout(() => {
+        btnCopyConfigText.innerText = 'Salin Blok Konfigurasi';
       }, 2500);
     } catch (err) {
       console.error(err);

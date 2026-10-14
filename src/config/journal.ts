@@ -5,6 +5,7 @@ export interface IndexingPlatform {
   logoText: string;
   status: 'Indexed' | 'In Process' | 'Evaluation';
   description: string;
+  showInSidebar: boolean;
 }
 
 export interface JournalConfig {
@@ -13,7 +14,7 @@ export interface JournalConfig {
   shortName: string;
   accreditedText: string;
   publisher: string;
-  institution: string;
+  institution: string; // Komunitas / Organisasi Riset
   address: string;
   eIssn: string;
   pIssn: string;
@@ -22,6 +23,11 @@ export interface JournalConfig {
   language: string;
   license: string;
   licenseUrl: string;
+  features: {
+    showIndexingBlock: boolean; // Bisa dimatikan atau dinyalakan
+    showToolsBlock: boolean;
+    showIssnBlock: boolean;
+  };
   submission: {
     email: string;
     whatsappNumber: string; // Format: 628xxxxxxxxxx
@@ -59,7 +65,7 @@ export const journalConfig: JournalConfig = {
   shortName: 'JTAAP',
   accreditedText: 'Open Access Scientific Peer-Reviewed Journal',
   publisher: 'Sektansia Press',
-  institution: 'Lembaga Publikasi Ilmiah Sektansia',
+  institution: 'Komunitas Riset Sektansia (Sektansia Research Community)',
   address: 'Jl. R.E. Martadinata No. 42, Bandung 40115, Jawa Barat, Indonesia',
   eIssn: '3048-289X',
   pIssn: '3048-2903',
@@ -68,6 +74,12 @@ export const journalConfig: JournalConfig = {
   language: 'Bahasa Indonesia dan Bahasa Inggris',
   license: 'Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)',
   licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+
+  features: {
+    showIndexingBlock: true, // Ubah false jika ingin menyembunyikan panel indexing di sidebar
+    showToolsBlock: true,
+    showIssnBlock: true,
+  },
 
   submission: {
     email: 'redaksi@sektansia.org',
@@ -86,7 +98,7 @@ export const journalConfig: JournalConfig = {
   editorial: {
     editorInChief: {
       name: 'Dr. H. Hendra Setiawan, S.E., M.Ak., Ak., CA.',
-      affiliation: 'Departemen Akuntansi & Forensik Keuangan, Sektansia Academic Board',
+      affiliation: 'Departemen Akuntansi & Forensik Keuangan, Sektansia Research Community',
       email: 'editor.chief@sektansia.org',
     },
     editors: [
@@ -134,6 +146,7 @@ export const journalConfig: JournalConfig = {
       logoText: 'Google Scholar',
       status: 'Indexed',
       description: 'Pengindeksan sitasi artikel dan pelacakan metrik karya ilmiah global.',
+      showInSidebar: true,
     },
     {
       name: 'Garuda (Garba Rujukan Digital)',
@@ -142,6 +155,7 @@ export const journalConfig: JournalConfig = {
       logoText: 'GARUDA',
       status: 'In Process',
       description: 'Platform rujukan publikasi ilmiah nasional Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi.',
+      showInSidebar: true,
     },
     {
       name: 'Crossref (DOI)',
@@ -150,6 +164,7 @@ export const journalConfig: JournalConfig = {
       logoText: 'Crossref',
       status: 'Indexed',
       description: 'Lembaga registrasi Digital Object Identifier (DOI) resmi publikasi akademik internasional.',
+      showInSidebar: true,
     },
     {
       name: 'Dimensions',
@@ -158,6 +173,7 @@ export const journalConfig: JournalConfig = {
       logoText: 'Dimensions',
       status: 'Indexed',
       description: 'Pangkalan data riset bibliometrik dan sitasi multidisiplin global.',
+      showInSidebar: true,
     },
     {
       name: 'SINTA (Science and Technology Index)',
@@ -166,6 +182,7 @@ export const journalConfig: JournalConfig = {
       logoText: 'SINTA',
       status: 'Evaluation',
       description: 'Portal akreditasi dan evaluasi kinerja jurnal ilmiah nasional Indonesia.',
+      showInSidebar: false,
     },
     {
       name: 'BASE (Bielefeld Academic Search Engine)',
@@ -174,6 +191,7 @@ export const journalConfig: JournalConfig = {
       logoText: 'BASE',
       status: 'Indexed',
       description: 'Mesin pencari riset ilmiah open access yang dikelola Perpustakaan Universitas Bielefeld.',
+      showInSidebar: false,
     },
     {
       name: 'Scilit',
@@ -182,6 +200,7 @@ export const journalConfig: JournalConfig = {
       logoText: 'Scilit',
       status: 'Indexed',
       description: 'Basis data komprehensif untuk publikasi ilmiah open access yang diperbarui berkala.',
+      showInSidebar: false,
     },
   ],
 };
