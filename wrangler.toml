@@ -8,11 +8,9 @@ compatibility_date = "2024-09-23"
 [[d1_databases]]
 binding = "DB"
 database_name = "sektansia-db"
-database_id = "YOUR_D1_DATABASE_ID"
+database_id = "7bdb8640-d889-4bec-b942-1f915b492893"
 
 # Cloudflare Workers KV Namespace Binding (Global Edge Cache & Real-Time Stats)
-# Eksekusi: npx wrangler kv:namespace create CACHE
-# Masukkan ID yang didapat ke id di bawah ini
 [[kv_namespaces]]
 binding = "KV"
-id = "YOUR_KV_NAMESPACE_ID"
+id = "7c89d3e50f4f4a2cba89125802edba9f"
