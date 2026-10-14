@@ -1,0 +1,555 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { journalConfig } from '../config/journal';
+import { articles, issues } from '../data/articles';
+---
+
+<Layout title="Panel Redaksi & Admin Jurnal" description={`Halaman pengelolaan dan publikasi naskah ${journalConfig.name}`}>
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Header Admin -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-academic-border pb-5 mb-8 gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="academic-badge bg-academic-crimson text-white">Editorial Studio</span>
+          <span class="text-xs text-academic-ink-subtle">Sistem Pengelolaan Publikasi Mandiri</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy mt-1">
+          Panel Administrasi & Redaksi JTAAP
+        </h1>
+        <p class="text-xs text-academic-ink-muted mt-1">
+          Kelola metadata jurnal, terbitkan artikel baru, atur tautan Google Drive Index, dan perbarui narahubung redaksi.
+        </p>
+      </div>
+
+      <!-- Status Mode -->
+      <div class="flex items-center gap-2 self-start sm:self-center">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold">
+          <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+          <span>Sistem Aktif (Lokal / Edge)</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Area Login Sederhana (Gerbang Admin) -->
+    <div id="admin-login-lock" class="academic-card p-8 rounded border border-academic-border max-w-md mx-auto my-12 text-center shadow-sm">
+      <div class="w-12 h-12 rounded-full bg-academic-navy/10 text-academic-navy flex items-center justify-center mx-auto mb-4 text-xl">
+        🔒
+      </div>
+      <h2 class="text-lg font-serif font-bold text-academic-navy">
+        Akses Khusus Dewan Redaksi
+      </h2>
+      <p class="text-xs text-academic-ink-muted mt-1 mb-6">
+        Masukkan PIN atau Kata Sandi Admin untuk mengelola penerbitan naskah Sektansia Press.
+      </p>
+
+      <form id="admin-login-form" class="space-y-4 text-left">
+        <div>
+          <label for="admin-pin" class="block text-xs font-semibold text-academic-navy mb-1">
+            Kata Sandi / PIN Redaksi
+          </label>
+          <input
+            type="password"
+            id="admin-pin"
+            required
+            placeholder="Masukkan kata sandi (default: admin123)"
+            class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson focus:ring-1 focus:ring-academic-crimson outline-none"
+          />
+        </div>
+        <p id="login-error" class="text-xs text-red-600 hidden">
+          Kata sandi salah. Silakan coba lagi.
+        </p>
+        <button
+          type="submit"
+          class="w-full py-2.5 px-4 bg-academic-crimson hover:bg-academic-crimson-light text-white text-sm font-semibold rounded transition-colors shadow min-h-[44px]"
+        >
+          Masuk ke Panel Redaksi
+        </button>
+      </form>
+    </div>
+
+    <!-- Konten Dashboard Admin (Tersembunyi Sebelum Login) -->
+    <div id="admin-dashboard-content" class="hidden space-y-8">
+      <!-- Navigasi Tab Admin -->
+      <div class="flex border-b border-academic-border text-sm font-medium space-x-2 sm:space-x-4 overflow-x-auto pb-1" role="tablist">
+        <button
+          type="button"
+          class="admin-tab active py-2.5 px-4 border-b-2 border-academic-crimson text-academic-crimson font-bold shrink-0 min-h-[44px]"
+          data-tab="tab-add-article"
+        >
+          + Terbitkan Naskah Baru
+        </button>
+        <button
+          type="button"
+          class="admin-tab py-2.5 px-4 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          data-tab="tab-articles-list"
+        >
+          Daftar Naskah Terbit ({articles.length})
+        </button>
+        <button
+          type="button"
+          class="admin-tab py-2.5 px-4 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          data-tab="tab-gdrive-config"
+        >
+          Integrasi Google Drive Index
+        </button>
+        <button
+          type="button"
+          class="admin-tab py-2.5 px-4 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          data-tab="tab-journal-settings"
+        >
+          Pengaturan Kontak & Jurnal
+        </button>
+      </div>
+
+      <!-- TAB 1: FORM INPUT ARTIKEL BARU -->
+      <div id="tab-add-article" class="tab-panel space-y-6">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white shadow-sm">
+          <div class="border-b border-slate-200 pb-3 mb-6">
+            <h2 class="text-lg font-serif font-bold text-academic-navy">
+              Formulir Penerbitan Artikel Ilmiah
+            </h2>
+            <p class="text-xs text-academic-ink-muted mt-1">
+              Isi data naskah yang telah lolos uji Turnitin dan review sejawat untuk diterbitkan pada portal jurnal.
+            </p>
+          </div>
+
+          <form id="form-new-article" class="space-y-5">
+            <!-- Judul & Rumpun -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+              <div class="md:col-span-8">
+                <label for="art-title" class="block text-xs font-semibold text-academic-navy mb-1">
+                  Judul Lengkap Artikel <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="art-title"
+                  required
+                  placeholder="Contoh: Analisis Kepatuhan Pajak atas Pemanfaatan Fasilitas Super Tax Deduction..."
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none"
+                />
+              </div>
+
+              <div class="md:col-span-4">
+                <label for="art-subject" class="block text-xs font-semibold text-academic-navy mb-1">
+                  Rumpun Keilmuan <span class="text-red-500">*</span>
+                </label>
+                <select
+                  id="art-subject"
+                  required
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none bg-white min-h-[40px]"
+                >
+                  <option value="Audit">Audit & Investigasi Fraud</option>
+                  <option value="Akuntansi">Akuntansi Keuangan & Manajemen</option>
+                  <option value="Pajak">Perpajakan & Kebijakan Fiskal</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Penulis & Afiliasi -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded border border-slate-200">
+              <div>
+                <label for="art-author" class="block text-xs font-semibold text-academic-navy mb-1">
+                  Nama Penulis Utama & Penulis Pendamping <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="art-author"
+                  required
+                  placeholder="Contoh: Rahmat Hidayat, Siti Nurhaliza"
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none"
+                />
+                <span class="text-[11px] text-slate-500 mt-1 block">Pisahkan dengan tanda koma jika lebih dari satu penulis.</span>
+              </div>
+
+              <div>
+                <label for="art-affiliation" class="block text-xs font-semibold text-academic-navy mb-1">
+                  Afiliasi / Universitas / Lembaga Riset <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="art-affiliation"
+                  required
+                  placeholder="Contoh: Departemen Akuntansi, Universitas Indonesia"
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none"
+                />
+              </div>
+            </div>
+
+            <!-- Abstrak & Kata Kunci -->
+            <div>
+              <label for="art-abstract" class="block text-xs font-semibold text-academic-navy mb-1">
+                Teks Abstrak (Bahasa Indonesia atau Inggris) <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                id="art-abstract"
+                rows="4"
+                required
+                placeholder="Tuliskan latar belakang singkat, tujuan, metode penelitian, dan kesimpulan temuan utama..."
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none"
+              ></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="art-keywords" class="block text-xs font-semibold text-academic-navy mb-1">
+                  Kata Kunci (Keywords) <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="art-keywords"
+                  required
+                  placeholder="Contoh: Kepatuhan Pajak, Super Tax Deduction, Fiskal"
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none"
+                />
+                <span class="text-[11px] text-slate-500 mt-1 block">Pisahkan dengan koma (3-5 kata kunci).</span>
+              </div>
+
+              <div>
+                <label for="art-pdffile" class="block text-xs font-semibold text-academic-navy mb-1">
+                  Nama File PDF di Google Drive <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="art-pdffile"
+                  required
+                  placeholder="Contoh: jtaap-v1n1-04-rahmat-pajak.pdf"
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
+                />
+                <span class="text-[11px] text-slate-500 mt-1 block">Nama file ini yang diunggah ke Google Drive Index kamu.</span>
+              </div>
+            </div>
+
+            <!-- Metadata Edisi & Halaman -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-50 p-4 rounded border border-slate-200 text-xs">
+              <div>
+                <label for="art-volume" class="block font-semibold text-academic-navy mb-1">Volume</label>
+                <input type="number" id="art-volume" value="1" min="1" class="w-full px-2 py-1.5 border border-slate-300 rounded" />
+              </div>
+              <div>
+                <label for="art-issue" class="block font-semibold text-academic-navy mb-1">Nomor Issue</label>
+                <input type="number" id="art-issue" value="1" min="1" class="w-full px-2 py-1.5 border border-slate-300 rounded" />
+              </div>
+              <div>
+                <label for="art-pages" class="block font-semibold text-academic-navy mb-1">Rentang Halaman</label>
+                <input type="text" id="art-pages" value="45-58" placeholder="Contoh: 45-58" class="w-full px-2 py-1.5 border border-slate-300 rounded" />
+              </div>
+              <div>
+                <label for="art-doi" class="block font-semibold text-academic-navy mb-1">DOI Suffix</label>
+                <input type="text" id="art-doi" value="10.5281/zenodo.jtaap.2026.1104" class="w-full px-2 py-1.5 border border-slate-300 rounded font-mono" />
+              </div>
+            </div>
+
+            <div class="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-200">
+              <button
+                type="submit"
+                class="w-full sm:w-auto px-6 py-2.5 bg-academic-crimson hover:bg-academic-crimson-light text-white text-sm font-semibold rounded transition-colors shadow min-h-[44px]"
+              >
+                Simpan & Generate Kode Artikel
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Output Generator Kode untuk Penyimpanan Permanen -->
+        <div id="output-generator-box" class="academic-card p-6 rounded border border-academic-border bg-slate-900 text-slate-200 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-700 mb-3">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">
+                ✓ Kode Naskah Berhasil Digenerate
+              </span>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Salin blok kode di bawah ini lalu tempelkan ke dalam array di file <code>src/data/articles.ts</code>.
+              </p>
+            </div>
+            <button
+              type="button"
+              id="btn-copy-generated"
+              class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded text-xs font-semibold border border-slate-600 transition-colors"
+            >
+              Salin Kode
+            </button>
+          </div>
+
+          <pre id="generated-code" class="p-3 bg-slate-950 rounded text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed"></pre>
+        </div>
+      </div>
+
+      <!-- TAB 2: DAFTAR ARTIKEL TERBIT -->
+      <div id="tab-articles-list" class="tab-panel hidden space-y-4">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white">
+          <h2 class="text-lg font-serif font-bold text-academic-navy pb-3 border-b border-slate-200 mb-4">
+            Daftar Artikel yang Sedang Aktif di Portal
+          </h2>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-300">
+                  <th class="p-3 font-semibold">Judul Artikel</th>
+                  <th class="p-3 font-semibold">Penulis</th>
+                  <th class="p-3 font-semibold">Bidang</th>
+                  <th class="p-3 font-semibold">Edisi</th>
+                  <th class="p-3 font-semibold">Aksi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                {articles.map((item) => (
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="p-3 font-medium text-academic-navy max-w-xs truncate">
+                      {item.title}
+                    </td>
+                    <td class="p-3 text-slate-600">
+                      {item.authors.map(a => a.name).join(', ')}
+                    </td>
+                    <td class="p-3">
+                      <span class="academic-badge bg-slate-100 border text-slate-800">
+                        {item.subject}
+                      </span>
+                    </td>
+                    <td class="p-3 text-slate-600">
+                      Vol. {item.volume} No. {item.issue}
+                    </td>
+                    <td class="p-3">
+                      <a
+                        href={`/article/${item.slug}`}
+                        target="_blank"
+                        class="text-academic-crimson hover:underline font-semibold"
+                      >
+                        Buka Halaman ↗
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: INTEGRASI GOOGLE DRIVE INDEX -->
+      <div id="tab-gdrive-config" class="tab-panel hidden space-y-6">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white">
+          <div class="border-b border-slate-200 pb-3 mb-6">
+            <h2 class="text-lg font-serif font-bold text-academic-navy">
+              Pengaturan Cloudflare Worker Google Drive Index
+            </h2>
+            <p class="text-xs text-academic-ink-muted mt-1">
+              Panduan integrasi file PDF artikel ilmiah agar terhubung langsung dengan Google Drive tanpa membebani server lokal.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label for="cfg-gdrive-url" class="block text-xs font-semibold text-academic-navy mb-1">
+                URL Worker Google Drive Index
+              </label>
+              <input
+                type="url"
+                id="cfg-gdrive-url"
+                value={journalConfig.storage.gdriveIndexBaseUrl}
+                placeholder="https://cdn-papers.sektansia.workers.dev"
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
+              />
+              <span class="text-xs text-slate-500 mt-1 block">
+                Alamat ini tersimpan di file <code>src/config/journal.ts</code> pada objek <code>storage.gdriveIndexBaseUrl</code>.
+              </span>
+            </div>
+
+            <!-- Petunjuk Langkah Praktis -->
+            <div class="bg-slate-50 p-5 rounded border border-slate-200 text-xs text-slate-700 space-y-3">
+              <span class="font-bold text-academic-navy text-sm block">
+                3 Langkah Singkat Menghubungkan Google Drive:
+              </span>
+              <ol class="list-decimal list-inside space-y-2">
+                <li>
+                  <strong>Deploy Worker:</strong> Buka Cloudflare Dashboard, buat Worker baru menggunakan script dari repo GitLab <a href="https://gitlab.com/GoogleDriveIndex/Google-Drive-Index.git" target="_blank" rel="noopener noreferrer" class="text-academic-crimson underline">Google-Drive-Index</a>.
+                </li>
+                <li>
+                  <strong>Siapkan Folder Google Drive:</strong> Buat folder khusus (misal <code>/JTAAP/PDFs</code>) dan berikan izin akses ke Service Account / API Worker kamu.
+                </li>
+                <li>
+                  <strong>Unggah Naskah PDF:</strong> Setiap artikel yang terbit diberi nama file sesuai field <code>pdfFileName</code> (contoh: <code>jtaap-v1n1-01-faisal-audit-risiko.pdf</code>). Tombol unduh di web akan langsung mengarah ke Worker tersebut.
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: PENGATURAN KONTAK & JURNAL -->
+      <div id="tab-journal-settings" class="tab-panel hidden space-y-6">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white">
+          <div class="border-b border-slate-200 pb-3 mb-6">
+            <h2 class="text-lg font-serif font-bold text-academic-navy">
+              Informasi Kontak Redaksi & Identitas Jurnal
+            </h2>
+            <p class="text-xs text-academic-ink-muted mt-1">
+              Data ini tampil pada tombol kontak WhatsApp, email pengajuan naskah, dan footer portal.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div>
+              <label class="block font-semibold text-academic-navy mb-1">Nama Jurnal</label>
+              <input type="text" readonly value={journalConfig.name} class="w-full px-3 py-2 border border-slate-200 rounded bg-slate-50 text-slate-600" />
+            </div>
+
+            <div>
+              <label class="block font-semibold text-academic-navy mb-1">Singkatan Resmi</label>
+              <input type="text" readonly value={journalConfig.shortName} class="w-full px-3 py-2 border border-slate-200 rounded bg-slate-50 text-slate-600" />
+            </div>
+
+            <div>
+              <label class="block font-semibold text-academic-navy mb-1">Nomor WhatsApp Redaksi</label>
+              <input type="text" readonly value={journalConfig.submission.whatsappDisplay} class="w-full px-3 py-2 border border-slate-200 rounded bg-slate-50 text-slate-600" />
+            </div>
+
+            <div>
+              <label class="block font-semibold text-academic-navy mb-1">Email Resmi Redaksi</label>
+              <input type="text" readonly value={journalConfig.submission.email} class="w-full px-3 py-2 border border-slate-200 rounded bg-slate-50 text-slate-600" />
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-500 mt-4">
+            💡 Untuk mengubah nilai di atas secara permanen, cukup edit file <code>src/config/journal.ts</code>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Autentikasi Admin Sederhana & Navigasi Tab (R-26 & R-32)
+  const loginForm = document.getElementById('admin-login-form');
+  const loginLock = document.getElementById('admin-login-lock');
+  const dashboardContent = document.getElementById('admin-dashboard-content');
+  const loginError = document.getElementById('login-error');
+  const adminPinInput = document.getElementById('admin-pin') as HTMLInputElement | null;
+
+  // Cek apakah sudah pernah login di sesi ini
+  if (sessionStorage.getItem('sektansia_admin_auth') === 'true') {
+    loginLock?.classList.add('hidden');
+    dashboardContent?.classList.remove('hidden');
+  }
+
+  loginForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const pin = adminPinInput?.value.trim();
+    // Default PIN: admin123
+    if (pin === 'admin123') {
+      sessionStorage.setItem('sektansia_admin_auth', 'true');
+      loginLock?.classList.add('hidden');
+      dashboardContent?.classList.remove('hidden');
+      loginError?.classList.add('hidden');
+    } else {
+      loginError?.classList.remove('hidden');
+    }
+  });
+
+  // Tab switching logic
+  const tabs = document.querySelectorAll<HTMLButtonElement>('.admin-tab');
+  const panels = document.querySelectorAll<HTMLElement>('.tab-panel');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const targetId = tab.getAttribute('data-tab');
+      if (!targetId) return;
+
+      // Update tab styles
+      tabs.forEach((t) => {
+        t.classList.remove('border-academic-crimson', 'text-academic-crimson', 'font-bold');
+        t.classList.add('border-transparent', 'text-slate-600');
+      });
+      tab.classList.remove('border-transparent', 'text-slate-600');
+      tab.classList.add('border-academic-crimson', 'text-academic-crimson', 'font-bold');
+
+      // Show targeted panel
+      panels.forEach((p) => {
+        if (p.id === targetId) {
+          p.classList.remove('hidden');
+        } else {
+          p.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  // Generator Kode Naskah Baru
+  const articleForm = document.getElementById('form-new-article');
+  const outputBox = document.getElementById('output-generator-box');
+  const codePre = document.getElementById('generated-code');
+  const copyBtn = document.getElementById('btn-copy-generated');
+
+  articleForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const title = (document.getElementById('art-title') as HTMLInputElement).value;
+    const subject = (document.getElementById('art-subject') as HTMLSelectElement).value;
+    const authorsRaw = (document.getElementById('art-author') as HTMLInputElement).value;
+    const affiliation = (document.getElementById('art-affiliation') as HTMLInputElement).value;
+    const abstract = (document.getElementById('art-abstract') as HTMLTextAreaElement).value;
+    const keywordsRaw = (document.getElementById('art-keywords') as HTMLInputElement).value;
+    const pdfFile = (document.getElementById('art-pdffile') as HTMLInputElement).value;
+    const volume = Number((document.getElementById('art-volume') as HTMLInputElement).value) || 1;
+    const issue = Number((document.getElementById('art-issue') as HTMLInputElement).value) || 1;
+    const pages = (document.getElementById('art-pages') as HTMLInputElement).value || '1-10';
+    const doi = (document.getElementById('art-doi') as HTMLInputElement).value;
+
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+
+    const authorsList = authorsRaw.split(',').map((name) => ({
+      name: name.trim(),
+      affiliation: affiliation.trim(),
+    }));
+
+    const keywordsList = keywordsRaw.split(',').map((k) => k.trim());
+    const [firstP, lastP] = pages.split('-').map((p) => Number(p.trim()) || 1);
+    const today = new Date().toISOString().split('T')[0];
+
+    const generatedObject = {
+      slug,
+      title,
+      authors: authorsList,
+      abstract,
+      keywords: keywordsList,
+      volume,
+      issue,
+      year: new Date().getFullYear(),
+      pages,
+      firstPage: firstP,
+      lastPage: lastP || firstP + 10,
+      publishDate: today,
+      receivedDate: today,
+      acceptedDate: today,
+      doi,
+      pdfFileName: pdfFile,
+      fileSizeBytes: 450000,
+      subject,
+    };
+
+    const codeString = `  // Tambahkan objek ini ke dalam array articles di src/data/articles.ts:\n  ` + JSON.stringify(generatedObject, null, 2) + `,`;
+
+    if (codePre && outputBox) {
+      codePre.innerText = codeString;
+      outputBox.classList.remove('hidden');
+      outputBox.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  copyBtn?.addEventListener('click', async () => {
+    if (!codePre) return;
+    try {
+      await navigator.clipboard.writeText(codePre.innerText);
+      copyBtn.innerText = '✓ Berhasil Disalin!';
+      setTimeout(() => {
+        copyBtn.innerText = 'Salin Kode';
+      }, 2500);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+</script>
