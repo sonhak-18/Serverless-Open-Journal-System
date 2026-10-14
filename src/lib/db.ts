@@ -91,6 +91,7 @@ export async function getDbSettings(d1?: any): Promise<JournalConfig> {
             year: row.current_year !== undefined ? Number(row.current_year) : 2026,
             period: row.current_period || 'Maret 2026',
             theme: row.current_theme || 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan',
+            coverUrl: row.current_cover_url || '',
           },
         };
       }
@@ -135,6 +136,7 @@ export async function updateDbSettings(data: {
   currentYear?: number;
   currentPeriod?: string;
   currentTheme?: string;
+  currentCoverUrl?: string;
 }, d1?: any): Promise<void> {
   const s = memoryStore.settings;
 
@@ -179,24 +181,28 @@ export async function updateDbSettings(data: {
     s.announcement.date = data.announcementDate;
   }
   if (data.currentVolume !== undefined) {
-    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '' };
+    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '', coverUrl: '' };
     s.currentIssue.volume = Number(data.currentVolume);
   }
   if (data.currentIssue !== undefined) {
-    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '' };
+    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '', coverUrl: '' };
     s.currentIssue.issue = Number(data.currentIssue);
   }
   if (data.currentYear !== undefined) {
-    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '' };
+    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '', coverUrl: '' };
     s.currentIssue.year = Number(data.currentYear);
   }
   if (data.currentPeriod !== undefined) {
-    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '' };
+    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '', coverUrl: '' };
     s.currentIssue.period = data.currentPeriod;
   }
   if (data.currentTheme !== undefined) {
-    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '' };
+    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '', coverUrl: '' };
     s.currentIssue.theme = data.currentTheme;
+  }
+  if (data.currentCoverUrl !== undefined) {
+    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '', coverUrl: '' };
+    s.currentIssue.coverUrl = data.currentCoverUrl;
   }
 
   const db = d1 || globalD1Instance;
@@ -213,7 +219,7 @@ export async function updateDbSettings(data: {
           show_issn_block = ?, gdrive_base_url = ?, pdf_directory_path = ?,
           announcement_title = ?, announcement_content = ?, announcement_active = ?,
           announcement_date = ?, current_volume = ?, current_issue = ?,
-          current_year = ?, current_period = ?, current_theme = ?
+          current_year = ?, current_period = ?, current_theme = ?, current_cover_url = ?
         WHERE id = 'default'
       `).bind(
         s.name, s.nameEn, s.shortName, s.accreditedText,
@@ -230,7 +236,7 @@ export async function updateDbSettings(data: {
         s.announcement?.active ? 1 : 0, s.announcement?.date || '',
         s.currentIssue?.volume || 1, s.currentIssue?.issue || 1,
         s.currentIssue?.year || 2026, s.currentIssue?.period || '',
-        s.currentIssue?.theme || ''
+        s.currentIssue?.theme || '', s.currentIssue?.coverUrl || ''
       ).run();
 
       if (!res?.meta?.changes) {
@@ -242,10 +248,10 @@ export async function updateDbSettings(data: {
             email, whatsapp_number, whatsapp_display, whatsapp_message,
             turnitin_max_similarity, review_time_estimate, gdrive_base_url, pdf_directory_path,
             announcement_title, announcement_content, announcement_active, announcement_date,
-            current_volume, current_issue, current_year, current_period, current_theme
+            current_volume, current_issue, current_year, current_period, current_theme, current_cover_url
           ) VALUES (
             'default', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
           )
         `).bind(
           s.name, s.nameEn, s.shortName, s.accreditedText, s.publisher, s.institution,
@@ -258,7 +264,7 @@ export async function updateDbSettings(data: {
           s.announcement?.active ? 1 : 0, s.announcement?.date || '',
           s.currentIssue?.volume || 1, s.currentIssue?.issue || 1,
           s.currentIssue?.year || 2026, s.currentIssue?.period || '',
-          s.currentIssue?.theme || ''
+          s.currentIssue?.theme || '', s.currentIssue?.coverUrl || ''
         ).run();
       }
     } catch (e) {

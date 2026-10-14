@@ -48,6 +48,7 @@ export interface JournalConfig {
     year: number;
     period: string;
     theme: string;
+    coverUrl?: string;
   };
   storage: {
     gdriveIndexBaseUrl: string;
@@ -235,12 +236,20 @@ export const journalConfig: JournalConfig = {
 
 export function getPdfDownloadUrl(pdfFileName: string): string {
   if (!pdfFileName) return '#';
+  // Jika pdfFileName sudah merupakan URL lengkap (http/https)
+  if (pdfFileName.startsWith('http://') || pdfFileName.startsWith('https://')) {
+    if (!pdfFileName.includes('?')) {
+      return `${pdfFileName}?a=view`;
+    }
+    return pdfFileName;
+  }
   const base = journalConfig.storage.gdriveIndexBaseUrl.replace(/\/$/, '');
-  const path = journalConfig.storage.pdfDirectoryPath.replace(/^\//, '');
-  if (!base || base.includes('workers.dev') === false) {
+  const path = journalConfig.storage.pdfDirectoryPath.replace(/^\//, '').replace(/\/$/, '');
+  if (!base) {
     return `/${pdfFileName}`;
   }
-  return `${base}/${path}/${pdfFileName}`;
+  const fullUrl = path ? `${base}/${path}/${pdfFileName}` : `${base}/${pdfFileName}`;
+  return fullUrl.includes('?') ? fullUrl : `${fullUrl}?a=view`;
 }
 
 export function getWhatsAppSubmissionUrl(paperTitle?: string): string {

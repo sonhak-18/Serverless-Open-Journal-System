@@ -15,6 +15,7 @@ const curIssue = journalConfig.currentIssue?.issue ?? 1;
 const curYear = journalConfig.currentIssue?.year ?? 2026;
 const curPeriod = journalConfig.currentIssue?.period || 'Maret 2026';
 const curTheme = journalConfig.currentIssue?.theme || 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan';
+const curCoverUrl = journalConfig.currentIssue?.coverUrl || '';
 
 const currentArticles = allArticles.filter(a => a.volume === curVolume && a.issue === curIssue);
 const displayArticles = currentArticles.length > 0 ? currentArticles : allArticles;
@@ -63,18 +64,26 @@ const displayArticles = currentArticles.length > 0 ? currentArticles : allArticl
 
           <!-- Cover Jurnal & Metadata Terbitan -->
           <div class="p-4 border border-slate-200 bg-white rounded-xs flex flex-col sm:flex-row gap-5 items-start">
-            <!-- Cover Mockup Jurnal (Academic Navy & Gold) -->
-            <div class="w-32 sm:w-36 shrink-0 border border-slate-300 shadow-xs bg-[#0f284e] text-white p-3.5 flex flex-col justify-between aspect-[3/4] text-center rounded-2xs">
-              <div>
-                <span class="text-[10px] font-bold uppercase tracking-widest block text-[#c89b3c]">JTAAP</span>
-                <span class="text-xs font-bold mt-2 block leading-tight">
-                  JURNAL TERBUKA AUDIT, AKUNTANSI, PAJAK
-                </span>
+            {curCoverUrl ? (
+              <img
+                src={curCoverUrl}
+                alt={`Cover ${journalConfig.shortName} Vol. ${curVolume} No. ${curIssue}`}
+                class="w-32 sm:w-36 shrink-0 border border-slate-300 shadow-xs aspect-[3/4] object-cover rounded-xs"
+              />
+            ) : (
+              <!-- Cover Mockup Jurnal (Academic Navy & Gold) -->
+              <div class="w-32 sm:w-36 shrink-0 border border-slate-300 shadow-xs bg-[#0f284e] text-white p-3.5 flex flex-col justify-between aspect-[3/4] text-center rounded-2xs">
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-widest block text-[#c89b3c]">JTAAP</span>
+                  <span class="text-xs font-bold mt-2 block leading-tight">
+                    JURNAL TERBUKA AUDIT, AKUNTANSI, PAJAK
+                  </span>
+                </div>
+                <div class="text-[10px] text-slate-300 border-t border-[#c89b3c]/40 pt-1 font-mono">
+                  Vol. {curVolume} No. {curIssue} ({curYear})
+                </div>
               </div>
-              <div class="text-[10px] text-slate-300 border-t border-[#c89b3c]/40 pt-1 font-mono">
-                Vol. {curVolume} No. {curIssue} ({curYear})
-              </div>
-            </div>
+            )}
 
             <!-- Deskripsi & Info Resmi Terbitan -->
             <div class="text-xs text-slate-700 space-y-2 leading-relaxed">

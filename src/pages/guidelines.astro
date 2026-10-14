@@ -13,21 +13,21 @@ import { journalConfig } from '../config/journal';
           <a href="/" class="hover:underline">Home</a> &gt; <span>Author Guidelines & Ethics</span>
         </div>
 
-        <div class="border-b-2 border-amber-600 pb-2">
-          <h1 class="text-xl md:text-2xl font-serif font-bold text-slate-900">
+        <div class="border-b-2 border-academic-gold pb-2">
+          <h1 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy">
             Author Guidelines and Publication Ethics
           </h1>
         </div>
 
         <!-- Section 1: Focus and Scope -->
         <section id="focus-scope" class="space-y-3">
-          <h2 class="text-base font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+          <h2 class="text-lg font-bold text-academic-navy border-b border-slate-200 pb-1.5">
             Focus and Scope
           </h2>
-          <p class="text-xs text-slate-700 leading-relaxed">
+          <p class="text-sm text-slate-700 leading-relaxed">
             <strong>{journalConfig.name} ({journalConfig.shortName})</strong> mempublikasikan artikel riset orisinal dan kajian konseptual mutakhir dengan fokus pada bidang:
           </p>
-          <ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+          <ul class="text-sm text-slate-700 space-y-2 list-disc list-inside leading-relaxed">
             <li><strong>Audit & Pengawasan:</strong> Pemeriksaan operasional, audit kepatuhan, audit investigatif dan forensik, efektivitas sistem pengawasan intern (APIP), dan teknik audit berbasis komputer.</li>
             <li><strong>Akuntansi Keuangan & Manajemen:</strong> Kualitas pelaporan keuangan, persistensi laba, pengungkapan Environmental, Social, and Governance (ESG), serta sistem informasi akuntansi.</li>
             <li><strong>Perpajakan & Fiskal:</strong> Implementasi Core Tax Administration System (Coretax), kepatuhan wajib pajak badan dan orang pribadi, perencanaan pajak, dan analisis sengketa perpajakan.</li>
@@ -36,10 +36,10 @@ import { journalConfig } from '../config/journal';
 
         <!-- Section 2: Author Guidelines -->
         <section id="author-guidelines" class="space-y-3">
-          <h2 class="text-base font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+          <h2 class="text-lg font-bold text-academic-navy border-b border-slate-200 pb-1.5">
             Author Guidelines (Petunjuk Penulisan)
           </h2>
-          <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+          <div class="text-sm text-slate-700 space-y-2.5 leading-relaxed">
             <p>1. <strong>Sistematika Manuskrip:</strong> Naskah disusun dengan urutan: Judul (Title), Nama Penulis dan Afiliasi, Abstrak (150-250 kata dalam bahasa Indonesia atau Inggris), Kata Kunci (3-5 kata), Pendahuluan, Metode Penelitian, Hasil dan Pembahasan, Kesimpulan, dan Daftar Pustaka.</p>
             <p>2. <strong>Panjang Naskah:</strong> Manuskrip memiliki panjang antara 4.000 hingga 7.500 kata termasuk referensi dan tabel pendukung.</p>
             <p>3. <strong>Format Sitasi:</strong> Seluruh referensi wajib disusun menggunakan gaya sitasi <strong>APA Style 7th Edition</strong>. Penulis disarankan menggunakan aplikasi pengelola referensi seperti Mendeley, EndNote, atau Zotero.</p>
@@ -49,20 +49,20 @@ import { journalConfig } from '../config/journal';
 
         <!-- Section 3: Peer Review Process -->
         <section id="review-process" class="space-y-3">
-          <h2 class="text-base font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+          <h2 class="text-lg font-bold text-academic-navy border-b border-slate-200 pb-1.5">
             Peer Review Process (Proses Penelaahan Sejawat)
           </h2>
-          <p class="text-xs text-slate-700 leading-relaxed">
+          <p class="text-sm text-slate-700 leading-relaxed">
             Setiap manuskrip yang masuk melalui tahap penelaahan awal oleh Managing Editor untuk memeriksa kesesuaian ruang lingkup dan orisinalitas. Naskah yang memenuhi kualifikasi akan diteruskan kepada minimal dua orang mitra bestari (*peer reviewers*) independen melalui metode *blind review*. Keputusan penerimaan, revisi, atau penolakan naskah didasarkan sepenuhnya pada pertimbangan substantif dewan penelaah.
           </p>
         </section>
 
         <!-- Section 4: Plagiarism Policy -->
         <section id="plagiarism" class="space-y-3">
-          <h2 class="text-base font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+          <h2 class="text-lg font-bold text-academic-navy border-b border-slate-200 pb-1.5">
             Plagiarism and AI Policy
           </h2>
-          <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+          <div class="text-sm text-slate-700 space-y-2.5 leading-relaxed">
             <p>
               Redaksi menjalankan pemeriksaan kemiripan menggunakan <strong>Turnitin</strong> pada setiap naskah yang diajukan. Batas maksimal indeks kemiripan (*similarity index*) yang ditoleransi adalah <strong>{journalConfig.submission.turnitinMaxSimilarity}%</strong>.
             </p>
@@ -74,35 +74,35 @@ import { journalConfig } from '../config/journal';
 
         <!-- Section 5: Publication Ethics -->
         <section id="ethics" class="space-y-3">
-          <h2 class="text-base font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+          <h2 class="text-lg font-bold text-academic-navy border-b border-slate-200 pb-1.5">
             Publication Ethics (Etika Publikasi)
           </h2>
-          <p class="text-xs text-slate-700 leading-relaxed">
+          <p class="text-sm text-slate-700 leading-relaxed">
             Pernyataan etika publikasi {journalConfig.name} mengacu pada pedoman standar Committee on Publication Ethics (COPE). Penulis, editor, dan reviewer diharapkan mematuhi standar integritas akademik bebas dari fabrikasi data, falsifikasi, dan plagiarisme.
           </p>
         </section>
 
-        <!-- Section 6: Article Processing Charges (Sesuai Arahan User: Dikonfirmasi via WA/Email) -->
+        <!-- Section 6: Article Processing Charges -->
         <section id="apc" class="space-y-3">
-          <h2 class="text-base font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+          <h2 class="text-lg font-bold text-academic-navy border-b border-slate-200 pb-1.5">
             Article Processing Charges (APC)
           </h2>
-          <p class="text-xs text-slate-700 leading-relaxed">
+          <p class="text-sm text-slate-700 leading-relaxed">
             Informasi mengenai ketentuan administrasi dan pemrosesan penerbitan naskah dikonfirmasi langsung oleh sekretariat redaksi kepada penulis korespondensi melalui surat elektronik (Email) atau narahubung resmi WhatsApp setelah naskah dinyatakan lolos penilaian awal.
           </p>
         </section>
 
         <!-- Section 7: Template Download -->
-        <section id="template" class="p-4 bg-slate-50 border border-slate-200 rounded-xs space-y-2">
-          <h2 class="text-sm font-serif font-bold text-slate-900">
+        <section id="template" class="p-5 bg-slate-50 border border-slate-200 rounded space-y-3">
+          <h2 class="text-base font-bold text-slate-900">
             Unduh Template Manuskrip (Article Template)
           </h2>
-          <p class="text-xs text-slate-600">
+          <p class="text-sm text-slate-600 leading-relaxed">
             Penulis wajib menyesuaikan tata letak artikel dengan panduan template resmi sebelum penyerahan naskah.
           </p>
           <a
             href="/submit"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-800 hover:bg-blue-900 text-white text-xs font-semibold rounded-xs transition-colors"
+            class="inline-flex items-center gap-2 px-4 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white text-sm font-semibold rounded shadow-xs transition-colors"
           >
             <span>Unduh Template Naskah (.docx)</span>
           </a>
