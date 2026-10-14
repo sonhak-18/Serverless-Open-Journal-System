@@ -76,11 +76,29 @@ if (article) {
       </>
     )}
   </head>
-  <body class="min-h-screen flex flex-col bg-academic-paper text-academic-ink selection:bg-red-100 selection:text-academic-navy">
+  <body data-article-slug={article?.slug} class="min-h-screen flex flex-col bg-academic-paper text-academic-ink selection:bg-red-100 selection:text-academic-navy">
     <Header />
     <main class="flex-grow">
       <slot />
     </main>
     <Footer />
+
+    <script>
+      // Global PDF Download Tracker via Cloudflare KV
+      document.addEventListener('click', (e) => {
+        const target = (e.target as HTMLElement)?.closest('[data-track-download]') as HTMLElement | null;
+        if (!target) return;
+        const slug = target.getAttribute('data-track-download');
+        if (!slug) return;
+        try {
+          fetch('/api/stats', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'track_download', slug }),
+            keepalive: true,
+          }).catch(() => {});
+        } catch (_) {}
+      });
+    </script>
   </body>
 </html>

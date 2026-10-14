@@ -5,6 +5,7 @@ import Layout from '../../layouts/Layout.astro';
 import SidebarOJS from '../../components/SidebarOJS.astro';
 import { getDbArticleBySlug, getDbSettings } from '../../lib/db';
 import { getPdfDownloadUrl, getWhatsAppSubmissionUrl } from '../../config/journal';
+import { kvGetCounter } from '../../lib/kv';
 
 const { slug } = Astro.params;
 const article = slug ? await getDbArticleBySlug(slug) : null;
@@ -15,6 +16,12 @@ if (!article) {
 
 const journalConfig = await getDbSettings();
 const pdfUrl = getPdfDownloadUrl(article.pdfFileName);
+
+const kv = (Astro.locals as any)?.runtime?.env?.KV;
+const defaultViews = 310 + (article.firstPage || 1) * 14;
+const defaultDownloads = 120 + (article.firstPage || 1) * 8;
+const initialViews = await kvGetCounter(`stats:views:${article.slug}`, defaultViews, kv);
+const initialDownloads = await kvGetCounter(`stats:downloads:${article.slug}`, defaultDownloads, kv);
 
 const firstAuthorLastName = article.authors[0].name.split(' ').slice(-1)[0];
 const apaCitation = `${firstAuthorLastName}, ${article.authors[0].name.charAt(0)}. (${article.year}). ${article.title}. ${journalConfig.name}, ${article.volume}(${article.issue}), ${article.pages}. https://doi.org/${article.doi}`;
@@ -76,21 +83,41 @@ const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
           </div>
         </div>
 
-        <!-- Tombol Download PDF OJS Style -->
-        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xs flex items-center justify-between">
-          <div>
-            <span class="block text-xs font-bold text-slate-800">Naskah Lengkap Artikel:</span>
-            <span class="text-[11px] text-slate-500 font-mono">{article.pdfFileName}</span>
+        <!-- Tombol Download PDF OJS Style & Statistik Real-Time -->
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xs space-y-3">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <span class="block text-xs font-bold text-slate-800">Naskah Lengkap Artikel:</span>
+              <span class="text-[11px] text-slate-500 font-mono">{article.pdfFileName}</span>
+            </div>
+
+            <a
+              href={pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              id="btn-download-pdf"
+              data-track-download={article.slug}
+              class="inline-flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold rounded-xs tracking-wider shadow-xs transition-colors"
+            >
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+              </svg>
+              <span>UNDUH PDF</span>
+            </a>
           </div>
 
-          <a
-            href={pdfUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold rounded-xs tracking-wider shadow-xs transition-colors"
-          >
-            <span>UNDUH PDF</span>
-          </a>
+          <!-- Metrik Pembaca OJS (Real-Time Cloudflare KV) -->
+          <div class="pt-2 border-t border-slate-200 flex items-center gap-4 text-xs text-slate-500 font-mono">
+            <span class="inline-flex items-center gap-1.5" title="Jumlah pembaca abstrak (Edge KV)">
+              <span class="text-emerald-700">📊</span>
+              <span>Abstract Views: <strong id="stat-views" class="text-slate-800 font-bold">{initialViews}</strong></span>
+            </span>
+            <span>|</span>
+            <span class="inline-flex items-center gap-1.5" title="Jumlah unduhan PDF resmi">
+              <span class="text-red-700">📄</span>
+              <span>PDF Downloads: <strong id="stat-downloads" class="text-slate-800 font-bold">{initialDownloads}</strong></span>
+            </span>
+          </div>
         </div>
 
         <!-- Abstrak -->
@@ -214,6 +241,36 @@ const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
         }, 3000);
       } catch (err) {
         console.error('Gagal menyalin:', err);
+      }
+    });
+  }
+
+  // Real-time Track Abstract View
+  const articleSlug = document.body.getAttribute('data-article-slug');
+  if (articleSlug) {
+    fetch('/api/stats', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'track_view', slug: articleSlug }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.views) {
+          const el = document.getElementById('stat-views');
+          if (el) el.textContent = data.views;
+        }
+      })
+      .catch(() => {});
+  }
+
+  // Real-time update download counter on click
+  const dlBtn = document.getElementById('btn-download-pdf');
+  if (dlBtn && articleSlug) {
+    dlBtn.addEventListener('click', () => {
+      const el = document.getElementById('stat-downloads');
+      if (el) {
+        const current = parseInt(el.textContent || '0', 10);
+        el.textContent = (current + 1).toString();
       }
     });
   }

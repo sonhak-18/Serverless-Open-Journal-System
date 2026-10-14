@@ -2,14 +2,20 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { toggleDbIndexingSidebar, getDbIndexing } from '../../lib/db';
+import { invalidateJournalCache } from '../../lib/kv';
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   try {
+    const d1 = (locals as any)?.runtime?.env?.DB;
+    const kv = (locals as any)?.runtime?.env?.KV;
+
     const body = await request.json();
     const { name, showInSidebar } = body;
 
-    await toggleDbIndexingSidebar(name, Boolean(showInSidebar));
-    const updated = await getDbIndexing();
+    await toggleDbIndexingSidebar(name, Boolean(showInSidebar), d1);
+    await invalidateJournalCache(kv);
+
+    const updated = await getDbIndexing(d1);
 
     return new Response(JSON.stringify({ success: true, indexing: updated }), {
       status: 200,
