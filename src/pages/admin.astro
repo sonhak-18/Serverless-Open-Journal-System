@@ -819,6 +819,48 @@ const { editorInChief, editors, reviewers } = editorial;
       </div>
     </div>
   </div>
+
+  <!-- Modal Konfirmasi Hapus Kustom (Indah, Bersih, Akademik) -->
+  <div id="confirm-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-in fade-in zoom-in-95">
+      <div class="flex items-start gap-3.5">
+        <div class="w-10 h-10 rounded-full bg-red-50 text-red-700 flex items-center justify-center shrink-0 border border-red-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </div>
+        <div>
+          <h3 id="confirm-modal-title" class="text-base font-serif font-bold text-academic-navy leading-snug">
+            Konfirmasi Penghapusan
+          </h3>
+          <p id="confirm-modal-desc" class="text-xs text-slate-600 mt-1 leading-relaxed">
+            Apakah Anda yakin ingin menghapus data ini dari database? Tindakan ini bersifat permanen.
+          </p>
+        </div>
+      </div>
+
+      <div id="confirm-modal-item" class="p-3 bg-slate-50 border border-slate-200 rounded text-xs font-mono text-slate-800 break-all">
+        <!-- Item detail -->
+      </div>
+
+      <div class="flex items-center justify-end gap-2.5 pt-2">
+        <button
+          type="button"
+          id="btn-cancel-modal"
+          class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded transition-colors"
+        >
+          Batal
+        </button>
+        <button
+          type="button"
+          id="btn-confirm-delete"
+          class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded shadow-xs transition-colors"
+        >
+          Ya, Hapus Sekarang
+        </button>
+      </div>
+    </div>
+  </div>
 </Layout>
 
 <script>
@@ -891,31 +933,88 @@ const { editorInChief, editors, reviewers } = editorial;
     }
   });
 
-  // Tab switching
+  // Custom Confirmation Modal Helper
+  let pendingDeleteAction: (() => Promise<void>) | null = null;
+  const confirmModal = document.getElementById('confirm-modal');
+  const confirmTitle = document.getElementById('confirm-modal-title');
+  const confirmDesc = document.getElementById('confirm-modal-desc');
+  const confirmItem = document.getElementById('confirm-modal-item');
+  const cancelBtn = document.getElementById('btn-cancel-modal');
+  const confirmBtn = document.getElementById('btn-confirm-delete');
+
+  function openConfirmModal(options: {
+    title: string;
+    message: string;
+    item: string;
+    onConfirm: () => Promise<void>;
+  }) {
+    if (confirmTitle) confirmTitle.textContent = options.title;
+    if (confirmDesc) confirmDesc.textContent = options.message;
+    if (confirmItem) confirmItem.textContent = options.item;
+    pendingDeleteAction = options.onConfirm;
+    confirmModal?.classList.remove('hidden');
+  }
+
+  function closeConfirmModal() {
+    confirmModal?.classList.add('hidden');
+    pendingDeleteAction = null;
+  }
+
+  cancelBtn?.addEventListener('click', closeConfirmModal);
+  confirmModal?.addEventListener('click', (e) => {
+    if (e.target === confirmModal) closeConfirmModal();
+  });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !confirmModal?.classList.contains('hidden')) {
+      closeConfirmModal();
+    }
+  });
+
+  confirmBtn?.addEventListener('click', async () => {
+    if (pendingDeleteAction) {
+      const action = pendingDeleteAction;
+      closeConfirmModal();
+      await action();
+    }
+  });
+
+  // Tab switching with persistence
   const tabs = document.querySelectorAll<HTMLButtonElement>('.admin-tab');
   const panels = document.querySelectorAll<HTMLElement>('.tab-panel');
+
+  function switchTab(targetId: string) {
+    sessionStorage.setItem('sektansia_active_tab', targetId);
+    tabs.forEach((t) => {
+      if (t.getAttribute('data-tab') === targetId) {
+        t.classList.remove('border-transparent', 'text-slate-600');
+        t.classList.add('border-academic-crimson', 'text-academic-crimson', 'font-bold');
+      } else {
+        t.classList.remove('border-academic-crimson', 'text-academic-crimson', 'font-bold');
+        t.classList.add('border-transparent', 'text-slate-600');
+      }
+    });
+
+    panels.forEach((p) => {
+      if (p.id === targetId) {
+        p.classList.remove('hidden');
+      } else {
+        p.classList.add('hidden');
+      }
+    });
+  }
 
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       const targetId = tab.getAttribute('data-tab');
-      if (!targetId) return;
-
-      tabs.forEach((t) => {
-        t.classList.remove('border-academic-crimson', 'text-academic-crimson', 'font-bold');
-        t.classList.add('border-transparent', 'text-slate-600');
-      });
-      tab.classList.remove('border-transparent', 'text-slate-600');
-      tab.classList.add('border-academic-crimson', 'text-academic-crimson', 'font-bold');
-
-      panels.forEach((p) => {
-        if (p.id === targetId) {
-          p.classList.remove('hidden');
-        } else {
-          p.classList.add('hidden');
-        }
-      });
+      if (targetId) switchTab(targetId);
     });
   });
+
+  // Restore active tab
+  const savedTab = sessionStorage.getItem('sektansia_active_tab');
+  if (savedTab && document.getElementById(savedTab)) {
+    switchTab(savedTab);
+  }
 
   // 1. Simpan Naskah Baru (Database)
   const articleForm = document.getElementById('form-new-article');
@@ -987,26 +1086,47 @@ const { editorInChief, editors, reviewers } = editorial;
     }
   });
 
-  // Hapus Artikel
+  // Hapus Artikel (Modal Kustom & Hapus Baris Tanpa Reload)
   document.querySelectorAll<HTMLButtonElement>('.btn-delete-article').forEach((btn) => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', () => {
       const slug = btn.getAttribute('data-slug');
-      if (!slug || !confirm(`Apakah Anda yakin ingin menghapus artikel "${slug}"?`)) return;
+      if (!slug) return;
+      const row = btn.closest('tr');
+      const title = row?.querySelector('td')?.textContent?.trim() || slug;
 
-      try {
-        const res = await fetch('/api/articles', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'delete', slug }),
-        });
-        const json = await res.json();
-        if (json.success) {
-          showToast('✓ Artikel berhasil dihapus dari database!');
-          setTimeout(() => location.reload(), 1000);
-        }
-      } catch (err: any) {
-        showToast('Gagal menghapus: ' + err.message, true);
-      }
+      openConfirmModal({
+        title: 'Hapus Naskah Artikel',
+        message: 'Naskah artikel ini akan dihapus secara permanen dari database Cloudflare D1. Tindakan ini tidak dapat dibatalkan.',
+        item: `Judul: "${title}" (Slug: ${slug})`,
+        onConfirm: async () => {
+          try {
+            const res = await fetch('/api/articles', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'delete', slug }),
+            });
+            const json = await res.json();
+            if (json.success) {
+              if (row) {
+                row.style.transition = 'all 0.3s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(20px)';
+                setTimeout(() => row.remove(), 300);
+              }
+              const tabArt = document.querySelector('[data-tab="tab-articles-list"]');
+              if (tabArt) {
+                const currentRows = document.querySelectorAll('#tab-articles-list tbody tr').length - 1;
+                tabArt.textContent = `Naskah Terbit (${Math.max(0, currentRows)})`;
+              }
+              showToast(`✓ Artikel "${slug}" berhasil dihapus dari database!`);
+            } else {
+              showToast('Gagal menghapus: ' + json.error, true);
+            }
+          } catch (err: any) {
+            showToast('Gagal menghapus: ' + err.message, true);
+          }
+        },
+      });
     });
   });
 
@@ -1080,26 +1200,47 @@ const { editorInChief, editors, reviewers } = editorial;
     }
   });
 
-  // Hapus Anggota Tim Redaksi
+  // Hapus Anggota Tim Redaksi (Modal Kustom & Hapus Baris Tanpa Reload)
   document.querySelectorAll<HTMLButtonElement>('.btn-delete-member').forEach((btn) => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', () => {
       const id = btn.getAttribute('data-id');
-      if (!id || !confirm('Hapus anggota tim ini?')) return;
+      if (!id) return;
+      const row = btn.closest('tr');
+      const name = row?.querySelector('td')?.textContent?.trim() || 'Anggota Redaksi';
 
-      try {
-        const res = await fetch('/api/editorial', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'delete_member', id }),
-        });
-        const json = await res.json();
-        if (json.success) {
-          showToast('✓ Anggota berhasil dihapus dari database!');
-          setTimeout(() => location.reload(), 1000);
-        }
-      } catch (err: any) {
-        showToast('Gagal menghapus: ' + err.message, true);
-      }
+      openConfirmModal({
+        title: 'Hapus Anggota Redaksi',
+        message: 'Data anggota tim redaksi ini akan dihapus secara permanen dari database Cloudflare D1.',
+        item: `Nama: "${name}"`,
+        onConfirm: async () => {
+          try {
+            const res = await fetch('/api/editorial', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'delete_member', id }),
+            });
+            const json = await res.json();
+            if (json.success) {
+              if (row) {
+                row.style.transition = 'all 0.3s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(20px)';
+                setTimeout(() => row.remove(), 300);
+              }
+              const tabEd = document.querySelector('[data-tab="tab-editorial-settings"]');
+              if (tabEd) {
+                const totalRows = document.querySelectorAll('#tab-editorial-settings tbody tr').length - 1;
+                tabEd.textContent = `Tim Redaksi (${Math.max(0, totalRows)})`;
+              }
+              showToast(`✓ Anggota "${name}" berhasil dihapus dari database!`);
+            } else {
+              showToast('Gagal menghapus: ' + json.error, true);
+            }
+          } catch (err: any) {
+            showToast('Gagal menghapus: ' + err.message, true);
+          }
+        },
+      });
     });
   });
 
