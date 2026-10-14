@@ -99,6 +99,13 @@ import { articles, issues } from '../data/articles';
         >
           Pengaturan Kontak & Jurnal
         </button>
+        <button
+          type="button"
+          class="admin-tab py-2.5 px-4 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          data-tab="tab-indexing-settings"
+        >
+          Pengaturan Indexing ({journalConfig.indexing.length})
+        </button>
       </div>
 
       <!-- TAB 1: FORM INPUT ARTIKEL BARU -->
@@ -413,6 +420,73 @@ import { articles, issues } from '../data/articles';
           <p class="text-xs text-slate-500 mt-4">
             💡 Untuk mengubah nilai di atas secara permanen, cukup edit file <code>src/config/journal.ts</code>.
           </p>
+        </div>
+      </div>
+
+      <!-- TAB 5: PENGATURAN INDEXING & PENGINDEKS -->
+      <div id="tab-indexing-settings" class="tab-panel hidden space-y-6">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white">
+          <div class="border-b border-slate-200 pb-3 mb-6 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-serif font-bold text-academic-navy">
+                Kelola Pangkalan Data & Pengindeks Jurnal
+              </h2>
+              <p class="text-xs text-academic-ink-muted mt-1">
+                Daftar pengindeks yang tampil di sidebar, footer, dan halaman <code>/indexing</code>.
+              </p>
+            </div>
+            <a
+              href="/indexing"
+              target="_blank"
+              class="text-xs font-semibold text-blue-700 hover:underline"
+            >
+              Buka Halaman Indexing Publik ↗
+            </a>
+          </div>
+
+          <!-- Tabel Status Pengindeks -->
+          <div class="overflow-x-auto mb-6">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-300">
+                  <th class="p-2.5 font-semibold">Nama Pengindeks</th>
+                  <th class="p-2.5 font-semibold">Kategori</th>
+                  <th class="p-2.5 font-semibold">Status</th>
+                  <th class="p-2.5 font-semibold">Tautan URL</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                {journalConfig.indexing.map((idx) => (
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-2.5 font-bold text-slate-900">{idx.name}</td>
+                    <td class="p-2.5 text-slate-600">{idx.category}</td>
+                    <td class="p-2.5">
+                      <span class={`text-[10px] font-bold px-2 py-0.5 rounded-xs uppercase ${
+                        idx.status === 'Indexed'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : idx.status === 'In Process'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-amber-100 text-amber-800'
+                      }`}>
+                        {idx.status}
+                      </span>
+                    </td>
+                    <td class="p-2.5 font-mono text-slate-500 truncate max-w-xs">
+                      <a href={idx.url} target="_blank" rel="noopener noreferrer" class="hover:underline text-blue-700">{idx.url}</a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Petunjuk Edit Indexing -->
+          <div class="bg-slate-50 p-4 rounded border border-slate-200 text-xs text-slate-700 space-y-2">
+            <span class="font-bold text-slate-900 block">Cara Menambah / Mengubah Pengindeks Baru:</span>
+            <p>
+              Buka file <code>src/config/journal.ts</code> pada bagian array <code>indexing: [...]</code>. Kamu bisa menambah platform baru seperti <strong>DOAJ</strong>, <strong>Scopus</strong>, <strong>EBSCO</strong>, atau <strong>Copernicus</strong> beserta URL dan statusnya. Sistem akan langsung memperbarui seluruh tampilan web dan sidebar.
+            </p>
+          </div>
         </div>
       </div>
     </div>

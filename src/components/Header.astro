@@ -1,137 +1,134 @@
 ---
-import { journalConfig, getWhatsAppSubmissionUrl } from '../config/journal';
+import { journalConfig } from '../config/journal';
 
 const pathname = Astro.url.pathname;
-const navItems = [
-  { href: '/', label: 'Beranda' },
-  { href: '/current', label: 'Terbitan Terkini' },
-  { href: '/archives', label: 'Arsip Edisi' },
-  { href: '/editorial-team', label: 'Dewan Redaksi' },
-  { href: '/guidelines', label: 'Panduan & Kebijakan' },
-  { href: '/submit', label: 'Alur Submit' },
-];
 
-const waQuickSubmitUrl = getWhatsAppSubmissionUrl();
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/current', label: 'Current' },
+  { href: '/archives', label: 'Archives' },
+  { href: '/editorial-team', label: 'Editorial Team' },
+  { href: '/guidelines', label: 'Guidelines & Ethics' },
+  { href: '/indexing', label: 'Abstracting & Indexing' },
+  { href: '/submit', label: 'Submissions' },
+];
 ---
 
-<header class="border-b border-academic-border bg-white shadow-sm sticky top-0 z-40">
-  <!-- Top Masthead Bar -->
-  <div class="bg-academic-navy text-white text-xs py-2 px-4 border-b border-academic-navy-dark">
-    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
-      <div class="flex items-center space-x-3">
-        <span class="font-semibold tracking-wider uppercase text-slate-200">
-          {journalConfig.publisher}
-        </span>
-        <span class="text-slate-400">|</span>
-        <span class="text-slate-300">
-          Diamond Open Access (Bebas Biaya Publikasi)
-        </span>
+<header class="border-b border-slate-300 bg-white">
+  <!-- Topmost Access Bar (Register / Login / Editorial Panel) -->
+  <div class="bg-[#1b4332] text-slate-200 text-xs py-1.5 px-4 border-b border-[#143225]">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="text-[11px] text-emerald-200">
+        <span>{journalConfig.publisher}</span>
+        <span class="mx-1">/</span>
+        <span>{journalConfig.institution}</span>
       </div>
-      <div class="flex items-center space-x-4 text-slate-300">
-        <span>e-ISSN: {journalConfig.eIssn}</span>
-        <span class="hidden sm:inline text-slate-400">|</span>
-        <span class="hidden sm:inline">Terbit 4x Setahun</span>
+      <div class="flex items-center space-x-3 text-xs">
+        <a href="/submit" class="hover:text-white transition-colors">Submit Paper</a>
+        <span class="text-emerald-500">|</span>
+        <a href="/admin" class="hover:text-white font-medium text-emerald-100 transition-colors">
+          Panel Redaksi (Admin)
+        </a>
       </div>
     </div>
   </div>
 
-  <!-- Main Journal Title Area -->
-  <div class="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-    <div>
-      <div class="flex items-center gap-2 mb-1">
-        <span class="academic-badge bg-academic-crimson text-white">
-          {journalConfig.shortName}
-        </span>
-        <span class="text-xs uppercase tracking-wider text-academic-ink-subtle font-medium">
-          Riset Ilmiah Akuntansi, Pemeriksaan, & Perpajakan Terbuka
-        </span>
-      </div>
-      <a href="/" class="group block">
-        <h1 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy group-hover:text-academic-crimson transition-colors">
-          {journalConfig.name}
-        </h1>
-      </a>
-      <p class="text-sm text-academic-ink-muted mt-1 max-w-3xl">
-        Media diseminasi riset empiris dan konseptual di bidang auditing, tata kelola akuntansi, dan kebijakan perpajakan terapan.
-      </p>
-    </div>
+  <!-- Main OJS Journal Header Banner (Matching Image 2) -->
+  <div class="bg-[#1f543c] text-white py-6 px-4">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <!-- Big Journal Acronym Logo Block -->
+        <a href="/" class="flex-shrink-0">
+          <div class="px-3 py-2 bg-white/10 hover:bg-white/15 border-2 border-white/30 rounded-xs text-center transition-colors">
+            <span class="text-3xl md:text-4xl font-serif font-black tracking-wider text-white block">
+              {journalConfig.shortName}
+            </span>
+          </div>
+        </a>
 
-    <!-- Quick Submit Action Buttons -->
-    <div class="flex items-center gap-2 self-start md:self-center shrink-0">
-      <a
-        href="/submit"
-        class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-academic-crimson hover:bg-academic-crimson-light rounded transition-colors shadow-sm min-h-[44px]"
-      >
-        Kirim Naskah (Gratis)
-      </a>
-      <a
-        href={waQuickSubmitUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded transition-colors min-h-[44px]"
-        title="Konsultasi cepat dengan Redaksi via WhatsApp"
-      >
-        Konsultasi WA
-      </a>
+        <!-- Title & Subtitles -->
+        <div>
+          <a href="/" class="hover:underline">
+            <h1 class="text-xl md:text-2xl font-serif font-bold text-white tracking-wide leading-tight">
+              {journalConfig.name}
+            </h1>
+          </a>
+          <p class="text-xs md:text-sm text-emerald-100 font-serif italic mt-0.5">
+            {journalConfig.nameEn}
+          </p>
+          <div class="flex flex-wrap items-center gap-2 text-xs text-emerald-200 mt-1">
+            <span>{journalConfig.accreditedText}</span>
+            <span>•</span>
+            <span class="font-mono">e-ISSN {journalConfig.eIssn}</span>
+            <span>•</span>
+            <span class="font-mono">p-ISSN {journalConfig.pIssn}</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Navigation Menu Bar -->
-  <nav class="border-t border-academic-border bg-academic-paper-muted" aria-label="Navigasi Utama">
+  <!-- Classic OJS Horizontal Navigation Menu Bar -->
+  <nav class="bg-[#2d3748] text-white text-xs border-b border-slate-700" aria-label="Navigasi Utama OJS">
     <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-      <!-- Desktop Menu -->
-      <ul class="hidden md:flex flex-wrap items-center text-sm font-medium">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+      <!-- Desktop Links -->
+      <ul class="hidden md:flex flex-wrap items-center font-medium">
+        {navLinks.map((link) => {
+          const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
           return (
             <li>
               <a
-                href={item.href}
-                class={`inline-block py-3 px-4 border-b-2 transition-colors ${
+                href={link.href}
+                class={`inline-block py-2.5 px-4 transition-colors border-r border-slate-600/50 ${
                   isActive
-                    ? 'border-academic-crimson text-academic-crimson font-semibold bg-white'
-                    : 'border-transparent text-academic-ink-muted hover:text-academic-navy hover:bg-white/60'
+                    ? 'bg-[#1a202c] text-white font-bold'
+                    : 'text-slate-200 hover:bg-[#1a202c] hover:text-white'
                 }`}
               >
-                {item.label}
+                {link.label}
               </a>
             </li>
           );
         })}
       </ul>
 
-      <!-- Mobile Menu Button (Accessible, tap target >= 44px) -->
-      <div class="md:hidden py-2 flex items-center justify-between w-full">
-        <span class="text-xs font-semibold uppercase text-academic-ink-muted">Menu Navigasi</span>
+      <!-- Quick Search / Admin indicator on right -->
+      <div class="hidden md:flex items-center text-xs text-slate-300">
+        <a href="/submit" class="py-2.5 px-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold transition-colors">
+          Submit Naskah
+        </a>
+      </div>
+
+      <!-- Mobile Menu Toggle Button (tap target >= 44px) -->
+      <div class="md:hidden py-1 flex items-center justify-between w-full">
+        <span class="text-xs uppercase font-semibold text-slate-300">Menu Jurnal</span>
         <button
           type="button"
-          id="mobile-menu-toggle"
-          class="inline-flex items-center justify-center p-2 rounded text-academic-navy hover:bg-slate-200 focus:outline-none min-w-[44px] min-h-[44px]"
+          id="ojs-mobile-menu-btn"
+          class="p-2 text-slate-200 hover:text-white focus:outline-none min-w-[44px] min-h-[44px] flex items-center justify-center"
           aria-expanded="false"
-          aria-controls="mobile-menu"
-          aria-label="Buka menu navigasi"
+          aria-controls="ojs-mobile-menu"
+          aria-label="Toggle Navigation Menu"
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
       </div>
     </div>
 
-    <!-- Mobile Menu Drawer -->
-    <div id="mobile-menu" class="hidden md:hidden border-t border-academic-border bg-white px-4 pt-2 pb-4 space-y-1">
-      {navItems.map((item) => {
-        const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+    <!-- Mobile Drawer -->
+    <div id="ojs-mobile-menu" class="hidden md:hidden bg-[#1a202c] px-4 py-2 border-t border-slate-700 space-y-1">
+      {navLinks.map((link) => {
+        const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
         return (
           <a
-            href={item.href}
-            class={`block py-3 px-3 rounded text-base font-medium min-h-[44px] flex items-center ${
-              isActive
-                ? 'bg-academic-crimson text-white'
-                : 'text-academic-navy hover:bg-slate-100'
+            href={link.href}
+            class={`block py-2.5 px-3 text-sm rounded ${
+              isActive ? 'bg-emerald-800 text-white font-bold' : 'text-slate-300 hover:bg-slate-800'
             }`}
           >
-            {item.label}
+            {link.label}
           </a>
         );
       })}
@@ -140,24 +137,20 @@ const waQuickSubmitUrl = getWhatsAppSubmissionUrl();
 </header>
 
 <script>
-  // Script navigasi mobile menu yang fungsional & accessible (R-26 & R-32)
-  const menuToggle = document.getElementById('mobile-menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('ojs-mobile-menu-btn');
+  const menu = document.getElementById('ojs-mobile-menu');
 
-  if (menuToggle && mobileMenu) {
-    menuToggle.addEventListener('click', () => {
-      const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-      menuToggle.setAttribute('aria-expanded', String(!isExpanded));
-      mobileMenu.classList.toggle('hidden');
-    });
+  btn?.addEventListener('click', () => {
+    const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!isExpanded));
+    menu?.classList.toggle('hidden');
+  });
 
-    // Tutup saat menekan tombol Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
-        mobileMenu.classList.add('hidden');
-        menuToggle.setAttribute('aria-expanded', 'false');
-        menuToggle.focus();
-      }
-    });
-  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu && !menu.classList.contains('hidden')) {
+      menu.classList.add('hidden');
+      btn?.setAttribute('aria-expanded', 'false');
+      btn?.focus();
+    }
+  });
 </script>

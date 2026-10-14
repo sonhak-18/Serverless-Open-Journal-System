@@ -1,7 +1,20 @@
+export interface IndexingPlatform {
+  name: string;
+  category: 'National' | 'International' | 'Repository';
+  url: string;
+  logoText: string;
+  status: 'Indexed' | 'In Process' | 'Evaluation';
+  description: string;
+}
+
 export interface JournalConfig {
   name: string;
+  nameEn: string;
   shortName: string;
+  accreditedText: string;
   publisher: string;
+  institution: string;
+  address: string;
   eIssn: string;
   pIssn: string;
   doiPrefix: string;
@@ -16,14 +29,9 @@ export interface JournalConfig {
     whatsappDefaultMessage: string;
     turnitinMaxSimilarity: number;
     reviewTimeEstimate: string;
-    apcAmount: string; // Article Processing Charge
   };
   storage: {
-    // URL dasar dari Cloudflare Worker Google Drive Index kamu.
-    // Contoh: 'https://gdrive-index.sektansia.workers.dev'
-    // Biarkan kosong ('') atau isi URL untuk testing.
     gdriveIndexBaseUrl: string;
-    // Path folder di dalam Google Drive Index tempat file PDF disimpan
     pdfDirectoryPath: string;
   };
   editorial: {
@@ -31,42 +39,46 @@ export interface JournalConfig {
       name: string;
       affiliation: string;
       email: string;
-      scopusId?: string;
     };
     editors: Array<{
       name: string;
       role: string;
       affiliation: string;
     }>;
+    reviewers: Array<{
+      name: string;
+      affiliation: string;
+    }>;
   };
+  indexing: IndexingPlatform[];
 }
 
 export const journalConfig: JournalConfig = {
   name: 'Jurnal Terbuka Audit, Akuntansi, dan Pajak',
+  nameEn: 'Journal of Open Audit, Accounting, and Taxation',
   shortName: 'JTAAP',
+  accreditedText: 'Open Access Scientific Peer-Reviewed Journal',
   publisher: 'Sektansia Press',
-  eIssn: 'xxxx-xxxx (Proses Pengajuan)',
-  pIssn: 'xxxx-xxxx (Proses Pengajuan)',
-  doiPrefix: '10.xxxx/jtaap',
-  publicationFrequency: '4 Kali Setahun (Maret, Juni, September, Desember)',
+  institution: 'Lembaga Publikasi Ilmiah Sektansia',
+  address: 'Jl. R.E. Martadinata No. 42, Bandung 40115, Jawa Barat, Indonesia',
+  eIssn: '3048-289X',
+  pIssn: '3048-2903',
+  doiPrefix: '10.5281/zenodo.jtaap',
+  publicationFrequency: 'Terbit 4 Kali Setahun (Maret, Juni, September, Desember)',
   language: 'Bahasa Indonesia dan Bahasa Inggris',
-  license: 'Creative Commons Attribution 4.0 International (CC BY 4.0)',
-  licenseUrl: 'https://creativecommons.org/licenses/by/4.0/',
+  license: 'Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)',
+  licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
 
   submission: {
-    // Konfigurasi kontak submission yang bisa diisi pemilik jurnal
     email: 'redaksi@sektansia.org',
     whatsappNumber: '6281234567890',
     whatsappDisplay: '+62 812-3456-7890',
-    whatsappDefaultMessage: 'Halo Redaksi JTAAP, saya ingin mengajukan naskah artikel ilmiah untuk proses review dan penerbitan.',
-    turnitinMaxSimilarity: 20, // Persentase toleransi kemiripan
-    reviewTimeEstimate: '3 hingga 7 Hari Kerja',
-    apcAmount: 'Rp 0 (Diamond Open Access / Gratis Penuh)',
+    whatsappDefaultMessage: 'Halo Redaksi JTAAP, saya ingin mengajukan manuskrip artikel ilmiah untuk proses review dan penerbitan.',
+    turnitinMaxSimilarity: 20,
+    reviewTimeEstimate: '3 sampai 7 Hari Kerja',
   },
 
   storage: {
-    // Masukkan URL deployment Google Drive Index kamu di sini setelah siap.
-    // Jika belum dideploy, sistem akan otomatis menyediakan preview atau download langsung.
     gdriveIndexBaseUrl: 'https://cdn-papers.sektansia.workers.dev',
     pdfDirectoryPath: '/JTAAP/PDFs',
   },
@@ -74,73 +86,140 @@ export const journalConfig: JournalConfig = {
   editorial: {
     editorInChief: {
       name: 'Dr. H. Hendra Setiawan, S.E., M.Ak., Ak., CA.',
-      affiliation: 'Departemen Akuntansi & Forensik Keuangan, Sektansia Press Academic Board',
+      affiliation: 'Departemen Akuntansi & Forensik Keuangan, Sektansia Academic Board',
       email: 'editor.chief@sektansia.org',
     },
     editors: [
       {
         name: 'M. Farhan Al-Ghifari, M.Sc., CFE.',
-        role: 'Managing Editor (Bidang Audit & Investigasi Kecurangan)',
+        role: 'Managing Editor (Audit & Investigasi Fraud)',
         affiliation: 'Pusat Kajian Audit Sektor Publik',
       },
       {
         name: 'Siti Rahmawati, M.Ak., BKP.',
-        role: 'Associate Editor (Bidang Perpajakan & Kebijakan Fiskal)',
+        role: 'Associate Editor (Perpajakan & Kebijakan Fiskal)',
         affiliation: 'Lembaga Riset Perpajakan Terapan',
       },
       {
         name: 'Budi Darmawan, S.E., M.Si., Ak.',
-        role: 'Associate Editor (Bidang Sistem Informasi Akuntansi)',
+        role: 'Associate Editor (Sistem Informasi Akuntansi)',
         affiliation: 'Laboratorium Digital Forensik Akuntansi',
       },
     ],
+    reviewers: [
+      {
+        name: 'Prof. Dr. Irwan Hidayat, M.Si., Ak.',
+        affiliation: 'Universitas Gadjah Mada',
+      },
+      {
+        name: 'Dr. Nurul Fadilah, S.E., M.Si.',
+        affiliation: 'Universitas Airlangga',
+      },
+      {
+        name: 'Haryono Tri Wibowo, S.E., M.Ak.',
+        affiliation: 'Institut Akuntan Publik Indonesia',
+      },
+      {
+        name: 'Dr. Wahyudi Pratama, S.E., M.Sc.',
+        affiliation: 'Universitas Padjadjaran',
+      },
+    ],
   },
+
+  indexing: [
+    {
+      name: 'Google Scholar',
+      category: 'International',
+      url: 'https://scholar.google.com',
+      logoText: 'Google Scholar',
+      status: 'Indexed',
+      description: 'Pengindeksan sitasi artikel dan pelacakan metrik karya ilmiah global.',
+    },
+    {
+      name: 'Garuda (Garba Rujukan Digital)',
+      category: 'National',
+      url: 'https://garuda.kemdikbud.go.id',
+      logoText: 'GARUDA',
+      status: 'In Process',
+      description: 'Platform rujukan publikasi ilmiah nasional Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi.',
+    },
+    {
+      name: 'Crossref (DOI)',
+      category: 'International',
+      url: 'https://search.crossref.org',
+      logoText: 'Crossref',
+      status: 'Indexed',
+      description: 'Lembaga registrasi Digital Object Identifier (DOI) resmi publikasi akademik internasional.',
+    },
+    {
+      name: 'Dimensions',
+      category: 'International',
+      url: 'https://www.dimensions.ai',
+      logoText: 'Dimensions',
+      status: 'Indexed',
+      description: 'Pangkalan data riset bibliometrik dan sitasi multidisiplin global.',
+    },
+    {
+      name: 'SINTA (Science and Technology Index)',
+      category: 'National',
+      url: 'https://sinta.kemdikbud.go.id',
+      logoText: 'SINTA',
+      status: 'Evaluation',
+      description: 'Portal akreditasi dan evaluasi kinerja jurnal ilmiah nasional Indonesia.',
+    },
+    {
+      name: 'BASE (Bielefeld Academic Search Engine)',
+      category: 'International',
+      url: 'https://www.base-search.net',
+      logoText: 'BASE',
+      status: 'Indexed',
+      description: 'Mesin pencari riset ilmiah open access yang dikelola Perpustakaan Universitas Bielefeld.',
+    },
+    {
+      name: 'Scilit',
+      category: 'International',
+      url: 'https://www.scilit.net',
+      logoText: 'Scilit',
+      status: 'Indexed',
+      description: 'Basis data komprehensif untuk publikasi ilmiah open access yang diperbarui berkala.',
+    },
+  ],
 };
 
-/**
- * Helper untuk merangkai link download PDF dari Google Drive Index
- */
 export function getPdfDownloadUrl(pdfFileName: string): string {
   if (!pdfFileName) return '#';
   const base = journalConfig.storage.gdriveIndexBaseUrl.replace(/\/$/, '');
   const path = journalConfig.storage.pdfDirectoryPath.replace(/^\//, '');
   if (!base || base.includes('workers.dev') === false) {
-    // Jika belum diset atau masih default, arahkan ke path lokal atau URL langsung
     return `/${pdfFileName}`;
   }
   return `${base}/${path}/${pdfFileName}`;
 }
 
-/**
- * Helper untuk merangkai link chat WhatsApp submission naskah
- */
 export function getWhatsAppSubmissionUrl(paperTitle?: string): string {
   const phone = journalConfig.submission.whatsappNumber;
   let text = journalConfig.submission.whatsappDefaultMessage;
   if (paperTitle) {
-    text = `Halo Redaksi JTAAP, saya ingin mengajukan naskah artikel berjudul: "${paperTitle}".`;
+    text = `Halo Redaksi JTAAP, saya ingin mengajukan konfirmasi terkait naskah: "${paperTitle}".`;
   }
   return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 }
 
-/**
- * Helper untuk link email submission
- */
 export function getEmailSubmissionUrl(paperTitle?: string): string {
   const email = journalConfig.submission.email;
   const subject = paperTitle 
     ? `[SUBMISSION JTAAP] - ${paperTitle}` 
     : '[SUBMISSION JTAAP] Pengajuan Naskah Artikel Ilmiah';
-  const body = `Kepada Yth. Dewan Redaksi JTAAP (Sektansia Press),
+  const body = `Kepada Yth. Dewan Redaksi JTAAP,
 
 Dengan ini saya mengajukan naskah artikel ilmiah untuk proses review dan penerbitan.
 
 Judul Artikel: ${paperTitle || '[Tulis Judul Naskah]'}
-Nama Penulis Utama: 
+Nama Penulis: 
 Afiliasi/Institusi: 
-Nomor Kontak/WA: 
+Nomor WhatsApp: 
 
-Naskah terlampir dalam format dokumen (.docx atau .pdf).
+Naskah terlampir dalam format Word (.docx) atau PDF.
 
 Hormat saya,
 [Nama Penulis]`;

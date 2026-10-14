@@ -1,0 +1,73 @@
+---
+import { getPdfDownloadUrl } from '../config/journal';
+import type { Article } from '../data/articles';
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const pdfUrl = getPdfDownloadUrl(article.pdfFileName);
+
+// Mock realistic OJS download/view counters based on article page numbers
+const abstractViews = 280 + article.firstPage * 14;
+const pdfDownloads = 110 + article.firstPage * 8;
+---
+
+<div class="py-4 border-b border-slate-200">
+  <div class="flex items-baseline justify-between gap-4">
+    <div class="flex-grow">
+      <!-- Judul Artikel (Link Klasik OJS) -->
+      <h3 class="text-sm md:text-base font-serif font-bold text-[#1b3d6d] hover:text-amber-700 leading-snug">
+        <a href={`/article/${article.slug}`}>
+          {article.title}
+        </a>
+      </h3>
+
+      <!-- Nama Penulis -->
+      <p class="text-xs text-slate-600 italic mt-1">
+        {article.authors.map((author, index) => (
+          <span>
+            {author.name}
+            {index < article.authors.length - 1 ? ', ' : ''}
+          </span>
+        ))}
+      </p>
+    </div>
+
+    <!-- Nomor Halaman di Kolom Kanan (Khas OJS) -->
+    <div class="text-xs text-slate-600 font-mono shrink-0">
+      {article.pages}
+    </div>
+  </div>
+
+  <!-- Tombol PDF Klasik OJS & Statistik View -->
+  <div class="mt-3 flex flex-wrap items-center gap-3">
+    <!-- Tombol PDF Abu-abu OJS -->
+    <a
+      href={pdfUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-600 hover:bg-slate-700 text-white text-xs font-bold rounded-xs tracking-wider shadow-2xs transition-colors"
+      title={`Unduh Naskah PDF (${article.pdfFileName})`}
+    >
+      <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+      </svg>
+      <span>PDF</span>
+    </a>
+
+    <!-- Indikator Metrik View / Download OJS -->
+    <div class="flex items-center gap-2 text-[11px] text-slate-500 font-mono">
+      <span class="inline-flex items-center gap-1">
+        <span class="text-emerald-700">📊</span>
+        <span>Abstract View: {abstractViews}</span>
+      </span>
+      <span>|</span>
+      <span class="inline-flex items-center gap-1">
+        <span class="text-red-700">📄</span>
+        <span>PDF Download: {pdfDownloads}</span>
+      </span>
+    </div>
+  </div>
+</div>

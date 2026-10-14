@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ArticleCard from '../components/ArticleCard.astro';
+import SidebarOJS from '../components/SidebarOJS.astro';
+import ArticleItemOJS from '../components/ArticleItemOJS.astro';
 import { journalConfig } from '../config/journal';
 import { getCurrentIssue, getArticlesByIssue } from '../data/articles';
 
@@ -8,47 +9,74 @@ const currentIssue = getCurrentIssue();
 const currentArticles = getArticlesByIssue(currentIssue.volume, currentIssue.issue);
 ---
 
-<Layout title="Terbitan Terkini" description={`Daftar artikel ilmiah terbitan terkini ${journalConfig.name} - ${currentIssue.title}`}>
-  <div class="max-w-7xl mx-auto px-4 py-10">
-    <!-- Header Edisi Terkini -->
-    <div class="border-b border-academic-border pb-6 mb-8">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="academic-badge bg-academic-crimson text-white">Edisi Terkini</span>
-        <span class="text-xs text-academic-ink-subtle">{currentIssue.monthRange}</span>
-      </div>
-
-      <h1 class="text-3xl font-serif font-bold text-academic-navy">
-        {currentIssue.title}
-      </h1>
-
-      <p class="text-sm text-academic-ink-muted mt-2 max-w-3xl leading-relaxed">
-        {currentIssue.description}
-      </p>
-
-      <div class="flex flex-wrap items-center gap-4 text-xs text-academic-ink-subtle mt-4 pt-3 border-t border-slate-200">
-        <span>Tanggal Rilis: {new Date(currentIssue.publishDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-        <span>•</span>
-        <span>Jumlah Naskah: {currentArticles.length} Artikel Riset</span>
-        <span>•</span>
-        <span>Lisensi: CC BY 4.0</span>
-      </div>
-    </div>
-
-    <!-- Daftar Naskah Terbit -->
-    <div class="space-y-4">
-      <h2 class="text-lg font-serif font-bold text-academic-navy">
-        Daftar Artikel (Table of Contents)
-      </h2>
-
-      {currentArticles.length > 0 ? (
-        currentArticles.map((article) => (
-          <ArticleCard article={article} />
-        ))
-      ) : (
-        <div class="p-8 text-center bg-white border border-academic-border rounded text-sm text-slate-500">
-          Belum ada artikel yang dipublikasikan pada edisi ini.
+<Layout title="Current Issue" description={`Terbitan terkini ${journalConfig.name} - ${currentIssue.title}`}>
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Kolom Kiri: Edisi Terkini (~68%) -->
+      <main class="lg:col-span-8 space-y-6">
+        <div class="text-xs text-slate-500 mb-2">
+          <a href="/" class="hover:underline">Home</a> &gt; <span>Current Issue</span>
         </div>
-      )}
+
+        <div class="border-b-2 border-amber-600 pb-2">
+          <h1 class="text-xl md:text-2xl font-serif font-bold text-slate-900">
+            Vol. {currentIssue.volume} No. {currentIssue.issue} ({currentIssue.year}): {currentIssue.monthRange}
+          </h1>
+        </div>
+
+        <!-- Detail Terbitan & Cover -->
+        <div class="p-4 border border-slate-200 bg-white rounded-xs flex flex-col sm:flex-row gap-5 items-start">
+          <div class="w-32 shrink-0 border border-slate-300 shadow-xs bg-[#1f543c] text-white p-3 flex flex-col justify-between aspect-[3/4] text-center">
+            <div>
+              <span class="text-[9px] uppercase tracking-widest block text-emerald-200">JTAAP</span>
+              <span class="text-xs font-serif font-bold mt-2 block leading-tight">
+                JURNAL TERBUKA AUDIT, AKUNTANSI, PAJAK
+              </span>
+            </div>
+            <div class="text-[8px] text-emerald-100 border-t border-emerald-600/60 pt-1">
+              Vol. {currentIssue.volume} No. {currentIssue.issue} ({currentIssue.year})
+            </div>
+          </div>
+
+          <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
+            <p>{currentIssue.description}</p>
+            <div class="pt-2 text-[11px] text-slate-600 border-t border-slate-100 space-y-1">
+              <div>
+                <strong>DOI Edisi:</strong>{' '}
+                <a href={`https://doi.org/${journalConfig.doiPrefix}.v1i1`} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
+                  https://doi.org/{journalConfig.doiPrefix}.v1i1
+                </a>
+              </div>
+              <div>
+                <strong>Tanggal Terbit:</strong> {new Date(currentIssue.publishDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daftar Naskah OJS -->
+        <div class="mt-8 space-y-2">
+          <div class="border-b-2 border-amber-600 pb-1 flex justify-between items-baseline">
+            <h2 class="text-base font-serif font-bold text-slate-900">
+              Articles
+            </h2>
+            <span class="text-xs text-slate-500">
+              {currentArticles.length} Naskah
+            </span>
+          </div>
+
+          <div class="divide-y divide-slate-200">
+            {currentArticles.map((article) => (
+              <ArticleItemOJS article={article} />
+            ))}
+          </div>
+        </div>
+      </main>
+
+      <!-- Kolom Kanan: Sidebar Standarisasi OJS (~32%) -->
+      <div class="lg:col-span-4">
+        <SidebarOJS />
+      </div>
     </div>
   </div>
 </Layout>

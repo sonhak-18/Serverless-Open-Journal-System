@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { articles, getArticleBySlug } from '../../data/articles';
+import SidebarOJS from '../../components/SidebarOJS.astro';
+import { articles } from '../../data/articles';
 import { journalConfig, getPdfDownloadUrl, getWhatsAppSubmissionUrl } from '../../config/journal';
 
 export function getStaticPaths() {
@@ -13,8 +14,6 @@ export function getStaticPaths() {
 const { article } = Astro.props;
 const pdfUrl = getPdfDownloadUrl(article.pdfFileName);
 
-// Generate academic citation strings
-const authorNames = article.authors.map((a) => a.name).join(', ');
 const firstAuthorLastName = article.authors[0].name.split(' ').slice(-1)[0];
 const apaCitation = `${firstAuthorLastName}, ${article.authors[0].name.charAt(0)}. (${article.year}). ${article.title}. ${journalConfig.name}, ${article.volume}(${article.issue}), ${article.pages}. https://doi.org/${article.doi}`;
 const ieeeCitation = `${article.authors.map(a => `${a.name.charAt(0)}. ${a.name.split(' ').slice(-1)[0]}`).join(', ')}, "${article.title}," ${journalConfig.shortName}, vol. ${article.volume}, no. ${article.issue}, pp. ${article.pages}, ${article.year}, doi: ${article.doi}.`;
@@ -24,211 +23,150 @@ const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
 ---
 
 <Layout title={article.title} description={article.abstract} article={article}>
-  <div class="max-w-5xl mx-auto px-4 py-8">
-    <!-- Breadcrumb -->
-    <nav class="text-xs text-academic-ink-subtle mb-6 flex flex-wrap items-center gap-2" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-academic-navy">Beranda</a>
-      <span>/</span>
-      <a href="/archives" class="hover:text-academic-navy">Arsip</a>
-      <span>/</span>
-      <a href="/current" class="hover:text-academic-navy">Vol. {article.volume} No. {article.issue} ({article.year})</a>
-      <span>/</span>
-      <span class="text-slate-500 font-medium truncate max-w-xs">{article.title}</span>
-    </nav>
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Kolom Kiri: Naskah Lengkap (~68%) -->
+      <main class="lg:col-span-8 space-y-6">
+        <!-- Breadcrumb OJS -->
+        <nav class="text-xs text-slate-500 flex flex-wrap items-center gap-1.5" aria-label="Breadcrumb">
+          <a href="/" class="hover:underline">Home</a>
+          <span>&gt;</span>
+          <a href="/archives" class="hover:underline">Archives</a>
+          <span>&gt;</span>
+          <a href="/current" class="hover:underline">Vol. {article.volume} No. {article.issue} ({article.year})</a>
+          <span>&gt;</span>
+          <span class="text-slate-700 font-medium truncate max-w-sm">{article.title}</span>
+        </nav>
 
-    <!-- Header Artikel -->
-    <header class="border-b border-academic-border pb-6">
-      <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="academic-badge bg-academic-crimson text-white">
-          Bidang {article.subject}
-        </span>
-        <span class="text-xs text-academic-ink-muted">
-          Vol. {article.volume} No. {article.issue} ({article.year}), Halaman {article.pages}
-        </span>
-      </div>
+        <!-- Header Artikel -->
+        <div class="border-b border-slate-200 pb-5">
+          <h1 class="text-xl md:text-2xl font-serif font-bold text-slate-900 leading-snug">
+            {article.title}
+          </h1>
 
-      <h1 class="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-academic-navy leading-tight">
-        {article.title}
-      </h1>
-
-      <!-- Author List -->
-      <div class="mt-4 space-y-2">
-        {article.authors.map((author, index) => (
-          <div class="text-sm">
-            <span class="font-semibold text-academic-navy">{author.name}</span>
-            {author.email && (
-              <span class="text-xs text-slate-500 ml-1 font-mono">({author.email})</span>
-            )}
-            <p class="text-xs text-academic-ink-muted">{author.affiliation}</p>
+          <!-- Daftar Penulis -->
+          <div class="mt-4 space-y-1">
+            {article.authors.map((author) => (
+              <div class="text-xs">
+                <span class="font-bold text-[#1b3d6d]">{author.name}</span>
+                {author.email && (
+                  <span class="text-slate-500 font-mono ml-1">({author.email})</span>
+                )}
+                <p class="text-slate-600 italic">{author.affiliation}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      <!-- Riwayat Artikel & DOI -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-academic-paper-muted p-3 rounded mt-6 text-xs text-academic-ink-muted">
-        <div>
-          <span class="block text-slate-500">Tanggal Masuk:</span>
-          <span class="font-medium text-academic-ink">{new Date(article.receivedDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+          <!-- Metadata Penerbitan OJS -->
+          <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-4 text-xs text-slate-600">
+            <div>
+              <strong>DOI:</strong>{' '}
+              <a href={`https://doi.org/${article.doi}`} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
+                https://doi.org/{article.doi}
+              </a>
+            </div>
+            <div>
+              <strong>Halaman:</strong> {article.pages}
+            </div>
+            <div>
+              <strong>Dipublikasikan:</strong> {new Date(article.publishDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </div>
+          </div>
         </div>
-        <div>
-          <span class="block text-slate-500">Tanggal Diterima:</span>
-          <span class="font-medium text-academic-ink">{new Date(article.acceptedDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-        </div>
-        <div>
-          <span class="block text-slate-500">Tanggal Terbit:</span>
-          <span class="font-medium text-academic-ink">{new Date(article.publishDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-        </div>
-        <div>
-          <span class="block text-slate-500">Pengidentifikasi DOI:</span>
-          <a href={`https://doi.org/${article.doi}`} target="_blank" rel="noopener noreferrer" class="font-mono text-academic-crimson hover:underline truncate block">
-            {article.doi}
+
+        <!-- Tombol Download PDF OJS Style -->
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xs flex items-center justify-between">
+          <div>
+            <span class="block text-xs font-bold text-slate-800">Naskah Lengkap Artikel:</span>
+            <span class="text-[11px] text-slate-500 font-mono">{article.pdfFileName}</span>
+          </div>
+
+          <a
+            href={pdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold rounded-xs tracking-wider shadow-xs transition-colors"
+          >
+            <span>UNDUH PDF</span>
           </a>
         </div>
-      </div>
-    </header>
 
-    <!-- Konten Utama: Abstrak & Download -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
-      <!-- Kolom Abstrak & Metadata -->
-      <div class="lg:col-span-8 space-y-6">
-        <div>
-          <h2 class="text-lg font-serif font-bold text-academic-navy mb-2">
-            Abstrak
+        <!-- Abstrak -->
+        <div class="space-y-2">
+          <h2 class="text-sm font-serif font-bold uppercase tracking-wider text-slate-900 border-b border-slate-200 pb-1">
+            Abstract
           </h2>
-          <p class="text-sm md:text-base text-academic-ink leading-relaxed text-justify bg-white p-6 rounded border border-academic-border shadow-sm">
+          <p class="text-xs md:text-sm text-slate-700 leading-relaxed text-justify bg-white p-5 border border-slate-200 rounded-xs">
             {article.abstract}
           </p>
         </div>
 
+        <!-- Kata Kunci -->
         <div>
-          <h3 class="text-sm font-semibold uppercase tracking-wider text-academic-navy mb-2">
-            Kata Kunci
+          <h3 class="text-xs font-bold uppercase text-slate-800 mb-1.5">
+            Keywords:
           </h3>
-          <div class="flex flex-wrap gap-2">
-            {article.keywords.map((kw) => (
-              <span class="text-xs bg-slate-200/80 text-academic-navy font-medium px-2.5 py-1 rounded">
-                {kw}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <!-- Widget Format Sitasi (Berfungsi Nyata & Bisa Dicopy) -->
-        <div class="academic-card p-5 rounded border border-academic-border mt-8">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-            <h3 class="text-sm font-serif font-bold text-academic-navy">
-              Cara Mensitasi Naskah Ini
-            </h3>
-            <span class="text-xs text-academic-ink-subtle">Pilih Format Sitasi</span>
-          </div>
-
-          <div class="mt-4">
-            <div class="flex border-b border-slate-200 text-xs font-medium space-x-4 mb-3" role="tablist">
-              <button type="button" id="tab-apa" class="citation-tab py-1 border-b-2 border-academic-crimson text-academic-crimson font-bold" data-target="content-apa">
-                APA 7th
-              </button>
-              <button type="button" id="tab-ieee" class="citation-tab py-1 border-b-2 border-transparent text-slate-500 hover:text-academic-navy" data-target="content-ieee">
-                IEEE
-              </button>
-              <button type="button" id="tab-harvard" class="citation-tab py-1 border-b-2 border-transparent text-slate-500 hover:text-academic-navy" data-target="content-harvard">
-                Harvard
-              </button>
-            </div>
-
-            <!-- Konten Sitasi -->
-            <div class="relative bg-slate-50 p-3 rounded border border-slate-200 font-mono text-xs text-slate-800 leading-relaxed">
-              <p id="content-apa" class="citation-content">{apaCitation}</p>
-              <p id="content-ieee" class="citation-content hidden">{ieeeCitation}</p>
-              <p id="content-harvard" class="citation-content hidden">{harvardCitation}</p>
-            </div>
-
-            <div class="mt-3 flex items-center justify-between">
-              <span id="copy-status" class="text-xs text-emerald-700 font-medium opacity-0 transition-opacity">
-                ✓ Sitasi berhasil disalin ke clipboard!
-              </span>
-              <button
-                type="button"
-                id="btn-copy-citation"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-academic-navy bg-slate-200 hover:bg-slate-300 rounded transition-colors min-h-[36px]"
-              >
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                </svg>
-                <span>Salin Sitasi</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pernyataan Hak Cipta & Akses Terbuka -->
-        <div class="bg-slate-50 p-4 rounded text-xs text-slate-600 border border-slate-200 flex items-start gap-3">
-          <div class="text-xl">⚖️</div>
-          <div>
-            <p class="font-semibold text-slate-800">Lisensi Terbuka (Open Access)</p>
-            <p class="mt-0.5">
-              Artikel ini didistribusikan di bawah ketentuan lisensi <a href={journalConfig.licenseUrl} target="_blank" rel="noopener noreferrer" class="underline text-academic-navy font-medium">{journalConfig.license}</a>, yang mengizinkan penggunaan, distribusi, dan reproduksi tanpa batas di media apa pun, asalkan penulis asli dan sumber terbitan dikutip secara benar.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kolom Samping: Aksi Download & Storage -->
-      <div class="lg:col-span-4 space-y-4">
-        <div class="academic-card p-6 rounded border border-academic-border bg-white shadow-sm">
-          <h3 class="text-sm font-serif font-bold text-academic-navy uppercase tracking-wider pb-2 border-b border-slate-200 mb-4">
-            Dokumen Naskah Lengkap
-          </h3>
-
-          <div class="space-y-3">
-            <a
-              href={pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-white bg-academic-crimson hover:bg-academic-crimson-light rounded transition-colors shadow min-h-[44px]"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <span>Unduh Naskah Lengkap (PDF)</span>
-            </a>
-
-            <div class="text-xs text-academic-ink-muted text-center">
-              <span>Ukuran file: ~{Math.round(article.fileSizeBytes / 1024)} KB</span>
-              <span class="mx-1">•</span>
-              <span>Format: PDF Portable</span>
-            </div>
-
-            <div class="bg-slate-50 p-3 rounded text-xs text-slate-600 border border-slate-200 mt-3">
-              <span class="font-semibold block text-slate-800 mb-1">Penyimpanan Terdistribusi:</span>
-              <span>File PDF dialirkan melalui Cloudflare Worker Google Drive Index untuk menjamin kecepatan akses global dan ketersediaan tinggi tanpa batas kuota server lokal.</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Diskusi / Kontak Editor Naskah Ini -->
-        <div class="academic-card p-5 rounded border border-academic-border bg-white">
-          <h3 class="text-xs font-semibold uppercase tracking-wider text-academic-navy mb-2">
-            Pertanyaan Terkait Naskah
-          </h3>
-          <p class="text-xs text-academic-ink-muted leading-relaxed">
-            Ingin menyampaikan surat tanggapan, konfirmasi sitasi, atau pertanyaan ke dewan editor mengenai artikel ini?
+          <p class="text-xs text-slate-700 italic">
+            {article.keywords.join(', ')}
           </p>
-          <a
-            href={waInquiryUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mt-3 inline-flex items-center justify-center gap-1.5 w-full px-3 py-2 text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded transition-colors min-h-[40px]"
-          >
-            Hubungi Redaksi via WA
-          </a>
         </div>
+
+        <!-- Widget Format Sitasi (APA, IEEE, Harvard) -->
+        <div class="border border-slate-300 bg-white p-4 rounded-xs">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
+            <h3 class="text-xs font-serif font-bold text-slate-900 uppercase tracking-wider">
+              How to Cite
+            </h3>
+            <span class="text-[11px] text-slate-500">Pilih Format Sitasi</span>
+          </div>
+
+          <div class="flex border-b border-slate-200 text-xs font-medium space-x-3 mb-2" role="tablist">
+            <button type="button" id="tab-apa" class="citation-tab py-1 border-b-2 border-blue-700 text-blue-700 font-bold" data-target="content-apa">
+              APA 7th
+            </button>
+            <button type="button" id="tab-ieee" class="citation-tab py-1 border-b-2 border-transparent text-slate-500 hover:text-slate-800" data-target="content-ieee">
+              IEEE
+            </button>
+            <button type="button" id="tab-harvard" class="citation-tab py-1 border-b-2 border-transparent text-slate-500 hover:text-slate-800" data-target="content-harvard">
+              Harvard
+            </button>
+          </div>
+
+          <div class="bg-slate-50 p-3 rounded-xs border border-slate-200 font-mono text-xs text-slate-800 leading-relaxed">
+            <p id="content-apa" class="citation-content">{apaCitation}</p>
+            <p id="content-ieee" class="citation-content hidden">{ieeeCitation}</p>
+            <p id="content-harvard" class="citation-content hidden">{harvardCitation}</p>
+          </div>
+
+          <div class="mt-2.5 flex items-center justify-between">
+            <span id="copy-status" class="text-xs text-emerald-700 font-medium opacity-0 transition-opacity">
+              ✓ Sitasi berhasil disalin ke clipboard!
+            </span>
+            <button
+              type="button"
+              id="btn-copy-citation"
+              class="px-3 py-1 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold rounded-xs transition-colors"
+            >
+              Salin Sitasi
+            </button>
+          </div>
+        </div>
+
+        <!-- Lisensi Hak Cipta OJS -->
+        <div class="p-3 bg-slate-50 border border-slate-200 text-xs text-slate-600 rounded-xs">
+          <strong>Hak Cipta:</strong> Penulis yang mempublikasikan naskah pada jurnal ini menyetujui lisensi <a href={journalConfig.licenseUrl} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline">{journalConfig.license}</a>.
+        </div>
+      </main>
+
+      <!-- Kolom Kanan: Sidebar Standarisasi OJS (~32%) -->
+      <div class="lg:col-span-4">
+        <SidebarOJS />
       </div>
     </div>
   </div>
 </Layout>
 
 <script>
-  // Script interaktif tab sitasi dan copy to clipboard (R-26 & R-32)
   const tabs = document.querySelectorAll<HTMLButtonElement>('.citation-tab');
   const contents = document.querySelectorAll<HTMLElement>('.citation-content');
   const copyBtn = document.getElementById('btn-copy-citation');
@@ -243,17 +181,14 @@ const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
 
       activeContentId = targetId;
 
-      // Reset tabs styling
       tabs.forEach((t) => {
-        t.classList.remove('border-academic-crimson', 'text-academic-crimson', 'font-bold');
+        t.classList.remove('border-blue-700', 'text-blue-700', 'font-bold');
         t.classList.add('border-transparent', 'text-slate-500');
       });
 
-      // Highlight active tab
       tab.classList.remove('border-transparent', 'text-slate-500');
-      tab.classList.add('border-academic-crimson', 'text-academic-crimson', 'font-bold');
+      tab.classList.add('border-blue-700', 'text-blue-700', 'font-bold');
 
-      // Hide all contents and show target
       contents.forEach((c) => {
         if (c.id === targetId) {
           c.classList.remove('hidden');
@@ -269,9 +204,8 @@ const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
       const activeEl = document.getElementById(activeContentId);
       if (!activeEl) return;
 
-      const textToCopy = activeEl.innerText;
       try {
-        await navigator.clipboard.writeText(textToCopy);
+        await navigator.clipboard.writeText(activeEl.innerText);
         copyStatus.classList.remove('opacity-0');
         setTimeout(() => {
           copyStatus.classList.add('opacity-0');

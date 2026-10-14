@@ -1,82 +1,90 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import SidebarOJS from '../components/SidebarOJS.astro';
 import { journalConfig } from '../config/journal';
 
-const { editorInChief, editors } = journalConfig.editorial;
+const { editorInChief, editors, reviewers } = journalConfig.editorial;
 ---
 
-<Layout title="Dewan Redaksi" description={`Dewan Redaksi dan Mitra Bestari ${journalConfig.name}`}>
-  <div class="max-w-5xl mx-auto px-4 py-10">
-    <div class="border-b border-academic-border pb-6 mb-8">
-      <span class="text-xs font-bold uppercase tracking-wider text-academic-crimson">
-        Struktur Pengelola
-      </span>
-      <h1 class="text-3xl font-serif font-bold text-academic-navy mt-1">
-        Dewan Redaksi dan Dewan Penelaah
-      </h1>
-      <p class="text-sm text-academic-ink-muted mt-2 leading-relaxed">
-        Dewan redaksi {journalConfig.name} bertanggung jawab dalam menjaga standar keilmuan, independensi telaah naskah, dan integritas etika publikasi.
-      </p>
-    </div>
-
-    <!-- Pemimpin Redaksi (Editor in Chief) -->
-    <div class="mb-8">
-      <h2 class="text-lg font-serif font-bold text-academic-navy pb-2 border-b border-slate-200 mb-4">
-        Pemimpin Redaksi (Editor-in-Chief)
-      </h2>
-      <div class="academic-card p-6 rounded border border-academic-border bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h3 class="text-base font-bold text-academic-navy">
-            {editorInChief.name}
-          </h3>
-          <p class="text-xs text-academic-ink-muted mt-0.5">
-            {editorInChief.affiliation}
-          </p>
-          <p class="text-xs text-slate-500 mt-2 font-mono">
-            Kontak: <a href={`mailto:${editorInChief.email}`} class="text-academic-crimson hover:underline">{editorInChief.email}</a>
-          </p>
+<Layout title="Editorial Team & Reviewers" description={`Dewan Redaksi dan Mitra Bestari ${journalConfig.name}`}>
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Kolom Kiri: Dewan Redaksi (~68%) -->
+      <main class="lg:col-span-8 space-y-8">
+        <div class="text-xs text-slate-500 mb-2">
+          <a href="/" class="hover:underline">Home</a> &gt; <span>Editorial Team</span>
         </div>
-        <span class="academic-badge bg-academic-navy text-white text-xs self-start sm:self-center">
-          Pimpinan Redaksi
-        </span>
-      </div>
-    </div>
 
-    <!-- Anggota Dewan Editor -->
-    <div class="mb-8">
-      <h2 class="text-lg font-serif font-bold text-academic-navy pb-2 border-b border-slate-200 mb-4">
-        Dewan Editor Eksekutif
-      </h2>
-      <div class="space-y-3">
-        {editors.map((editor) => (
-          <div class="academic-card p-5 rounded border border-academic-border bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h3 class="text-sm font-bold text-academic-navy">
-                {editor.name}
-              </h3>
-              <p class="text-xs text-slate-500 font-medium mt-0.5">
-                {editor.role}
-              </p>
-              <p class="text-xs text-academic-ink-muted mt-0.5">
-                {editor.affiliation}
-              </p>
-            </div>
-            <span class="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded self-start sm:self-center">
-              Editor Bidang
-            </span>
+        <div class="border-b-2 border-amber-600 pb-2">
+          <h1 class="text-xl md:text-2xl font-serif font-bold text-slate-900">
+            Editorial Team
+          </h1>
+        </div>
+
+        <!-- Editor in Chief -->
+        <div class="space-y-3">
+          <h2 class="text-sm font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+            Editor-in-Chief
+          </h2>
+          <div class="p-4 bg-white border border-slate-200 rounded-xs">
+            <h3 class="text-sm font-bold text-slate-900">
+              {editorInChief.name}
+            </h3>
+            <p class="text-xs text-slate-600 mt-0.5">
+              {editorInChief.affiliation}
+            </p>
+            <p class="text-xs text-slate-500 font-mono mt-1">
+              Email: <a href={`mailto:${editorInChief.email}`} class="text-blue-700 hover:underline">{editorInChief.email}</a>
+            </p>
           </div>
-        ))}
-      </div>
-    </div>
+        </div>
 
-    <!-- Standar Penelaahan Sejawat -->
-    <div class="academic-card p-6 rounded border border-slate-200 bg-slate-50 mt-10">
-      <h3 class="text-sm font-serif font-bold text-academic-navy mb-2">
-        Komitmen Penelaah Ahli (Peer-Review)
-      </h3>
-      <p class="text-xs text-slate-600 leading-relaxed">
-        Setiap naskah yang lolos tahap uji awal kesesuaian format dan orisinalitas Turnitin akan ditelaah oleh minimal dua orang mitra bestari independen. Keputusan penerimaan, revisi minor/mayor, atau penolakan naskah didasarkan sepenuhnya pada kebaruan (*novelty*), ketepatan metodologi, dan kontribusi nyata terhadap literatur akuntansi serta perpajakan.
-      </p>
+        <!-- Managing & Associate Editors -->
+        <div class="space-y-3">
+          <h2 class="text-sm font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+            Managing & Section Editors
+          </h2>
+          <div class="space-y-2">
+            {editors.map((editor) => (
+              <div class="p-3 bg-white border border-slate-200 rounded-xs">
+                <h3 class="text-xs font-bold text-slate-900">
+                  {editor.name}
+                </h3>
+                <p class="text-xs text-slate-500 font-medium">
+                  {editor.role}
+                </p>
+                <p class="text-xs text-slate-600">
+                  {editor.affiliation}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Peer Reviewers / Mitra Bestari -->
+        <div id="reviewers" class="space-y-3">
+          <h2 class="text-sm font-serif font-bold text-[#1b3d6d] border-b border-slate-200 pb-1">
+            Peer Reviewers (Mitra Bestari)
+          </h2>
+          <div class="space-y-2">
+            {reviewers.map((reviewer) => (
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-xs">
+                <h3 class="text-xs font-bold text-slate-900">
+                  {reviewer.name}
+                </h3>
+                <p class="text-xs text-slate-600">
+                  {reviewer.affiliation}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      <!-- Kolom Kanan: Sidebar Standarisasi OJS (~32%) -->
+      <div class="lg:col-span-4">
+        <SidebarOJS />
+      </div>
     </div>
   </div>
 </Layout>
