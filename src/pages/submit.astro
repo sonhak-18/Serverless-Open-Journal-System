@@ -1,0 +1,119 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { journalConfig, getWhatsAppSubmissionUrl, getEmailSubmissionUrl } from '../config/journal';
+
+const waUrl = getWhatsAppSubmissionUrl();
+const emailUrl = getEmailSubmissionUrl();
+---
+
+<Layout title="Kirim Naskah (Submit)" description={`Alur pengajuan naskah cepat dan bebas biaya pada ${journalConfig.name}`}>
+  <div class="max-w-4xl mx-auto px-4 py-10">
+    <div class="border-b border-academic-border pb-6 mb-8 text-center sm:text-left">
+      <span class="text-xs font-bold uppercase tracking-wider text-academic-crimson">
+        Penyerahan Naskah Ilmiah
+      </span>
+      <h1 class="text-3xl font-serif font-bold text-academic-navy mt-1">
+        Alur Pengajuan Naskah Cepat
+      </h1>
+      <p class="text-sm text-academic-ink-muted mt-2 max-w-2xl">
+        Kami memfasilitasi publikasi artikel ilmiah berkualitas tanpa hambatan antarmuka yang berbelit-belit. Penulis dapat langsung berinteraksi dengan redaksi melalui WhatsApp atau Email resmi.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Opsi 1: WhatsApp Submission -->
+      <div class="academic-card p-6 rounded border-2 border-emerald-500/30 bg-white flex flex-col justify-between shadow-sm">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs uppercase font-bold tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded">
+              Paling Cepat & Responsif
+            </span>
+          </div>
+
+          <h2 class="text-xl font-serif font-bold text-academic-navy">
+            1. Ajukan Melalui WhatsApp Redaksi
+          </h2>
+
+          <p class="text-xs text-academic-ink-muted mt-2 leading-relaxed">
+            Kirimkan naskah Anda dalam format dokumen (.docx atau .pdf) langsung ke nomor kontak redaksi. Tim kami akan segera mengonfirmasi penerimaan dan memberikan estimasi waktu review.
+          </p>
+
+          <div class="bg-emerald-50/70 p-3 rounded border border-emerald-200 mt-4 text-xs text-emerald-900 space-y-1">
+            <p><strong>Narahubung Redaksi:</strong> {journalConfig.submission.whatsappDisplay}</p>
+            <p><strong>Waktu Respon Rata-rata:</strong> 15 hingga 60 Menit (Jam Kerja)</p>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-100">
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-white bg-emerald-700 hover:bg-emerald-800 rounded transition-colors shadow min-h-[44px]"
+          >
+            <span>Buka WhatsApp Redaksi</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Opsi 2: Email Submission -->
+      <div class="academic-card p-6 rounded border border-academic-border bg-white flex flex-col justify-between shadow-sm">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs uppercase font-bold tracking-wider text-academic-navy bg-slate-100 px-2.5 py-0.5 rounded">
+              Jalur Formal Persuratan
+            </span>
+          </div>
+
+          <h2 class="text-xl font-serif font-bold text-academic-navy">
+            2. Ajukan Melalui Email Resmi
+          </h2>
+
+          <p class="text-xs text-academic-ink-muted mt-2 leading-relaxed">
+            Bagi institusi atau penulis yang memerlukan arsip korespondensi formal, silakan kirimkan naskah lengkap melalui email dengan format subjek yang telah disiapkan.
+          </p>
+
+          <div class="bg-slate-50 p-3 rounded border border-slate-200 mt-4 text-xs text-slate-700 space-y-1">
+            <p><strong>Alamat Email:</strong> {journalConfig.submission.email}</p>
+            <p><strong>Lampiran Wajib:</strong> File Manuskrip (.docx) & Data Penulis</p>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-100">
+          <a
+            href={emailUrl}
+            class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold text-academic-navy bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded transition-colors min-h-[44px]"
+          >
+            <span>Kirim via Email Redaksi</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checklist Kelengkapan Naskah -->
+    <div class="academic-card p-6 rounded border border-academic-border bg-white mt-10">
+      <h3 class="text-base font-serif font-bold text-academic-navy pb-2 border-b border-slate-200 mb-4">
+        Daftar Periksa Sebelum Mengirimkan Naskah
+      </h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-700">
+        <label class="flex items-start gap-2 p-2 bg-slate-50 rounded cursor-default">
+          <span class="text-emerald-600 font-bold">✓</span>
+          <span>Naskah belum pernah dipublikasikan di jurnal atau prosiding lain.</span>
+        </label>
+        <label class="flex items-start gap-2 p-2 bg-slate-50 rounded cursor-default">
+          <span class="text-emerald-600 font-bold">✓</span>
+          <span>Memuat Abstrak (150-250 kata) dan 3-5 Kata Kunci representatif.</span>
+        </label>
+        <label class="flex items-start gap-2 p-2 bg-slate-50 rounded cursor-default">
+          <span class="text-emerald-600 font-bold">✓</span>
+          <span>Mencantumkan nama lengkap seluruh penulis beserta afiliasi universitas/institusi.</span>
+        </label>
+        <label class="flex items-start gap-2 p-2 bg-slate-50 rounded cursor-default">
+          <span class="text-emerald-600 font-bold">✓</span>
+          <span>Daftar pustaka mutakhir (minimal 80% dari artikel jurnal 10 tahun terakhir).</span>
+        </label>
+      </div>
+    </div>
+  </div>
+</Layout>

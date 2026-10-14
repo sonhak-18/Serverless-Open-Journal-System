@@ -1,0 +1,97 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { journalConfig } from '../config/journal';
+---
+
+<Layout title="Panduan Penulis & Kebijakan" description={`Pedoman penulisan naskah, kebijakan Turnitin, dan etika publikasi ${journalConfig.name}`}>
+  <div class="max-w-4xl mx-auto px-4 py-10">
+    <div class="border-b border-academic-border pb-6 mb-8">
+      <span class="text-xs font-bold uppercase tracking-wider text-academic-crimson">
+        Petunjuk Teknis
+      </span>
+      <h1 class="text-3xl font-serif font-bold text-academic-navy mt-1">
+        Panduan Penulis dan Etika Publikasi
+      </h1>
+      <p class="text-sm text-academic-ink-muted mt-2">
+        Pedoman terstruktur penyiapan naskah dan standar integritas akademik untuk calon penulis {journalConfig.name}.
+      </p>
+    </div>
+
+    <div class="space-y-8 text-sm text-academic-ink leading-relaxed">
+      <!-- 1. Standar Format Naskah -->
+      <section class="academic-card p-6 rounded border border-academic-border bg-white">
+        <h2 class="text-base font-serif font-bold text-academic-navy pb-2 border-b border-slate-200 mb-3">
+          1. Format dan Struktur Naskah
+        </h2>
+        <ul class="space-y-2 text-xs md:text-sm text-slate-700">
+          <li class="flex items-start gap-2">
+            <span class="text-academic-crimson font-bold">•</span>
+            <span><strong>Bahasa:</strong> Naskah dapat ditulis dalam Bahasa Indonesia baku atau Bahasa Inggris ilmiah yang gramatikal.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-academic-crimson font-bold">•</span>
+            <span><strong>Panjang Naskah:</strong> Antara 4.000 hingga 7.500 kata (termasuk referensi, tabel, dan lampiran).</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-academic-crimson font-bold">•</span>
+            <span><strong>Struktur Baku (IMRAD):</strong> Judul, Nama Penulis & Afiliasi, Abstrak (150-250 kata), Kata Kunci (3-5 kata), Pendahuluan, Metode Penelitian, Hasil dan Pembahasan, Simpulan & Saran, serta Daftar Pustaka.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-academic-crimson font-bold">•</span>
+            <span><strong>Gaya Sitasi:</strong> Menggunakan format sitasi <strong>APA Style 7th Edition</strong>. Penulis sangat disarankan memakai aplikasi pengelola referensi seperti Mendeley atau Zotero.</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- 2. Kebijakan Orisinalitas & Turnitin -->
+      <section class="academic-card p-6 rounded border border-academic-border bg-white">
+        <h2 class="text-base font-serif font-bold text-academic-navy pb-2 border-b border-slate-200 mb-3">
+          2. Uji Plagiarisme & Pengecekan AI
+        </h2>
+        <div class="space-y-3 text-xs md:text-sm text-slate-700">
+          <p>
+            Redaksi berkomitmen menjaga orisinalitas riset. Setiap naskah yang masuk wajib melalui dua tahapan verifikasi teknis:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            <div class="bg-slate-50 p-4 rounded border border-slate-200">
+              <span class="font-bold text-academic-navy block mb-1">Ambang Batas Turnitin</span>
+              <p class="text-xs text-slate-600">
+                Tingkat kemiripan (*similarity index*) maksimal yang ditoleransi adalah <strong>{journalConfig.submission.turnitinMaxSimilarity}%</strong> dengan pengecualian bibliografi dan sitasi langsung yang sah.
+              </p>
+            </div>
+            <div class="bg-slate-50 p-4 rounded border border-slate-200">
+              <span class="font-bold text-academic-navy block mb-1">Kebijakan Penggunaan AI</span>
+              <p class="text-xs text-slate-600">
+                Pemanfaatan AI generatif hanya diizinkan untuk penyuntingan bahasa dan pemeriksaan tata bahasa. Konten riset, interpretasi data, dan sintesis ilmiah wajib merupakan pemikiran orisinal penulis.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Biaya Penerbitan (APC) -->
+      <section class="academic-card p-6 rounded border border-academic-border bg-white">
+        <h2 class="text-base font-serif font-bold text-academic-navy pb-2 border-b border-slate-200 mb-3">
+          3. Biaya Pemrosesan Artikel (APC)
+        </h2>
+        <p class="text-xs md:text-sm text-slate-700">
+          Sesuai prinsip <strong>Diamond Open Access</strong> yang dianut Sektansia Press, <strong>{journalConfig.name}</strong> tidak membebankan biaya penyerahan naskah (*submission fee*) maupun biaya pemrosesan artikel (*article processing charge*). Seluruh proses penerbitan adalah <strong>Rp 0 (Gratis)</strong>.
+        </p>
+      </section>
+
+      <!-- 4. Alur Cepat Telaah Sejawat -->
+      <section class="academic-card p-6 rounded border border-academic-border bg-white">
+        <h2 class="text-base font-serif font-bold text-academic-navy pb-2 border-b border-slate-200 mb-3">
+          4. Alur Review Praktis
+        </h2>
+        <ol class="space-y-3 text-xs md:text-sm text-slate-700 list-decimal list-inside">
+          <li><strong>Penerimaan Naskah:</strong> Penulis mengirimkan manuskrip via WhatsApp atau Email resmi redaksi.</li>
+          <li><strong>Pemeriksaan Awal (1-2 Hari):</strong> Verifikasi kelengkapan komponen naskah, cek Turnitin, dan penilaian ruang lingkup oleh Managing Editor.</li>
+          <li><strong>Tinjauan Sejawat (3-5 Hari):</strong> Naskah ditelaah oleh minimal dua reviewer independen secara objektif.</li>
+          <li><strong>Revisi & Proofreading (2-3 Hari):</strong> Penulis memperbaiki masukan substantif dan tata letak naskah.</li>
+          <li><strong>Publikasi & Indeksasi:</strong> Penerbitan online, penerbitan DOI, dan pengarsipan permanen di Google Drive Index / Cloudflare CDN.</li>
+        </ol>
+      </section>
+    </div>
+  </div>
+</Layout>

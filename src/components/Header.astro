@@ -1,0 +1,163 @@
+---
+import { journalConfig, getWhatsAppSubmissionUrl } from '../config/journal';
+
+const pathname = Astro.url.pathname;
+const navItems = [
+  { href: '/', label: 'Beranda' },
+  { href: '/current', label: 'Terbitan Terkini' },
+  { href: '/archives', label: 'Arsip Edisi' },
+  { href: '/editorial-team', label: 'Dewan Redaksi' },
+  { href: '/guidelines', label: 'Panduan & Kebijakan' },
+  { href: '/submit', label: 'Alur Submit' },
+];
+
+const waQuickSubmitUrl = getWhatsAppSubmissionUrl();
+---
+
+<header class="border-b border-academic-border bg-white shadow-sm sticky top-0 z-40">
+  <!-- Top Masthead Bar -->
+  <div class="bg-academic-navy text-white text-xs py-2 px-4 border-b border-academic-navy-dark">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+      <div class="flex items-center space-x-3">
+        <span class="font-semibold tracking-wider uppercase text-slate-200">
+          {journalConfig.publisher}
+        </span>
+        <span class="text-slate-400">|</span>
+        <span class="text-slate-300">
+          Diamond Open Access (Bebas Biaya Publikasi)
+        </span>
+      </div>
+      <div class="flex items-center space-x-4 text-slate-300">
+        <span>e-ISSN: {journalConfig.eIssn}</span>
+        <span class="hidden sm:inline text-slate-400">|</span>
+        <span class="hidden sm:inline">Terbit 4x Setahun</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Journal Title Area -->
+  <div class="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="academic-badge bg-academic-crimson text-white">
+          {journalConfig.shortName}
+        </span>
+        <span class="text-xs uppercase tracking-wider text-academic-ink-subtle font-medium">
+          Riset Ilmiah Akuntansi, Pemeriksaan, & Perpajakan Terbuka
+        </span>
+      </div>
+      <a href="/" class="group block">
+        <h1 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy group-hover:text-academic-crimson transition-colors">
+          {journalConfig.name}
+        </h1>
+      </a>
+      <p class="text-sm text-academic-ink-muted mt-1 max-w-3xl">
+        Media diseminasi riset empiris dan konseptual di bidang auditing, tata kelola akuntansi, dan kebijakan perpajakan terapan.
+      </p>
+    </div>
+
+    <!-- Quick Submit Action Buttons -->
+    <div class="flex items-center gap-2 self-start md:self-center shrink-0">
+      <a
+        href="/submit"
+        class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-academic-crimson hover:bg-academic-crimson-light rounded transition-colors shadow-sm min-h-[44px]"
+      >
+        Kirim Naskah (Gratis)
+      </a>
+      <a
+        href={waQuickSubmitUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded transition-colors min-h-[44px]"
+        title="Konsultasi cepat dengan Redaksi via WhatsApp"
+      >
+        Konsultasi WA
+      </a>
+    </div>
+  </div>
+
+  <!-- Navigation Menu Bar -->
+  <nav class="border-t border-academic-border bg-academic-paper-muted" aria-label="Navigasi Utama">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+      <!-- Desktop Menu -->
+      <ul class="hidden md:flex flex-wrap items-center text-sm font-medium">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+          return (
+            <li>
+              <a
+                href={item.href}
+                class={`inline-block py-3 px-4 border-b-2 transition-colors ${
+                  isActive
+                    ? 'border-academic-crimson text-academic-crimson font-semibold bg-white'
+                    : 'border-transparent text-academic-ink-muted hover:text-academic-navy hover:bg-white/60'
+                }`}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+
+      <!-- Mobile Menu Button (Accessible, tap target >= 44px) -->
+      <div class="md:hidden py-2 flex items-center justify-between w-full">
+        <span class="text-xs font-semibold uppercase text-academic-ink-muted">Menu Navigasi</span>
+        <button
+          type="button"
+          id="mobile-menu-toggle"
+          class="inline-flex items-center justify-center p-2 rounded text-academic-navy hover:bg-slate-200 focus:outline-none min-w-[44px] min-h-[44px]"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          aria-label="Buka menu navigasi"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-academic-border bg-white px-4 pt-2 pb-4 space-y-1">
+      {navItems.map((item) => {
+        const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+        return (
+          <a
+            href={item.href}
+            class={`block py-3 px-3 rounded text-base font-medium min-h-[44px] flex items-center ${
+              isActive
+                ? 'bg-academic-crimson text-white'
+                : 'text-academic-navy hover:bg-slate-100'
+            }`}
+          >
+            {item.label}
+          </a>
+        );
+      })}
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Script navigasi mobile menu yang fungsional & accessible (R-26 & R-32)
+  const menuToggle = document.getElementById('mobile-menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  if (menuToggle && mobileMenu) {
+    menuToggle.addEventListener('click', () => {
+      const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+      menuToggle.setAttribute('aria-expanded', String(!isExpanded));
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Tutup saat menekan tombol Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+        mobileMenu.classList.add('hidden');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.focus();
+      }
+    });
+  }
+</script>

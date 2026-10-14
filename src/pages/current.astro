@@ -1,0 +1,54 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { journalConfig } from '../config/journal';
+import { getCurrentIssue, getArticlesByIssue } from '../data/articles';
+
+const currentIssue = getCurrentIssue();
+const currentArticles = getArticlesByIssue(currentIssue.volume, currentIssue.issue);
+---
+
+<Layout title="Terbitan Terkini" description={`Daftar artikel ilmiah terbitan terkini ${journalConfig.name} - ${currentIssue.title}`}>
+  <div class="max-w-7xl mx-auto px-4 py-10">
+    <!-- Header Edisi Terkini -->
+    <div class="border-b border-academic-border pb-6 mb-8">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="academic-badge bg-academic-crimson text-white">Edisi Terkini</span>
+        <span class="text-xs text-academic-ink-subtle">{currentIssue.monthRange}</span>
+      </div>
+
+      <h1 class="text-3xl font-serif font-bold text-academic-navy">
+        {currentIssue.title}
+      </h1>
+
+      <p class="text-sm text-academic-ink-muted mt-2 max-w-3xl leading-relaxed">
+        {currentIssue.description}
+      </p>
+
+      <div class="flex flex-wrap items-center gap-4 text-xs text-academic-ink-subtle mt-4 pt-3 border-t border-slate-200">
+        <span>Tanggal Rilis: {new Date(currentIssue.publishDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        <span>•</span>
+        <span>Jumlah Naskah: {currentArticles.length} Artikel Riset</span>
+        <span>•</span>
+        <span>Lisensi: CC BY 4.0</span>
+      </div>
+    </div>
+
+    <!-- Daftar Naskah Terbit -->
+    <div class="space-y-4">
+      <h2 class="text-lg font-serif font-bold text-academic-navy">
+        Daftar Artikel (Table of Contents)
+      </h2>
+
+      {currentArticles.length > 0 ? (
+        currentArticles.map((article) => (
+          <ArticleCard article={article} />
+        ))
+      ) : (
+        <div class="p-8 text-center bg-white border border-academic-border rounded text-sm text-slate-500">
+          Belum ada artikel yang dipublikasikan pada edisi ini.
+        </div>
+      )}
+    </div>
+  </div>
+</Layout>

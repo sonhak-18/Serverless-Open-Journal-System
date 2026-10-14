@@ -1,0 +1,86 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { journalConfig, getPdfDownloadUrl } from '../config/journal';
+import type { Article } from '../data/articles';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  article?: Article;
+}
+
+const { title, description, article } = Astro.props;
+
+const pageTitle = title 
+  ? `${title} | ${journalConfig.shortName}` 
+  : `${journalConfig.name} (${journalConfig.shortName}) - ${journalConfig.publisher}`;
+
+const metaDescription = description || 
+  `Portal publikasi ilmiah ${journalConfig.name}. Peer-reviewed Diamond Open Access bidang Audit, Akuntansi, dan Perpajakan. Diterbitkan oleh ${journalConfig.publisher}.`;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://sektansia-press.pages.dev');
+
+let scholarPdfUrl = '';
+if (article) {
+  scholarPdfUrl = getPdfDownloadUrl(article.pdfFileName);
+  // Pastikan URL absolut untuk Google Scholar
+  if (scholarPdfUrl.startsWith('/')) {
+    scholarPdfUrl = new URL(scholarPdfUrl, Astro.site || 'https://sektansia-press.pages.dev').toString();
+  }
+}
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="canonical" href={canonicalUrl.toString()} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={metaDescription} />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Meta Sosial -->
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonicalUrl.toString()} />
+    <meta property="og:site_name" content={journalConfig.name} />
+
+    <!-- Google Scholar Academic Meta Tags (Aktif saat di halaman artikel) -->
+    {article && (
+      <>
+        <meta name="citation_title" content={article.title} />
+        {article.authors.map((author) => (
+          <>
+            <meta name="citation_author" content={author.name} />
+            {author.affiliation && (
+              <meta name="citation_author_institution" content={author.affiliation} />
+            )}
+          </>
+        ))}
+        <meta name="citation_publication_date" content={article.publishDate.replaceAll('-', '/')} />
+        <meta name="citation_journal_title" content={journalConfig.name} />
+        <meta name="citation_journal_abbrev" content={journalConfig.shortName} />
+        <meta name="citation_volume" content={article.volume.toString()} />
+        <meta name="citation_issue" content={article.issue.toString()} />
+        <meta name="citation_firstpage" content={article.firstPage.toString()} />
+        <meta name="citation_lastpage" content={article.lastPage.toString()} />
+        <meta name="citation_doi" content={article.doi} />
+        <meta name="citation_pdf_url" content={scholarPdfUrl} />
+      </>
+    )}
+  </head>
+  <body class="min-h-screen flex flex-col bg-academic-paper text-academic-ink selection:bg-red-100 selection:text-academic-navy">
+    <Header />
+    <main class="flex-grow">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

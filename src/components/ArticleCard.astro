@@ -1,0 +1,108 @@
+---
+import { getPdfDownloadUrl } from '../config/journal';
+import type { Article } from '../data/articles';
+
+interface Props {
+  article: Article;
+  showIssueBadge?: boolean;
+}
+
+const { article, showIssueBadge = false } = Astro.props;
+const pdfDownloadUrl = getPdfDownloadUrl(article.pdfFileName);
+
+const subjectBadgeColors = {
+  Audit: 'bg-blue-50 text-blue-900 border-blue-200',
+  Akuntansi: 'bg-emerald-50 text-emerald-900 border-emerald-200',
+  Pajak: 'bg-amber-50 text-amber-900 border-amber-200',
+};
+---
+
+<article class="academic-card p-6 border rounded-sm transition-all hover:border-academic-border-strong hover:shadow-md">
+  <!-- Top Meta / Badges -->
+  <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-academic-ink-subtle mb-2">
+    <div class="flex items-center gap-2">
+      <span class={`academic-badge border ${subjectBadgeColors[article.subject]}`}>
+        {article.subject}
+      </span>
+      {showIssueBadge && (
+        <span class="text-academic-ink-muted">
+          Vol. {article.volume} No. {article.issue} ({article.year})
+        </span>
+      )}
+      <span>Halaman {article.pages}</span>
+    </div>
+
+    <span class="text-slate-400">
+      Publikasi: {new Date(article.publishDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+    </span>
+  </div>
+
+  <!-- Article Title -->
+  <h3 class="text-lg md:text-xl font-serif font-bold text-academic-navy hover:text-academic-crimson transition-colors leading-snug">
+    <a href={`/article/${article.slug}`}>
+      {article.title}
+    </a>
+  </h3>
+
+  <!-- Authors & Affiliations -->
+  <p class="text-sm font-medium text-academic-ink mt-2">
+    {article.authors.map((author, index) => (
+      <span>
+        {author.name}
+        {index < article.authors.length - 1 ? ', ' : ''}
+      </span>
+    ))}
+  </p>
+
+  <!-- Abstract Snippet -->
+  <p class="text-sm text-academic-ink-muted mt-3 line-clamp-3 leading-relaxed">
+    {article.abstract}
+  </p>
+
+  <!-- Keywords -->
+  <div class="flex flex-wrap gap-1.5 mt-3">
+    <span class="text-xs text-academic-ink-subtle font-medium mr-1 self-center">Kata Kunci:</span>
+    {article.keywords.map((kw) => (
+      <span class="inline-block text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-sm">
+        {kw}
+      </span>
+    ))}
+  </div>
+
+  <!-- Action Bar -->
+  <div class="border-t border-slate-100 mt-5 pt-4 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-2 text-xs text-academic-ink-subtle">
+      <span>DOI:</span>
+      <a
+        href={`https://doi.org/${article.doi}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-academic-crimson hover:underline font-mono"
+      >
+        {article.doi}
+      </a>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={`/article/${article.slug}`}
+        class="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-academic-navy bg-slate-100 hover:bg-slate-200 rounded-sm transition-colors min-h-[36px]"
+      >
+        Lihat Abstrak & Sitasi
+      </a>
+
+      <a
+        href={pdfDownloadUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-academic-crimson hover:bg-academic-crimson-light rounded-sm transition-colors min-h-[36px]"
+        title="Unduh Naskah Lengkap PDF"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        <span>Unduh PDF</span>
+      </a>
+    </div>
+  </div>
+</article>

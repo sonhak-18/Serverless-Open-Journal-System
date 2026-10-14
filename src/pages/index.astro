@@ -1,0 +1,194 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { journalConfig, getWhatsAppSubmissionUrl } from '../config/journal';
+import { getCurrentIssue, getArticlesByIssue } from '../data/articles';
+
+const currentIssue = getCurrentIssue();
+const currentArticles = getArticlesByIssue(currentIssue.volume, currentIssue.issue);
+const waUrl = getWhatsAppSubmissionUrl();
+---
+
+<Layout>
+  <!-- Hero / Masthead Jurnal -->
+  <section class="bg-gradient-to-b from-white to-academic-paper-muted border-b border-academic-border py-12 md:py-16">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Kolom Kiri: Deskripsi & Identitas Jurnal -->
+        <div class="lg:col-span-8 space-y-4">
+          <div class="inline-flex items-center gap-2 bg-academic-crimson-subtle border border-red-200 text-academic-crimson text-xs font-semibold px-3 py-1 rounded">
+            <span>Diamond Open Access Journal</span>
+            <span>•</span>
+            <span>Tanpa Biaya Pengajuan & Publikasi</span>
+          </div>
+
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-academic-navy leading-tight">
+            Media Publikasi Ilmiah Independen Bidang Audit, Akuntansi, dan Pajak
+          </h2>
+
+          <p class="text-base md:text-lg text-academic-ink-muted leading-relaxed">
+            {journalConfig.name} ({journalConfig.shortName}) menyajikan artikel riset empiris berkualitas tinggi dengan proses penelaahan sejawat (*peer-review*) yang cepat, transparan, dan bebas biaya untuk seluruh akademisi serta praktisi.
+          </p>
+
+          <!-- Key Metrics / Standar Transparansi -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-200">
+            <div>
+              <span class="block text-xs uppercase font-medium text-academic-ink-subtle">Biaya Publikasi (APC)</span>
+              <span class="text-lg font-serif font-bold text-emerald-700">Rp 0 (Gratis)</span>
+            </div>
+            <div>
+              <span class="block text-xs uppercase font-medium text-academic-ink-subtle">Durasi Review</span>
+              <span class="text-lg font-serif font-bold text-academic-navy">{journalConfig.submission.reviewTimeEstimate}</span>
+            </div>
+            <div>
+              <span class="block text-xs uppercase font-medium text-academic-ink-subtle">Uji Turnitin</span>
+              <span class="text-lg font-serif font-bold text-academic-navy">Maks. {journalConfig.submission.turnitinMaxSimilarity}%</span>
+            </div>
+            <div>
+              <span class="block text-xs uppercase font-medium text-academic-ink-subtle">Frekuensi</span>
+              <span class="text-lg font-serif font-bold text-academic-navy">4 Terbitan/Tahun</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kolom Kanan: Call for Papers Card -->
+        <div class="lg:col-span-4">
+          <div class="academic-card p-6 border-2 border-academic-navy/20 rounded shadow-md bg-white">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <span class="text-xs font-bold uppercase tracking-wider text-academic-crimson">
+                Call for Papers 2026
+              </span>
+              <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded">
+                Edisi Terbuka
+              </span>
+            </div>
+
+            <h3 class="text-base font-serif font-bold text-academic-navy mt-3">
+              Kirim Naskah Anda Sekarang
+            </h3>
+
+            <p class="text-xs text-academic-ink-muted mt-2 leading-relaxed">
+              Kami menerima manuskrip hasil penelitian kuantitatif, kualitatif, maupun kajian konseptual mutakhir dalam rumpun ilmu akuntansi dan perpajakan.
+            </p>
+
+            <ul class="text-xs space-y-1.5 text-academic-ink-muted my-4">
+              <li class="flex items-center gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>Format naskah Word (.docx) atau PDF</span>
+              </li>
+              <li class="flex items-center gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>Alur submission praktis via WhatsApp / Email</span>
+              </li>
+              <li class="flex items-center gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>Pemeriksaan plagiarisme & cek orisinalitas</span>
+              </li>
+            </ul>
+
+            <div class="space-y-2 pt-2">
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-emerald-700 hover:bg-emerald-800 rounded transition-colors shadow-sm min-h-[44px]"
+              >
+                <span>Ajukan via WhatsApp Redaksi</span>
+              </a>
+
+              <a
+                href="/submit"
+                class="w-full inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-academic-navy bg-slate-100 hover:bg-slate-200 rounded transition-colors min-h-[44px]"
+              >
+                Lihat Panduan & Kirim via Email
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fokus & Ruang Lingkup (Scope) -->
+  <section class="py-12 max-w-7xl mx-auto px-4">
+    <div class="border-b border-academic-border pb-4 mb-8">
+      <span class="text-xs font-bold uppercase tracking-wider text-academic-crimson">Cakupan Keilmuan</span>
+      <h2 class="text-2xl font-serif font-bold text-academic-navy mt-1">
+        Fokus dan Ruang Lingkup Publikasi
+      </h2>
+      <p class="text-sm text-academic-ink-muted mt-1">
+        Jurnal ini mempublikasikan artikel riset orisinal dalam 3 pilar utama:
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="academic-card p-6 rounded border border-academic-border">
+        <div class="w-10 h-10 rounded bg-blue-100 text-blue-900 flex items-center justify-center font-serif font-bold text-lg mb-4">
+          A1
+        </div>
+        <h3 class="text-lg font-serif font-bold text-academic-navy mb-2">
+          Pemeriksaan & Audit
+        </h3>
+        <p class="text-xs text-academic-ink-muted leading-relaxed">
+          Audit berbasis risiko, akuntansi forensik dan investigasi kecurangan (*fraud*), efektivitas pengawasan internal pemerintah (APIP), independensi auditor, dan teknik audit berbantuan komputer (TABK).
+        </p>
+      </div>
+
+      <div class="academic-card p-6 rounded border border-academic-border">
+        <div class="w-10 h-10 rounded bg-emerald-100 text-emerald-900 flex items-center justify-center font-serif font-bold text-lg mb-4">
+          A2
+        </div>
+        <h3 class="text-lg font-serif font-bold text-academic-navy mb-2">
+          Akuntansi Terapan & ESG
+        </h3>
+        <p class="text-xs text-academic-ink-muted leading-relaxed">
+          Kualitas pelaporan keuangan, persistensi dan manipulasi laba, pengungkapan keberlanjutan (*ESG reporting*), akuntansi manajemen strategis, serta implementasi sistem informasi akuntansi korporasi.
+        </p>
+      </div>
+
+      <div class="academic-card p-6 rounded border border-academic-border">
+        <div class="w-10 h-10 rounded bg-amber-100 text-amber-900 flex items-center justify-center font-serif font-bold text-lg mb-4">
+          A3
+        </div>
+        <h3 class="text-lg font-serif font-bold text-academic-navy mb-2">
+          Perpajakan & Kebijakan Fiskal
+        </h3>
+        <p class="text-xs text-academic-ink-muted leading-relaxed">
+          Modernisasi administrasi perpajakan (Coretax), kepatuhan wajib pajak orang pribadi dan badan, perencanaan pajak (*tax planning*), rekonsiliasi fiskal, serta analisis hukum pajak dan sengketa pengadilan.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Terbitan Terkini (Current Issue) -->
+  <section class="py-8 max-w-7xl mx-auto px-4">
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-academic-border pb-4 mb-6 gap-2">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="academic-badge bg-academic-navy text-white">Terbitan Terkini</span>
+          <span class="text-xs text-academic-ink-subtle">Dipublikasikan pada {new Date(currentIssue.publishDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        </div>
+        <h2 class="text-2xl font-serif font-bold text-academic-navy mt-1">
+          {currentIssue.title}
+        </h2>
+        <p class="text-xs text-academic-ink-muted mt-1">
+          {currentIssue.description}
+        </p>
+      </div>
+
+      <a
+        href="/archives"
+        class="text-sm font-semibold text-academic-crimson hover:underline shrink-0"
+      >
+        Lihat Semua Edisi di Arsip →
+      </a>
+    </div>
+
+    <!-- Daftar Artikel Terbitan Terkini -->
+    <div class="space-y-4">
+      {currentArticles.map((article) => (
+        <ArticleCard article={article} />
+      ))}
+    </div>
+  </section>
+</Layout>
