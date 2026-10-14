@@ -101,26 +101,13 @@ export async function updateDbSettings(data: {
 
   if (d1) {
     try {
-      await d1.prepare(`
-        INSERT INTO journal_settings (
-          id, institution, publisher, address, email, whatsapp_number,
-          whatsapp_display, whatsapp_message, e_issn, p_issn,
-          show_indexing_block, show_tools_block, show_issn_block, gdrive_base_url
-        ) VALUES ('default', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(id) DO UPDATE SET
-          institution = excluded.institution,
-          publisher = excluded.publisher,
-          address = excluded.address,
-          email = excluded.email,
-          whatsapp_number = excluded.whatsapp_number,
-          whatsapp_display = excluded.whatsapp_display,
-          whatsapp_message = excluded.whatsapp_message,
-          e_issn = excluded.e_issn,
-          p_issn = excluded.p_issn,
-          show_indexing_block = excluded.show_indexing_block,
-          show_tools_block = excluded.show_tools_block,
-          show_issn_block = excluded.show_issn_block,
-          gdrive_base_url = excluded.gdrive_base_url
+      const res = await d1.prepare(`
+        UPDATE journal_settings SET
+          institution = ?, publisher = ?, address = ?, email = ?,
+          whatsapp_number = ?, whatsapp_display = ?, whatsapp_message = ?,
+          e_issn = ?, p_issn = ?, show_indexing_block = ?, show_tools_block = ?,
+          show_issn_block = ?, gdrive_base_url = ?
+        WHERE id = 'default'
       `).bind(
         s.institution, s.publisher, s.address, s.submission.email,
         s.submission.whatsappNumber, s.submission.whatsappDisplay,
@@ -130,8 +117,30 @@ export async function updateDbSettings(data: {
         s.features.showIssnBlock ? 1 : 0,
         s.storage.gdriveIndexBaseUrl
       ).run();
+
+      if (!res?.meta?.changes) {
+        await d1.prepare(`
+          INSERT OR REPLACE INTO journal_settings (
+            id, name, name_en, short_name, accredited_text, publisher, institution,
+            address, e_issn, p_issn, doi_prefix, publication_frequency, license,
+            license_url, show_indexing_block, show_tools_block, show_issn_block,
+            email, whatsapp_number, whatsapp_display, whatsapp_message,
+            turnitin_max_similarity, review_time_estimate, gdrive_base_url, pdf_directory_path
+          ) VALUES (
+            'default', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+          )
+        `).bind(
+          s.name, s.nameEn, s.shortName, s.accreditedText, s.publisher, s.institution,
+          s.address, s.eIssn, s.pIssn, s.doiPrefix, s.publicationFrequency, s.license,
+          s.licenseUrl, s.features.showIndexingBlock ? 1 : 0, s.features.showToolsBlock ? 1 : 0,
+          s.features.showIssnBlock ? 1 : 0, s.submission.email, s.submission.whatsappNumber,
+          s.submission.whatsappDisplay, s.submission.whatsappDefaultMessage, s.submission.turnitinMaxSimilarity,
+          s.submission.reviewTimeEstimate, s.storage.gdriveIndexBaseUrl, s.storage.pdfDirectoryPath
+        ).run();
+      }
     } catch (e) {
-      console.warn('D1 update error:', e);
+      console.error('D1 update settings error:', e);
+      throw e;
     }
   }
 }
