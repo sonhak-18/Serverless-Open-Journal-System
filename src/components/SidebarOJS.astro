@@ -106,21 +106,55 @@ const sidebarLinks = [
       Recommended Tools :
     </div>
     <div class="space-y-2">
-      <div class="p-2 border border-slate-200 bg-slate-50 flex items-center justify-center rounded">
-        <span class="font-bold text-red-900 text-sm tracking-widest font-serif flex items-center gap-1">
+      <a
+        href="https://www.mendeley.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="p-2 border border-slate-200 hover:border-slate-400 bg-slate-50 hover:bg-slate-100 flex items-center justify-center rounded transition-colors group"
+        title="Kunjungi Mendeley Reference Manager"
+      >
+        <span class="font-bold text-red-900 text-sm tracking-widest font-serif flex items-center gap-1 group-hover:scale-102 transition-transform">
           <span class="text-base text-red-800 font-sans">●●</span> MENDELEY
         </span>
-      </div>
-      <div class="p-2 border border-slate-200 bg-slate-50 flex items-center justify-center rounded">
-        <span class="font-bold text-emerald-700 text-sm flex items-center gap-1.5">
-          <span class="w-4 h-4 rounded-full bg-emerald-600 text-white text-[10px] flex items-center justify-center font-bold">G</span> grammarly
+      </a>
+
+      <a
+        href="https://www.zotero.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="p-2 border border-slate-200 hover:border-slate-400 bg-slate-50 hover:bg-slate-100 flex items-center justify-center rounded transition-colors group"
+        title="Kunjungi Zotero Reference Assistant"
+      >
+        <span class="font-bold text-slate-900 text-sm flex items-center gap-1.5 group-hover:scale-102 transition-transform">
+          <span class="w-4 h-4 rounded-xs bg-[#c9261f] text-white text-[11px] flex items-center justify-center font-serif font-black">Z</span>
+          <span class="font-sans font-bold tracking-tight text-slate-800">zotero</span>
         </span>
-      </div>
-      <div class="p-2 border border-slate-200 bg-slate-50 flex items-center justify-center rounded">
-        <span class="font-bold text-blue-900 text-sm tracking-wide">
+      </a>
+
+      <a
+        href="https://www.grammarly.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="p-2 border border-slate-200 hover:border-slate-400 bg-slate-50 hover:bg-slate-100 flex items-center justify-center rounded transition-colors group"
+        title="Kunjungi Grammarly Writing Assistant"
+      >
+        <span class="font-bold text-emerald-700 text-sm flex items-center gap-1.5 group-hover:scale-102 transition-transform">
+          <span class="w-4 h-4 rounded-full bg-emerald-600 text-white text-[10px] flex items-center justify-center font-bold">G</span>
+          <span>grammarly</span>
+        </span>
+      </a>
+
+      <a
+        href="https://endnote.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="p-2 border border-slate-200 hover:border-slate-400 bg-slate-50 hover:bg-slate-100 flex items-center justify-center rounded transition-colors group"
+        title="Kunjungi EndNote Clarivate"
+      >
+        <span class="font-bold text-blue-900 text-sm tracking-wide group-hover:scale-102 transition-transform">
           EndNote.
         </span>
-      </div>
+      </a>
     </div>
   </div>
 
@@ -129,11 +163,22 @@ const sidebarLinks = [
     <div class="text-xs font-bold italic text-slate-800 mb-2">
       Plagiarism Tool :
     </div>
-    <div class="p-2.5 border border-slate-200 bg-slate-50 flex items-center justify-center rounded">
-      <span class="font-bold text-slate-900 text-base font-serif flex items-center gap-1">
-        turnitin<span class="w-4 h-4 rounded-sm border-2 border-blue-600 bg-white inline-block"></span>
+    <a
+      href="https://www.turnitin.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="p-2.5 border border-slate-200 hover:border-slate-400 bg-slate-50 hover:bg-slate-100 flex items-center justify-center gap-2 rounded transition-colors group"
+      title="Pemeriksaan Kemiripan Turnitin"
+    >
+      <img
+        src="/images/turnitin.jpg"
+        alt="Turnitin Logo"
+        class="w-6 h-6 object-contain shrink-0"
+      />
+      <span class="font-bold text-slate-900 text-base font-serif tracking-tight">
+        turnitin
       </span>
-    </div>
+    </a>
   </div>
 
   <!-- 6. Kotak Indexing (Indexed By) -->
