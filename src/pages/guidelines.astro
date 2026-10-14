@@ -8,91 +8,297 @@ import { journalConfig } from '../config/journal';
   <div class="max-w-7xl mx-auto px-4 py-8">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Kolom Kiri: Pedoman Lengkap (~68%) -->
-      <main class="lg:col-span-8 space-y-8">
+      <main class="lg:col-span-8 space-y-10">
         <div class="text-xs text-slate-500 mb-2">
           <a href="/" class="hover:underline">Home</a> &gt; <span>Author Guidelines & Ethics</span>
         </div>
 
-        <div class="border-b-2 border-academic-gold pb-2">
+        <!-- Header Judul & Identitas Jurnal -->
+        <div class="border-b-2 border-academic-gold pb-3">
           <h1 class="text-3xl sm:text-4xl font-serif font-bold text-academic-navy">
             Author Guidelines and Publication Ethics
           </h1>
+          <div class="mt-2 text-base text-slate-700">
+            <strong class="text-slate-900">{journalConfig.name} ({journalConfig.shortName})</strong>
+            <div class="text-sm text-slate-500 mt-0.5">
+              Penerbit: {journalConfig.publisher} · <a href="/" class="text-academic-teal hover:underline font-mono">https://jttap.darpana.web.id</a>
+            </div>
+          </div>
         </div>
 
         <!-- Section 1: Focus and Scope -->
         <section id="focus-scope" class="space-y-4">
           <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
-            Focus and Scope
+            Focus and Scope (Fokus dan Ruang Lingkup)
           </h2>
           <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
-            <strong>{journalConfig.name} ({journalConfig.shortName})</strong> mempublikasikan artikel riset orisinal dan kajian konseptual mutakhir dengan fokus pada bidang:
+            {journalConfig.shortName} mempublikasikan artikel riset orisinal dan kajian konseptual mutakhir dengan fokus pada tiga bidang berikut:
           </p>
           <ul class="text-base sm:text-lg text-slate-800 space-y-3.5 list-disc list-inside leading-relaxed">
-            <li><strong>Audit & Pengawasan:</strong> Pemeriksaan operasional, audit kepatuhan, audit investigatif dan forensik, efektivitas sistem pengawasan intern (APIP), dan teknik audit berbasis komputer.</li>
-            <li><strong>Akuntansi Keuangan & Manajemen:</strong> Kualitas pelaporan keuangan, persistensi laba, pengungkapan Environmental, Social, and Governance (ESG), serta sistem informasi akuntansi.</li>
-            <li><strong>Perpajakan & Fiskal:</strong> Implementasi Core Tax Administration System (Coretax), kepatuhan wajib pajak badan dan orang pribadi, perencanaan pajak, dan analisis sengketa perpajakan.</li>
+            <li>
+              <strong>Audit dan Pengawasan:</strong> Pemeriksaan operasional, audit kepatuhan, audit investigatif dan forensik, efektivitas sistem pengawasan intern (termasuk Aparat Pengawasan Intern Pemerintah/APIP), serta teknik audit berbasis komputer.
+            </li>
+            <li>
+              <strong>Akuntansi Keuangan dan Manajemen:</strong> Kualitas pelaporan keuangan, persistensi laba, pengungkapan <em>Environmental, Social, and Governance</em> (ESG), akuntansi manajemen, dan sistem informasi akuntansi.
+            </li>
+            <li>
+              <strong>Perpajakan dan Fiskal:</strong> Implementasi <em>Core Tax Administration System</em> (Coretax), kepatuhan wajib pajak badan dan orang pribadi, perencanaan pajak, dan analisis sengketa perpajakan.
+            </li>
           </ul>
         </section>
 
-        <!-- Section 2: Author Guidelines -->
-        <section id="author-guidelines" class="space-y-4">
+        <!-- Section 2: Article Types -->
+        <section id="article-types" class="space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
+            Article Types (Jenis Artikel)
+          </h2>
+          <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
+            Redaksi menerima tiga kategori naskah ilmiah untuk proses penelaahan:
+          </p>
+          <div class="overflow-x-auto border border-slate-300 rounded shadow-2xs">
+            <table class="w-full text-left border-collapse text-base text-slate-800">
+              <thead class="bg-[#0f284e] text-white">
+                <tr>
+                  <th class="py-3 px-4 font-bold border-b border-slate-300">Jenis</th>
+                  <th class="py-3 px-4 font-bold border-b border-slate-300">Deskripsi</th>
+                  <th class="py-3 px-4 font-bold border-b border-slate-300">Panjang (kata, termasuk daftar pustaka)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 bg-white">
+                <tr class="hover:bg-slate-50">
+                  <td class="py-3 px-4 font-semibold text-slate-900">Artikel riset orisinal</td>
+                  <td class="py-3 px-4">Penelitian empiris kuantitatif, kualitatif, atau campuran</td>
+                  <td class="py-3 px-4 font-mono font-medium">4.000 - 7.500</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-3 px-4 font-semibold text-slate-900">Studi kasus</td>
+                  <td class="py-3 px-4">Analisis mendalam atas satu atau beberapa kasus praktik</td>
+                  <td class="py-3 px-4 font-mono font-medium">3.500 - 6.000</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-3 px-4 font-semibold text-slate-900">Kajian literatur</td>
+                  <td class="py-3 px-4">Tinjauan sistematis atau konseptual yang mutakhir</td>
+                  <td class="py-3 px-4 font-mono font-medium">4.000 - 7.000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Section 3: Publication Information -->
+        <section id="publication-info" class="space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
+            Publication Information (Informasi Terbitan)
+          </h2>
+          <div class="p-5 bg-slate-50 border border-slate-200 rounded space-y-2.5 text-base sm:text-lg text-slate-800 leading-relaxed shadow-2xs">
+            <div>
+              <strong>Frekuensi Terbit:</strong> Dua kali setahun (Maret dan September).
+            </div>
+            <div>
+              <strong>Model Terbit:</strong> Akses terbuka penuh (<em>Diamond Open Access</em> bebas biaya bagi pembaca).
+            </div>
+            <div>
+              <strong>Identifier:</strong> DOI Prefix {journalConfig.doiPrefix} (Crossref) · e-ISSN: {journalConfig.eIssn} · p-ISSN: {journalConfig.pIssn}.
+            </div>
+            <div>
+              <strong>Pengindeksan:</strong> Google Scholar, GARUDA (Kemdikbud), Dimensions, Crossref, BASE, Neliti, ROAD.
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: Author Guidelines -->
+        <section id="author-guidelines" class="space-y-6">
           <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
             Author Guidelines (Petunjuk Penulisan)
           </h2>
-          <div class="text-base sm:text-lg text-slate-800 space-y-3.5 leading-relaxed">
-            <p>1. <strong>Sistematika Manuskrip:</strong> Naskah disusun dengan urutan: Judul (Title), Nama Penulis dan Afiliasi, Abstrak (150-250 kata dalam bahasa Indonesia atau Inggris), Kata Kunci (3-5 kata), Pendahuluan, Metode Penelitian, Hasil dan Pembahasan, Kesimpulan, dan Daftar Pustaka.</p>
-            <p>2. <strong>Panjang Naskah:</strong> Manuskrip memiliki panjang antara 4.000 hingga 7.500 kata termasuk referensi dan tabel pendukung.</p>
-            <p>3. <strong>Format Sitasi:</strong> Seluruh referensi wajib disusun menggunakan gaya sitasi <strong>APA Style 7th Edition</strong>. Penulis disarankan menggunakan aplikasi pengelola referensi seperti Mendeley, EndNote, atau Zotero.</p>
-            <p>4. <strong>Format Berkas:</strong> Berkas naskah dikirimkan dalam format Microsoft Word (.docx).</p>
+
+          <!-- 1. Kelayakan Naskah -->
+          <div class="space-y-2">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+              1. Kelayakan Naskah
+            </h3>
+            <ul class="text-base sm:text-lg text-slate-800 space-y-2 list-disc list-inside leading-relaxed">
+              <li>Naskah orisinal, belum pernah dipublikasikan, dan tidak sedang dalam proses penelaahan di jurnal lain (pengiriman ganda tidak diperkenankan).</li>
+              <li>Naskah sesuai dengan fokus dan ruang lingkup {journalConfig.shortName}.</li>
+              <li>Bahasa naskah adalah bahasa Indonesia baku atau bahasa Inggris akademik.</li>
+            </ul>
+          </div>
+
+          <!-- 2. Sistematika Manuskrip -->
+          <div class="space-y-3">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+              2. Sistematika Manuskrip
+            </h3>
+            <ol class="text-base sm:text-lg text-slate-800 space-y-2 list-decimal list-inside leading-relaxed">
+              <li>Judul (<em>Title</em>)</li>
+              <li>Nama penulis, afiliasi, email korespondensi, dan ORCID</li>
+              <li><em>Abstract</em> dan kata kunci (<em>Keywords</em>)</li>
+              <li>Pendahuluan</li>
+              <li>Tinjauan Pustaka dan Pengembangan Hipotesis (opsional untuk studi kualitatif)</li>
+              <li>Metode Penelitian</li>
+              <li>Hasil dan Pembahasan</li>
+              <li>Kesimpulan</li>
+              <li>Pernyataan (kontribusi penulis, pendanaan, konflik kepentingan, ketersediaan data, penggunaan alat AI, ucapan terima kasih)</li>
+              <li>Daftar Pustaka</li>
+              <li>Lampiran (opsional)</li>
+            </ol>
+            <div class="p-4 bg-white border border-slate-200 rounded space-y-2 text-base text-slate-800">
+              <p><strong>Judul:</strong> Huruf kapital, singkat dan jelas, maksimal 10 kata (kata sambung tidak dihitung).</p>
+              <p><strong>Abstract:</strong> Bahasa Inggris, sekitar 200 kata (rentang 150-250 kata), satu paragraf, tanpa sitasi. Memuat tujuan penelitian, metode, hasil utama, kesimpulan, dan kebaruan penelitian.</p>
+              <p><strong>Kata kunci:</strong> 3-5 kata atau frasa dalam bahasa Inggris.</p>
+            </div>
+          </div>
+
+          <!-- 3. Panjang Naskah -->
+          <div class="space-y-2">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+              3. Panjang Naskah
+            </h3>
+            <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
+              Artikel riset orisinal memiliki panjang 4.000 hingga 7.500 kata, termasuk daftar pustaka, tabel, dan gambar pendukung. Panjang jenis artikel lain mengikuti tabel Jenis Artikel.
+            </p>
+          </div>
+
+          <!-- 4. Format Penulisan -->
+          <div class="space-y-3">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+              4. Format Penulisan
+            </h3>
+            <div class="overflow-x-auto border border-slate-300 rounded shadow-2xs">
+              <table class="w-full text-left border-collapse text-base text-slate-800">
+                <thead class="bg-slate-100 text-slate-900 border-b border-slate-300">
+                  <tr>
+                    <th class="py-2.5 px-4 font-bold">Komponen</th>
+                    <th class="py-2.5 px-4 font-bold">Ketentuan</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                  <tr>
+                    <td class="py-2.5 px-4 font-semibold">Ukuran kertas</td>
+                    <td class="py-2.5 px-4">A4</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-4 font-semibold">Margin</td>
+                    <td class="py-2.5 px-4">2,5 cm (1 inci) pada seluruh sisi</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-4 font-semibold">Kolom</td>
+                    <td class="py-2.5 px-4">Satu kolom</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-4 font-semibold">Font</td>
+                    <td class="py-2.5 px-4 font-mono">Times New Roman, 11 pt (spasi 1.15)</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-4 font-semibold">Judul</td>
+                    <td class="py-2.5 px-4 font-mono">Times New Roman 12 pt, tebal, rata tengah</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-4 font-semibold">Nama penulis</td>
+                    <td class="py-2.5 px-4 font-mono">Times New Roman 11 pt, tebal, rata tengah</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-4 font-semibold">Tabel dan gambar</td>
+                    <td class="py-2.5 px-4">Diberi nomor dan judul, dirujuk dalam teks, serta mencantumkan sumber</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="text-base text-slate-700 italic">
+              Penulis wajib menggunakan <strong>templat naskah {journalConfig.shortName}</strong> yang tersedia di bawah ini.
+            </p>
+          </div>
+
+          <!-- 5. Format Sitasi -->
+          <div class="space-y-2">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+              5. Format Sitasi
+            </h3>
+            <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
+              Sitasi dan daftar pustaka wajib disusun dengan <strong>APA Style 7th Edition</strong>. Penulis disarankan memakai pengelola referensi seperti Mendeley, EndNote, atau Zotero. Daftar pustaka disarankan memuat minimal 20 referensi, terutama artikel jurnal ilmiah terbitan 10 tahun terakhir.
+            </p>
+          </div>
+
+          <!-- 6. Berkas yang Dikirim -->
+          <div class="space-y-3">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+              6. Berkas yang Dikirim
+            </h3>
+            <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
+              Karena penelaahan dilakukan secara <em>double blind</em>, penulis mengirim dua berkas dalam format Microsoft Word (.docx):
+            </p>
+            <ol class="text-base sm:text-lg text-slate-800 space-y-2 list-decimal list-inside leading-relaxed pl-2">
+              <li>
+                <strong>Naskah anonim (<em>blinded manuscript</em>):</strong> tanpa nama penulis, afiliasi, email, ORCID, ucapan terima kasih, dan informasi pendanaan. Rujukan terhadap karya sendiri ditulis netral, misalnya "(Penulis, Tahun)".
+              </li>
+              <li>
+                <strong>Halaman identitas (<em>title page</em>):</strong> berisi judul, nama penulis, afiliasi, email korespondensi, ORCID, nomor WhatsApp untuk keperluan korespondensi, dan seluruh pernyataan.
+              </li>
+            </ol>
+            <p class="text-base text-amber-900 bg-amber-50 p-3 rounded border border-amber-200">
+              Seluruh teks petunjuk pada templat harus dihapus sebelum naskah dikirim ke redaksi.
+            </p>
+          </div>
+
+          <!-- 7. Kriteria dan Perubahan Kepenulisan -->
+          <div class="space-y-2">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+              7. Kriteria dan Perubahan Kepenulisan
+            </h3>
+            <ul class="text-base sm:text-lg text-slate-800 space-y-2 list-disc list-inside leading-relaxed">
+              <li>Penulis adalah pihak yang memberi kontribusi intelektual yang substansial. Kontribusi dinyatakan menggunakan taksonomi CRediT.</li>
+              <li>Penulis korespondensi bertanggung jawab atas komunikasi dengan redaksi dan atas persetujuan seluruh penulis terhadap naskah.</li>
+              <li>Perubahan daftar atau urutan penulis setelah pengiriman harus diajukan tertulis ke redaksi disertai persetujuan seluruh penulis, dan tidak dapat dilakukan setelah naskah diterbitkan kecuali melalui prosedur koreksi.</li>
+            </ul>
+          </div>
+
+          <!-- 8. Submission Checklist -->
+          <div class="space-y-3">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+              8. Daftar Periksa Sebelum Mengirim (<em>Submission Checklist</em>)
+            </h3>
+            <ul class="p-5 bg-slate-50 border border-slate-200 rounded space-y-2.5 text-base sm:text-lg text-slate-800 leading-relaxed shadow-2xs">
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-700 font-bold shrink-0">✓</span>
+                <span>Naskah memakai templat {journalConfig.shortName} dan seluruh teks petunjuk sudah dihapus.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-700 font-bold shrink-0">✓</span>
+                <span>Naskah anonim dan halaman identitas dikirim sebagai dua berkas terpisah (.docx).</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-700 font-bold shrink-0">✓</span>
+                <span>Abstract berbahasa Inggris, 150-250 kata, dan kata kunci 3-5.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-700 font-bold shrink-0">✓</span>
+                <span>Panjang naskah 4.000-7.500 kata (artikel riset).</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-700 font-bold shrink-0">✓</span>
+                <span>Sitasi dan daftar pustaka sesuai APA 7; semua sitasi ada di daftar pustaka, dan sebaliknya.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-700 font-bold shrink-0">✓</span>
+                <span>Indeks kemiripan (<em>similarity</em>) di bawah 20%.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-700 font-bold shrink-0">✓</span>
+                <span>Pernyataan kontribusi, pendanaan, konflik kepentingan, ketersediaan data, dan penggunaan AI sudah diisi.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-700 font-bold shrink-0">✓</span>
+                <span>Persetujuan etik atau persetujuan responden dicantumkan bila melibatkan manusia atau data pribadi.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-emerald-700 font-bold shrink-0">✓</span>
+                <span>Izin penggunaan materi pihak ketiga (gambar, tabel, instrumen) sudah dimiliki.</span>
+              </li>
+            </ul>
           </div>
         </section>
 
-        <!-- Section 3: Peer Review Process -->
-        <section id="review-process" class="space-y-4">
-          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
-            Peer Review Process (Proses Penelaahan Sejawat)
-          </h2>
-          <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
-            Setiap manuskrip yang masuk melalui tahap penelaahan awal oleh Managing Editor untuk memeriksa kesesuaian ruang lingkup dan orisinalitas. Naskah yang memenuhi kualifikasi akan diteruskan kepada minimal dua orang mitra bestari (*peer reviewers*) independen melalui metode *blind review*. Keputusan penerimaan, revisi, atau penolakan naskah didasarkan sepenuhnya pada pertimbangan substantif dewan penelaah.
-          </p>
-        </section>
-
-        <!-- Section 4: Plagiarism Policy -->
-        <section id="plagiarism" class="space-y-4">
-          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
-            Plagiarism and AI Policy
-          </h2>
-          <div class="text-base sm:text-lg text-slate-800 space-y-3.5 leading-relaxed">
-            <p>
-              Redaksi menjalankan pemeriksaan kemiripan menggunakan <strong>Turnitin</strong> pada setiap naskah yang diajukan. Batas maksimal indeks kemiripan (*similarity index*) yang ditoleransi adalah <strong>{journalConfig.submission.turnitinMaxSimilarity}%</strong>.
-            </p>
-            <p>
-              Pemanfaatan kecerdasan buatan (AI) hanya diperkenankan sebagai alat bantu penyuntingan kebahasaan dan pengecekan tata bahasa. Sintesis ilmiah, metodologi riset, dan analisis data wajib merupakan hasil pemikiran orisinal penulis.
-            </p>
-          </div>
-        </section>
-
-        <!-- Section 5: Publication Ethics -->
-        <section id="ethics" class="space-y-4">
-          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
-            Publication Ethics (Etika Publikasi)
-          </h2>
-          <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
-            Pernyataan etika publikasi {journalConfig.name} mengacu pada pedoman standar Committee on Publication Ethics (COPE). Penulis, editor, dan reviewer diharapkan mematuhi standar integritas akademik bebas dari fabrikasi data, falsifikasi, dan plagiarisme.
-          </p>
-        </section>
-
-        <!-- Section 6: Article Processing Charges -->
-        <section id="apc" class="space-y-4">
-          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
-            Article Processing Charges (APC)
-          </h2>
-          <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
-            Informasi mengenai ketentuan administrasi dan pemrosesan penerbitan naskah dikonfirmasi langsung oleh sekretariat redaksi kepada penulis korespondensi melalui surat elektronik (Email) atau narahubung resmi WhatsApp setelah naskah dinyatakan lolos penilaian awal.
-          </p>
-        </section>
-
-        <!-- Section 7: Template Download & Struktur Manuskrip -->
+        <!-- Section 5: Unduh Template & Pratinjau Struktur -->
         <section id="template" class="space-y-4">
           <div class="p-6 bg-slate-50 border-2 border-academic-navy/20 rounded-md space-y-4 shadow-2xs">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -232,6 +438,200 @@ import { journalConfig } from '../config/journal';
                   Referensi disusun alfabetis menggunakan format <strong>APA 7th Edition</strong> berbasis reference manager (Mendeley/Zotero). Lampiran 1 (Daftar Sampel), Lampiran 2 (Instrumen Kuesioner/Pedoman Wawancara), dan Lampiran 3 (Output Pengolahan Data Statistik).
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 6: Peer Review Process -->
+        <section id="review-process" class="space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
+            Peer Review Process (Proses Penelaahan Sejawat)
+          </h2>
+          <ol class="text-base sm:text-lg text-slate-800 space-y-3.5 list-decimal list-inside leading-relaxed">
+            <li>
+              <strong>Penelaahan awal:</strong> <em>Managing Editor</em> memeriksa kesesuaian ruang lingkup, kepatuhan terhadap templat, anonimitas naskah, dan orisinalitas (termasuk pemeriksaan kemiripan).
+            </li>
+            <li>
+              <strong>Penelaahan mitra bestari:</strong> Naskah yang memenuhi kualifikasi diteruskan kepada minimal dua mitra bestari (<em>peer reviewers</em>) independen melalui metode <strong><em>double blind</em></strong>: identitas penulis tidak diketahui reviewer, dan identitas reviewer tidak diketahui penulis.
+            </li>
+            <li>
+              <strong>Keputusan:</strong> Diterima, diterima dengan revisi, atau ditolak, berdasarkan sepenuhnya pada pertimbangan substantif dewan penelaah.
+            </li>
+            <li>
+              <strong>Revisi:</strong> Penulis menyampaikan naskah revisi beserta tanggapan atas setiap masukan reviewer dalam batas waktu 14 hari kalender. Jumlah putaran revisi maksimal 2 (dua) kali.
+            </li>
+            <li>
+              <strong>Target waktu:</strong> Keputusan pertama diupayakan dalam 4-8 minggu sejak naskah lolos penelaahan awal.
+            </li>
+            <li>
+              <strong>Naskah dari pihak internal:</strong> Naskah yang ditulis oleh editor atau anggota dewan redaksi ditangani oleh editor lain dan penulis tersebut tidak terlibat dalam pengambilan keputusannya.
+            </li>
+          </ol>
+        </section>
+
+        <!-- Section 7: Plagiarism and AI Policy -->
+        <section id="plagiarism" class="space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
+            Plagiarism and AI Policy (Kebijakan Plagiarisme dan Penggunaan AI)
+          </h2>
+          <div class="space-y-3 text-base sm:text-lg text-slate-800 leading-relaxed">
+            <h3 class="font-bold text-slate-900 text-lg sm:text-xl">Plagiarisme</h3>
+            <ul class="space-y-2 list-disc list-inside">
+              <li>
+                Redaksi memeriksa kemiripan seluruh naskah menggunakan <strong>Turnitin</strong>. Batas maksimal indeks kemiripan (<em>similarity index</em>) yang ditoleransi adalah <strong>{journalConfig.submission.turnitinMaxSimilarity}%</strong> (daftar pustaka dan kutipan langsung yang bertanda petik dikecualikan dari persentase kemiripan).
+              </li>
+              <li>
+                Naskah dengan kemiripan di atas batas dikembalikan kepada penulis untuk diperbaiki, atau ditolak apabila ditemukan plagiarisme yang disengaja.
+              </li>
+              <li>
+                Pengiriman ganda (<em>duplicate submission</em>), penerbitan ganda (<em>duplicate publication</em>), dan pemecahan satu penelitian menjadi beberapa artikel tanpa alasan ilmiah (<em>salami slicing</em>) tidak diperkenankan.
+              </li>
+            </ul>
+
+            <h3 class="font-bold text-slate-900 text-lg sm:text-xl pt-3">Penggunaan AI</h3>
+            <ul class="space-y-2 list-disc list-inside">
+              <li>
+                Kecerdasan buatan (AI) hanya diperkenankan sebagai alat bantu penyuntingan kebahasaan dan pemeriksaan tata bahasa.
+              </li>
+              <li>
+                Sintesis ilmiah, metodologi riset, dan analisis data wajib merupakan hasil pemikiran orisinal penulis.
+              </li>
+              <li>
+                Penulis wajib menyebutkan alat AI yang digunakan beserta tujuannya pada bagian Pernyataan.
+              </li>
+              <li>
+                AI tidak dapat dicantumkan sebagai penulis, dan penulis bertanggung jawab penuh atas seluruh isi naskah.
+              </li>
+              <li>
+                Reviewer dan editor tidak diperkenankan mengunggah naskah ke alat AI publik karena melanggar kerahasiaan naskah.
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Section 8: Publication Ethics -->
+        <section id="ethics" class="space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
+            Publication Ethics (Etika Publikasi)
+          </h2>
+          <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
+            {journalConfig.shortName} mengacu pada pedoman standar <strong>Committee on Publication Ethics (COPE)</strong>. Penulis, editor, dan reviewer wajib menjunjung integritas akademik dan bebas dari fabrikasi data, falsifikasi, dan plagiarisme.
+          </p>
+          <div class="space-y-2.5 text-base sm:text-lg text-slate-800 leading-relaxed">
+            <p>
+              <strong>Penulis</strong> bertanggung jawab atas keaslian data dan karya, mencantumkan seluruh pihak yang berkontribusi secara layak, menyatakan konflik kepentingan dan sumber pendanaan, serta segera memberi tahu redaksi apabila menemukan kesalahan pada naskah yang telah dikirim atau diterbitkan.
+            </p>
+            <p>
+              <strong>Editor</strong> menilai naskah semata-mata berdasarkan kualitas ilmiah dan kesesuaian ruang lingkup, menjaga kerahasiaan naskah dan identitas reviewer, serta menghindari konflik kepentingan dalam pengambilan keputusan.
+            </p>
+            <p>
+              <strong>Reviewer</strong> menelaah secara objektif, tepat waktu, dan konstruktif, menjaga kerahasiaan naskah, serta memberi tahu editor apabila terdapat konflik kepentingan.
+            </p>
+          </div>
+
+          <!-- Etika Penelitian dan Perlindungan Data -->
+          <div class="pt-2 space-y-2">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+              Etika Penelitian dan Perlindungan Data
+            </h3>
+            <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
+              Penelitian audit, akuntansi, dan perpajakan sering memakai data organisasi, data klien, atau data wajib pajak. Karena itu:
+            </p>
+            <ul class="text-base sm:text-lg text-slate-800 space-y-2 list-disc list-inside leading-relaxed pl-2">
+              <li>Penelitian yang melibatkan manusia (survei, wawancara, eksperimen) harus mencantumkan bahwa responden memberikan persetujuan (<em>informed consent</em>) dan, bila disyaratkan institusi, persetujuan komite etik.</li>
+              <li>Identitas responden, informan, klien, dan wajib pajak dijaga kerahasiaannya. Seluruh data yang dipublikasikan harus dianonimkan.</li>
+              <li>Data internal organisasi hanya boleh digunakan dengan izin tertulis dari organisasi tersebut, dan izin itu dinyatakan dalam naskah.</li>
+              <li>Pelanggaran etika dapat berakibat naskah ditolak, dikoreksi, atau ditarik (<em>retracted</em>) sesuai prosedur COPE.</li>
+            </ul>
+          </div>
+
+          <!-- Corrections and Complaints -->
+          <div class="pt-2 space-y-2">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+              Corrections and Complaints (Koreksi dan Keluhan)
+            </h3>
+            <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
+              Dugaan pelanggaran etika, kesalahan pada artikel terbit, atau keberatan atas keputusan redaksi dapat disampaikan secara tertulis ke alamat surel redaksi: <a href={`mailto:${journalConfig.submission.email}`} class="text-academic-teal hover:underline font-semibold font-mono">{journalConfig.submission.email}</a>. Redaksi menindaklanjuti sesuai alur COPE, menjaga kerahasiaan pelapor, dan menerbitkan ralat (<em>corrigendum</em>) atau penarikan naskah (<em>retraction</em>) bila diperlukan.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 9: Open Data Policy -->
+        <section id="open-data" class="space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
+            Open Data Policy (Kebijakan Data Terbuka)
+          </h2>
+          <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
+            Penulis didorong menyimpan data dan instrumen penelitian di repositori terbuka bereputasi (misalnya Zenodo, OSF, atau Mendeley Data) dan mencantumkan tautannya pada pernyataan ketersediaan data. Data yang bersifat rahasia organisasi atau berisi data pribadi tidak wajib dibuka, namun alasan pembatasannya harus dinyatakan secara transparan pada naskah.
+          </p>
+        </section>
+
+        <!-- Section 10: Copyright and License -->
+        <section id="copyright-license" class="space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
+            Copyright and License (Hak Cipta dan Lisensi)
+          </h2>
+          <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
+            Seluruh artikel {journalConfig.shortName} dapat diakses secara terbuka tanpa pembatasan biaya (<em>Diamond Open Access</em>) dan didistribusikan di bawah lisensi resmi:
+          </p>
+          <div class="p-5 bg-white border border-slate-200 rounded shadow-2xs space-y-2 text-base sm:text-lg text-slate-800 leading-relaxed">
+            <div class="font-bold text-slate-900">
+              <a href={journalConfig.licenseUrl} target="_blank" rel="noopener noreferrer" class="text-academic-gold hover:underline">
+                Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+              </a>
+            </div>
+            <ul class="space-y-2 list-disc list-inside">
+              <li><strong>Hak Cipta:</strong> Hak cipta artikel dipegang penuh oleh Penulis (<em>Author retains copyright</em>).</li>
+              <li>Pihak mana pun boleh membagikan dan mengadaptasi artikel dengan mencantumkan atribusi yang layak. Karya turunan wajib dibagikan dengan lisensi yang sama (<em>ShareAlike</em>).</li>
+              <li>Penulis bertanggung jawab memperoleh izin tertulis untuk materi pihak ketiga (gambar, bagan, tabel, instrumen) yang tidak tercakup dalam lisensi terbuka.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Section 11: Article Processing Charges (APC) -->
+        <section id="apc" class="space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
+            Article Processing Charges (APC) (Biaya Pemrosesan Artikel)
+          </h2>
+          <div class="p-6 bg-slate-50 border border-slate-200 rounded space-y-3.5 text-base sm:text-lg text-slate-800 leading-relaxed shadow-2xs">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-xs font-bold uppercase rounded">Bebas Biaya Pengajuan</span>
+              <span class="px-2.5 py-0.5 bg-blue-100 text-blue-800 text-xs font-bold uppercase rounded">Bebas Biaya Penelaahan</span>
+            </div>
+            <p>
+              {journalConfig.shortName} <strong>tidak memungut biaya apa pun</strong> untuk pengiriman naskah (<em>submission</em>) maupun proses penelaahan sejawat (<em>peer review</em>).
+            </p>
+            <p>
+              Biaya pemrosesan artikel (APC) sebesar <strong>Rp100.000</strong> per artikel hanya dikenakan <strong>setelah naskah dinyatakan diterima (Letter of Acceptance)</strong> untuk terbit.
+            </p>
+            <p>
+              Keputusan penerimaan naskah sepenuhnya didasarkan pada kualitas substantif ilmiah dan tidak dipengaruhi oleh kemampuan penulis membayar. Biaya ini dialokasikan untuk pembiayaan operasional penyuntingan akhir (<em>copyediting</em>), tata letak standar jurnal (<em>layouting</em>), registrasi DOI permanen Crossref, serta pemeliharaan peladen repositori terbuka.
+            </p>
+            <p>
+              Rincian tagihan dan cara pembayaran resmi disampaikan oleh sekretariat redaksi kepada penulis korespondensi melalui surat elektronik resmi (<a href={`mailto:${journalConfig.submission.email}`} class="text-academic-teal hover:underline font-mono">{journalConfig.submission.email}</a>) atau narahubung resmi WhatsApp.
+            </p>
+            <div class="pt-2 border-t border-slate-200 text-sm sm:text-base text-slate-600">
+              <em>Keringanan / Pembebasan Biaya: Penulis mahasiswa S1 atau peneliti independen tanpa pendanaan riset dapat mengajukan permohonan keringanan/pembebasan biaya (fee waiver) secara tertulis kepada Editor-in-Chief saat menyerahkan naskah.</em>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 12: Contact -->
+        <section id="contact" class="space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
+            Contact (Kontak Redaksi)
+          </h2>
+          <div class="p-5 bg-white border border-slate-200 rounded space-y-2 text-base text-slate-800 shadow-2xs">
+            <div class="font-bold text-slate-900">
+              Redaksi {journalConfig.name} ({journalConfig.shortName})
+            </div>
+            <div>{journalConfig.publisher} · {journalConfig.address}</div>
+            <div class="pt-2 flex flex-wrap gap-4 text-sm text-slate-600">
+              <span>Email: <a href={`mailto:${journalConfig.submission.email}`} class="text-academic-teal hover:underline font-mono font-semibold">{journalConfig.submission.email}</a></span>
+              <span>•</span>
+              <span>WhatsApp: <span class="font-mono font-semibold text-slate-800">{journalConfig.submission.whatsappDisplay}</span></span>
+              <span>•</span>
+              <span>Portal: <a href="/" class="text-academic-teal hover:underline font-mono">https://jttap.darpana.web.id</a></span>
             </div>
           </div>
         </section>
