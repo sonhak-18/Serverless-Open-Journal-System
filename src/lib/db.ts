@@ -338,17 +338,49 @@ export async function getDbIndexing(d1?: any): Promise<IndexingPlatform[]> {
 }
 
 export async function toggleDbIndexingSidebar(name: string, showInSidebar: boolean, d1?: any): Promise<void> {
-  const target = memoryStore.indexing.find((i) => i.name === name);
+  await updateDbIndexingPlatform({ name, showInSidebar }, d1);
+}
+
+export async function updateDbIndexingPlatform(data: { name: string; url?: string; showInSidebar?: boolean }, d1?: any): Promise<void> {
+  const target = memoryStore.indexing.find((i) => i.name === data.name);
   if (target) {
-    target.showInSidebar = showInSidebar;
+    if (data.url !== undefined) target.url = data.url;
+    if (data.showInSidebar !== undefined) target.showInSidebar = data.showInSidebar;
   }
 
   if (d1) {
     try {
-      await d1.prepare('UPDATE indexing_platforms SET show_in_sidebar = ? WHERE name = ?')
-        .bind(showInSidebar ? 1 : 0, name).run();
+      if (data.url !== undefined && data.showInSidebar !== undefined) {
+        await d1.prepare('UPDATE indexing_platforms SET url = ?, show_in_sidebar = ? WHERE name = ?')
+          .bind(data.url, data.showInSidebar ? 1 : 0, data.name).run();
+      } else if (data.url !== undefined) {
+        await d1.prepare('UPDATE indexing_platforms SET url = ? WHERE name = ?')
+          .bind(data.url, data.name).run();
+      } else if (data.showInSidebar !== undefined) {
+        await d1.prepare('UPDATE indexing_platforms SET show_in_sidebar = ? WHERE name = ?')
+          .bind(data.showInSidebar ? 1 : 0, data.name).run();
+      }
     } catch (e) {
-      console.warn('D1 toggle indexing error:', e);
+      console.warn('D1 update indexing error:', e);
     }
+  }
+}
+
+export async function getDbAdminPin(kv?: any): Promise<string> {
+  if (kv) {
+    try {
+      const pin = await kv.get('auth:admin_pin');
+      if (pin) return pin;
+    } catch (_) {}
+  }
+  return (memoryStore as any).adminPin || 'admin123';
+}
+
+export async function setDbAdminPin(newPin: string, kv?: any): Promise<void> {
+  (memoryStore as any).adminPin = newPin;
+  if (kv) {
+    try {
+      await kv.put('auth:admin_pin', newPin);
+    } catch (_) {}
   }
 }

@@ -29,12 +29,21 @@ const { editorInChief, editors, reviewers } = editorial;
         </p>
       </div>
 
-      <!-- Status Database -->
-      <div class="flex items-center gap-2 self-start sm:self-center">
+      <!-- Status Database & Tombol Logout -->
+      <div class="flex items-center gap-2.5 self-start sm:self-center">
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold">
           <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
           <span>Database Terhubung (D1 / SQLite)</span>
         </span>
+        <button
+          type="button"
+          id="btn-admin-logout"
+          class="hidden px-3 py-1 bg-red-700 hover:bg-red-800 text-white text-xs font-semibold rounded transition-colors shadow-2xs flex items-center gap-1.5"
+          title="Keluar dari Panel Admin"
+        >
+          <span>🚪</span>
+          <span>Keluar</span>
+        </button>
       </div>
     </div>
 
@@ -53,7 +62,7 @@ const { editorInChief, editors, reviewers } = editorial;
         Akses Khusus Dewan Redaksi
       </h2>
       <p class="text-xs text-academic-ink-muted mt-1 mb-6">
-        Masukkan PIN atau Kata Sandi Admin untuk mengelola data redaksi Sektansia Research Community.
+        Masukkan kata sandi atau PIN untuk masuk ke panel administrasi redaksi.
       </p>
 
       <form id="admin-login-form" class="space-y-4 text-left">
@@ -65,7 +74,7 @@ const { editorInChief, editors, reviewers } = editorial;
             type="password"
             id="admin-pin"
             required
-            placeholder="Masukkan kata sandi (default: admin123)"
+            placeholder="Masukkan kata sandi / PIN"
             class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson focus:ring-1 focus:ring-academic-crimson outline-none"
           />
         </div>
@@ -126,6 +135,13 @@ const { editorInChief, editors, reviewers } = editorial;
           data-tab="tab-gdrive-config"
         >
           Google Drive Index
+        </button>
+        <button
+          type="button"
+          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          data-tab="tab-security-settings"
+        >
+          🔒 Keamanan & PIN
         </button>
       </div>
 
@@ -671,8 +687,23 @@ const { editorInChief, editors, reviewers } = editorial;
                         checked={idx.showInSidebar}
                       />
                     </td>
-                    <td class="p-2.5 font-mono text-slate-500 truncate max-w-xs">
-                      <a href={idx.url} target="_blank" rel="noopener noreferrer" class="hover:underline text-blue-700">{idx.url}</a>
+                    <td class="p-2.5">
+                      <div class="flex items-center gap-1.5 min-w-[280px]">
+                        <input
+                          type="url"
+                          value={idx.url}
+                          class="input-index-url w-full px-2.5 py-1 text-xs font-mono border border-slate-300 rounded focus:border-blue-600 outline-none"
+                          data-name={idx.name}
+                          placeholder="https://..."
+                        />
+                        <button
+                          type="button"
+                          class="btn-save-index-url shrink-0 px-3 py-1 bg-slate-700 hover:bg-slate-800 text-white text-[11px] font-semibold rounded transition-colors"
+                          data-name={idx.name}
+                        >
+                          Simpan
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -720,6 +751,72 @@ const { editorInChief, editors, reviewers } = editorial;
           </form>
         </div>
       </div>
+
+      <!-- TAB 7: KEAMANAN & GANTI PIN ADMIN -->
+      <div id="tab-security-settings" class="tab-panel hidden space-y-6">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white shadow-sm max-w-xl">
+          <div class="border-b border-slate-200 pb-3 mb-6">
+            <h2 class="text-lg font-serif font-bold text-academic-navy">
+              Ganti Kata Sandi / PIN Panel Redaksi
+            </h2>
+            <p class="text-xs text-academic-ink-muted mt-1">
+              Perbarui PIN untuk mengamankan akses panel administrasi jurnal.
+            </p>
+          </div>
+
+          <form id="form-change-pin" class="space-y-4">
+            <div>
+              <label for="current-pin" class="block text-xs font-semibold text-academic-navy mb-1">
+                PIN Saat Ini *
+              </label>
+              <input
+                type="password"
+                id="current-pin"
+                required
+                placeholder="Masukkan PIN lama"
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
+              />
+            </div>
+
+            <div>
+              <label for="new-pin" class="block text-xs font-semibold text-academic-navy mb-1">
+                PIN Baru *
+              </label>
+              <input
+                type="password"
+                id="new-pin"
+                required
+                minlength="4"
+                placeholder="Minimal 4 karakter"
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
+              />
+            </div>
+
+            <div>
+              <label for="confirm-new-pin" class="block text-xs font-semibold text-academic-navy mb-1">
+                Konfirmasi PIN Baru *
+              </label>
+              <input
+                type="password"
+                id="confirm-new-pin"
+                required
+                minlength="4"
+                placeholder="Ketik ulang PIN baru"
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-crimson outline-none font-mono"
+              />
+            </div>
+
+            <div class="pt-2 flex justify-end">
+              <button
+                type="submit"
+                class="px-5 py-2.5 bg-academic-crimson hover:bg-academic-crimson-light text-white text-xs font-semibold rounded shadow transition-colors"
+              >
+                Simpan PIN Baru
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </Layout>
@@ -737,28 +834,60 @@ const { editorInChief, editors, reviewers } = editorial;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Login Check
+  // Login & Logout Check
   const loginForm = document.getElementById('admin-login-form');
   const loginLock = document.getElementById('admin-login-lock');
   const dashboardContent = document.getElementById('admin-dashboard-content');
   const loginError = document.getElementById('login-error');
   const adminPinInput = document.getElementById('admin-pin') as HTMLInputElement | null;
+  const logoutBtn = document.getElementById('btn-admin-logout');
 
-  if (sessionStorage.getItem('sektansia_admin_auth') === 'true') {
-    loginLock?.classList.add('hidden');
-    dashboardContent?.classList.remove('hidden');
-  }
-
-  loginForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const pin = adminPinInput?.value.trim();
-    if (pin === 'admin123') {
+  function setAuthenticated(isAuth: boolean) {
+    if (isAuth) {
       sessionStorage.setItem('sektansia_admin_auth', 'true');
       loginLock?.classList.add('hidden');
       dashboardContent?.classList.remove('hidden');
+      logoutBtn?.classList.remove('hidden');
       loginError?.classList.add('hidden');
     } else {
+      sessionStorage.removeItem('sektansia_admin_auth');
+      loginLock?.classList.remove('hidden');
+      dashboardContent?.classList.add('hidden');
+      logoutBtn?.classList.add('hidden');
+    }
+  }
+
+  if (sessionStorage.getItem('sektansia_admin_auth') === 'true') {
+    setAuthenticated(true);
+  }
+
+  logoutBtn?.addEventListener('click', () => {
+    setAuthenticated(false);
+    showToast('✓ Anda telah berhasil keluar dari sesi panel redaksi.');
+  });
+
+  loginForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const pin = adminPinInput?.value.trim();
+    if (!pin) return;
+
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'verify', pin }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAuthenticated(true);
+        if (adminPinInput) adminPinInput.value = '';
+      } else {
+        loginError?.classList.remove('hidden');
+        if (loginError && data.error) loginError.textContent = data.error;
+      }
+    } catch (err: any) {
       loginError?.classList.remove('hidden');
+      if (loginError) loginError.textContent = 'Gagal memverifikasi: ' + err.message;
     }
   });
 
@@ -1050,6 +1179,68 @@ const { editorInChief, editors, reviewers } = editorial;
       }
     } catch (err: any) {
       showToast('Gagal menyimpan: ' + err.message, true);
+    }
+  });
+
+  // 6. Simpan Perubahan URL Platform Pengindeks
+  document.querySelectorAll<HTMLButtonElement>('.btn-save-index-url').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const name = btn.getAttribute('data-name');
+      if (!name) return;
+      const row = btn.closest('tr');
+      const input = row?.querySelector<HTMLInputElement>('.input-index-url');
+      const url = input?.value.trim();
+      if (!url) {
+        showToast('Tautan URL tidak boleh kosong!', true);
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/indexing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, url }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast(`✓ Tautan URL untuk "${name}" berhasil diperbarui ke database!`);
+        } else {
+          showToast('Gagal menyimpan URL: ' + json.error, true);
+        }
+      } catch (err: any) {
+        showToast('Gagal menyimpan URL: ' + err.message, true);
+      }
+    });
+  });
+
+  // 7. Ganti Kata Sandi / PIN Panel Redaksi
+  const formChangePin = document.getElementById('form-change-pin');
+  formChangePin?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const currentPin = (document.getElementById('current-pin') as HTMLInputElement).value;
+    const newPin = (document.getElementById('new-pin') as HTMLInputElement).value;
+    const confirmNewPin = (document.getElementById('confirm-new-pin') as HTMLInputElement).value;
+
+    if (newPin !== confirmNewPin) {
+      showToast('Konfirmasi PIN baru tidak cocok dengan PIN baru!', true);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'change_pin', currentPin, newPin }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('✓ Kata sandi / PIN Admin berhasil diperbarui!');
+        (formChangePin as HTMLFormElement).reset();
+      } else {
+        showToast(json.error || 'Gagal mengubah PIN', true);
+      }
+    } catch (err: any) {
+      showToast('Gagal mengubah PIN: ' + err.message, true);
     }
   });
 </script>

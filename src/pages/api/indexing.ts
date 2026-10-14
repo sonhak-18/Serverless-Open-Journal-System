@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { toggleDbIndexingSidebar, getDbIndexing } from '../../lib/db';
+import { updateDbIndexingPlatform, getDbIndexing } from '../../lib/db';
 import { invalidateJournalCache } from '../../lib/kv';
 
 export const POST: APIRoute = async ({ request, locals }) => {
@@ -10,9 +10,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const kv = (locals as any)?.runtime?.env?.KV;
 
     const body = await request.json();
-    const { name, showInSidebar } = body;
+    const { name, showInSidebar, url } = body;
 
-    await toggleDbIndexingSidebar(name, Boolean(showInSidebar), d1);
+    if (!name) {
+      return new Response(JSON.stringify({ success: false, error: 'Nama pengindeks diperlukan' }), { status: 400 });
+    }
+
+    await updateDbIndexingPlatform({
+      name,
+      url,
+      showInSidebar: showInSidebar !== undefined ? Boolean(showInSidebar) : undefined,
+    }, d1);
+
     await invalidateJournalCache(kv);
 
     const updated = await getDbIndexing(d1);
