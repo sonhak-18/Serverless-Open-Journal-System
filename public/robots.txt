@@ -1,0 +1,9 @@
+# Robots.txt untuk Sektansia Press (JTAAP)
+# https://jttap.darpana.web.id
+
+User-agent: *
+Disallow: /admin
+Disallow: /api/
+Allow: /
+
+Sitemap: https://jttap.darpana.web.id/sitemap.xml
