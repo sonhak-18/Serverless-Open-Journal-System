@@ -39,10 +39,15 @@ const navLinks = [
   <div class="bg-[#1f543c] text-white py-6 px-4">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div class="flex items-center gap-4">
-        <!-- Big Journal Acronym Logo Block -->
-        <a href="/" class="flex-shrink-0">
-          <div class="px-3 py-2 bg-white/10 hover:bg-white/15 border-2 border-white/30 rounded-xs text-center transition-colors">
-            <span class="text-3xl md:text-4xl font-serif font-black tracking-wider text-white block">
+        <!-- Journal Logo & Acronym Block -->
+        <a href="/" class="flex-shrink-0 flex items-center gap-3 group" title={`Beranda ${journalConfig.name}`}>
+          <img
+            src="/images/logo.png"
+            alt={`Logo ${journalConfig.shortName}`}
+            class="w-14 h-14 md:w-16 md:h-16 object-contain rounded-xs bg-white/95 p-1 shadow-xs border border-white/40 group-hover:scale-105 transition-transform"
+          />
+          <div class="px-2.5 py-1.5 bg-white/10 group-hover:bg-white/15 border border-white/30 rounded-xs text-center transition-colors">
+            <span class="text-2xl md:text-3xl font-serif font-black tracking-wider text-white block">
               {journalConfig.shortName}
             </span>
           </div>
