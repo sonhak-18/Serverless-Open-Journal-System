@@ -8,13 +8,14 @@ import { getPdfDownloadUrl, getWhatsAppSubmissionUrl } from '../../config/journa
 import { kvGetCounter } from '../../lib/kv';
 
 const { slug } = Astro.params;
-const article = slug ? await getDbArticleBySlug(slug) : null;
+const d1 = (Astro.locals as any)?.runtime?.env?.DB;
+const article = slug ? await getDbArticleBySlug(slug, d1) : null;
 
 if (!article) {
   return Astro.redirect('/404');
 }
 
-const journalConfig = await getDbSettings();
+const journalConfig = await getDbSettings(d1);
 const pdfUrl = getPdfDownloadUrl(article.pdfFileName);
 
 const kv = (Astro.locals as any)?.runtime?.env?.KV;

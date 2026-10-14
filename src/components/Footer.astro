@@ -1,7 +1,8 @@
 ---
 import { getDbSettings } from '../lib/db';
 
-const journalConfig = await getDbSettings();
+const d1 = (Astro.locals as any)?.runtime?.env?.DB;
+const journalConfig = await getDbSettings(d1);
 const currentYear = new Date().getFullYear();
 ---
 

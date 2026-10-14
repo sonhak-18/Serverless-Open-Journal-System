@@ -5,8 +5,9 @@ import Layout from '../layouts/Layout.astro';
 import SidebarOJS from '../components/SidebarOJS.astro';
 import { getDbSettings, getDbIndexing } from '../lib/db';
 
-const journalConfig = await getDbSettings();
-const indexing = await getDbIndexing();
+const d1 = (Astro.locals as any)?.runtime?.env?.DB;
+const journalConfig = await getDbSettings(d1);
+const indexing = await getDbIndexing(d1);
 ---
 
 <Layout title="Abstracting and Indexing" description={`Daftar pengindeks dan pangkalan data bibliografis ${journalConfig.name}`}>

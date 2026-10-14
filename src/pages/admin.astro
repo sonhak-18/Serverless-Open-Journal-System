@@ -4,10 +4,11 @@ export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import { getDbSettings, getDbArticles, getDbEditorial, getDbIndexing } from '../lib/db';
 
-const journalConfig = await getDbSettings();
-const articles = await getDbArticles();
-const editorial = await getDbEditorial();
-const indexing = await getDbIndexing();
+const d1 = (Astro.locals as any)?.runtime?.env?.DB;
+const journalConfig = await getDbSettings(d1);
+const articles = await getDbArticles(d1);
+const editorial = await getDbEditorial(d1);
+const indexing = await getDbIndexing(d1);
 
 const { editorInChief, editors, reviewers } = editorial;
 ---
@@ -118,9 +119,30 @@ const { editorInChief, editors, reviewers } = editorial;
         <button
           type="button"
           class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          data-tab="tab-profile-settings"
+        >
+          Profil Jurnal
+        </button>
+        <button
+          type="button"
+          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          data-tab="tab-volume-settings"
+        >
+          Edisi & Terbitan
+        </button>
+        <button
+          type="button"
+          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
+          data-tab="tab-announcement-settings"
+        >
+          Pengumuman
+        </button>
+        <button
+          type="button"
+          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
           data-tab="tab-journal-settings"
         >
-          Kontak WA & Email
+          Kontak & Narahubung
         </button>
         <button
           type="button"
@@ -504,7 +526,331 @@ const { editorInChief, editors, reviewers } = editorial;
         </div>
       </div>
 
-      <!-- TAB 4: PENGATURAN KONTAK WA, EMAIL & JURNAL -->
+      <!-- TAB: PROFIL & IDENTITAS JURNAL -->
+      <div id="tab-profile-settings" class="tab-panel hidden space-y-6">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white shadow-xs">
+          <div class="border-b border-slate-200 pb-3 mb-6">
+            <h2 class="text-lg font-serif font-bold text-academic-navy">
+              Profil, Identitas & Akreditasi Jurnal
+            </h2>
+            <p class="text-xs text-academic-ink-muted mt-1">
+              Pengaturan nama jurnal, akreditasi, frekuensi penerbitan, lisensi, dan DOI langsung tersimpan ke Cloudflare D1.
+            </p>
+          </div>
+
+          <form id="form-profile-settings" class="space-y-4 text-xs">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="md:col-span-2">
+                <label for="cfg-journal-name" class="block font-semibold text-academic-navy mb-1">
+                  Nama Jurnal Lengkap (Bahasa Indonesia) <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="cfg-journal-name"
+                  value={journalConfig.name}
+                  required
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-serif text-sm bg-white"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-journal-name-en" class="block font-semibold text-academic-navy mb-1">
+                  Nama Jurnal (Bahasa Inggris / English Title)
+                </label>
+                <input
+                  type="text"
+                  id="cfg-journal-name-en"
+                  value={journalConfig.nameEn}
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-journal-short" class="block font-semibold text-academic-navy mb-1">
+                  Singkatan / Inisial Jurnal (Akronim) <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="cfg-journal-short"
+                  value={journalConfig.shortName}
+                  required
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white font-mono"
+                />
+              </div>
+
+              <div class="md:col-span-2">
+                <label for="cfg-accredited" class="block font-semibold text-academic-navy mb-1">
+                  Status & Keterangan Akreditasi (Tagline)
+                </label>
+                <input
+                  type="text"
+                  id="cfg-accredited"
+                  value={journalConfig.accreditedText}
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-frequency" class="block font-semibold text-academic-navy mb-1">
+                  Frekuensi Terbitan
+                </label>
+                <input
+                  type="text"
+                  id="cfg-frequency"
+                  value={journalConfig.publicationFrequency}
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-doi-prefix" class="block font-semibold text-academic-navy mb-1">
+                  Prefix DOI Resmi (Zenodo / Crossref)
+                </label>
+                <input
+                  type="text"
+                  id="cfg-doi-prefix"
+                  value={journalConfig.doiPrefix}
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white font-mono"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-license" class="block font-semibold text-academic-navy mb-1">
+                  Nama Lisensi Karya
+                </label>
+                <input
+                  type="text"
+                  id="cfg-license"
+                  value={journalConfig.license}
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-license-url" class="block font-semibold text-academic-navy mb-1">
+                  Tautan URL Lisensi
+                </label>
+                <input
+                  type="url"
+                  id="cfg-license-url"
+                  value={journalConfig.licenseUrl}
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white font-mono"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-similarity" class="block font-semibold text-academic-navy mb-1">
+                  Batas Maksimal Similarity Turnitin (%)
+                </label>
+                <input
+                  type="number"
+                  id="cfg-similarity"
+                  value={journalConfig.submission.turnitinMaxSimilarity}
+                  min="5"
+                  max="50"
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white font-mono"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-review-time" class="block font-semibold text-academic-navy mb-1">
+                  Estimasi Waktu Review Naskah
+                </label>
+                <input
+                  type="text"
+                  id="cfg-review-time"
+                  value={journalConfig.submission.reviewTimeEstimate}
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white"
+                />
+              </div>
+            </div>
+
+            <div class="pt-4 flex justify-end">
+              <button
+                type="submit"
+                class="px-6 py-2.5 bg-[#1b4332] hover:bg-[#143225] text-white font-semibold rounded text-xs transition-colors shadow min-h-[44px]"
+              >
+                💾 Simpan Profil Jurnal
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB: PENGATURAN EDISI & TERBITAN AKTIF (VOLUME / ISSUE) -->
+      <div id="tab-volume-settings" class="tab-panel hidden space-y-6">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white shadow-xs">
+          <div class="border-b border-slate-200 pb-3 mb-6">
+            <h2 class="text-lg font-serif font-bold text-academic-navy">
+              Pengaturan Terbitan Aktif (Current Issue & Volume)
+            </h2>
+            <p class="text-xs text-academic-ink-muted mt-1">
+              Atur edisi yang sedang tayang pada bagian "Current Issue" di beranda dan halaman terbitan terkini.
+            </p>
+          </div>
+
+          <form id="form-volume-settings" class="space-y-4 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded border border-slate-200">
+              <div>
+                <label for="cfg-vol-num" class="block font-semibold text-academic-navy mb-1">
+                  Volume Terbitan Aktif <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="cfg-vol-num"
+                  value={journalConfig.currentIssue?.volume ?? 1}
+                  min="1"
+                  required
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-issue-num" class="block font-semibold text-academic-navy mb-1">
+                  Nomor Issue Terbitan Aktif <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="cfg-issue-num"
+                  value={journalConfig.currentIssue?.issue ?? 1}
+                  min="1"
+                  required
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-issue-year" class="block font-semibold text-academic-navy mb-1">
+                  Tahun Terbitan <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="cfg-issue-year"
+                  value={journalConfig.currentIssue?.year ?? 2026}
+                  min="2020"
+                  max="2040"
+                  required
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
+                />
+              </div>
+
+              <div class="sm:col-span-3">
+                <label for="cfg-issue-period" class="block font-semibold text-academic-navy mb-1">
+                  Periode / Bulan Publikasi Edisi <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="cfg-issue-period"
+                  value={journalConfig.currentIssue?.period || 'Maret 2026'}
+                  placeholder="Contoh: Maret 2026 atau Januari - Juni 2026"
+                  required
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white"
+                />
+              </div>
+
+              <div class="sm:col-span-3">
+                <label for="cfg-issue-theme" class="block font-semibold text-academic-navy mb-1">
+                  Tema Khusus / Keterangan Edisi Ini
+                </label>
+                <textarea
+                  id="cfg-issue-theme"
+                  rows="2"
+                  placeholder="Contoh: Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan"
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white"
+                >{journalConfig.currentIssue?.theme || ''}</textarea>
+              </div>
+            </div>
+
+            <div class="pt-4 flex justify-end">
+              <button
+                type="submit"
+                class="px-6 py-2.5 bg-[#1b4332] hover:bg-[#143225] text-white font-semibold rounded text-xs transition-colors shadow min-h-[44px]"
+              >
+                💾 Simpan Terbitan Aktif
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB: PENGUMUMAN / ANNOUNCEMENT -->
+      <div id="tab-announcement-settings" class="tab-panel hidden space-y-6">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white shadow-xs">
+          <div class="border-b border-slate-200 pb-3 mb-6">
+            <h2 class="text-lg font-serif font-bold text-academic-navy">
+              Pengumuman Redaksi & Call for Papers
+            </h2>
+            <p class="text-xs text-academic-ink-muted mt-1">
+              Pengumuman ini tampil langsung pada kartu atas beranda jurnal dan dapat diaktifkan atau dinonaktifkan kapan saja.
+            </p>
+          </div>
+
+          <form id="form-announcement-settings" class="space-y-4 text-xs">
+            <div class="p-4 bg-amber-50/60 border border-amber-200 rounded space-y-4">
+              <div class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="cfg-ann-active"
+                  checked={journalConfig.announcement?.active}
+                  class="w-4 h-4 rounded text-amber-700 cursor-pointer"
+                />
+                <label for="cfg-ann-active" class="font-bold text-amber-950 cursor-pointer text-xs">
+                  Tampilkan Kotak Pengumuman ini di Beranda Jurnal
+                </label>
+              </div>
+
+              <div>
+                <label for="cfg-ann-title" class="block font-semibold text-slate-800 mb-1">
+                  Judul Pengumuman <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="cfg-ann-title"
+                  value={journalConfig.announcement?.title || ''}
+                  placeholder="Contoh: Call for Papers: Volume 1 Nomor 1 (2026)"
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-serif text-sm bg-white"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-ann-date" class="block font-semibold text-slate-800 mb-1">
+                  Tanggal Pengumuman (YYYY-MM-DD)
+                </label>
+                <input
+                  type="text"
+                  id="cfg-ann-date"
+                  value={journalConfig.announcement?.date || ''}
+                  placeholder="2026-03-01"
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-xs bg-white"
+                />
+              </div>
+
+              <div>
+                <label for="cfg-ann-content" class="block font-semibold text-slate-800 mb-1">
+                  Isi Pengumuman Lengkap
+                </label>
+                <textarea
+                  id="cfg-ann-content"
+                  rows="4"
+                  placeholder="Tuliskan isi pengumuman, ruang lingkup naskah, atau tanggal penting..."
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white leading-relaxed"
+                >{journalConfig.announcement?.content || ''}</textarea>
+              </div>
+            </div>
+
+            <div class="pt-4 flex justify-end">
+              <button
+                type="submit"
+                class="px-6 py-2.5 bg-[#1b4332] hover:bg-[#143225] text-white font-semibold rounded text-xs transition-colors shadow min-h-[44px]"
+              >
+                💾 Simpan Pengumuman ke Database
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB: PENGATURAN KONTAK WA, EMAIL & JURNAL -->
       <div id="tab-journal-settings" class="tab-panel hidden space-y-6">
         <div class="academic-card p-6 rounded border border-academic-border bg-white space-y-6">
           <div class="border-b border-slate-200 pb-3">
@@ -1242,6 +1588,97 @@ const { editorInChief, editors, reviewers } = editorial;
         },
       });
     });
+  });
+
+  // Simpan Profil & Identitas Jurnal
+  const formProfile = document.getElementById('form-profile-settings');
+  formProfile?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      name: (document.getElementById('cfg-journal-name') as HTMLInputElement).value,
+      nameEn: (document.getElementById('cfg-journal-name-en') as HTMLInputElement).value,
+      shortName: (document.getElementById('cfg-journal-short') as HTMLInputElement).value,
+      accreditedText: (document.getElementById('cfg-accredited') as HTMLInputElement).value,
+      publicationFrequency: (document.getElementById('cfg-frequency') as HTMLInputElement).value,
+      doiPrefix: (document.getElementById('cfg-doi-prefix') as HTMLInputElement).value,
+      license: (document.getElementById('cfg-license') as HTMLInputElement).value,
+      licenseUrl: (document.getElementById('cfg-license-url') as HTMLInputElement).value,
+      turnitinMaxSimilarity: Number((document.getElementById('cfg-similarity') as HTMLInputElement).value) || 20,
+      reviewTimeEstimate: (document.getElementById('cfg-review-time') as HTMLInputElement).value,
+    };
+
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('✓ Profil jurnal berhasil disimpan ke database Cloudflare D1!');
+      } else {
+        showToast('Gagal menyimpan profil: ' + json.error, true);
+      }
+    } catch (err: any) {
+      showToast('Gagal menyimpan profil: ' + err.message, true);
+    }
+  });
+
+  // Simpan Edisi & Terbitan Aktif (Volume / Issue)
+  const formVolume = document.getElementById('form-volume-settings');
+  formVolume?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      currentVolume: Number((document.getElementById('cfg-vol-num') as HTMLInputElement).value) || 1,
+      currentIssue: Number((document.getElementById('cfg-issue-num') as HTMLInputElement).value) || 1,
+      currentYear: Number((document.getElementById('cfg-issue-year') as HTMLInputElement).value) || 2026,
+      currentPeriod: (document.getElementById('cfg-issue-period') as HTMLInputElement).value,
+      currentTheme: (document.getElementById('cfg-issue-theme') as HTMLTextAreaElement).value,
+    };
+
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('✓ Edisi terbitan aktif berhasil disimpan ke database D1!');
+      } else {
+        showToast('Gagal menyimpan edisi: ' + json.error, true);
+      }
+    } catch (err: any) {
+      showToast('Gagal menyimpan edisi: ' + err.message, true);
+    }
+  });
+
+  // Simpan Pengumuman / Announcement
+  const formAnnouncement = document.getElementById('form-announcement-settings');
+  formAnnouncement?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      announcementActive: (document.getElementById('cfg-ann-active') as HTMLInputElement).checked,
+      announcementTitle: (document.getElementById('cfg-ann-title') as HTMLInputElement).value,
+      announcementDate: (document.getElementById('cfg-ann-date') as HTMLInputElement).value,
+      announcementContent: (document.getElementById('cfg-ann-content') as HTMLTextAreaElement).value,
+    };
+
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast('✓ Pengumuman redaksi berhasil disimpan ke database D1!');
+      } else {
+        showToast('Gagal menyimpan pengumuman: ' + json.error, true);
+      }
+    } catch (err: any) {
+      showToast('Gagal menyimpan pengumuman: ' + err.message, true);
+    }
   });
 
   // 3. Simpan Kontak & Identitas Jurnal

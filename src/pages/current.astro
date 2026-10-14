@@ -5,15 +5,22 @@ import Layout from '../layouts/Layout.astro';
 import SidebarOJS from '../components/SidebarOJS.astro';
 import ArticleItemOJS from '../components/ArticleItemOJS.astro';
 import { getDbSettings, getDbArticles } from '../lib/db';
-import { getCurrentIssue } from '../data/articles';
 
-const journalConfig = await getDbSettings();
-const allArticles = await getDbArticles();
-const currentIssue = getCurrentIssue();
-const currentArticles = allArticles.filter(a => a.volume === currentIssue.volume && a.issue === currentIssue.issue);
+const d1 = (Astro.locals as any)?.runtime?.env?.DB;
+const journalConfig = await getDbSettings(d1);
+const allArticles = await getDbArticles(d1);
+
+const curVolume = journalConfig.currentIssue?.volume ?? 1;
+const curIssue = journalConfig.currentIssue?.issue ?? 1;
+const curYear = journalConfig.currentIssue?.year ?? 2026;
+const curPeriod = journalConfig.currentIssue?.period || 'Maret 2026';
+const curTheme = journalConfig.currentIssue?.theme || 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan';
+
+const currentArticles = allArticles.filter(a => a.volume === curVolume && a.issue === curIssue);
+const displayArticles = currentArticles.length > 0 ? currentArticles : allArticles;
 ---
 
-<Layout title="Current Issue" description={`Terbitan terkini ${journalConfig.name} - ${currentIssue.title}`}>
+<Layout title="Current Issue" description={`Terbitan terkini ${journalConfig.name} - Vol. ${curVolume} No. ${curIssue}`}>
   <div class="max-w-7xl mx-auto px-4 py-8">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Kolom Kiri: Edisi Terkini (~68%) -->
@@ -22,10 +29,15 @@ const currentArticles = allArticles.filter(a => a.volume === currentIssue.volume
           <a href="/" class="hover:underline">Home</a> &gt; <span>Current Issue</span>
         </div>
 
-        <div class="border-b-2 border-amber-600 pb-2">
+        <div class="border-b-2 border-academic-gold pb-2">
           <h1 class="text-xl md:text-2xl font-serif font-bold text-slate-900">
-            Vol. {currentIssue.volume} No. {currentIssue.issue} ({currentIssue.year}): {currentIssue.monthRange}
+            Vol. {curVolume} No. {curIssue} ({curYear}): {curPeriod}
           </h1>
+          {curTheme && (
+            <p class="text-xs text-slate-600 italic mt-0.5">
+              Tema: {curTheme}
+            </p>
+          )}
         </div>
 
         <!-- Detail Terbitan & Cover -->
@@ -38,21 +50,21 @@ const currentArticles = allArticles.filter(a => a.volume === currentIssue.volume
               </span>
             </div>
             <div class="text-[8px] text-emerald-100 border-t border-emerald-600/60 pt-1">
-              Vol. {currentIssue.volume} No. {currentIssue.issue} ({currentIssue.year})
+              Vol. {curVolume} No. {curIssue} ({curYear})
             </div>
           </div>
 
           <div class="text-xs text-slate-700 space-y-2 leading-relaxed">
-            <p>{currentIssue.description}</p>
+            <p>{curTheme}</p>
             <div class="pt-2 text-[11px] text-slate-600 border-t border-slate-100 space-y-1">
               <div>
                 <strong>DOI Edisi:</strong>{' '}
-                <a href={`https://doi.org/${journalConfig.doiPrefix}.v1i1`} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
-                  https://doi.org/{journalConfig.doiPrefix}.v1i1
+                <a href={`https://doi.org/${journalConfig.doiPrefix}.v${curVolume}i${curIssue}`} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
+                  https://doi.org/{journalConfig.doiPrefix}.v${curVolume}i${curIssue}
                 </a>
               </div>
               <div>
-                <strong>Tanggal Terbit:</strong> {new Date(currentIssue.publishDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+                <strong>Periode:</strong> {curPeriod} ({curYear})
               </div>
             </div>
           </div>
@@ -65,12 +77,12 @@ const currentArticles = allArticles.filter(a => a.volume === currentIssue.volume
               Articles
             </h2>
             <span class="text-xs text-slate-500">
-              {currentArticles.length} Naskah
+              {displayArticles.length} Naskah
             </span>
           </div>
 
           <div class="divide-y divide-slate-200">
-            {currentArticles.map((article) => (
+            {displayArticles.map((article) => (
               <ArticleItemOJS article={article} />
             ))}
           </div>

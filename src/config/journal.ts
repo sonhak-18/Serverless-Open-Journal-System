@@ -36,6 +36,19 @@ export interface JournalConfig {
     turnitinMaxSimilarity: number;
     reviewTimeEstimate: string;
   };
+  announcement?: {
+    title: string;
+    content: string;
+    active: boolean;
+    date: string;
+  };
+  currentIssue?: {
+    volume: number;
+    issue: number;
+    year: number;
+    period: string;
+    theme: string;
+  };
   storage: {
     gdriveIndexBaseUrl: string;
     pdfDirectoryPath: string;
@@ -88,6 +101,21 @@ export const journalConfig: JournalConfig = {
     whatsappDefaultMessage: 'Halo Redaksi JTAAP, saya ingin mengajukan manuskrip artikel ilmiah untuk proses review dan penerbitan.',
     turnitinMaxSimilarity: 20,
     reviewTimeEstimate: '3 sampai 7 Hari Kerja',
+  },
+
+  announcement: {
+    title: 'Call for Papers: Volume 1 Nomor 1 (2026)',
+    content: 'Redaksi JTAAP mengundang akademisi, peneliti, auditor, dan praktisi perpajakan untuk mengirimkan naskah orisinal hasil riset empiris atau kajian konseptual.',
+    active: true,
+    date: '2026-03-01',
+  },
+
+  currentIssue: {
+    volume: 1,
+    issue: 1,
+    year: 2026,
+    period: 'Maret 2026',
+    theme: 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan',
   },
 
   storage: {

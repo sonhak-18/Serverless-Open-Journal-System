@@ -12,7 +12,18 @@ export interface SektansiaDatabase {
   indexing: IndexingPlatform[];
 }
 
-// Global in-memory cache for local dev / edge memory
+// Global reference for D1 passed via middleware
+let globalD1Instance: any = null;
+
+export function setGlobalD1(d1: any) {
+  if (d1) globalD1Instance = d1;
+}
+
+export function getGlobalD1(): any {
+  return globalD1Instance;
+}
+
+// Global in-memory cache for local dev / fallback
 let memoryStore: SektansiaDatabase = {
   settings: JSON.parse(JSON.stringify(journalConfig)),
   articles: JSON.parse(JSON.stringify(initialArticles)),
@@ -29,35 +40,57 @@ let memoryStore: SektansiaDatabase = {
 // ==========================================
 
 export async function getDbSettings(d1?: any): Promise<JournalConfig> {
-  if (d1) {
+  const db = d1 || globalD1Instance;
+  if (db) {
     try {
-      const row = await d1.prepare('SELECT * FROM journal_settings WHERE id = "default"').first();
+      const row = await db.prepare('SELECT * FROM journal_settings WHERE id = "default"').first();
       if (row) {
         return {
           ...memoryStore.settings,
-          name: row.name,
-          nameEn: row.name_en,
-          shortName: row.short_name,
-          institution: row.institution,
-          publisher: row.publisher,
-          address: row.address,
-          eIssn: row.e_issn,
-          pIssn: row.p_issn,
+          name: row.name || memoryStore.settings.name,
+          nameEn: row.name_en || memoryStore.settings.nameEn,
+          shortName: row.short_name || memoryStore.settings.shortName,
+          accreditedText: row.accredited_text || memoryStore.settings.accreditedText,
+          institution: row.institution || memoryStore.settings.institution,
+          publisher: row.publisher || memoryStore.settings.publisher,
+          address: row.address || memoryStore.settings.address,
+          eIssn: row.e_issn || memoryStore.settings.eIssn,
+          pIssn: row.p_issn || memoryStore.settings.pIssn,
+          doiPrefix: row.doi_prefix || memoryStore.settings.doiPrefix,
+          publicationFrequency: row.publication_frequency || memoryStore.settings.publicationFrequency,
+          license: row.license || memoryStore.settings.license,
+          licenseUrl: row.license_url || memoryStore.settings.licenseUrl,
           features: {
-            showIndexingBlock: Boolean(row.show_indexing_block),
-            showToolsBlock: Boolean(row.show_tools_block),
-            showIssnBlock: Boolean(row.show_issn_block),
+            showIndexingBlock: row.show_indexing_block !== undefined ? Boolean(row.show_indexing_block) : memoryStore.settings.features.showIndexingBlock,
+            showToolsBlock: row.show_tools_block !== undefined ? Boolean(row.show_tools_block) : memoryStore.settings.features.showToolsBlock,
+            showIssnBlock: row.show_issn_block !== undefined ? Boolean(row.show_issn_block) : memoryStore.settings.features.showIssnBlock,
           },
           submission: {
             ...memoryStore.settings.submission,
-            email: row.email,
-            whatsappNumber: row.whatsapp_number,
-            whatsappDisplay: row.whatsapp_display,
-            whatsappDefaultMessage: row.whatsapp_message,
+            email: row.email || memoryStore.settings.submission.email,
+            whatsappNumber: row.whatsapp_number || memoryStore.settings.submission.whatsappNumber,
+            whatsappDisplay: row.whatsapp_display || memoryStore.settings.submission.whatsappDisplay,
+            whatsappDefaultMessage: row.whatsapp_message || memoryStore.settings.submission.whatsappDefaultMessage,
+            turnitinMaxSimilarity: row.turnitin_max_similarity !== undefined ? Number(row.turnitin_max_similarity) : memoryStore.settings.submission.turnitinMaxSimilarity,
+            reviewTimeEstimate: row.review_time_estimate || memoryStore.settings.submission.reviewTimeEstimate,
           },
           storage: {
             ...memoryStore.settings.storage,
-            gdriveIndexBaseUrl: row.gdrive_base_url,
+            gdriveIndexBaseUrl: row.gdrive_base_url || memoryStore.settings.storage.gdriveIndexBaseUrl,
+            pdfDirectoryPath: row.pdf_directory_path || memoryStore.settings.storage.pdfDirectoryPath,
+          },
+          announcement: {
+            title: row.announcement_title || 'Call for Papers: Volume 1 Nomor 1 (2026)',
+            content: row.announcement_content || 'Redaksi JTAAP mengundang akademisi, peneliti, dan praktisi untuk mengirimkan naskah orisinal.',
+            active: row.announcement_active !== undefined ? Boolean(row.announcement_active) : true,
+            date: row.announcement_date || '2026-03-01',
+          },
+          currentIssue: {
+            volume: row.current_volume !== undefined ? Number(row.current_volume) : 1,
+            issue: row.current_issue !== undefined ? Number(row.current_issue) : 1,
+            year: row.current_year !== undefined ? Number(row.current_year) : 2026,
+            period: row.current_period || 'Maret 2026',
+            theme: row.current_theme || 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan',
           },
         };
       }
@@ -69,9 +102,19 @@ export async function getDbSettings(d1?: any): Promise<JournalConfig> {
 }
 
 export async function updateDbSettings(data: {
+  name?: string;
+  nameEn?: string;
+  shortName?: string;
+  accreditedText?: string;
   institution?: string;
   publisher?: string;
   address?: string;
+  doiPrefix?: string;
+  publicationFrequency?: string;
+  license?: string;
+  licenseUrl?: string;
+  turnitinMaxSimilarity?: number;
+  reviewTimeEstimate?: string;
   email?: string;
   whatsappNumber?: string;
   whatsappDisplay?: string;
@@ -82,52 +125,127 @@ export async function updateDbSettings(data: {
   showToolsBlock?: boolean;
   showIssnBlock?: boolean;
   gdriveBaseUrl?: string;
+  pdfDirectoryPath?: string;
+  announcementTitle?: string;
+  announcementContent?: string;
+  announcementActive?: boolean;
+  announcementDate?: string;
+  currentVolume?: number;
+  currentIssue?: number;
+  currentYear?: number;
+  currentPeriod?: string;
+  currentTheme?: string;
 }, d1?: any): Promise<void> {
   const s = memoryStore.settings;
 
+  if (data.name !== undefined) s.name = data.name;
+  if (data.nameEn !== undefined) s.nameEn = data.nameEn;
+  if (data.shortName !== undefined) s.shortName = data.shortName;
+  if (data.accreditedText !== undefined) s.accreditedText = data.accreditedText;
   if (data.institution !== undefined) s.institution = data.institution;
   if (data.publisher !== undefined) s.publisher = data.publisher;
   if (data.address !== undefined) s.address = data.address;
+  if (data.doiPrefix !== undefined) s.doiPrefix = data.doiPrefix;
+  if (data.publicationFrequency !== undefined) s.publicationFrequency = data.publicationFrequency;
+  if (data.license !== undefined) s.license = data.license;
+  if (data.licenseUrl !== undefined) s.licenseUrl = data.licenseUrl;
   if (data.email !== undefined) s.submission.email = data.email;
   if (data.whatsappNumber !== undefined) s.submission.whatsappNumber = data.whatsappNumber;
   if (data.whatsappDisplay !== undefined) s.submission.whatsappDisplay = data.whatsappDisplay;
   if (data.whatsappMessage !== undefined) s.submission.whatsappDefaultMessage = data.whatsappMessage;
+  if (data.turnitinMaxSimilarity !== undefined) s.submission.turnitinMaxSimilarity = Number(data.turnitinMaxSimilarity);
+  if (data.reviewTimeEstimate !== undefined) s.submission.reviewTimeEstimate = data.reviewTimeEstimate;
   if (data.eIssn !== undefined) s.eIssn = data.eIssn;
   if (data.pIssn !== undefined) s.pIssn = data.pIssn;
   if (data.showIndexingBlock !== undefined) s.features.showIndexingBlock = Boolean(data.showIndexingBlock);
   if (data.showToolsBlock !== undefined) s.features.showToolsBlock = Boolean(data.showToolsBlock);
   if (data.showIssnBlock !== undefined) s.features.showIssnBlock = Boolean(data.showIssnBlock);
   if (data.gdriveBaseUrl !== undefined) s.storage.gdriveIndexBaseUrl = data.gdriveBaseUrl;
+  if (data.pdfDirectoryPath !== undefined) s.storage.pdfDirectoryPath = data.pdfDirectoryPath;
+  if (data.announcementTitle !== undefined) {
+    if (!s.announcement) s.announcement = { title: '', content: '', active: true, date: '' };
+    s.announcement.title = data.announcementTitle;
+  }
+  if (data.announcementContent !== undefined) {
+    if (!s.announcement) s.announcement = { title: '', content: '', active: true, date: '' };
+    s.announcement.content = data.announcementContent;
+  }
+  if (data.announcementActive !== undefined) {
+    if (!s.announcement) s.announcement = { title: '', content: '', active: true, date: '' };
+    s.announcement.active = Boolean(data.announcementActive);
+  }
+  if (data.announcementDate !== undefined) {
+    if (!s.announcement) s.announcement = { title: '', content: '', active: true, date: '' };
+    s.announcement.date = data.announcementDate;
+  }
+  if (data.currentVolume !== undefined) {
+    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '' };
+    s.currentIssue.volume = Number(data.currentVolume);
+  }
+  if (data.currentIssue !== undefined) {
+    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '' };
+    s.currentIssue.issue = Number(data.currentIssue);
+  }
+  if (data.currentYear !== undefined) {
+    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '' };
+    s.currentIssue.year = Number(data.currentYear);
+  }
+  if (data.currentPeriod !== undefined) {
+    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '' };
+    s.currentIssue.period = data.currentPeriod;
+  }
+  if (data.currentTheme !== undefined) {
+    if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '' };
+    s.currentIssue.theme = data.currentTheme;
+  }
 
-  if (d1) {
+  const db = d1 || globalD1Instance;
+  if (db) {
     try {
-      const res = await d1.prepare(`
+      const res = await db.prepare(`
         UPDATE journal_settings SET
-          institution = ?, publisher = ?, address = ?, email = ?,
-          whatsapp_number = ?, whatsapp_display = ?, whatsapp_message = ?,
+          name = ?, name_en = ?, short_name = ?, accredited_text = ?,
+          institution = ?, publisher = ?, address = ?, doi_prefix = ?,
+          publication_frequency = ?, license = ?, license_url = ?,
+          turnitin_max_similarity = ?, review_time_estimate = ?,
+          email = ?, whatsapp_number = ?, whatsapp_display = ?, whatsapp_message = ?,
           e_issn = ?, p_issn = ?, show_indexing_block = ?, show_tools_block = ?,
-          show_issn_block = ?, gdrive_base_url = ?
+          show_issn_block = ?, gdrive_base_url = ?, pdf_directory_path = ?,
+          announcement_title = ?, announcement_content = ?, announcement_active = ?,
+          announcement_date = ?, current_volume = ?, current_issue = ?,
+          current_year = ?, current_period = ?, current_theme = ?
         WHERE id = 'default'
       `).bind(
-        s.institution, s.publisher, s.address, s.submission.email,
-        s.submission.whatsappNumber, s.submission.whatsappDisplay,
+        s.name, s.nameEn, s.shortName, s.accreditedText,
+        s.institution, s.publisher, s.address, s.doiPrefix,
+        s.publicationFrequency, s.license, s.licenseUrl,
+        s.submission.turnitinMaxSimilarity, s.submission.reviewTimeEstimate,
+        s.submission.email, s.submission.whatsappNumber, s.submission.whatsappDisplay,
         s.submission.whatsappDefaultMessage, s.eIssn, s.pIssn,
         s.features.showIndexingBlock ? 1 : 0,
         s.features.showToolsBlock ? 1 : 0,
         s.features.showIssnBlock ? 1 : 0,
-        s.storage.gdriveIndexBaseUrl
+        s.storage.gdriveIndexBaseUrl, s.storage.pdfDirectoryPath,
+        s.announcement?.title || '', s.announcement?.content || '',
+        s.announcement?.active ? 1 : 0, s.announcement?.date || '',
+        s.currentIssue?.volume || 1, s.currentIssue?.issue || 1,
+        s.currentIssue?.year || 2026, s.currentIssue?.period || '',
+        s.currentIssue?.theme || ''
       ).run();
 
       if (!res?.meta?.changes) {
-        await d1.prepare(`
+        await db.prepare(`
           INSERT OR REPLACE INTO journal_settings (
             id, name, name_en, short_name, accredited_text, publisher, institution,
             address, e_issn, p_issn, doi_prefix, publication_frequency, license,
             license_url, show_indexing_block, show_tools_block, show_issn_block,
             email, whatsapp_number, whatsapp_display, whatsapp_message,
-            turnitin_max_similarity, review_time_estimate, gdrive_base_url, pdf_directory_path
+            turnitin_max_similarity, review_time_estimate, gdrive_base_url, pdf_directory_path,
+            announcement_title, announcement_content, announcement_active, announcement_date,
+            current_volume, current_issue, current_year, current_period, current_theme
           ) VALUES (
-            'default', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            'default', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?
           )
         `).bind(
           s.name, s.nameEn, s.shortName, s.accreditedText, s.publisher, s.institution,
@@ -135,27 +253,76 @@ export async function updateDbSettings(data: {
           s.licenseUrl, s.features.showIndexingBlock ? 1 : 0, s.features.showToolsBlock ? 1 : 0,
           s.features.showIssnBlock ? 1 : 0, s.submission.email, s.submission.whatsappNumber,
           s.submission.whatsappDisplay, s.submission.whatsappDefaultMessage, s.submission.turnitinMaxSimilarity,
-          s.submission.reviewTimeEstimate, s.storage.gdriveIndexBaseUrl, s.storage.pdfDirectoryPath
+          s.submission.reviewTimeEstimate, s.storage.gdriveIndexBaseUrl, s.storage.pdfDirectoryPath,
+          s.announcement?.title || '', s.announcement?.content || '',
+          s.announcement?.active ? 1 : 0, s.announcement?.date || '',
+          s.currentIssue?.volume || 1, s.currentIssue?.issue || 1,
+          s.currentIssue?.year || 2026, s.currentIssue?.period || '',
+          s.currentIssue?.theme || ''
         ).run();
       }
     } catch (e) {
-      console.error('D1 update settings error:', e);
-      throw e;
+      console.warn('D1 update settings error:', e);
     }
   }
 }
 
 export async function getDbArticles(d1?: any): Promise<Article[]> {
-  if (d1) {
+  const db = d1 || globalD1Instance;
+  if (db) {
     try {
-      const { results } = await d1.prepare('SELECT * FROM articles ORDER BY publish_date DESC').all();
-      if (results && results.length > 0) {
-        return results.map((r: any) => ({
+      const { results } = await db.prepare('SELECT * FROM articles ORDER BY publish_date DESC').all();
+      if (results && Array.isArray(results)) {
+        return results.map((r: any) => {
+          let authors = [];
+          let keywords = [];
+          try { authors = JSON.parse(r.authors_json || '[]'); } catch {}
+          try { keywords = JSON.parse(r.keywords_json || '[]'); } catch {}
+          return {
+            slug: r.slug,
+            title: r.title,
+            authors,
+            abstract: r.abstract,
+            keywords,
+            volume: r.volume,
+            issue: r.issue,
+            year: r.year,
+            pages: r.pages,
+            firstPage: r.first_page,
+            lastPage: r.last_page,
+            publishDate: r.publish_date,
+            receivedDate: r.received_date,
+            acceptedDate: r.accepted_date,
+            doi: r.doi,
+            pdfFileName: r.pdf_file_name,
+            fileSizeBytes: r.file_size_bytes,
+            subject: r.subject,
+          };
+        });
+      }
+    } catch (e) {
+      console.warn('D1 query articles error:', e);
+    }
+  }
+  return memoryStore.articles;
+}
+
+export async function getDbArticleBySlug(slug: string, d1?: any): Promise<Article | null> {
+  const db = d1 || globalD1Instance;
+  if (db) {
+    try {
+      const r = await db.prepare('SELECT * FROM articles WHERE slug = ?').bind(slug).first();
+      if (r) {
+        let authors = [];
+        let keywords = [];
+        try { authors = JSON.parse(r.authors_json || '[]'); } catch {}
+        try { keywords = JSON.parse(r.keywords_json || '[]'); } catch {}
+        return {
           slug: r.slug,
           title: r.title,
-          authors: JSON.parse(r.authors_json),
+          authors,
           abstract: r.abstract,
-          keywords: JSON.parse(r.keywords_json),
+          keywords,
           volume: r.volume,
           issue: r.issue,
           year: r.year,
@@ -169,16 +336,12 @@ export async function getDbArticles(d1?: any): Promise<Article[]> {
           pdfFileName: r.pdf_file_name,
           fileSizeBytes: r.file_size_bytes,
           subject: r.subject,
-        }));
+        };
       }
     } catch (e) {
-      console.warn('D1 query fallback:', e);
+      console.warn('D1 query single article error:', e);
     }
   }
-  return memoryStore.articles;
-}
-
-export async function getDbArticleBySlug(slug: string, d1?: any): Promise<Article | null> {
   const articles = await getDbArticles(d1);
   return articles.find((a) => a.slug === slug) || null;
 }
@@ -186,9 +349,10 @@ export async function getDbArticleBySlug(slug: string, d1?: any): Promise<Articl
 export async function addDbArticle(article: Article, d1?: any): Promise<void> {
   memoryStore.articles = [article, ...memoryStore.articles.filter((a) => a.slug !== article.slug)];
 
-  if (d1) {
+  const db = d1 || globalD1Instance;
+  if (db) {
     try {
-      await d1.prepare(`
+      await db.prepare(`
         INSERT INTO articles (
           id, slug, title, authors_json, abstract, keywords_json,
           volume, issue, year, pages, first_page, last_page,
@@ -231,9 +395,10 @@ export async function addDbArticle(article: Article, d1?: any): Promise<void> {
 
 export async function deleteDbArticle(slug: string, d1?: any): Promise<void> {
   memoryStore.articles = memoryStore.articles.filter((a) => a.slug !== slug);
-  if (d1) {
+  const db = d1 || globalD1Instance;
+  if (db) {
     try {
-      await d1.prepare('DELETE FROM articles WHERE slug = ?').bind(slug).run();
+      await db.prepare('DELETE FROM articles WHERE slug = ?').bind(slug).run();
     } catch (e) {
       console.warn('D1 delete article error:', e);
     }
@@ -245,10 +410,11 @@ export async function getDbEditorial(d1?: any): Promise<{
   editors: Array<{ id: string; name: string; role: string; affiliation: string }>;
   reviewers: Array<{ id: string; name: string; affiliation: string }>;
 }> {
-  if (d1) {
+  const db = d1 || globalD1Instance;
+  if (db) {
     try {
-      const { results } = await d1.prepare('SELECT * FROM editorial_members ORDER BY sort_order ASC').all();
-      if (results && results.length > 0) {
+      const { results } = await db.prepare('SELECT * FROM editorial_members ORDER BY sort_order ASC').all();
+      if (results && Array.isArray(results) && results.length > 0) {
         const eic = results.find((m: any) => m.type === 'eic') || memoryStore.editorial.editorInChief;
         const editors = results.filter((m: any) => m.type === 'editor');
         const reviewers = results.filter((m: any) => m.type === 'reviewer');
@@ -269,9 +435,10 @@ export async function updateDbEditorInChief(data: { name: string; affiliation: s
   memoryStore.editorial.editorInChief = { ...data };
   memoryStore.settings.editorial.editorInChief = { ...data };
 
-  if (d1) {
+  const db = d1 || globalD1Instance;
+  if (db) {
     try {
-      await d1.prepare('UPDATE editorial_members SET name = ?, affiliation = ?, email = ? WHERE type = "eic"')
+      await db.prepare('UPDATE editorial_members SET name = ?, affiliation = ?, email = ? WHERE type = "eic"')
         .bind(data.name, data.affiliation, data.email).run();
     } catch (e) {
       console.warn('D1 update eic error:', e);
@@ -301,9 +468,10 @@ export async function addDbEditorialMember(member: {
     });
   }
 
-  if (d1) {
+  const db = d1 || globalD1Instance;
+  if (db) {
     try {
-      await d1.prepare('INSERT INTO editorial_members (id, type, name, role, affiliation) VALUES (?, ?, ?, ?, ?)')
+      await db.prepare('INSERT INTO editorial_members (id, type, name, role, affiliation) VALUES (?, ?, ?, ?, ?)')
         .bind(id, member.type, member.name, member.role || '', member.affiliation).run();
     } catch (e) {
       console.warn('D1 add member error:', e);
@@ -315,9 +483,10 @@ export async function deleteDbEditorialMember(id: string, d1?: any): Promise<voi
   memoryStore.editorial.editors = memoryStore.editorial.editors.filter((e) => e.id !== id);
   memoryStore.editorial.reviewers = memoryStore.editorial.reviewers.filter((r) => r.id !== id);
 
-  if (d1) {
+  const db = d1 || globalD1Instance;
+  if (db) {
     try {
-      await d1.prepare('DELETE FROM editorial_members WHERE id = ?').bind(id).run();
+      await db.prepare('DELETE FROM editorial_members WHERE id = ?').bind(id).run();
     } catch (e) {
       console.warn('D1 delete member error:', e);
     }
@@ -325,10 +494,11 @@ export async function deleteDbEditorialMember(id: string, d1?: any): Promise<voi
 }
 
 export async function getDbIndexing(d1?: any): Promise<IndexingPlatform[]> {
-  if (d1) {
+  const db = d1 || globalD1Instance;
+  if (db) {
     try {
-      const { results } = await d1.prepare('SELECT * FROM indexing_platforms ORDER BY sort_order ASC').all();
-      if (results && results.length > 0) {
+      const { results } = await db.prepare('SELECT * FROM indexing_platforms ORDER BY sort_order ASC').all();
+      if (results && Array.isArray(results) && results.length > 0) {
         return results.map((r: any) => ({
           name: r.name,
           category: r.category,
@@ -357,16 +527,17 @@ export async function updateDbIndexingPlatform(data: { name: string; url?: strin
     if (data.showInSidebar !== undefined) target.showInSidebar = data.showInSidebar;
   }
 
-  if (d1) {
+  const db = d1 || globalD1Instance;
+  if (db) {
     try {
       if (data.url !== undefined && data.showInSidebar !== undefined) {
-        await d1.prepare('UPDATE indexing_platforms SET url = ?, show_in_sidebar = ? WHERE name = ?')
+        await db.prepare('UPDATE indexing_platforms SET url = ?, show_in_sidebar = ? WHERE name = ?')
           .bind(data.url, data.showInSidebar ? 1 : 0, data.name).run();
       } else if (data.url !== undefined) {
-        await d1.prepare('UPDATE indexing_platforms SET url = ? WHERE name = ?')
+        await db.prepare('UPDATE indexing_platforms SET url = ? WHERE name = ?')
           .bind(data.url, data.name).run();
       } else if (data.showInSidebar !== undefined) {
-        await d1.prepare('UPDATE indexing_platforms SET show_in_sidebar = ? WHERE name = ?')
+        await db.prepare('UPDATE indexing_platforms SET show_in_sidebar = ? WHERE name = ?')
           .bind(data.showInSidebar ? 1 : 0, data.name).run();
       }
     } catch (e) {

@@ -5,12 +5,19 @@ import Layout from '../layouts/Layout.astro';
 import SidebarOJS from '../components/SidebarOJS.astro';
 import ArticleItemOJS from '../components/ArticleItemOJS.astro';
 import { getDbSettings, getDbArticles } from '../lib/db';
-import { getCurrentIssue } from '../data/articles';
 
-const journalConfig = await getDbSettings();
-const allArticles = await getDbArticles();
-const currentIssue = getCurrentIssue();
-const currentArticles = allArticles.filter(a => a.volume === currentIssue.volume && a.issue === currentIssue.issue);
+const d1 = (Astro.locals as any)?.runtime?.env?.DB;
+const journalConfig = await getDbSettings(d1);
+const allArticles = await getDbArticles(d1);
+
+const curVolume = journalConfig.currentIssue?.volume ?? 1;
+const curIssue = journalConfig.currentIssue?.issue ?? 1;
+const curYear = journalConfig.currentIssue?.year ?? 2026;
+const curPeriod = journalConfig.currentIssue?.period || 'Maret 2026';
+const curTheme = journalConfig.currentIssue?.theme || 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan';
+
+const currentArticles = allArticles.filter(a => a.volume === curVolume && a.issue === curIssue);
+const displayArticles = currentArticles.length > 0 ? currentArticles : allArticles;
 ---
 
 <Layout>
@@ -18,38 +25,40 @@ const currentArticles = allArticles.filter(a => a.volume === currentIssue.volume
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Kolom Kiri: Konten Utama Jurnal (~68%) -->
       <main class="lg:col-span-8 space-y-6">
-        <!-- Pengumuman Singkat / Status Jurnal (Persis OJS Image 2) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4 border-b border-slate-200">
-          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xs">
-            <h2 class="text-xs font-serif font-bold text-[#1b3d6d]">
-              Penerbitan Edisi Perdana JTAAP (Volume 1 Nomor 1)
+        <!-- Pengumuman Redaksi dari Database -->
+        {journalConfig.announcement?.active && (
+          <div class="p-4 bg-amber-50/70 border border-amber-200/80 rounded-xs space-y-1">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-100 px-2 py-0.5 rounded-2xs">
+                Pengumuman Redaksi
+              </span>
+              <span class="text-[11px] text-slate-500 font-mono">
+                {journalConfig.announcement.date}
+              </span>
+            </div>
+            <h2 class="text-sm font-serif font-bold text-academic-navy pt-0.5">
+              {journalConfig.announcement.title}
             </h2>
-            <span class="text-[10px] text-slate-500 font-mono block mt-0.5">2026-03-30</span>
-            <p class="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-3">
-              Dewan Redaksi mengundang akademisi, peneliti, dan praktisi untuk mengakses naskah riset terbitan terkini mengenai audit berbasis risiko, Coretax, dan ESG.
+            <p class="text-xs text-slate-700 leading-relaxed pt-1">
+              {journalConfig.announcement.content}
             </p>
           </div>
+        )}
 
-          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xs">
-            <h2 class="text-xs font-serif font-bold text-[#1b3d6d]">
-              Pemberitahuan Penyerahan Manuskrip
-            </h2>
-            <span class="text-[10px] text-slate-500 font-mono block mt-0.5">2026-03-15</span>
-            <p class="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-3">
-              Penulis dapat mengajukan manuskrip melalui jalur penyerahan naskah daring atau melalui kontak langsung dengan sekretariat redaksi.
-            </p>
-          </div>
-        </div>
-
-        <!-- Bagian Current Issue (Persis OJS Image 2) -->
+        <!-- Bagian Current Issue -->
         <div class="space-y-4">
-          <div class="border-b-2 border-amber-600 pb-1">
+          <div class="border-b-2 border-academic-gold pb-1">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
               Current Issue
             </span>
             <h2 class="text-lg md:text-xl font-serif font-bold text-slate-900 mt-0.5">
-              Vol. {currentIssue.volume} No. {currentIssue.issue} ({currentIssue.year}): {currentIssue.monthRange}
+              Vol. {curVolume} No. {curIssue} ({curYear}): {curPeriod}
             </h2>
+            {curTheme && (
+              <p class="text-xs text-slate-600 italic mt-0.5">
+                Tema: {curTheme}
+              </p>
+            )}
           </div>
 
           <!-- Cover Jurnal & Metadata Terbitan -->
@@ -63,7 +72,7 @@ const currentArticles = allArticles.filter(a => a.volume === currentIssue.volume
                 </span>
               </div>
               <div class="text-[8px] text-emerald-100 border-t border-emerald-600/60 pt-1">
-                Vol. {currentIssue.volume} No. {currentIssue.issue} ({currentIssue.year})
+                Vol. {curVolume} No. {curIssue} ({curYear})
               </div>
             </div>
 
@@ -73,37 +82,37 @@ const currentArticles = allArticles.filter(a => a.volume === currentIssue.volume
                 <strong>{journalConfig.name} ({journalConfig.shortName})</strong> adalah jurnal ilmiah telaah sejawat (*peer-reviewed*) yang mempublikasikan hasil riset teoretis dan empiris di bidang pemeriksaan akuntansi, pelaporan keuangan, dan perpajakan.
               </p>
               <p class="text-slate-600">
-                {currentIssue.description}
+                {curTheme}
               </p>
               <div class="pt-2 text-[11px] text-slate-600 border-t border-slate-100 space-y-1">
                 <div>
                   <strong>DOI Edisi:</strong>{' '}
-                  <a href={`https://doi.org/${journalConfig.doiPrefix}.v1i1`} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
-                    https://doi.org/{journalConfig.doiPrefix}.v1i1
+                  <a href={`https://doi.org/${journalConfig.doiPrefix}.v${curVolume}i${curIssue}`} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
+                    https://doi.org/{journalConfig.doiPrefix}.v{curVolume}i{curIssue}
                   </a>
                 </div>
                 <div>
-                  <strong>Tanggal Terbit:</strong> {new Date(currentIssue.publishDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  <strong>Periode Publikasi:</strong> {curPeriod} ({curYear})
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Daftar Artikel (Articles Header dengan Garis Oranye Khas OJS Image 1) -->
+        <!-- Daftar Artikel (Articles Header dengan Garis Emas Akademik) -->
         <div class="mt-8 space-y-2">
-          <div class="border-b-2 border-amber-600 pb-1 flex justify-between items-baseline">
+          <div class="border-b-2 border-academic-gold pb-1 flex justify-between items-baseline">
             <h2 class="text-base font-serif font-bold text-slate-900">
               Articles
             </h2>
             <span class="text-xs text-slate-500">
-              {currentArticles.length} Naskah Terbit
+              {displayArticles.length} Naskah Terbit
             </span>
           </div>
 
           <!-- List Item Artikel OJS -->
           <div class="divide-y divide-slate-200">
-            {currentArticles.map((article) => (
+            {displayArticles.map((article) => (
               <ArticleItemOJS article={article} />
             ))}
           </div>

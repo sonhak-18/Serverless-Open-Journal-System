@@ -5,8 +5,9 @@ import Layout from '../layouts/Layout.astro';
 import SidebarOJS from '../components/SidebarOJS.astro';
 import { getDbSettings, getDbEditorial } from '../lib/db';
 
-const journalConfig = await getDbSettings();
-const { editorInChief, editors, reviewers } = await getDbEditorial();
+const d1 = (Astro.locals as any)?.runtime?.env?.DB;
+const journalConfig = await getDbSettings(d1);
+const { editorInChief, editors, reviewers } = await getDbEditorial(d1);
 ---
 
 <Layout title="Editorial Team & Reviewers" description={`Dewan Redaksi dan Mitra Bestari ${journalConfig.name}`}>
