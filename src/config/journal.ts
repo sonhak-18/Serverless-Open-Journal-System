@@ -78,8 +78,8 @@ export const journalConfig: JournalConfig = {
   nameEn: 'Journal of Open Audit, Accounting, and Taxation',
   shortName: 'JTAAP',
   accreditedText: 'Open Access Scientific Peer-Reviewed Journal',
-  publisher: 'Sektansia Press',
-  institution: 'Komunitas Riset Sektansia (Sektansia Research Community)',
+  publisher: 'BN Organization',
+  institution: 'Bawera Nitijana Research',
   address: 'Jl. R.E. Martadinata No. 42, Bandung 40115, Jawa Barat, Indonesia',
   eIssn: '3048-289X',
   pIssn: '3048-2903',
@@ -127,7 +127,7 @@ export const journalConfig: JournalConfig = {
   editorial: {
     editorInChief: {
       name: 'Dr. H. Hendra Setiawan, S.E., M.Ak., Ak., CA.',
-      affiliation: 'Departemen Akuntansi & Forensik Keuangan, Sektansia Research Community',
+      affiliation: 'Departemen Akuntansi & Forensik Keuangan, Bawera Nitijana Research',
       email: 'editor.chief@sektansia.org',
     },
     editors: [

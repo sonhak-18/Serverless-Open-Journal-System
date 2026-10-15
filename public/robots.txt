@@ -1,4 +1,4 @@
-# Robots.txt untuk Sektansia Press (JTAAP)
+# Robots.txt untuk BN Organization (JTAAP)
 # https://jtaap.darpana.web.id
 
 User-agent: *
