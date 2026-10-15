@@ -11,6 +11,12 @@ const editorial = await getDbEditorial(d1);
 const indexing = await getDbIndexing(d1);
 
 const { editorInChief, editors, reviewers } = editorial;
+
+const totalArticlesCount = articles.length;
+const nextArticleOrder = totalArticlesCount + 1;
+const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.startsWith('10.') && !journalConfig.doiPrefix.includes('zenodo')
+  ? journalConfig.doiPrefix
+  : '10.00000';
 ---
 
 <Layout title="Panel Redaksi & Admin Jurnal" description={`Halaman pengelolaan dan publikasi naskah ${journalConfig.name}`}>
@@ -225,6 +231,66 @@ const { editorInChief, editors, reviewers } = editorial;
               </div>
             </div>
 
+            <!-- GENERATOR URL / SLUG ARTIKEL -->
+            <div class="bg-blue-50/70 border border-blue-200 rounded-lg p-4 space-y-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <label for="art-slug" class="block text-xs font-bold text-academic-navy uppercase tracking-wider flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                    </svg>
+                    <span>Generator URL & Slug Artikel</span>
+                    <span class="text-rose-600">*</span>
+                  </label>
+                  <span class="text-xs text-slate-600">
+                    Dihasilkan otomatis dari judul artikel untuk permalink publikasi yang SEO-friendly.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  id="btn-generate-slug"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold rounded shadow-2xs transition-colors self-start sm:self-auto shrink-0"
+                  title="Generate slug dari judul naskah"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>⚡ Generate URL / Slug</span>
+                </button>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+                <div class="sm:col-span-8">
+                  <input
+                    type="text"
+                    id="art-slug"
+                    required
+                    placeholder="contoh-judul-artikel-jurnal-ilmiah"
+                    class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono bg-white"
+                  />
+                </div>
+                <div class="sm:col-span-4 flex items-center gap-2">
+                  <button
+                    type="button"
+                    id="btn-copy-url"
+                    class="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded text-xs font-semibold transition-colors shadow-2xs min-h-[38px]"
+                  >
+                    <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                    <span>Salin URL Artikel</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="text-xs text-slate-600 flex flex-wrap items-center gap-1.5 pt-1 border-t border-blue-100">
+                <span class="font-semibold text-slate-700">Pratinjau URL Web:</span>
+                <code id="preview-art-url" class="font-mono text-blue-900 bg-white px-2 py-0.5 rounded border border-blue-200 break-all">
+                  https://jtaap.darpana.web.id/article/...
+                </code>
+              </div>
+            </div>
+
             <!-- Panel Mandiri Penulis & Afiliasi -->
             <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 sm:p-5 space-y-4">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
@@ -349,23 +415,148 @@ const { editorInChief, editors, reviewers } = editorial;
               </div>
             </div>
 
-            <!-- Metadata Edisi & Halaman -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-slate-50 p-4 rounded border border-slate-200 text-xs sm:text-sm">
-              <div>
-                <label for="art-volume" class="block font-semibold text-slate-800 mb-1">Volume</label>
-                <input type="number" id="art-volume" value={journalConfig.currentIssue?.volume ?? 1} min="1" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none" />
+            <!-- Metadata Edisi, Halaman, & Generator DOI -->
+            <div class="bg-amber-50/70 border border-amber-200 rounded-lg p-4 sm:p-5 space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-amber-200">
+                <div>
+                  <h3 class="text-sm font-bold text-academic-navy flex items-center gap-2">
+                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Metadata Edisi & Generator DOI Resmi</span>
+                  </h3>
+                  <p class="text-xs text-slate-600 mt-0.5">
+                    Format DOI: <code class="font-mono text-amber-900 bg-white px-1.5 py-0.5 rounded border border-amber-200">https://doi.org/10.00000/jtaap.v(vol)i(issue).(nomor urut terbit di web)</code>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  id="btn-generate-doi"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#0f284e] hover:bg-[#183e6d] text-white text-xs font-semibold rounded shadow-2xs transition-colors self-start sm:self-auto shrink-0"
+                  title="Generate nomor DOI otomatis sesuai urutan naskah"
+                >
+                  <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span>⚡ Generate DOI Otomatis</span>
+                </button>
               </div>
-              <div>
-                <label for="art-issue" class="block font-semibold text-slate-800 mb-1">Nomor Issue</label>
-                <input type="number" id="art-issue" value={journalConfig.currentIssue?.issue ?? 1} min="1" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none" />
+
+              <!-- Grid Parameter DOI: Volume, Issue, Numerasi Artikel, Rentang Halaman -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm">
+                <div>
+                  <label for="art-volume" class="block font-semibold text-slate-800 mb-1">
+                    Volume <span class="text-rose-600">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="art-volume"
+                    value={journalConfig.currentIssue?.volume ?? 1}
+                    min="1"
+                    required
+                    class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none bg-white font-mono"
+                  />
+                  <span class="text-[11px] text-slate-500 mt-1 block">v(volume)</span>
+                </div>
+
+                <div>
+                  <label for="art-issue" class="block font-semibold text-slate-800 mb-1">
+                    Nomor Issue <span class="text-rose-600">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="art-issue"
+                    value={journalConfig.currentIssue?.issue ?? 1}
+                    min="1"
+                    required
+                    class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none bg-white font-mono"
+                  />
+                  <span class="text-[11px] text-slate-500 mt-1 block">i(issue)</span>
+                </div>
+
+                <div>
+                  <label for="art-article-order" class="block font-semibold text-slate-800 mb-1">
+                    No. Urut Terbit di Web <span class="text-rose-600">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="art-article-order"
+                    value={nextArticleOrder}
+                    min="1"
+                    required
+                    class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none bg-white font-mono"
+                  />
+                  <span class="text-[11px] text-slate-500 mt-1 block">Artikel ke-{nextArticleOrder} di portal web</span>
+                </div>
+
+                <div>
+                  <label for="art-pages" class="block font-semibold text-slate-800 mb-1">
+                    Rentang Halaman <span class="text-rose-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="art-pages"
+                    value="45-58"
+                    placeholder="Contoh: 45-58"
+                    required
+                    class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none bg-white font-mono"
+                  />
+                  <span class="text-[11px] text-slate-500 mt-1 block">Contoh: 1-14</span>
+                </div>
               </div>
-              <div>
-                <label for="art-pages" class="block font-semibold text-slate-800 mb-1">Rentang Halaman</label>
-                <input type="text" id="art-pages" value="45-58" placeholder="Contoh: 45-58" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none" />
+
+              <!-- Baris Prefix & Input DOI Akhir -->
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end pt-2 border-t border-amber-200">
+                <div class="sm:col-span-4">
+                  <label for="art-doi-prefix" class="block text-xs font-semibold text-slate-800 mb-1">
+                    Prefix DOI (Default: 10.00000)
+                  </label>
+                  <input
+                    type="text"
+                    id="art-doi-prefix"
+                    value={defaultDoiPrefix}
+                    class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none bg-white font-mono text-xs"
+                  />
+                </div>
+
+                <div class="sm:col-span-8 space-y-1">
+                  <div class="flex items-center justify-between mb-1">
+                    <label for="art-doi" class="block text-xs font-bold text-academic-navy">
+                      Hasil DOI Lengkap Naskah <span class="text-rose-600">*</span>
+                    </label>
+                    <button
+                      type="button"
+                      id="btn-copy-doi"
+                      class="text-[11px] text-blue-700 hover:underline font-normal inline-flex items-center gap-1"
+                    >
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                      </svg>
+                      <span>Salin DOI</span>
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    id="art-doi"
+                    required
+                    value={`https://doi.org/${defaultDoiPrefix}/jtaap.v${journalConfig.currentIssue?.volume ?? 1}i${journalConfig.currentIssue?.issue ?? 1}.${nextArticleOrder}`}
+                    class="w-full px-3 py-2 text-sm border border-amber-300 bg-white rounded focus:border-academic-navy outline-none font-mono font-semibold text-blue-900"
+                  />
+                </div>
               </div>
-              <div>
-                <label for="art-doi" class="block font-semibold text-slate-800 mb-1">DOI Suffix</label>
-                <input type="text" id="art-doi" value="10.5281/zenodo.jtaap.2026.1104" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-academic-navy outline-none font-mono" />
+
+              <!-- Live Preview DOI -->
+              <div class="text-xs text-slate-700 flex flex-wrap items-center gap-1.5 pt-1">
+                <span class="font-semibold">Pratinjau Tautan DOI:</span>
+                <a
+                  id="preview-art-doi"
+                  href={`https://doi.org/${defaultDoiPrefix}/jtaap.v${journalConfig.currentIssue?.volume ?? 1}i${journalConfig.currentIssue?.issue ?? 1}.${nextArticleOrder}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-mono text-blue-700 hover:underline bg-white px-2 py-0.5 rounded border border-amber-300 break-all"
+                >
+                  https://doi.org/{defaultDoiPrefix}/jtaap.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.{nextArticleOrder}
+                </a>
               </div>
             </div>
 
@@ -757,6 +948,23 @@ const { editorInChief, editors, reviewers } = editorial;
             <p class="text-xs text-academic-ink-muted mt-1">
               Atur edisi yang sedang tayang pada bagian "Current Issue" di beranda dan halaman terbitan terkini.
             </p>
+          </div>
+
+          <!-- Kartu Info Integrasi DOI per Volume -->
+          <div class="bg-amber-50 border border-amber-200 rounded p-4 text-xs space-y-2">
+            <div class="font-bold text-academic-navy flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Format & Skema Penomoran DOI untuk Volume & Issue Ini:</span>
+            </div>
+            <p class="text-slate-700">
+              Setiap naskah yang diterbitkan pada volume dan issue ini secara otomatis terhubung dengan formula DOI resmi jurnal:
+            </p>
+            <div class="font-mono text-amber-900 bg-white p-2.5 rounded border border-amber-300 font-semibold flex items-center justify-between flex-wrap gap-2">
+              <span id="vol-doi-formula-preview">https://doi.org/{defaultDoiPrefix}/jtaap.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.[nomor_urut_artikel]</span>
+              <span class="text-[11px] font-sans font-normal text-slate-500">Contoh Naskah #1: https://doi.org/{defaultDoiPrefix}/jtaap.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.1</span>
+            </div>
           </div>
 
           <form id="form-volume-settings" class="space-y-4 text-sm">
@@ -1566,13 +1774,181 @@ const { editorInChief, editors, reviewers } = editorial;
     updateRemoveButtonsState();
   });
 
+  // ==========================================
+  // GENERATOR URL / SLUG & DOI OTOMATIS
+  // ==========================================
+  const artTitleInput = document.getElementById('art-title') as HTMLInputElement | null;
+  const artSlugInput = document.getElementById('art-slug') as HTMLInputElement | null;
+  const btnGenerateSlug = document.getElementById('btn-generate-slug');
+  const btnCopyUrl = document.getElementById('btn-copy-url');
+  const previewArtUrl = document.getElementById('preview-art-url');
+
+  const artVolumeInput = document.getElementById('art-volume') as HTMLInputElement | null;
+  const artIssueInput = document.getElementById('art-issue') as HTMLInputElement | null;
+  const artOrderInput = document.getElementById('art-article-order') as HTMLInputElement | null;
+  const artDoiPrefixInput = document.getElementById('art-doi-prefix') as HTMLInputElement | null;
+  const artDoiInput = document.getElementById('art-doi') as HTMLInputElement | null;
+  const btnGenerateDoi = document.getElementById('btn-generate-doi');
+  const btnCopyDoi = document.getElementById('btn-copy-doi');
+  const previewArtDoi = document.getElementById('preview-art-doi') as HTMLAnchorElement | null;
+
+  let isSlugManuallyEdited = false;
+
+  function slugify(text: string): string {
+    return text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 100);
+  }
+
+  function updateSlugPreview() {
+    if (!artSlugInput || !previewArtUrl) return;
+    const currentOrigin = window.location.origin.includes('localhost') 
+      ? window.location.origin 
+      : 'https://jtaap.darpana.web.id';
+    const slug = artSlugInput.value.trim();
+    previewArtUrl.textContent = slug ? `${currentOrigin}/article/${slug}` : `${currentOrigin}/article/...`;
+  }
+
+  artTitleInput?.addEventListener('input', () => {
+    if (!isSlugManuallyEdited && artSlugInput) {
+      artSlugInput.value = slugify(artTitleInput.value);
+      updateSlugPreview();
+    }
+  });
+
+  artSlugInput?.addEventListener('input', () => {
+    isSlugManuallyEdited = true;
+    updateSlugPreview();
+  });
+
+  btnGenerateSlug?.addEventListener('click', () => {
+    if (!artTitleInput || !artSlugInput) return;
+    if (!artTitleInput.value.trim()) {
+      showToast('Silakan isi judul naskah artikel terlebih dahulu!', true);
+      artTitleInput.focus();
+      return;
+    }
+    artSlugInput.value = slugify(artTitleInput.value);
+    isSlugManuallyEdited = false;
+    updateSlugPreview();
+    showToast('✓ URL / Slug artikel berhasil digenerate dari judul!');
+  });
+
+  btnCopyUrl?.addEventListener('click', () => {
+    const slug = artSlugInput?.value.trim();
+    if (!slug) {
+      showToast('Slug artikel masih kosong!', true);
+      return;
+    }
+    const currentOrigin = window.location.origin.includes('localhost') 
+      ? window.location.origin 
+      : 'https://jtaap.darpana.web.id';
+    const url = `${currentOrigin}/article/${slug}`;
+    navigator.clipboard.writeText(url).then(() => {
+      showToast('✓ Tautan artikel berhasil disalin: ' + url);
+    }).catch(() => {
+      showToast('Gagal menyalin tautan', true);
+    });
+  });
+
+  // Generator DOI Sesuai Format Pengguna:
+  // "https://doi.org/10.00000/jtaap.v(volume)i(issue).(numerasi artikel keberapa yang terbit di web)"
+  function computeDoi(): string {
+    const prefix = (artDoiPrefixInput?.value || '10.00000').trim().replace(/^https?:\/\/doi\.org\//i, '').replace(/\/$/, '');
+    const vol = Number(artVolumeInput?.value) || 1;
+    const iss = Number(artIssueInput?.value) || 1;
+    const order = Number(artOrderInput?.value) || 1;
+    return `https://doi.org/${prefix}/jtaap.v${vol}i${iss}.${order}`;
+  }
+
+  function updateDoiPreview() {
+    if (!artDoiInput) return;
+    const doiVal = artDoiInput.value.trim();
+    if (previewArtDoi) {
+      previewArtDoi.href = doiVal.startsWith('http') ? doiVal : `https://doi.org/${doiVal}`;
+      previewArtDoi.textContent = doiVal;
+    }
+  }
+
+  function syncDoiFields() {
+    if (!artDoiInput) return;
+    artDoiInput.value = computeDoi();
+    updateDoiPreview();
+  }
+
+  [artVolumeInput, artIssueInput, artOrderInput, artDoiPrefixInput].forEach((input) => {
+    input?.addEventListener('input', () => {
+      syncDoiFields();
+    });
+  });
+
+  artDoiInput?.addEventListener('input', () => {
+    updateDoiPreview();
+  });
+
+  btnGenerateDoi?.addEventListener('click', () => {
+    syncDoiFields();
+    showToast('✓ Nomor DOI berhasil digenerate otomatis!');
+  });
+
+  btnCopyDoi?.addEventListener('click', () => {
+    const doiVal = artDoiInput?.value.trim();
+    if (!doiVal) {
+      showToast('DOI naskah masih kosong!', true);
+      return;
+    }
+    navigator.clipboard.writeText(doiVal).then(() => {
+      showToast('✓ DOI naskah berhasil disalin: ' + doiVal);
+    }).catch(() => {
+      showToast('Gagal menyalin DOI', true);
+    });
+  });
+
+  // Sync Volume Settings tab with DOI preview
+  const cfgVolNum = document.getElementById('cfg-vol-num') as HTMLInputElement | null;
+  const cfgIssueNum = document.getElementById('cfg-issue-num') as HTMLInputElement | null;
+  const volDoiFormulaPreview = document.getElementById('vol-doi-formula-preview');
+
+  function updateVolDoiFormulaPreview() {
+    if (!volDoiFormulaPreview) return;
+    const prefix = (artDoiPrefixInput?.value || '10.00000').trim().replace(/^https?:\/\/doi\.org\//i, '').replace(/\/$/, '');
+    const vol = cfgVolNum ? Number(cfgVolNum.value) || 1 : 1;
+    const iss = cfgIssueNum ? Number(cfgIssueNum.value) || 1 : 1;
+    volDoiFormulaPreview.textContent = `https://doi.org/${prefix}/jtaap.v${vol}i${iss}.[nomor_urut_artikel]`;
+  }
+
+  cfgVolNum?.addEventListener('input', updateVolDoiFormulaPreview);
+  cfgIssueNum?.addEventListener('input', updateVolDoiFormulaPreview);
+
   // 1. Simpan Naskah Baru (Database)
   const articleForm = document.getElementById('form-new-article');
   articleForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const title = (document.getElementById('art-title') as HTMLInputElement).value;
+    const title = (document.getElementById('art-title') as HTMLInputElement).value.trim();
     const subject = (document.getElementById('art-subject') as HTMLSelectElement).value;
+    let slug = (document.getElementById('art-slug') as HTMLInputElement)?.value.trim();
+    if (!slug) {
+      slug = slugify(title);
+      if (artSlugInput) artSlugInput.value = slug;
+    }
+    const abstract = (document.getElementById('art-abstract') as HTMLTextAreaElement).value.trim();
+    const keywordsRaw = (document.getElementById('art-keywords') as HTMLInputElement).value.trim();
+    const pdfFile = (document.getElementById('art-pdffile') as HTMLInputElement).value.trim();
+    const volume = Number((document.getElementById('art-volume') as HTMLInputElement).value) || 1;
+    const issue = Number((document.getElementById('art-issue') as HTMLInputElement).value) || 1;
+    const pages = (document.getElementById('art-pages') as HTMLInputElement).value.trim() || '1-10';
+    let doi = (document.getElementById('art-doi') as HTMLInputElement)?.value.trim();
+    if (!doi) {
+      doi = computeDoi();
+      if (artDoiInput) artDoiInput.value = doi;
+    }
 
     // Kumpulkan penulis dari konfigurasi panel mandiri
     const authorRows = authorsContainer ? authorsContainer.querySelectorAll('.author-row') : [];
