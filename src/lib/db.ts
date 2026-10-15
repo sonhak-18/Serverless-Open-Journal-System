@@ -278,7 +278,7 @@ export async function getDbArticles(d1?: any): Promise<Article[]> {
   if (db) {
     try {
       const { results } = await db.prepare('SELECT * FROM articles ORDER BY publish_date DESC').all();
-      if (results && Array.isArray(results)) {
+      if (results && Array.isArray(results) && results.length > 0) {
         return results.map((r: any) => {
           let authors = [];
           let keywords = [];
