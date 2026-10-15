@@ -15,7 +15,7 @@ const { title, description, article } = Astro.props;
 
 const pageTitle = title 
   ? `${title} | ${journalConfig.shortName}` 
-  : `${journalConfig.name} (${journalConfig.shortName}) - ${journalConfig.publisher}`;
+  : `${journalConfig.name} (${journalConfig.shortName})`;
 
 const metaDescription = description || 
   `Portal publikasi ilmiah ${journalConfig.name}. Peer-reviewed Diamond Open Access bidang Audit, Akuntansi, dan Perpajakan. Diterbitkan oleh ${journalConfig.publisher}.`;
