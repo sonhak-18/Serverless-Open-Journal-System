@@ -3,28 +3,32 @@
 // Architecture: Native Browser PDF Viewer (inline stream) & Admin Management API
 
 import serviceaccountsList from './serviceaccounts.json';
+import privateConfig from './private-config.json';
+
 const serviceaccounts = serviceaccountsList || [];
 
 const randomserviceaccount = serviceaccounts.length > 0 
   ? serviceaccounts[Math.floor(Math.random() * serviceaccounts.length)] 
   : null;
 
-const PORTAL_URL = typeof MAIN_PORTAL_URL !== 'undefined' ? MAIN_PORTAL_URL : 'https://jurnal.example.com';
+const PORTAL_URL = privateConfig?.portal_url || (typeof MAIN_PORTAL_URL !== 'undefined' ? MAIN_PORTAL_URL : 'https://jurnal.example.com');
 
 const authConfig = {
   siteName: "Document Repository",
   service_account: true,
   service_account_json: randomserviceaccount,
-  admin_token: typeof ADMIN_SECRET_TOKEN !== 'undefined' ? ADMIN_SECRET_TOKEN : "your-secret-admin-token",
+  admin_token: privateConfig?.admin_token || (typeof ADMIN_SECRET_TOKEN !== 'undefined' ? ADMIN_SECRET_TOKEN : "your-secret-admin-token"),
   enable_cors_file_down: true,
   cors_domain: "*",
-  roots: [
-    {
-      id: typeof GDRIVE_ROOT_FOLDER_ID !== 'undefined' ? GDRIVE_ROOT_FOLDER_ID : "YOUR_GOOGLE_DRIVE_FOLDER_ID",
-      name: "Naskah Publikasi (Volume 1)",
-      type: "folder"
-    }
-  ]
+  roots: (privateConfig?.roots && privateConfig.roots.length > 0)
+    ? privateConfig.roots
+    : [
+        {
+          id: typeof GDRIVE_ROOT_FOLDER_ID !== 'undefined' ? GDRIVE_ROOT_FOLDER_ID : "YOUR_GOOGLE_DRIVE_FOLDER_ID",
+          name: "Naskah Publikasi (Volume 1)",
+          type: "folder"
+        }
+      ]
 };
 
 // Drive prefix mappings (supports 'one', 'two', 'three', '1', '2', '3', '0:', '1:', etc.)

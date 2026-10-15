@@ -6,7 +6,9 @@ node_modules/
 
 # Environment files
 .env
-.env.production
+.env.*
+**/.env*
+**/.dev.vars*
 
 # Editor directories
 .vscode/
@@ -26,3 +28,9 @@ sa*.json
 **/sa*.json
 !serviceaccounts.example.json
 !**/serviceaccounts.example.json
+
+# Private Worker Config (Roots, Domain, Token)
+private-config.json
+**/private-config.json
+!private-config.example.json
+!**/private-config.example.json

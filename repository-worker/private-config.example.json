@@ -1,0 +1,11 @@
+{
+  "portal_url": "https://jurnal.example.com",
+  "admin_token": "your-secret-admin-token",
+  "roots": [
+    {
+      "id": "YOUR_GOOGLE_DRIVE_FOLDER_ID",
+      "name": "Naskah Publikasi (Volume 1)",
+      "type": "folder"
+    }
+  ]
+}
