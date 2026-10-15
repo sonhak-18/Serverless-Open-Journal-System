@@ -120,7 +120,7 @@ export const journalConfig: JournalConfig = {
   },
 
   storage: {
-    gdriveIndexBaseUrl: 'https://cdnjtaap.darpana.web.id/0:',
+    gdriveIndexBaseUrl: 'https://cdnjtaap.darpana.web.id/one',
     pdfDirectoryPath: '',
   },
 
@@ -242,9 +242,6 @@ export function getPdfDownloadUrl(
   if (!pdfFileName) return '#';
   // Jika pdfFileName sudah merupakan URL lengkap (http/https)
   if (pdfFileName.startsWith('http://') || pdfFileName.startsWith('https://')) {
-    if (!pdfFileName.includes('?')) {
-      return `${pdfFileName}?a=view`;
-    }
     return pdfFileName;
   }
 
@@ -265,8 +262,7 @@ export function getPdfDownloadUrl(
     return `/${pdfFileName}`;
   }
   const cleanFile = pdfFileName.replace(/^\//, '');
-  const fullUrl = path ? `${base}/${path}/${cleanFile}` : `${base}/${cleanFile}`;
-  return fullUrl.includes('?') ? fullUrl : `${fullUrl}?a=view`;
+  return path ? `${base}/${path}/${cleanFile}` : `${base}/${cleanFile}`;
 }
 
 export function getWhatsAppSubmissionUrl(paperTitle?: string): string {

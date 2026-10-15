@@ -1,77 +1,120 @@
-# Sektansia Press: Platform Jurnal Ilmiah (JTAAP)
+# JTAAP: Jurnal Terbuka Audit, Akuntansi, dan Pajak
 
-Platform web publikasi jurnal ilmiah modern berbasis **Astro + Tailwind CSS** yang dirancang untuk di-host 100% tanpa biaya di **Cloudflare Pages**, terintegrasi dengan **Cloudflare D1** (SQLite Relasional di Edge), **Cloudflare Workers KV** (Global Edge Cache & Real-Time Metrics), dan penyimpanan file PDF terdistribusi via **Cloudflare Worker Google Drive Index**.
+Platform web publikasi jurnal ilmiah modern berbasis **Astro + Tailwind CSS** yang dirancang untuk di-host 100% tanpa biaya di **Cloudflare Pages**, terintegrasi dengan **Cloudflare D1** (SQLite Relasional di Edge), **Cloudflare Workers KV** (Global Edge Cache & Real-Time Metrics), dan repositori penyimpanan PDF terdistribusi via **Cloudflare Repository Worker** dengan rotasi 100 Google Service Accounts.
 
-Diterbitkan oleh **Komunitas Riset Sektansia Press** untuk mengelola naskah ilmiah pada rumpun keilmuan Audit, Akuntansi, dan Perpajakan.
-
----
-
-## Fitur Utama
-
-1. **Classic OJS 2-Column Layout:** Struktur visual 100% presisi mengikuti standar Open Journal Systems (proporsi 68% naskah, 32% sidebar standarisasi, tombol PDF abu-abu khas, dan nomor halaman rata kanan).
-2. **100% GUI Admin Dashboard (/admin):** Pengelolaan lengkap tanpa perlu mengedit file kode secara manual. Mengatur naskah artikel, susunan dewan redaksi, reviewer, toggle platform pengindeksan, WhatsApp/Email redaksi, serta URL Google Drive Index langsung lewat antarmuka grafis.
-3. **Cloudflare D1 & Workers KV Integration:** Penyimpanan relasional terdistribusi di edge Cloudflare (D1) yang dipadukan dengan Workers KV untuk sub-millisecond page caching dan pelacakan metrik *Abstract Views* serta *PDF Downloads* secara real-time.
-4. **Google Scholar Metadata Ready:** Meta tag sitasi akademik otomatis (`citation_title`, `citation_author`, `citation_pdf_url`, `citation_volume`, `citation_issue`, dll.) terisi otomatis untuk pengindeksan cepat mesin pencari ilmiah.
-5. **Penyimpanan Naskah Google Drive CDN:** Terhubung ke Cloudflare Worker Google Drive Index untuk menyajikan file PDF berkecepatan tinggi tanpa membebani limit storage hosting.
-6. **Widget Sitasi Interaktif:** Penulis dan pembaca dapat menyalin kutipan sitasi ilmiah (APA 7th, IEEE, Harvard) dengan satu klik ke clipboard.
-7. **Privasi & Kebijakan Biaya Publikasi (APC):** Tidak ada klaim promosi berlebihan. Konfirmasi pembiayaan naskah dan korespondensi dilakukan secara tertutup dan profesional via WhatsApp/Email redaksi.
+Diterbitkan oleh **BN Organization** bekerja sama dengan **Bawera Nitijana Research** untuk mengelola naskah ilmiah pada rumpun keilmuan Audit, Akuntansi, dan Perpajakan.
 
 ---
 
-## Konfigurasi Cloudflare (D1 & KV)
+## 1. Diagram Arsitektur Sistem (System Architecture)
 
-Platform ini memiliki fallback in-memory otomatis saat dijalankan di lingkungan lokal, namun untuk deployment produksi di Cloudflare Pages, jalankan langkah berikut:
+```mermaid
+flowchart TD
+    subgraph Client["Pengguna & Peramban"]
+        Visitor["Pembaca Naskah"]
+        Admin["Dewan Redaksi / Editor"]
+    end
 
-### 1. Buat Database D1
-```bash
-npx wrangler d1 create sektansia-db
-```
-Salin `database_id` yang dihasilkan ke file `wrangler.toml` pada bagian:
-```toml
-[[d1_databases]]
-binding = "DB"
-database_name = "sektansia-db"
-database_id = "MASUKKAN_DATABASE_ID_ANDA"
-```
+    subgraph CloudflarePages["Cloudflare Pages: Portal Jurnal (jtaap.darpana.web.id)"]
+        AstroApp["Astro SSR Application"]
+        D1DB["Cloudflare D1 (SQLite Edge)"]
+        KVStore["Workers KV (Cache & Metrik)"]
+        AdminGUI["Panel Redaksi GUI (/admin)"]
+    end
 
-### 2. Inisialisasi Skema D1
-Eksekusi file skema SQL ke database D1 produksi Anda:
-```bash
-# Untuk database remote (Cloudflare Cloud):
-npx wrangler d1 execute sektansia-db --remote --file=./schema.sql
+    subgraph RepositoryCDN["Cloudflare Worker: Repositori Dokumen (cdnjtaap.darpana.web.id)"]
+        WorkerRouter["Worker Router & Streamer"]
+        AdminAPI["Private Admin API (/api/admin/files)"]
+        SARotation["Rotasi 100 Google Service Accounts (RS256 JWT)"]
+    end
 
-# Untuk pengujian lokal D1:
-npx wrangler d1 execute sektansia-db --local --file=./schema.sql
-```
+    subgraph GoogleDrive["Google Cloud Storage"]
+        DriveFolder["Google Drive Storage<br/>(Folder Naskah Publikasi)"]
+    end
 
-### 3. Buat Workers KV Namespace
-```bash
-npx wrangler kv:namespace create CACHE
-```
-Salin `id` yang dihasilkan ke file `wrangler.toml` pada bagian:
-```toml
-[[kv_namespaces]]
-binding = "KV"
-id = "MASUKKAN_KV_NAMESPACE_ID_ANDA"
+    Visitor -->|"1. Akses Halaman Artikel"| AstroApp
+    AstroApp <-->|"2. Query Data Artikel & Pengaturan"| D1DB
+    AstroApp <-->|"3. Counter Baca & Unduh Real-Time"| KVStore
+    Visitor -->|"4. Buka /one/[file].pdf"| WorkerRouter
+    WorkerRouter -->|"5. Alirkan PDF (inline stream HTTP 206)"| Visitor
+
+    Admin -->|"A. Kelola Artikel & Metadata"| AdminGUI
+    AdminGUI -->|"B. Simpan Perubahan"| D1DB
+    AdminGUI -->|"C. Muat Berkas Drive (Live Sync)"| AdminAPI
+    AdminAPI -->|"D. Minta Token via Service Account"| SARotation
+    SARotation -->|"E. Query Berkas Drive"| DriveFolder
+    DriveFolder -->|"F. Kembalikan Berkas ke Admin"| AdminGUI
 ```
 
 ---
 
-## Panel Administrasi (GUI)
+## 2. Diagram Alur Baca & Unduh Dokumen (PDF Reader Flow)
 
-- **URL:** `http://localhost:4321/admin` (atau `https://domain-anda.pages.dev/admin`)
-- **Default PIN:** `admin123`
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Reader as Pembaca
+    participant Portal as Portal Jurnal (jtaap)
+    participant CDN as Repository Worker (cdnjtaap)
+    participant Drive as Google Drive Storage
 
-### Tab yang Tersedia di Admin:
-1. **Penerbitan Naskah:** Formulir input artikel baru (Judul, Penulis, Afiliasi, Email, Abstrak, Keywords, Volume, Nomor, Halaman, DOI, Nama File PDF, Bidang Fokus).
-2. **Daftar Naskah:** Tinjau dan hapus naskah yang telah terbit.
-3. **Dewan Redaksi:** Tambah dan hapus susunan Pemimpin Redaksi (*Editor-in-Chief*), Dewan Editor (*Editorial Board*), dan Mitra Bestari (*Peer Reviewers*).
-4. **Kontak & Pengaturan:** Ubah nomor WhatsApp redaksi, Email korespondensi, lisensi publikasi, dan URL basis Google Drive Index.
-5. **Platform Pengindeksan:** Aktifkan atau sembunyikan logo dan tautan eksternal pengindeks (Google Scholar, Garuda, Dimensions, Crossref, Neliti, WorldCat, ROAD) pada sidebar publik.
+    Reader->>Portal: Klik tombol "UNDUH / BACA PDF"
+    Portal->>CDN: GET /one/JTAAP_V1N1_01_artikel.pdf
+    alt Akses Direktori / Beranda CDN
+        CDN-->>Portal: HTTP 302 Redirect ke https://jtaap.darpana.web.id
+    else Tautan Menggunakan Parameter Lama (?a=view)
+        CDN-->>Portal: HTTP 302 Redirect (Membuang parameter ?a=view)
+    else Unduh Langsung (?download=true)
+        CDN->>Drive: Ambil Naskah
+        Drive-->>CDN: Aliran Data PDF
+        CDN-->>Reader: HTTP 200 (Content-Disposition: attachment)
+    else Tampilan Standar (Baca PDF)
+        CDN->>Drive: Ambil Naskah (Range Request HTTP 206)
+        Drive-->>CDN: Aliran Data PDF
+        CDN-->>Reader: HTTP 200/206 (Content-Disposition: inline, Type: application/pdf)
+        Note over Reader: Browser Otomatis Mengaktifkan Native PDF Viewer
+    end
+```
 
 ---
 
-## Menjalankan Secara Lokal
+## 3. Fitur Utama
+
+1. **Classic OJS 2-Column Layout:** Struktur visual 100% presisi mengikuti standar Open Journal Systems (proporsi 68% naskah, 32% sidebar standarisasi, tombol PDF khas, dan nomor halaman rata kanan).
+2. **Native Browser PDF Viewer:** Naskah dibuka menggunakan engine PDF bawaan browser (Chrome, Edge, Firefox, Safari) yang dilengkapi *thumbnail page*, seleksi teks, *smooth scroll*, tombol cetak, dan unduh tanpa beban script pihak ketiga yang lambat.
+3. **Sequential Multi-Drive Routing:** Alamat naskah mencerminkan urutan drive penyimpanan yang elegan (`/one/`, `/two/`, `/three/`), dengan tetap mendukung kompatibilitas format lama (`/0:/`).
+4. **100% GUI Admin Dashboard (/admin):** Pengelolaan lengkap tanpa perlu mengedit file kode secara manual:
+   * Tambah & terbitkan naskah baru.
+   * Kelola dewan redaksi, reviewer, dan profil jurnal.
+   * **Manajemen Berkas Google Drive (Live):** Melihat daftar seluruh file PDF di Google Drive secara langsung, menyalin tautan resmi, dan memilih berkas untuk form penerbitan.
+5. **Rotasi 100 Service Accounts (GCP):** Repositori dokumen bebas dari batasan kuota unduhan akun tunggal karena ditenagai oleh 100 service accounts Google Cloud Platform yang berotasi otomatis.
+6. **Google Scholar Metadata Ready:** Meta tag sitasi akademik otomatis (`citation_title`, `citation_author`, `citation_pdf_url`, `citation_volume`, `citation_issue`, dll.) terisi otomatis untuk pengindeksan mesin pencari ilmiah.
+7. **Privasi Data Penuh:** Halaman direktori CDN tertutup total untuk publik. Pengunjung hanya dapat membaca berkas naskah resmi yang tautannya tersedia di portal.
+
+---
+
+## 4. Struktur Proyek
+
+```text
+sektansia-press/
+├── repository-worker/          # Script Cloudflare Worker Repositori Dokumen
+│   ├── worker.js              # Core Worker: Service Accounts, Router /one/, & Admin API
+│   ├── wrangler.toml          # Konfigurasi deployment worker jttap
+│   └── README.md              # Dokumentasi teknis repositori worker
+├── src/
+│   ├── components/            # Komponen UI OJS (Header, Sidebar, ArticleItem, dll.)
+│   ├── config/                # Konfigurasi utama jurnal & generator URL
+│   ├── data/                  # Data in-memory fallback
+│   ├── lib/                   # Integrasi Cloudflare D1 & Workers KV
+│   └── pages/                 # Routing halaman Astro (/admin, /article, /current, dll.)
+├── schema.sql                 # Skema tabel database D1
+├── seed.sql                   # Data awal penerbitan naskah
+└── wrangler.toml              # Konfigurasi Cloudflare Pages
+```
+
+---
+
+## 5. Cara Menjalankan Secara Lokal
 
 ```bash
 # 1. Masuk ke direktori
@@ -87,27 +130,32 @@ Buka browser di `http://localhost:4321`.
 
 ---
 
-## Cara Deploy ke Cloudflare Pages
+## 6. Cara Deploy
 
-### Melalui Dashboard Cloudflare Pages:
-1. Push repositori ini ke akun GitHub atau GitLab Anda.
-2. Masuk ke dashboard Cloudflare: **Workers & Pages** > **Create application** > **Pages** > **Connect to Git**.
-3. Pilih repositori `sektansia-press`.
-4. Pengaturan Build:
-   - **Framework preset:** `None` / `Astro`
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-5. Setelah build pertama selesai, buka menu **Settings** > **Functions** di proyek Pages Anda:
-   - Sambungkan **D1 Database Bindings**: Nama binding `DB`, pilih database `sektansia-db`.
-   - Sambungkan **KV Namespace Bindings**: Nama binding `KV`, pilih namespace `CACHE`.
-6. Lakukan deploy ulang (*Retry deployment*). Web publik dan panel admin kini 100% aktif di edge Cloudflare.
+### Sekali Deploy Semua (Portal + CDN Worker):
+```bash
+npm run deploy
+```
+*Perintah ini otomatis men-deploy CDN Worker terlebih dahulu, melakukan build Astro, lalu men-deploy Portal Jurnal ke Cloudflare Pages.*
 
 ---
 
-## Integrasi dengan Google Drive Index
+### Deploy Terpisah (Opsional):
 
-1. Deploy script Cloudflare Worker Google Drive Index ke akun Cloudflare Anda.
-2. Buat folder naskah di Google Drive (misalnya `/JTAAP/PDFs/`).
-3. Unggah file PDF dengan nama file yang konsisten (misalnya `jtaap-v1n1-01-faisal-audit-risiko.pdf`).
-4. Masukkan URL Worker Anda ke pengaturan di menu `/admin` pada kolom **Google Drive Index URL**.
-5. Semua tombol unduhan PDF pada portal publik akan langsung mengalirkan naskah dari Google Drive melalui CDN Cloudflare.
+**A. Deploy Portal Jurnal Saja (Cloudflare Pages):**
+```bash
+npm run deploy:portal
+```
+
+**B. Deploy CDN Repositori Saja (Cloudflare Worker):**
+```bash
+npm run deploy:cdn
+```
+
+---
+
+## 7. Panel Administrasi Redaksi
+
+* **URL:** `https://jtaap.darpana.web.id/admin`
+* **Default Username:** `admin` | **Default Password:** `admin123`
+* Di dalam menu **"Google Drive Index"**, klik tombol **"Muat Berkas Drive"** untuk melihat seluruh berkas yang ada di Google Drive dan memilihnya langsung ke formulir penerbitan naskah.

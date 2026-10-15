@@ -18,3 +18,11 @@ Thumbs.db
 
 # Wrangler & Cloudflare
 .wrangler/
+
+# Google Cloud Service Accounts (Private Keys)
+serviceaccounts.json
+**/serviceaccounts.json
+sa*.json
+**/sa*.json
+!serviceaccounts.example.json
+!**/serviceaccounts.example.json

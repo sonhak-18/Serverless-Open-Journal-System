@@ -1440,7 +1440,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
             <div class="p-3.5 bg-slate-50 border border-slate-200 rounded text-xs space-y-1.5">
               <span class="font-bold text-slate-700 block">Simulasi Format Tautan PDF Tombol Unduh / Baca:</span>
               <p id="preview-pdf-link" class="font-mono text-academic-navy break-all bg-white p-2 border border-slate-200 rounded text-xs">
-                {journalConfig.storage.gdriveIndexBaseUrl}/{journalConfig.storage.pdfDirectoryPath ? `${journalConfig.storage.pdfDirectoryPath}/` : ''}JTAAP_V1N1_01_kualitas-audit-kepemilikan-institusional.pdf?a=view
+                {journalConfig.storage.gdriveIndexBaseUrl}/{journalConfig.storage.pdfDirectoryPath ? `${journalConfig.storage.pdfDirectoryPath}/` : ''}JTAAP_V1N1_01_kualitas-audit-kepemilikan-institusional.pdf
               </p>
             </div>
 
@@ -1456,6 +1456,48 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
               </button>
             </div>
           </form>
+
+          <!-- Manajemen Berkas Drive Live -->
+          <div class="mt-8 pt-6 border-t border-slate-200 space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-bold text-academic-navy flex items-center gap-2">
+                  <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                  <span>Daftar Berkas di Google Drive Repositori (Live)</span>
+                </h3>
+                <p class="text-xs text-slate-500 mt-0.5">
+                  Akses mandiri untuk memeriksa seluruh berkas PDF di Google Drive, menyalin tautan resmi /one/, dan memilih berkas ke form terbit.
+                </p>
+              </div>
+              <button
+                type="button"
+                id="btn-sync-gdrive-files"
+                class="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded shadow-2xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                <span>Muat Berkas Drive</span>
+              </button>
+            </div>
+
+            <div id="gdrive-files-container" class="border border-slate-200 rounded overflow-hidden">
+              <div class="p-4 text-center text-xs text-slate-500 bg-slate-50" id="gdrive-files-placeholder">
+                Klik tombol <strong>"Muat Berkas Drive"</strong> di atas untuk memuat daftar berkas secara langsung dari Google Drive.
+              </div>
+              <div id="gdrive-files-table-wrap" class="hidden overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
+                    <tr>
+                      <th class="py-2.5 px-3">Nama Berkas</th>
+                      <th class="py-2.5 px-3">Ukuran</th>
+                      <th class="py-2.5 px-3">Terakhir Diubah</th>
+                      <th class="py-2.5 px-3 text-right">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="gdrive-files-tbody" class="divide-y divide-slate-100"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2410,8 +2452,8 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     const base = (gdriveUrlInput?.value || '').replace(/\/$/, '');
     const path = (gdrivePathInput?.value || '').replace(/^\//, '').replace(/\/$/, '');
     const full = path
-      ? `${base}/${path}/JTAAP_V1N1_01_kualitas-audit-kepemilikan-institusional.pdf?a=view`
-      : `${base}/JTAAP_V1N1_01_kualitas-audit-kepemilikan-institusional.pdf?a=view`;
+      ? `${base}/${path}/JTAAP_V1N1_01_kualitas-audit-kepemilikan-institusional.pdf`
+      : `${base}/JTAAP_V1N1_01_kualitas-audit-kepemilikan-institusional.pdf`;
     previewPdfLink.textContent = full;
   }
 
@@ -2437,6 +2479,87 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       showToast('Gagal menyimpan: ' + err.message, true);
     }
   });
+
+  // 5b. Muat Berkas Google Drive Repositori Live
+  const btnSyncDrive = document.getElementById('btn-sync-gdrive-files');
+  const driveFilesTableWrap = document.getElementById('gdrive-files-table-wrap');
+  const driveFilesPlaceholder = document.getElementById('gdrive-files-placeholder');
+  const driveFilesTbody = document.getElementById('gdrive-files-tbody');
+
+  async function loadDriveFiles() {
+    if (!driveFilesPlaceholder || !driveFilesTbody || !driveFilesTableWrap) return;
+    driveFilesPlaceholder.innerHTML = '<span class="text-academic-navy animate-pulse">Menghubungkan ke Google Drive Worker & memuat berkas...</span>';
+    driveFilesPlaceholder.classList.remove('hidden');
+    driveFilesTableWrap.classList.add('hidden');
+
+    try {
+      const res = await fetch('https://cdnjtaap.darpana.web.id/api/admin/files?token=jtaap-repo-sec-2026-cfaec25');
+      if (!res.ok) throw new Error('Status HTTP: ' + res.status);
+      const data = await res.json();
+      if (!data.success || !Array.isArray(data.files) || data.files.length === 0) {
+        driveFilesPlaceholder.innerHTML = 'Tidak ada berkas yang ditemukan di Google Drive.';
+        return;
+      }
+
+      driveFilesPlaceholder.classList.add('hidden');
+      driveFilesTableWrap.classList.remove('hidden');
+      driveFilesTbody.innerHTML = '';
+
+      data.files.forEach((f: any) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition-colors';
+        const sizeKb = (f.size / 1024).toFixed(1) + ' KB';
+        const modified = f.modifiedTime ? new Date(f.modifiedTime).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '-';
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-medium text-slate-800 break-all">${f.name}</td>
+          <td class="py-2.5 px-3 text-slate-600 whitespace-nowrap font-mono">${sizeKb}</td>
+          <td class="py-2.5 px-3 text-slate-500 whitespace-nowrap">${modified}</td>
+          <td class="py-2.5 px-3 text-right whitespace-nowrap space-x-1.5">
+            <a href="${f.url}" target="_blank" class="px-2 py-1 bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 rounded text-[11px] font-semibold transition-colors inline-flex items-center gap-1" title="Buka PDF di Browser Native">
+              Pratinjau
+            </a>
+            <button type="button" class="btn-copy-drive-url px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded text-[11px] font-semibold transition-colors cursor-pointer" data-url="${f.url}" title="Salin Tautan Resmi">
+              Salin URL
+            </button>
+            <button type="button" class="btn-fill-filename px-2 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded text-[11px] font-semibold transition-colors cursor-pointer" data-filename="${f.name}" title="Pakai nama berkas ini di form terbit naskah">
+              Pilih Naskah
+            </button>
+          </td>
+        `;
+        driveFilesTbody.appendChild(tr);
+      });
+
+      // Bind action buttons
+      document.querySelectorAll<HTMLButtonElement>('.btn-copy-drive-url').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const url = (e.currentTarget as HTMLElement).dataset.url;
+          if (url) {
+            navigator.clipboard.writeText(url);
+            showToast('✓ Tautan /one/ berhasil disalin ke clipboard!');
+          }
+        });
+      });
+
+      document.querySelectorAll<HTMLButtonElement>('.btn-fill-filename').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const fname = (e.currentTarget as HTMLElement).dataset.filename;
+          const inputPdf = document.getElementById('art-pdf') as HTMLInputElement | null;
+          if (inputPdf && fname) {
+            inputPdf.value = fname;
+            switchTab('tab-add-article');
+            showToast(`✓ Nama file "${fname}" disalin ke form terbit naskah!`);
+          }
+        });
+      });
+
+      showToast(`✓ Berhasil memuat ${data.files.length} berkas dari Google Drive!`);
+    } catch (err: any) {
+      driveFilesPlaceholder.innerHTML = `<span class="text-rose-600">Gagal memuat berkas: ${err.message}</span>`;
+      showToast('Gagal memuat berkas Google Drive: ' + err.message, true);
+    }
+  }
+
+  btnSyncDrive?.addEventListener('click', loadDriveFiles);
 
   // 6. Simpan Perubahan URL Platform Pengindeks
   document.querySelectorAll<HTMLButtonElement>('.btn-save-index-url').forEach((btn) => {
