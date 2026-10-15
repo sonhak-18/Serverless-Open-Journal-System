@@ -237,3 +237,66 @@ Untuk rotasi kuota otomatis dan pencegahan limit unduhan (750 GB/hari per akun),
 3. Di panel redaksi `/admin` portal jurnal (Tab Google Drive Index):
    * Masukkan URL CDN: `https://cdn.example.com/one`.
    * Klik tombol **Muat Berkas Drive** untuk memeriksa berkas secara langsung.
+
+---
+
+## 9. Setup Database Cloudflare D1 & Workers KV
+
+Platform ini menggunakan SQLite relasional di edge (**Cloudflare D1**) untuk persistensi data artikel dan pengaturan redaksi, serta **Cloudflare Workers KV** untuk penghitung metrik (*views* & *downloads*) real-time dan cache performa tinggi.
+
+> **Catatan:** Platform ini memiliki *fallback in-memory* otomatis. Saat dijalankan secara lokal (`npm run dev`), aplikasi tetap dapat berjalan langsung tanpa setup database terlebih dahulu.
+
+### A. Langkah 1: Buat Database D1
+Jalankan perintah berikut di terminal:
+```bash
+npx wrangler d1 create jurnal-db
+```
+Wrangler akan mengembalikan informasi database Anda. Salin `database_id` yang didapat ke file `wrangler.toml`:
+```toml
+[[d1_databases]]
+binding = "DB"
+database_name = "jurnal-db"
+database_id = "MASUKKAN_DATABASE_ID_ANDA"
+```
+
+---
+
+### B. Langkah 2: Eksekusi Skema Tabel (schema.sql & seed.sql)
+Jalankan migrasi skema tabel dan data awal naskah ke database D1 produksi Anda:
+```bash
+# 1. Eksekusi struktur tabel relasional (artikel, redaksi, pengaturan)
+npx wrangler d1 execute jurnal-db --remote --file=./schema.sql
+
+# 2. Eksekusi data awal contoh naskah publikasi
+npx wrangler d1 execute jurnal-db --remote --file=./seed.sql
+```
+*(Untuk pengujian database lokal, Anda dapat mengganti flag `--remote` menjadi `--local`).*
+
+---
+
+### C. Langkah 3: Buat Workers KV Namespace
+Jalankan perintah berikut untuk membuat penyimpanan cache dan counter metrik:
+```bash
+npx wrangler kv:namespace create CACHE
+```
+Salin nilai `id` yang didapat ke file `wrangler.toml`:
+```toml
+[[kv_namespaces]]
+binding = "KV"
+id = "MASUKKAN_KV_NAMESPACE_ID_ANDA"
+```
+
+---
+
+### D. Langkah 4: Sambungkan Bindings di Cloudflare Pages Dashboard
+Agar website di Cloudflare Pages dapat terhubung ke D1 dan KV di lingkungan produksi:
+1. Masuk ke [Cloudflare Dashboard](https://dash.cloudflare.com/) > **Workers & Pages**.
+2. Pilih proyek Pages Anda.
+3. Buka menu **Settings** > **Functions**.
+4. Di bagian **D1 Database Bindings**, klik **Add binding**:
+   * **Variable name:** `DB`
+   * **D1 database:** Pilih `jurnal-db`
+5. Di bagian **KV Namespace Bindings**, klik **Add binding**:
+   * **Variable name:** `KV`
+   * **KV namespace:** Pilih `CACHE`
+6. Simpan pengaturan dan lakukan deploy ulang (`npm run deploy:portal`). Seluruh naskah, konfigurasi jurnal, dan counter metrik kini 100% aktif dan persisten di edge Cloudflare.

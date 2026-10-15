@@ -1,16 +1,17 @@
-name = "sektansia-press"
+name = "serverless-open-journal-system"
 pages_build_output_dir = "dist"
 compatibility_date = "2024-09-23"
 
 # Cloudflare D1 Database Binding
-# Eksekusi: npx wrangler d1 create sektansia-db
+# Eksekusi: npx wrangler d1 create jurnal-db
 # Masukkan ID yang didapat ke database_id di bawah ini
 [[d1_databases]]
 binding = "DB"
-database_name = "sektansia-db"
-database_id = "7bdb8640-d889-4bec-b942-1f915b492893"
+database_name = "jurnal-db"
+database_id = "YOUR_D1_DATABASE_ID"
 
 # Cloudflare Workers KV Namespace Binding (Global Edge Cache & Real-Time Stats)
+# Eksekusi: npx wrangler kv:namespace create CACHE
 [[kv_namespaces]]
 binding = "KV"
-id = "7c89d3e50f4f4a2cba89125802edba9f"
+id = "YOUR_KV_NAMESPACE_ID"
