@@ -1,8 +1,6 @@
-# JTAAP: Jurnal Terbuka Audit, Akuntansi, dan Pajak
+# Serverless Open Journal System (OJS)
 
-Platform web publikasi jurnal ilmiah modern berbasis **Astro + Tailwind CSS** yang dirancang untuk di-host 100% tanpa biaya di **Cloudflare Pages**, terintegrasi dengan **Cloudflare D1** (SQLite Relasional di Edge), **Cloudflare Workers KV** (Global Edge Cache & Real-Time Metrics), dan repositori penyimpanan PDF terdistribusi via **Cloudflare Repository Worker** dengan rotasi 100 Google Service Accounts.
-
-Diterbitkan oleh **BN Organization** bekerja sama dengan **Bawera Nitijana Research** untuk mengelola naskah ilmiah pada rumpun keilmuan Audit, Akuntansi, dan Perpajakan.
+Platform web publikasi jurnal ilmiah modern berbasis **Astro + Tailwind CSS** yang dirancang untuk di-host 100% tanpa biaya di **Cloudflare Pages**, terintegrasi dengan **Cloudflare D1** (SQLite Relasional di Edge), **Cloudflare Workers KV** (Global Edge Cache & Real-Time Metrics), dan repositori penyimpanan PDF terdistribusi via **Cloudflare Repository Worker** dengan rotasi Google Service Accounts. Presisi mengikuti estetika klasik Open Journal Systems (OJS) dengan performa edge ultra-cepat.
 
 ---
 
