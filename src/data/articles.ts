@@ -24,6 +24,7 @@ export interface Article {
   pdfFileName: string;
   fileSizeBytes: number;
   subject: 'Audit' | 'Akuntansi' | 'Pajak';
+  references?: string[];
 }
 
 export interface Issue {

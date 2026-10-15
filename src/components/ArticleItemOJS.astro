@@ -5,10 +5,11 @@ import { kvGetCounter } from '../lib/kv';
 
 interface Props {
   article: Article;
+  storage?: { gdriveIndexBaseUrl?: string; pdfDirectoryPath?: string };
 }
 
-const { article } = Astro.props;
-const pdfUrl = getPdfDownloadUrl(article.pdfFileName);
+const { article, storage } = Astro.props;
+const pdfUrl = getPdfDownloadUrl(article.pdfFileName, storage);
 
 const kv = (Astro.locals as any)?.runtime?.env?.KV;
 const defaultViews = 310 + (article.firstPage || 1) * 14;

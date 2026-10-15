@@ -128,7 +128,7 @@ const issueDoiUrl = cleanPrefix.includes('/jtaap')
           <!-- List Item Artikel OJS -->
           <div class="divide-y divide-slate-200">
             {displayArticles.map((article) => (
-              <ArticleItemOJS article={article} />
+              <ArticleItemOJS article={article} storage={journalConfig.storage} />
             ))}
           </div>
         </div>

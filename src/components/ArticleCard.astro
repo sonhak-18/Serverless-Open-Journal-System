@@ -5,10 +5,11 @@ import type { Article } from '../data/articles';
 interface Props {
   article: Article;
   showIssueBadge?: boolean;
+  storage?: { gdriveIndexBaseUrl?: string; pdfDirectoryPath?: string };
 }
 
-const { article, showIssueBadge = false } = Astro.props;
-const pdfDownloadUrl = getPdfDownloadUrl(article.pdfFileName);
+const { article, showIssueBadge = false, storage } = Astro.props;
+const pdfDownloadUrl = getPdfDownloadUrl(article.pdfFileName, storage);
 
 const subjectBadgeColors = {
   Audit: 'bg-blue-50 text-blue-900 border-blue-200',

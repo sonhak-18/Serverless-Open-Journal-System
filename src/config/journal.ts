@@ -120,8 +120,8 @@ export const journalConfig: JournalConfig = {
   },
 
   storage: {
-    gdriveIndexBaseUrl: 'https://cdn-papers.sektansia.workers.dev',
-    pdfDirectoryPath: '/JTAAP/PDFs',
+    gdriveIndexBaseUrl: 'https://cdnjtaap.darpana.web.id/0:',
+    pdfDirectoryPath: '',
   },
 
   editorial: {
@@ -234,7 +234,11 @@ export const journalConfig: JournalConfig = {
   ],
 };
 
-export function getPdfDownloadUrl(pdfFileName: string): string {
+export function getPdfDownloadUrl(
+  pdfFileName: string,
+  storageOrBase?: string | { gdriveIndexBaseUrl?: string; pdfDirectoryPath?: string },
+  customPath?: string
+): string {
   if (!pdfFileName) return '#';
   // Jika pdfFileName sudah merupakan URL lengkap (http/https)
   if (pdfFileName.startsWith('http://') || pdfFileName.startsWith('https://')) {
@@ -243,12 +247,25 @@ export function getPdfDownloadUrl(pdfFileName: string): string {
     }
     return pdfFileName;
   }
-  const base = journalConfig.storage.gdriveIndexBaseUrl.replace(/\/$/, '');
-  const path = journalConfig.storage.pdfDirectoryPath.replace(/^\//, '').replace(/\/$/, '');
+
+  let baseUrl = journalConfig.storage.gdriveIndexBaseUrl;
+  let dirPath = journalConfig.storage.pdfDirectoryPath;
+
+  if (typeof storageOrBase === 'object' && storageOrBase !== null) {
+    if (storageOrBase.gdriveIndexBaseUrl) baseUrl = storageOrBase.gdriveIndexBaseUrl;
+    if (storageOrBase.pdfDirectoryPath !== undefined) dirPath = storageOrBase.pdfDirectoryPath;
+  } else if (typeof storageOrBase === 'string') {
+    baseUrl = storageOrBase;
+    if (customPath !== undefined) dirPath = customPath;
+  }
+
+  const base = (baseUrl || '').replace(/\/$/, '');
+  const path = (dirPath || '').replace(/^\//, '').replace(/\/$/, '');
   if (!base) {
     return `/${pdfFileName}`;
   }
-  const fullUrl = path ? `${base}/${path}/${pdfFileName}` : `${base}/${pdfFileName}`;
+  const cleanFile = pdfFileName.replace(/^\//, '');
+  const fullUrl = path ? `${base}/${path}/${cleanFile}` : `${base}/${cleanFile}`;
   return fullUrl.includes('?') ? fullUrl : `${fullUrl}?a=view`;
 }
 

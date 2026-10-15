@@ -282,8 +282,10 @@ export async function getDbArticles(d1?: any): Promise<Article[]> {
         return results.map((r: any) => {
           let authors = [];
           let keywords = [];
+          let references = [];
           try { authors = JSON.parse(r.authors_json || '[]'); } catch {}
           try { keywords = JSON.parse(r.keywords_json || '[]'); } catch {}
+          try { references = JSON.parse(r.references_json || '[]'); } catch {}
           return {
             slug: r.slug,
             title: r.title,
@@ -303,6 +305,7 @@ export async function getDbArticles(d1?: any): Promise<Article[]> {
             pdfFileName: r.pdf_file_name,
             fileSizeBytes: r.file_size_bytes,
             subject: r.subject,
+            references,
           };
         });
       }
@@ -321,8 +324,10 @@ export async function getDbArticleBySlug(slug: string, d1?: any): Promise<Articl
       if (r) {
         let authors = [];
         let keywords = [];
+        let references = [];
         try { authors = JSON.parse(r.authors_json || '[]'); } catch {}
         try { keywords = JSON.parse(r.keywords_json || '[]'); } catch {}
+        try { references = JSON.parse(r.references_json || '[]'); } catch {}
         return {
           slug: r.slug,
           title: r.title,
@@ -342,6 +347,7 @@ export async function getDbArticleBySlug(slug: string, d1?: any): Promise<Articl
           pdfFileName: r.pdf_file_name,
           fileSizeBytes: r.file_size_bytes,
           subject: r.subject,
+          references,
         };
       }
     } catch (e) {
@@ -363,15 +369,16 @@ export async function addDbArticle(article: Article, d1?: any): Promise<void> {
           id, slug, title, authors_json, abstract, keywords_json,
           volume, issue, year, pages, first_page, last_page,
           publish_date, received_date, accepted_date, doi,
-          pdf_file_name, file_size_bytes, subject
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          pdf_file_name, file_size_bytes, subject, references_json
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(slug) DO UPDATE SET
           title = excluded.title,
           authors_json = excluded.authors_json,
           abstract = excluded.abstract,
           keywords_json = excluded.keywords_json,
           pages = excluded.pages,
-          pdf_file_name = excluded.pdf_file_name
+          pdf_file_name = excluded.pdf_file_name,
+          references_json = excluded.references_json
       `).bind(
         `art-${Date.now()}`,
         article.slug,
@@ -391,7 +398,8 @@ export async function addDbArticle(article: Article, d1?: any): Promise<void> {
         article.doi,
         article.pdfFileName,
         article.fileSizeBytes || 450000,
-        article.subject
+        article.subject,
+        JSON.stringify(article.references || [])
       ).run();
     } catch (e) {
       console.warn('D1 insert article error:', e);
@@ -549,6 +557,25 @@ export async function updateDbIndexingPlatform(data: { name: string; url?: strin
     } catch (e) {
       console.warn('D1 update indexing error:', e);
     }
+  }
+}
+
+export async function getDbAdminUsername(kv?: any): Promise<string> {
+  if (kv) {
+    try {
+      const u = await kv.get('auth:admin_username');
+      if (u) return u;
+    } catch (_) {}
+  }
+  return (memoryStore as any).adminUsername || 'admin';
+}
+
+export async function setDbAdminUsername(newUsername: string, kv?: any): Promise<void> {
+  (memoryStore as any).adminUsername = newUsername;
+  if (kv) {
+    try {
+      await kv.put('auth:admin_username', newUsername);
+    } catch (_) {}
   }
 }
 

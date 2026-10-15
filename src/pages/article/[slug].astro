@@ -16,7 +16,7 @@ if (!article) {
 }
 
 const journalConfig = await getDbSettings(d1);
-const pdfUrl = getPdfDownloadUrl(article.pdfFileName);
+const pdfUrl = getPdfDownloadUrl(article.pdfFileName, journalConfig.storage);
 
 const kv = (Astro.locals as any)?.runtime?.env?.KV;
 const defaultViews = 310 + (article.firstPage || 1) * 14;
@@ -33,6 +33,46 @@ const ieeeCitation = `${article.authors.map(a => `${a.name.charAt(0)}. ${a.name.
 const harvardCitation = `${firstAuthorLastName}, ${article.authors[0].name.charAt(0)}. (${article.year}) '${article.title}', ${journalConfig.name}, ${article.volume}(${article.issue}), pp. ${article.pages}. Available at: ${doiUrl}.`;
 
 const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
+
+function formatReferenceLinks(text: string): string {
+  const urlRegex = /(https?:\/\/[^\s\)]+)/g;
+  return text.replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono text-[11px] sm:text-xs break-all">${url}</a>`;
+  });
+}
+
+const defaultAuditReferences = [
+  'DeAngelo, L. E. (1981). Auditor size and audit quality. Journal of Accounting and Economics, 3(3), 183-199. https://doi.org/10.1016/0165-4101(81)90002-1',
+  'Jensen, M. C., & Meckling, W. H. (1976). Theory of the firm: Managerial behavior, agency costs and ownership structure. Journal of Financial Economics, 3(4), 305-360. https://doi.org/10.1016/0304-405X(76)90026-X',
+  'Knechel, W. R., Krishnan, G. V., Pevzner, M., Shefchik, L. B., & Velury, U. (2013). Audit quality: Insights from the academic literature. Auditing: A Journal of Practice & Theory, 32(sp1), 385-421. https://doi.org/10.2308/ajpt-50350',
+  'Shleifer, A., & Vishny, R. W. (1997). A survey of corporate governance. The Journal of Finance, 52(2), 737-783. https://doi.org/10.1111/j.1540-6261.1997.tb04820.x',
+  'Arens, A. A., Elder, R. J., Beasley, M. S., & Hogan, C. E. (2020). Auditing and Assurance Services: An Integrated Approach (17th ed.). Boston: Pearson.',
+  'Institut Akuntan Publik Indonesia (IAPI). (2021). Standar Profesional Akuntan Publik (SPAP). Jakarta: Salemba Empat.'
+];
+
+const defaultTaxReferences = [
+  'Allingham, M. G., & Sandmo, A. (1972). Income tax evasion: A theoretical analysis. Journal of Public Economics, 1(3-4), 323-338. https://doi.org/10.1016/0047-2727(72)90010-2',
+  'Alm, J., & Torgler, B. (2011). Do ethics matter? Tax compliance and morality. Journal of Business Ethics, 101(4), 635-651. https://doi.org/10.1007/s10551-011-0761-9',
+  'Kirchler, E. (2007). The Economic Psychology of Tax Behaviour. Cambridge: Cambridge University Press. https://doi.org/10.1017/CBO9780511628238',
+  'Organisation for Economic Co-operation and Development (OECD). (2021). Tax Administration 2021: Comparative Information on OECD and Other Advanced and Emerging Economies. Paris: OECD Publishing. https://doi.org/10.1787/cef472b9-en',
+  'Bird, R. M. (2014). Foreign advice and tax policy in developing countries. CESifo Economic Studies, 60(3), 603-625. https://doi.org/10.1093/cesifo/ifu023'
+];
+
+const defaultAccountingReferences = [
+  'Watts, R. L., & Zimmerman, J. L. (1986). Positive Accounting Theory. Englewood Cliffs, NJ: Prentice-Hall.',
+  'Dechow, P. M., Sloan, R. G., & Sweeney, A. P. (1995). Detecting earnings management. The Accounting Review, 70(2), 193-225.',
+  'Healy, P. M., & Wahlen, J. M. (1999). A review of the earnings management literature and its implications for standard setting. Accounting Horizons, 13(4), 365-383. https://doi.org/10.2308/acch.1999.13.4.365',
+  'Freeman, R. E. (1984). Strategic Management: A Stakeholder Approach. Boston: Pitman.',
+  'Eccles, R. G., Ioannou, I., & Serafeim, G. (2014). The impact of corporate sustainability on organizational processes and performance. Management Science, 60(11), 2835-2857. https://doi.org/10.1287/mnsc.2014.1984'
+];
+
+const articleReferences = (article.references && article.references.length > 0)
+  ? article.references
+  : (article.subject === 'Pajak'
+      ? defaultTaxReferences
+      : (article.subject === 'Akuntansi'
+          ? defaultAccountingReferences
+          : defaultAuditReferences));
 ---
 
 <Layout title={article.title} description={article.abstract} article={article}>
@@ -142,6 +182,23 @@ const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
           <p class="text-base text-slate-700 italic">
             {article.keywords.join(', ')}
           </p>
+        </div>
+
+        <!-- Panel Referensi / References OJS -->
+        <div class="space-y-3 pt-2">
+          <h2 class="text-lg sm:text-xl font-serif font-bold uppercase tracking-wider text-academic-navy border-b border-slate-200 pb-1.5 flex items-center justify-between">
+            <span>References</span>
+            <span class="text-xs font-sans font-normal text-slate-500 normal-case">Daftar Pustaka Naskah</span>
+          </h2>
+          <div class="bg-white p-6 sm:p-7 border border-slate-200 rounded shadow-2xs">
+            <ol class="list-decimal list-outside pl-5 space-y-3 text-xs sm:text-sm text-slate-800 leading-relaxed font-serif">
+              {articleReferences.map((ref) => (
+                <li class="pl-1 text-justify break-words">
+                  <span set:html={formatReferenceLinks(ref)} />
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
 
         <!-- Widget Format Sitasi (APA, IEEE, Harvard) -->

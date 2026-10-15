@@ -82,6 +82,19 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
 
       <form id="admin-login-form" class="space-y-4 text-left">
         <div>
+          <label for="admin-username" class="block text-sm font-semibold text-slate-800 mb-1">
+            Nama Pengguna (Username)
+          </label>
+          <input
+            type="text"
+            id="admin-username"
+            required
+            autocomplete="username"
+            placeholder="Masukkan username (cth: admin)"
+            class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
+          />
+        </div>
+        <div>
           <label for="admin-pin" class="block text-sm font-semibold text-slate-800 mb-1">
             Kata Sandi / PIN Redaksi
           </label>
@@ -89,12 +102,13 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
             type="password"
             id="admin-pin"
             required
+            autocomplete="current-password"
             placeholder="Masukkan kata sandi / PIN"
             class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
           />
         </div>
         <p id="login-error" class="text-xs text-rose-600 hidden">
-          Kata sandi salah. Silakan coba lagi.
+          Nama pengguna atau kata sandi salah. Silakan coba lagi.
         </p>
         <button
           type="submit"
@@ -383,6 +397,21 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                 placeholder="Tuliskan latar belakang singkat, tujuan, metode penelitian, dan kesimpulan temuan utama..."
                 class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
               ></textarea>
+            </div>
+
+            <div>
+              <label for="art-references" class="block text-sm font-semibold text-slate-800 mb-1">
+                Daftar Pustaka / Referensi Naskah (Opsional)
+              </label>
+              <textarea
+                id="art-references"
+                rows="4"
+                placeholder="Tuliskan daftar pustaka atau referensi ilmiah (satu referensi per baris)..."
+                class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-sans"
+              ></textarea>
+              <span class="text-xs text-slate-500 mt-1 block">
+                Pisahkan tiap referensi dengan baris baru (Enter). Tautan URL / DOI otomatis terdeteksi.
+              </span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1377,19 +1406,45 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
           <form id="form-gdrive" class="space-y-4">
             <div>
               <label for="cfg-gdrive-url" class="block text-sm font-semibold text-slate-800 mb-1">
-                URL Worker Google Drive Index
+                URL Worker Google Drive Index <span class="text-rose-600">*</span>
               </label>
               <input
-                type="url"
+                type="text"
                 id="cfg-gdrive-url"
                 value={journalConfig.storage.gdriveIndexBaseUrl}
                 required
-                placeholder="https://cdn-papers.sektansia.workers.dev"
+                placeholder="https://cdnjtaap.darpana.web.id/0:"
                 class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono"
               />
+              <span class="text-xs text-slate-500 mt-1 block">
+                Alamat domain atau endpoint Worker Drive Index Anda (misal: <code>https://cdnjtaap.darpana.web.id/0:</code>).
+              </span>
             </div>
 
-            <div class="flex justify-end">
+            <div>
+              <label for="cfg-gdrive-path" class="block text-sm font-semibold text-slate-800 mb-1">
+                Sub-Direktori / Path Folder PDF di Drive (Opsional)
+              </label>
+              <input
+                type="text"
+                id="cfg-gdrive-path"
+                value={journalConfig.storage.pdfDirectoryPath || ''}
+                placeholder="Kosongkan jika file di root index (0:/) atau contoh: JTAAP/PDFs"
+                class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono"
+              />
+              <span class="text-xs text-slate-500 mt-1 block">
+                Biarkan kosong jika berkas naskah PDF diunggah langsung di direktori utama (root) drive indeks.
+              </span>
+            </div>
+
+            <div class="p-3.5 bg-slate-50 border border-slate-200 rounded text-xs space-y-1.5">
+              <span class="font-bold text-slate-700 block">Simulasi Format Tautan PDF Tombol Unduh / Baca:</span>
+              <p id="preview-pdf-link" class="font-mono text-academic-navy break-all bg-white p-2 border border-slate-200 rounded text-xs">
+                {journalConfig.storage.gdriveIndexBaseUrl}/{journalConfig.storage.pdfDirectoryPath ? `${journalConfig.storage.pdfDirectoryPath}/` : ''}JTAAP_V1N1_01_kualitas-audit-kepemilikan-institusional.pdf?a=view
+              </p>
+            </div>
+
+            <div class="flex justify-end pt-2">
               <button
                 type="submit"
                 class="px-6 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white text-sm font-semibold rounded shadow transition-colors min-h-[44px] flex items-center gap-2"
@@ -1397,7 +1452,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                 </svg>
-                <span>Simpan URL Google Drive</span>
+                <span>Simpan Pengaturan Google Drive</span>
               </button>
             </div>
           </form>
@@ -1431,8 +1486,20 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
             </div>
 
             <div>
+              <label for="new-username" class="block text-sm font-semibold text-slate-800 mb-1">
+                Nama Pengguna (Username) Baru (Opsional)
+              </label>
+              <input
+                type="text"
+                id="new-username"
+                placeholder="Kosongkan jika tidak ingin mengubah username (default: admin)"
+                class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
+              />
+            </div>
+
+            <div>
               <label for="new-pin" class="block text-sm font-semibold text-slate-800 mb-1">
-                PIN Baru *
+                PIN / Kata Sandi Baru *
               </label>
               <input
                 type="password"
@@ -1537,6 +1604,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
   const loginLock = document.getElementById('admin-login-lock');
   const dashboardContent = document.getElementById('admin-dashboard-content');
   const loginError = document.getElementById('login-error');
+  const adminUsernameInput = document.getElementById('admin-username') as HTMLInputElement | null;
   const adminPinInput = document.getElementById('admin-pin') as HTMLInputElement | null;
   const logoutBtn = document.getElementById('btn-admin-logout');
 
@@ -1566,14 +1634,15 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
 
   loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const username = adminUsernameInput?.value.trim();
     const pin = adminPinInput?.value.trim();
-    if (!pin) return;
+    if (!username || !pin) return;
 
     try {
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'verify', pin }),
+        body: JSON.stringify({ action: 'verify', username, pin }),
       });
       const data = await res.json();
       if (data.success) {
@@ -1979,6 +2048,8 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     const keywordsList = keywordsRaw.split(',').map((k) => k.trim());
     const [firstP, lastP] = pages.split('-').map((p) => Number(p.trim()) || 1);
     const today = new Date().toISOString().split('T')[0];
+    const referencesRaw = (document.getElementById('art-references') as HTMLTextAreaElement)?.value || '';
+    const referencesList = referencesRaw.split('\n').map((r) => r.trim()).filter(Boolean);
 
     const articleData = {
       slug,
@@ -1999,6 +2070,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       pdfFileName: pdfFile,
       fileSizeBytes: 450000,
       subject,
+      references: referencesList,
     };
 
     try {
@@ -2329,19 +2401,37 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
 
   // 5. Simpan URL Google Drive
   const formGDrive = document.getElementById('form-gdrive');
+  const gdriveUrlInput = document.getElementById('cfg-gdrive-url') as HTMLInputElement | null;
+  const gdrivePathInput = document.getElementById('cfg-gdrive-path') as HTMLInputElement | null;
+  const previewPdfLink = document.getElementById('preview-pdf-link');
+
+  function updatePdfPreview() {
+    if (!previewPdfLink) return;
+    const base = (gdriveUrlInput?.value || '').replace(/\/$/, '');
+    const path = (gdrivePathInput?.value || '').replace(/^\//, '').replace(/\/$/, '');
+    const full = path
+      ? `${base}/${path}/JTAAP_V1N1_01_kualitas-audit-kepemilikan-institusional.pdf?a=view`
+      : `${base}/JTAAP_V1N1_01_kualitas-audit-kepemilikan-institusional.pdf?a=view`;
+    previewPdfLink.textContent = full;
+  }
+
+  gdriveUrlInput?.addEventListener('input', updatePdfPreview);
+  gdrivePathInput?.addEventListener('input', updatePdfPreview);
+
   formGDrive?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const gdriveBaseUrl = (document.getElementById('cfg-gdrive-url') as HTMLInputElement).value;
+    const gdriveBaseUrl = (document.getElementById('cfg-gdrive-url') as HTMLInputElement).value.trim();
+    const pdfDirectoryPath = (document.getElementById('cfg-gdrive-path') as HTMLInputElement).value.trim();
 
     try {
       const res = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ gdriveBaseUrl }),
+        body: JSON.stringify({ gdriveBaseUrl, pdfDirectoryPath }),
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ URL Google Drive Index berhasil disimpan ke database!');
+        showToast('✓ Pengaturan URL & direktori Google Drive Index berhasil disimpan ke database!');
       }
     } catch (err: any) {
       showToast('Gagal menyimpan: ' + err.message, true);
@@ -2384,6 +2474,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
   formChangePin?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const currentPin = (document.getElementById('current-pin') as HTMLInputElement).value;
+    const newUsername = (document.getElementById('new-username') as HTMLInputElement)?.value.trim();
     const newPin = (document.getElementById('new-pin') as HTMLInputElement).value;
     const confirmNewPin = (document.getElementById('confirm-new-pin') as HTMLInputElement).value;
 
@@ -2396,11 +2487,11 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'change_pin', currentPin, newPin }),
+        body: JSON.stringify({ action: 'change_credentials', currentPin, newPin, newUsername }),
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ Kata sandi / PIN Admin berhasil diperbarui!');
+        showToast('✓ Kredensial login (Username & PIN) berhasil diperbarui!');
         (formChangePin as HTMLFormElement).reset();
       } else {
         showToast(json.error || 'Gagal mengubah PIN', true);
