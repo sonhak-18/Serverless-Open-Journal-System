@@ -20,7 +20,7 @@ INSERT OR REPLACE INTO journal_settings (
   'Jl. R.E. Martadinata No. 42, Bandung 40115, Jawa Barat, Indonesia',
   '3048-289X',
   '3048-2903',
-  '10.5281/zenodo.jtaap',
+  '10.00000',
   'Terbit 4 Kali Setahun (Maret, Juni, September, Desember)',
   'Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)',
   'https://creativecommons.org/licenses/by-sa/4.0/',
@@ -71,7 +71,7 @@ INSERT OR REPLACE INTO articles (
   '["Audit Berbasis Risiko","Fraud","Pengadaan Barang dan Jasa","APIP","Akuntansi Sektor Publik"]',
   1, 1, 2026, '1-14', 1, 14,
   '2026-03-30', '2026-02-14', '2026-03-20',
-  '10.5281/zenodo.jtaap.2026.1101',
+  'https://doi.org/10.00000/jtaap.v1i1.1',
   'jtaap-v1n1-01-faisal-audit-risiko.pdf',
   452000, 'Audit', 380, 145
 ),
@@ -84,7 +84,7 @@ INSERT OR REPLACE INTO articles (
   '["Core Tax System","Kepatuhan Sukarela","Wajib Pajak Badan","Digitalisasi Pajak","Akuntansi Perpajakan"]',
   1, 1, 2026, '15-28', 15, 28,
   '2026-03-30', '2026-02-18', '2026-03-22',
-  '10.5281/zenodo.jtaap.2026.1102',
+  'https://doi.org/10.00000/jtaap.v1i1.2',
   'jtaap-v1n1-02-dian-coretax-kepatuhan.pdf',
   518000, 'Pajak', 420, 168
 ),
@@ -97,7 +97,7 @@ INSERT OR REPLACE INTO articles (
   '["ESG Disclosure","Kualitas Laba","Biaya Modal Ekuitas","Sustainability Reporting","Tata Kelola Perusahaan"]',
   1, 1, 2026, '29-44', 29, 44,
   '2026-03-30', '2026-02-25', '2026-03-26',
-  '10.5281/zenodo.jtaap.2026.1103',
+  'https://doi.org/10.00000/jtaap.v1i1.3',
   'jtaap-v1n1-03-rian-kualitas-laba-esg.pdf',
   488000, 'Akuntansi', 315, 112
 );

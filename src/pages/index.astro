@@ -19,6 +19,12 @@ const curCoverUrl = journalConfig.currentIssue?.coverUrl || '';
 
 const currentArticles = allArticles.filter(a => a.volume === curVolume && a.issue === curIssue);
 const displayArticles = currentArticles.length > 0 ? currentArticles : allArticles;
+
+const rawPrefix = (journalConfig.doiPrefix || '10.00000').trim().replace(/^https?:\/\/doi\.org\//i, '').replace(/\/$/, '');
+const cleanPrefix = (rawPrefix.includes('zenodo') || !rawPrefix.startsWith('10.')) ? '10.00000' : rawPrefix;
+const issueDoiUrl = cleanPrefix.includes('/jtaap') 
+  ? `https://doi.org/${cleanPrefix}.v${curVolume}i${curIssue}`
+  : `https://doi.org/${cleanPrefix}/jtaap.v${curVolume}i${curIssue}`;
 ---
 
 <Layout>
@@ -96,8 +102,8 @@ const displayArticles = currentArticles.length > 0 ? currentArticles : allArticl
               <div class="pt-3 text-sm text-slate-600 border-t border-slate-100 space-y-1.5">
                 <div>
                   <strong>DOI Edisi:</strong>{' '}
-                  <a href={`https://doi.org/${journalConfig.doiPrefix}.v${curVolume}i${curIssue}`} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
-                    https://doi.org/{journalConfig.doiPrefix}.v{curVolume}i{curIssue}
+                  <a href={issueDoiUrl} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
+                    {issueDoiUrl}
                   </a>
                 </div>
                 <div>

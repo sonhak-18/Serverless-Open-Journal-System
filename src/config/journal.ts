@@ -83,7 +83,7 @@ export const journalConfig: JournalConfig = {
   address: 'Jl. R.E. Martadinata No. 42, Bandung 40115, Jawa Barat, Indonesia',
   eIssn: '3048-289X',
   pIssn: '3048-2903',
-  doiPrefix: '10.5281/zenodo.jtaap',
+  doiPrefix: '10.00000',
   publicationFrequency: 'Terbit 4 Kali Setahun (Maret, Juni, September, Desember)',
   language: 'Bahasa Indonesia dan Bahasa Inggris',
   license: 'Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)',

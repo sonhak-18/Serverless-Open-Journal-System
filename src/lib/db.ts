@@ -56,7 +56,7 @@ export async function getDbSettings(d1?: any): Promise<JournalConfig> {
           address: row.address || memoryStore.settings.address,
           eIssn: row.e_issn || memoryStore.settings.eIssn,
           pIssn: row.p_issn || memoryStore.settings.pIssn,
-          doiPrefix: row.doi_prefix || memoryStore.settings.doiPrefix,
+          doiPrefix: (row.doi_prefix && !row.doi_prefix.includes('zenodo') && row.doi_prefix.startsWith('10.')) ? row.doi_prefix : '10.00000',
           publicationFrequency: row.publication_frequency || memoryStore.settings.publicationFrequency,
           license: row.license || memoryStore.settings.license,
           licenseUrl: row.license_url || memoryStore.settings.licenseUrl,
