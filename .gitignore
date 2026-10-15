@@ -20,6 +20,8 @@ Thumbs.db
 
 # Wrangler & Cloudflare
 .wrangler/
+wrangler.local.toml
+**/wrangler.local.toml
 
 # Google Cloud Service Accounts (Private Keys)
 serviceaccounts.json
