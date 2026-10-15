@@ -1,9 +1,9 @@
-# Robots.txt untuk BN Organization (JTAAP)
-# https://jtaap.darpana.web.id
+# Robots.txt untuk Open Journal System
+# https://jurnal.example.com
 
 User-agent: *
 Disallow: /admin
 Disallow: /api/
 Allow: /
 
-Sitemap: https://jtaap.darpana.web.id/sitemap.xml
+Sitemap: https://jurnal.example.com/sitemap.xml

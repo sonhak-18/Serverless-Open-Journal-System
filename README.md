@@ -15,14 +15,14 @@ flowchart TD
         Admin["Dewan Redaksi / Editor"]
     end
 
-    subgraph CloudflarePages["Cloudflare Pages: Portal Jurnal (jtaap.darpana.web.id)"]
+    subgraph CloudflarePages["Cloudflare Pages: Portal Jurnal (jurnal.example.com)"]
         AstroApp["Astro SSR Application"]
         D1DB["Cloudflare D1 (SQLite Edge)"]
         KVStore["Workers KV (Cache & Metrik)"]
         AdminGUI["Panel Redaksi GUI (/admin)"]
     end
 
-    subgraph RepositoryCDN["Cloudflare Worker: Repositori Dokumen (cdnjtaap.darpana.web.id)"]
+    subgraph RepositoryCDN["Cloudflare Worker: Repositori Dokumen (cdn.example.com)"]
         WorkerRouter["Worker Router & Streamer"]
         AdminAPI["Private Admin API (/api/admin/files)"]
         SARotation["Rotasi 100 Google Service Accounts (RS256 JWT)"]
@@ -54,14 +54,14 @@ flowchart TD
 sequenceDiagram
     autonumber
     actor Reader as Pembaca
-    participant Portal as Portal Jurnal (jtaap)
-    participant CDN as Repository Worker (cdnjtaap)
+    participant Portal as Portal Jurnal (jurnal.example.com)
+    participant CDN as Repository Worker (cdn.example.com)
     participant Drive as Google Drive Storage
 
     Reader->>Portal: Klik tombol "UNDUH / BACA PDF"
     Portal->>CDN: GET /one/JTAAP_V1N1_01_artikel.pdf
     alt Akses Direktori / Beranda CDN
-        CDN-->>Portal: HTTP 302 Redirect ke https://jtaap.darpana.web.id
+        CDN-->>Portal: HTTP 302 Redirect ke https://jurnal.example.com
     else Tautan Menggunakan Parameter Lama (?a=view)
         CDN-->>Portal: HTTP 302 Redirect (Membuang parameter ?a=view)
     else Unduh Langsung (?download=true)
@@ -156,6 +156,86 @@ npm run deploy:cdn
 
 ## 7. Panel Administrasi Redaksi
 
-* **URL:** `https://jtaap.darpana.web.id/admin`
+* **URL:** `http://localhost:4321/admin` (atau `https://jurnal.example.com/admin`)
 * **Default Username:** `admin` | **Default Password:** `admin123`
 * Di dalam menu **"Google Drive Index"**, klik tombol **"Muat Berkas Drive"** untuk melihat seluruh berkas yang ada di Google Drive dan memilihnya langsung ke formulir penerbitan naskah.
+
+---
+
+## 8. Panduan Setup CDN Repositori Dokumen & Service Accounts
+
+Repositori dokumen naskah didukung oleh Cloudflare Worker yang menghubungkan penyimpanan Google Drive dengan pembaca jurnal menggunakan rotasi Service Account otomatis dan Native Browser PDF Viewer.
+
+### A. Prasyarat yang Dibutuhkan
+1. **Google Drive Storage**:
+   * Sebuah folder Google Drive biasa atau Google Shared Drive tempat menyimpan file PDF artikel jurnal.
+   * Ambil **ID Folder** dari tautan peramban: `https://drive.google.com/drive/folders/[FOLDER_ID]`.
+2. **Kredensial Service Account (GCP)**:
+   * 1 akun (atau hingga 100 akun untuk rotasi kuota tinggi) file JSON Service Account dari Google Cloud Console dengan API Google Drive aktif.
+3. **Akun Cloudflare & Domain Aktif**:
+   * Domain publik aktif di Cloudflare (contoh: `example.com`).
+   * DNS atau Custom Domain untuk CDN dokumen (contoh: `cdn.example.com`).
+
+---
+
+### B. Langkah 1: Generate Service Account GCP
+
+#### Metode 1: Membuat 1 Akun Service Account (Manual / Standar)
+1. Buka [Google Cloud Console](https://console.cloud.google.com/) dan buat project baru.
+2. Masuk ke **APIs & Services** > **Library**, cari **Google Drive API** lalu klik **Enable**.
+3. Masuk ke **IAM & Admin** > **Service Accounts**, klik **Create Service Account** (beri nama bebas, misal `jurnal-repo`).
+4. Klik akun yang dibuat > tab **Keys** > **Add Key** > **Create new key** > pilih format **JSON**.
+5. Simpan file `.json` yang terunduh, lalu buka untuk melihat alamat `client_email`.
+6. **Beri Akses Folder:** Buka Google Drive > klik kanan folder naskah > **Bagikan (Share)** > undang `client_email` sebagai **Pelihat (Viewer)**.
+
+#### Metode 2: Membuat 100 Akun Service Account (Batch / Kuota Tinggi)
+Untuk rotasi kuota otomatis dan pencegahan limit unduhan (750 GB/hari per akun), buat 100 Service Accounts via **Google Cloud Shell**:
+1. Buka Cloud Shell di kanan atas console Google Cloud.
+2. Jalankan perintah otomatisasi:
+   ```bash
+   PROJECT_ID=$(gcloud config get-value project)
+   gcloud services enable drive.googleapis.com
+   mkdir -p sa_keys && cd sa_keys
+
+   for i in $(seq -w 1 100); do
+     SA_NAME="sa-$i"
+     gcloud iam service-accounts create "$SA_NAME" --display-name="SA $i"
+     gcloud iam service-accounts keys create "$SA_NAME.json" \
+       --iam-account="$SA_NAME@$PROJECT_ID.iam.gserviceaccount.com"
+   done
+
+   jq -s '.' sa-*.json > all_service_accounts.json
+   ```
+3. Unduh file `all_service_accounts.json` dari menu Cloud Shell.
+4. **Trik Berbagi Folder ke 100 Akun via Google Groups:**
+   * Buka [Google Groups](https://groups.google.com/), buat grup (misal: `jurnal-repo-team@googlegroups.com`).
+   * Masukkan 100 email Service Account ke anggota grup.
+   * Di Google Drive, cukup bagikan folder naskah ke **satu email grup** tersebut sebagai **Pelihat (Viewer)**.
+
+---
+
+### C. Langkah 2: Pasang Kredensial ke Worker
+1. Salin file array JSON Service Account ke:
+   ```text
+   repository-worker/serviceaccounts.json
+   ```
+   *(File ini sudah otomatis diabaikan oleh `.gitignore` sehingga tidak akan bocor ke GitHub).*
+2. Buka [`repository-worker/worker.js`](file:///d:/Gits/Private/sektansia-press/repository-worker/worker.js) dan sesuaikan:
+   * `id`: Ganti `YOUR_GOOGLE_DRIVE_FOLDER_ID` dengan ID Folder Drive Anda.
+   * `admin_token`: Ganti `your-secret-admin-token` dengan token rahasia pilihan Anda.
+   * `PORTAL_URL`: Ganti dengan URL domain portal jurnal Anda (misal `https://jurnal.example.com`).
+
+---
+
+### D. Langkah 3: Deploy & Pasang Custom Domain
+1. Deploy worker CDN dari komputer lokal:
+   ```bash
+   npm run deploy:cdn
+   ```
+2. Di dashboard Cloudflare:
+   * Masuk ke **Workers & Pages** > pilih worker `jurnal-repository-worker`.
+   * Buka **Settings** > **Domains & Routes** > klik **Add Custom Domain**.
+   * Masukkan domain CDN (misal: `cdn.example.com`).
+3. Di panel redaksi `/admin` portal jurnal (Tab Google Drive Index):
+   * Masukkan URL CDN: `https://cdn.example.com/one`.
+   * Klik tombol **Muat Berkas Drive** untuk memeriksa berkas secara langsung.

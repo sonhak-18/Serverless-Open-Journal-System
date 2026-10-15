@@ -120,7 +120,7 @@ export const journalConfig: JournalConfig = {
   },
 
   storage: {
-    gdriveIndexBaseUrl: 'https://cdnjtaap.darpana.web.id/one',
+    gdriveIndexBaseUrl: 'https://cdn.example.com/one',
     pdfDirectoryPath: '',
   },
 

@@ -4,27 +4,17 @@ import type { APIRoute } from 'astro';
 import { kvIncrement, kvGetCounter, kvGet, kvSet } from '../../lib/kv';
 
 const ALLOWED_HOSTS = [
-  'jtaap.darpana.web.id',
-  'jttap.darpana.web.id',
-  'sektansia-press.pages.dev',
   'localhost',
   '127.0.0.1',
 ];
 
 function isOriginAllowed(origin: string | null): boolean {
   if (!origin) return true;
-  try {
-    const url = new URL(origin);
-    return ALLOWED_HOSTS.some(
-      (h) => url.hostname === h || url.hostname.endsWith(`.${h}`)
-    );
-  } catch {
-    return false;
-  }
+  return true;
 }
 
 function getCorsHeaders(origin: string | null): Record<string, string> {
-  const allowed = isOriginAllowed(origin) && origin ? origin : 'https://jtaap.darpana.web.id';
+  const allowed = origin || '*';
   return {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': allowed,

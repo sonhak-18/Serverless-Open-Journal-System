@@ -31,7 +31,7 @@ INSERT OR REPLACE INTO journal_settings (
   'Halo Redaksi JTAAP, saya ingin mengajukan manuskrip artikel ilmiah untuk proses review dan penerbitan.',
   20,
   '3 sampai 7 Hari Kerja',
-  'https://cdnjtaap.darpana.web.id/0:',
+  'https://cdn.example.com/one',
   ''
 );
 

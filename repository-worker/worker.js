@@ -1,23 +1,27 @@
-// JTAAP Document Repository Cloudflare Worker
+// Document Repository Cloudflare Worker
 // Streamlined Engine: Multi-Drive Service Account Token Rotation & Native PDF Streaming
 // Architecture: Native Browser PDF Viewer (inline stream) & Admin Management API
 
 import serviceaccountsList from './serviceaccounts.json';
 const serviceaccounts = serviceaccountsList || [];
 
-const randomserviceaccount = serviceaccounts[Math.floor(Math.random() * serviceaccounts.length)];
+const randomserviceaccount = serviceaccounts.length > 0 
+  ? serviceaccounts[Math.floor(Math.random() * serviceaccounts.length)] 
+  : null;
+
+const PORTAL_URL = typeof MAIN_PORTAL_URL !== 'undefined' ? MAIN_PORTAL_URL : 'https://jurnal.example.com';
 
 const authConfig = {
-  siteName: "JTAAP Document Repository",
+  siteName: "Document Repository",
   service_account: true,
   service_account_json: randomserviceaccount,
-  admin_token: "jtaap-repo-sec-2026-cfaec25",
+  admin_token: typeof ADMIN_SECRET_TOKEN !== 'undefined' ? ADMIN_SECRET_TOKEN : "your-secret-admin-token",
   enable_cors_file_down: true,
   cors_domain: "*",
   roots: [
     {
-      id: "1akIWAdzlbpuNC9ECbBNRFjHf2CuL7k2B",
-      name: "Naskah Publikasi JTAAP (Volume 1)",
+      id: typeof GDRIVE_ROOT_FOLDER_ID !== 'undefined' ? GDRIVE_ROOT_FOLDER_ID : "YOUR_GOOGLE_DRIVE_FOLDER_ID",
+      name: "Naskah Publikasi (Volume 1)",
       type: "folder"
     }
   ]
@@ -261,7 +265,7 @@ async function handleRequest(request) {
 
   // 1. Root / Directory / Index access: redirect to main journal portal
   if (path === '/' || path === '' || path === '/0:' || path === '/0:/' || path === '/one' || path === '/one/') {
-    return Response.redirect('https://jtaap.darpana.web.id', 302);
+    return Response.redirect(PORTAL_URL, 302);
   }
 
   // 2. Secret Admin API for file listing & management (used by JTAAP Admin Panel)
@@ -309,7 +313,7 @@ async function handleRequest(request) {
   // 3. Handle file paths: /one/[filename], /two/[filename], /1/[filename], /0:/[filename]
   const routeMatch = path.match(/^\/([a-zA-Z0-9_:-]+)\/(.+)$/);
   if (!routeMatch) {
-    return Response.redirect('https://jtaap.darpana.web.id', 302);
+    return Response.redirect(PORTAL_URL, 302);
   }
 
   const rawPrefix = routeMatch[1].toLowerCase();
@@ -317,14 +321,14 @@ async function handleRequest(request) {
 
   const driveIndex = DRIVE_PREFIX_MAP[rawPrefix];
   if (driveIndex === undefined || driveIndex >= gds.length) {
-    return Response.redirect('https://jtaap.darpana.web.id', 302);
+    return Response.redirect(PORTAL_URL, 302);
   }
 
   const gd = gds[driveIndex];
 
   // If path ends with slash (directory browsing attempt)
   if (rawFileName.endsWith('/')) {
-    return Response.redirect('https://jtaap.darpana.web.id', 302);
+    return Response.redirect(PORTAL_URL, 302);
   }
 
   // Strip legacy ?a=view and redirect to clean PDF URL
@@ -337,7 +341,7 @@ async function handleRequest(request) {
   const file = await gd.get_single_file(rawFileName);
   if (!file || !file.id) {
     return new Response(
-      `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Naskah Tidak Ditemukan</title><style>body{font-family:sans-serif;text-align:center;padding:50px;background:#f8fafc;color:#1e293b}a{color:#0284c7;text-decoration:none}</style></head><body><h2>Naskah Tidak Ditemukan di Repositori</h2><p>Berkas yang Anda minta tidak tersedia atau telah dipindahkan.</p><p><a href="https://jtaap.darpana.web.id">&larr; Kembali ke Beranda Portal Jurnal JTAAP</a></p></body></html>`,
+      `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Naskah Tidak Ditemukan</title><style>body{font-family:sans-serif;text-align:center;padding:50px;background:#f8fafc;color:#1e293b}a{color:#0284c7;text-decoration:none}</style></head><body><h2>Naskah Tidak Ditemukan di Repositori</h2><p>Berkas yang Anda minta tidak tersedia atau telah dipindahkan.</p><p><a href="${PORTAL_URL}">&larr; Kembali ke Beranda Portal Jurnal</a></p></body></html>`,
       { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
     );
   }

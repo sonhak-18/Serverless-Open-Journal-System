@@ -1,6 +1,6 @@
-name = "jttap"
+name = "jurnal-repository-worker"
 main = "worker.js"
 compatibility_date = "2024-09-23"
 
-# Cloudflare Route / Custom Domain
-# cdnjtaap.darpana.web.id/*
+# Cloudflare Route / Custom Domain (Ganti dengan domain CDN Anda)
+# cdn.example.com/*

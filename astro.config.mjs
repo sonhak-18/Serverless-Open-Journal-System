@@ -12,5 +12,5 @@ export default defineConfig({
   integrations: [tailwind({
     applyBaseStyles: false,
   })],
-  site: 'https://jtaap.darpana.web.id',
+  site: 'https://jurnal.example.com',
 });

@@ -22,7 +22,7 @@ const metaDescription = description ||
 
 const canonicalOrigin = Astro.url.origin && !Astro.url.origin.includes('localhost') && !Astro.url.origin.includes('pages.dev')
   ? Astro.url.origin
-  : (Astro.site ? Astro.site.toString().replace(/\/$/, '') : 'https://jtaap.darpana.web.id');
+  : (Astro.site ? Astro.site.toString().replace(/\/$/, '') : 'https://jurnal.example.com');
 
 const canonicalUrl = new URL(Astro.url.pathname, canonicalOrigin);
 

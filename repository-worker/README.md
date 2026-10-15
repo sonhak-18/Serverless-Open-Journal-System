@@ -10,8 +10,8 @@ Sistem backend Cloudflare Worker yang dirancang khusus untuk mengalirkan naskah 
 flowchart TD
     User["Pembaca / Pengunjung Jurnal"]
     Admin["Dewan Redaksi (Admin JTAAP)"]
-    Portal["Portal Jurnal JTAAP<br/>(jtaap.darpana.web.id)"]
-    Worker["Cloudflare Repository Worker<br/>(cdnjtaap.darpana.web.id)"]
+    Portal["Portal Jurnal JTAAP<br/>(jurnal.example.com)"]
+    Worker["Cloudflare Repository Worker<br/>(cdn.example.com)"]
     SA["Pool 100 Google Service Accounts<br/>(RS256 JWT Rotation)"]
     Drive["Google Drive Storage<br/>(Folder Naskah Publikasi JTAAP)"]
 
@@ -37,13 +37,13 @@ sequenceDiagram
     autonumber
     actor Visitor as Pembaca
     participant Browser as Browser Client
-    participant Worker as Cloudflare Worker (cdnjtaap)
+    participant Worker as Cloudflare Worker (cdn.example.com)
     participant Drive as Google Drive API
 
     Visitor->>Browser: Klik tombol "UNDUH / BACA PDF"
     Browser->>Worker: GET /one/JTAAP_V1N1_01_kualitas-audit.pdf
     alt Path Direktori atau Beranda Tanpa Berkas
-        Worker-->>Browser: HTTP 302 Redirect ke https://jtaap.darpana.web.id
+        Worker-->>Browser: HTTP 302 Redirect ke https://jurnal.example.com
     else Tautan Menggunakan Akhiran ?a=view
         Worker-->>Browser: HTTP 302 Redirect (Membuang ?a=view)
     else Berkas PDF Ditemukan
@@ -62,10 +62,10 @@ Sistem menggunakan penomoran semantik yang mencerminkan urutan drive penyimpanan
 
 | Prefix URL | Target Drive | Contoh Penggunaan |
 | :--- | :--- | :--- |
-| `/one/` atau `/1/` | Drive 0 (Utama) | `https://cdnjtaap.darpana.web.id/one/JTAAP_V1N1_01_artikel.pdf` |
-| `/two/` atau `/2/` | Drive 1 (Cadangan/Arsip) | `https://cdnjtaap.darpana.web.id/two/JTAAP_V2N1_01_artikel.pdf` |
-| `/three/` atau `/3/` | Drive 2 | `https://cdnjtaap.darpana.web.id/three/...` |
-| `/0:/` *(Legacy)* | Drive 0 (Kompatibilitas) | `https://cdnjtaap.darpana.web.id/0:/...` (otomatis didukung) |
+| `/one/` atau `/1/` | Drive 0 (Utama) | `https://cdn.example.com/one/JTAAP_V1N1_01_artikel.pdf` |
+| `/two/` atau `/2/` | Drive 1 (Cadangan/Arsip) | `https://cdn.example.com/two/JTAAP_V2N1_01_artikel.pdf` |
+| `/three/` atau `/3/` | Drive 2 | `https://cdn.example.com/three/...` |
+| `/0:/` *(Legacy)* | Drive 0 (Kompatibilitas) | `https://cdn.example.com/0:/...` (otomatis didukung) |
 
 ---
 
@@ -112,8 +112,8 @@ Panduan ini ditujukan jika Anda ingin menduplikasi, mengatur ulang, atau menyiap
 2. **Kredensial Service Account (GCP)**:
    * Minimal 1 (atau hingga 100 untuk rotasi kuota) file JSON Service Account dari Google Cloud Platform Console dengan izin Google Drive API diaktifkan.
 3. **Akun Cloudflare**:
-   * Akun Cloudflare dengan domain aktif (misal: `darpana.web.id`).
-   * Worker `jttap` yang terhubung ke Custom Domain (misal: `cdnjtaap.darpana.web.id`).
+   * Akun Cloudflare dengan domain aktif (misal: `example.com`).
+   * Worker `jurnal-repository-worker` yang terhubung ke Custom Domain (misal: `cdn.example.com`).
 4. **Wrangler CLI**:
    * Terpasang di komputer lokal (`npm install -g wrangler` atau via devDependencies proyek).
 
@@ -170,9 +170,9 @@ Anda dapat membuatnya otomatis dalam 2 menit menggunakan **Google Cloud Shell** 
 #### Trik Berbagi Akses Folder ke 100 Service Account (Google Groups)
 Jika menggunakan 100 Service Account, **jangan mengundang email satu per satu** ke Google Drive:
 1. Buka [Google Groups](https://groups.google.com/) menggunakan akun Google Anda.
-2. Buat grup baru (contoh: `jtaap-repository-sa@googlegroups.com`).
+2. Buat grup baru (contoh: `jurnal-repo-sa@googlegroups.com`).
 3. Masukkan ke-100 email Service Account ke dalam anggota grup tersebut (bisa langsung tempel daftar email yang dipisahkan koma).
-4. Di Google Drive, klik kanan folder naskah > **Bagikan (Share)** > cukup undang **email Google Group** tersebut (`jtaap-repository-sa@googlegroups.com`) sebagai **Pelihat (Viewer)**. Seluruh 100 Service Account otomatis memiliki akses ke folder secara instan.
+4. Di Google Drive, klik kanan folder naskah > **Bagikan (Share)** > cukup undang **email Google Group** tersebut (`jurnal-repo-sa@googlegroups.com`) sebagai **Pelihat (Viewer)**. Seluruh 100 Service Account otomatis memiliki akses ke folder secara instan.
 
 ---
 
@@ -193,7 +193,7 @@ Buka file [`repository-worker/worker.js`](file:///d:/Gits/Private/sektansia-pres
      cors_domain: "*",
      roots: [
        {
-         id: "1akIWAdzlbpuNC9ECbBNRFjHf2CuL7k2B", // ID Folder Google Drive Anda
+         id: "YOUR_GOOGLE_DRIVE_FOLDER_ID", // ID Folder Google Drive Anda
          name: "Naskah Publikasi JTAAP (Volume 1)",
          type: "folder"
        }
@@ -216,15 +216,15 @@ Buka file [`repository-worker/worker.js`](file:///d:/Gits/Private/sektansia-pres
    ```bash
    npm run deploy:cdn
    ```
-2. Pastikan deployment berhasil dan menampilkan nama worker: `jttap`.
+2. Pastikan deployment berhasil dan menampilkan nama worker: `jurnal-repository-worker`.
 
 ---
 
 ### E. Langkah 4: Sambungkan Custom Domain di Cloudflare
 1. Buka dashboard [Cloudflare Dashboard](https://dash.cloudflare.com/) > **Workers & Pages**.
-2. Pilih worker `jttap`.
+2. Pilih worker `jurnal-repository-worker`.
 3. Masuk ke tab **Settings** > **Domains & Routes** > klik **Add**.
-4. Pilih **Custom Domain**, ketikkan domain CDN Anda (contoh: `cdnjtaap.darpana.web.id`), lalu klik **Add Custom Domain**.
+4. Pilih **Custom Domain**, ketikkan domain CDN Anda (contoh: `cdn.example.com`), lalu klik **Add Custom Domain**.
 5. Cloudflare akan otomatis membuatkan sertifikat SSL dan DNS record CNAME.
 
 ---
@@ -235,10 +235,10 @@ Agar portal jurnal otomatis menautkan tombol unduh dan panel admin ke CDN baru:
    ```typescript
    storage: {
      provider: "gdrive-index",
-     gdrive_base_url: "https://cdnjtaap.darpana.web.id/one"
+     gdrive_base_url: "https://cdn.example.com/one"
    }
    ```
-2. Pastikan database Cloudflare D1 tabel `journal_settings` memiliki key `gdrive_base_url` dengan nilai `https://cdnjtaap.darpana.web.id/one`.
+2. Pastikan database Cloudflare D1 tabel `journal_settings` memiliki key `gdrive_base_url` dengan nilai `https://cdn.example.com/one`.
 3. Deploy portal dengan:
    ```bash
    npm run deploy:portal
