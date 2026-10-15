@@ -12,5 +12,5 @@ export default defineConfig({
   integrations: [tailwind({
     applyBaseStyles: false,
   })],
-  site: 'https://sektansia-press.pages.dev',
+  site: 'https://jtaap.darpana.web.id',
 });

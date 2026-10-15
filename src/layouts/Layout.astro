@@ -20,14 +20,18 @@ const pageTitle = title
 const metaDescription = description || 
   `Portal publikasi ilmiah ${journalConfig.name}. Peer-reviewed Diamond Open Access bidang Audit, Akuntansi, dan Perpajakan. Diterbitkan oleh ${journalConfig.publisher}.`;
 
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://sektansia-press.pages.dev');
+const canonicalOrigin = Astro.url.origin && !Astro.url.origin.includes('localhost') && !Astro.url.origin.includes('pages.dev')
+  ? Astro.url.origin
+  : (Astro.site ? Astro.site.toString().replace(/\/$/, '') : 'https://jtaap.darpana.web.id');
+
+const canonicalUrl = new URL(Astro.url.pathname, canonicalOrigin);
 
 let scholarPdfUrl = '';
 if (article) {
   scholarPdfUrl = getPdfDownloadUrl(article.pdfFileName);
   // Pastikan URL absolut untuk Google Scholar
   if (scholarPdfUrl.startsWith('/')) {
-    scholarPdfUrl = new URL(scholarPdfUrl, Astro.site || 'https://sektansia-press.pages.dev').toString();
+    scholarPdfUrl = new URL(scholarPdfUrl, canonicalOrigin).toString();
   }
 }
 ---
@@ -36,9 +40,14 @@ if (article) {
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     <link rel="canonical" href={canonicalUrl.toString()} />
+
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https: https://cloudflareinsights.com; frame-ancestors 'self';" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 
     <title>{pageTitle}</title>
     <meta name="description" content={metaDescription} />
