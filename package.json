@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy:portal": "astro build && wrangler pages deploy dist --project-name sektansia-press",
+    "deploy:portal": "node scripts/deploy-portal.js",
     "deploy:cdn": "wrangler deploy -c repository-worker/wrangler.toml",
     "deploy": "npm run deploy:cdn && npm run deploy:portal"
   },
