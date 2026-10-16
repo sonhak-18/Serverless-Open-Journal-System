@@ -1553,6 +1553,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
               <thead>
                 <tr class="bg-slate-100 text-slate-700 border-b border-slate-300">
                   <th class="p-2.5 font-semibold">Nama Pengindeks</th>
+                  <th class="p-2.5 font-semibold">Ikon</th>
                   <th class="p-2.5 font-semibold">Kategori</th>
                   <th class="p-2.5 font-semibold">Status</th>
                   <th class="p-2.5 font-semibold text-center">Tampil di Sidebar</th>
@@ -1563,7 +1564,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
               <tbody class="divide-y divide-slate-200">
                 {indexing.length === 0 ? (
                   <tr id="row-indexing-empty">
-                    <td colspan="6" class="p-8 text-center text-slate-500 italic bg-slate-50/50">
+                    <td colspan="7" class="p-8 text-center text-slate-500 italic bg-slate-50/50">
                       Belum ada pangkalan data pengindeks di database. Gunakan formulir di bawah untuk menambahkan pengindeks baru.
                     </td>
                   </tr>
@@ -1571,6 +1572,24 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                   indexing.map((idx) => (
                     <tr class="hover:bg-slate-50">
                       <td class="p-2.5 font-bold text-slate-900">{idx.name}</td>
+                      <td class="p-2.5">
+                        <div class="flex items-center gap-1.5">
+                          {idx.iconUrl ? (
+                            <img src={idx.iconUrl} alt={idx.name} class="w-7 h-7 object-contain rounded border border-slate-200 bg-white p-0.5 shrink-0" />
+                          ) : (
+                            <span class="w-7 h-7 rounded border border-dashed border-slate-300 flex items-center justify-center text-[9px] text-slate-400 bg-slate-50 shrink-0">N/A</span>
+                          )}
+                          <label class="cursor-pointer text-[10px] text-blue-700 hover:underline shrink-0 font-medium">
+                            Ubah
+                            <input
+                              type="file"
+                              class="row-idx-icon-file hidden"
+                              data-name={idx.name}
+                              accept=".png,.jpg,.jpeg,.svg,.webp"
+                            />
+                          </label>
+                        </div>
+                      </td>
                       <td class="p-2.5 text-slate-600">{idx.category}</td>
                       <td class="p-2.5">
                         <span class={`text-[10px] font-bold px-2 py-0.5 rounded-xs uppercase ${
@@ -1670,6 +1689,30 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                     <option value="In Process">In Process (Dalam Proses)</option>
                     <option value="Evaluation">Evaluation (Tahap Evaluasi)</option>
                   </select>
+                </div>
+              </div>
+
+              <!-- Input Unggah Ikon Pengindeks -->
+              <div class="p-3 bg-white border border-slate-300 rounded space-y-2">
+                <label class="block text-xs font-semibold text-slate-700">
+                  Unggah Ikon / Logo Pengindeks (.png, .jpg, .svg, .webp)
+                </label>
+                <div class="flex flex-wrap items-center gap-3">
+                  <div id="new-idx-icon-preview" class="w-10 h-10 rounded border border-dashed border-slate-300 flex items-center justify-center bg-slate-50 text-slate-400 shrink-0 overflow-hidden">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                  </div>
+                  <div class="flex-1 min-w-[200px]">
+                    <input
+                      type="file"
+                      id="new-idx-icon-file"
+                      accept=".png,.jpg,.jpeg,.svg,.webp"
+                      class="block w-full text-xs text-slate-500 file:mr-2.5 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer"
+                    />
+                    <input type="hidden" id="new-idx-icon-url" value="" />
+                    <p id="new-idx-icon-status" class="text-[11px] text-slate-500 mt-1">Opsional. Logo akan tampil di Sidebar & halaman /indexing (maks. 500 KB).</p>
+                  </div>
                 </div>
               </div>
 
@@ -3050,7 +3093,38 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     });
   });
 
-  // 6b. Tambah Pengindeks Baru
+  // 6b. Preview & Konversi Ikon Pengindeks Baru
+  const inputNewIdxIconFile = document.getElementById('new-idx-icon-file') as HTMLInputElement | null;
+  const inputNewIdxIconUrl = document.getElementById('new-idx-icon-url') as HTMLInputElement | null;
+  const previewNewIdxIcon = document.getElementById('new-idx-icon-preview');
+  const statusNewIdxIcon = document.getElementById('new-idx-icon-status');
+
+  inputNewIdxIconFile?.addEventListener('change', () => {
+    const file = inputNewIdxIconFile.files?.[0];
+    if (!file) return;
+
+    if (file.size > 500 * 1024) {
+      showToast('Ukuran file ikon maksimal 500 KB!', true);
+      inputNewIdxIconFile.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      if (inputNewIdxIconUrl) inputNewIdxIconUrl.value = result;
+      if (previewNewIdxIcon) {
+        previewNewIdxIcon.innerHTML = `<img src="${result}" alt="Preview Ikon" class="w-full h-full object-contain p-0.5" />`;
+      }
+      if (statusNewIdxIcon) {
+        statusNewIdxIcon.textContent = `✓ Berkas ikon: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+        statusNewIdxIcon.className = 'text-[11px] font-semibold text-emerald-700 mt-1';
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // 6c. Tambah Pengindeks Baru
   const formAddIndexing = document.getElementById('form-add-indexing');
   formAddIndexing?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -3060,6 +3134,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     const url = (document.getElementById('new-idx-url') as HTMLInputElement).value.trim();
     const description = (document.getElementById('new-idx-desc') as HTMLInputElement).value.trim();
     const showInSidebar = (document.getElementById('new-idx-sidebar') as HTMLInputElement).checked;
+    const iconUrl = inputNewIdxIconUrl?.value || '';
 
     if (!name || !url) {
       showToast('Nama pengindeks dan tautan URL wajib diisi!', true);
@@ -3078,12 +3153,13 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
           url,
           description,
           showInSidebar,
+          iconUrl,
         }),
       });
       const json = await res.json();
       if (json.success) {
         showToast(`✓ Berhasil menambahkan pangkalan pengindeks "${name}"!`);
-        setTimeout(() => window.location.reload(), 900);
+        setTimeout(() => window.location.reload(), 800);
       } else {
         showToast('Gagal menambahkan pengindeks: ' + json.error, true);
       }
@@ -3092,7 +3168,48 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     }
   });
 
-  // 6c. Hapus Pengindeks
+  // 6d. Ubah Ikon Pengindeks yang Sudah Ada di Tabel
+  document.querySelectorAll<HTMLInputElement>('.row-idx-icon-file').forEach((input) => {
+    input.addEventListener('change', () => {
+      const name = input.getAttribute('data-name');
+      const file = input.files?.[0];
+      if (!name || !file) return;
+
+      if (file.size > 500 * 1024) {
+        showToast('Ukuran berkas ikon maksimal 500 KB!', true);
+        input.value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const result = reader.result as string;
+        try {
+          const res = await fetch('/api/indexing', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'update',
+              name,
+              iconUrl: result,
+            }),
+          });
+          const json = await res.json();
+          if (json.success) {
+            showToast(`✓ Ikon untuk "${name}" berhasil diperbarui ke database!`);
+            setTimeout(() => window.location.reload(), 800);
+          } else {
+            showToast('Gagal memperbarui ikon: ' + json.error, true);
+          }
+        } catch (err: any) {
+          showToast('Gagal memperbarui ikon: ' + err.message, true);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // 6e. Hapus Pengindeks
   document.querySelectorAll<HTMLButtonElement>('.btn-delete-indexing').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const name = btn.getAttribute('data-name');
@@ -3118,7 +3235,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
             if (tbody) {
               tbody.innerHTML = `
                 <tr id="row-indexing-empty">
-                  <td colspan="6" class="p-8 text-center text-slate-500 italic bg-slate-50/50">
+                  <td colspan="7" class="p-8 text-center text-slate-500 italic bg-slate-50/50">
                     Belum ada pangkalan data pengindeks di database. Gunakan formulir di bawah untuk menambahkan pengindeks baru.
                   </td>
                 </tr>

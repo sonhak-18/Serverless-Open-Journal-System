@@ -10,7 +10,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const kv = (locals as any)?.runtime?.env?.KV;
 
     const body = await request.json();
-    const { action, name, category, status, description, showInSidebar, url } = body;
+    const { action, name, category, status, description, showInSidebar, url, iconUrl } = body;
 
     if (action === 'add') {
       if (!name || !url) {
@@ -23,6 +23,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         status,
         description,
         showInSidebar: showInSidebar !== undefined ? Boolean(showInSidebar) : true,
+        iconUrl,
       }, d1);
     } else if (action === 'delete') {
       if (!name) {
@@ -38,6 +39,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         name,
         url,
         showInSidebar: showInSidebar !== undefined ? Boolean(showInSidebar) : undefined,
+        iconUrl,
       }, d1);
     }
 

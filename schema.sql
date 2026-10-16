@@ -89,5 +89,6 @@ CREATE TABLE IF NOT EXISTS indexing_platforms (
   status TEXT NOT NULL,
   description TEXT NOT NULL,
   show_in_sidebar INTEGER DEFAULT 1,
-  sort_order INTEGER DEFAULT 0
+  sort_order INTEGER DEFAULT 0,
+  icon_url TEXT
 );

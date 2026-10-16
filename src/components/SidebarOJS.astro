@@ -222,7 +222,12 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
               class="block p-2 border border-slate-200 hover:border-slate-400 bg-white text-center rounded-xs transition-colors"
               title={`Kunjungi ${idx.name}`}
             >
-              {idx.name === 'Google Scholar' ? (
+              {idx.iconUrl ? (
+                <div class="flex items-center justify-center gap-2 py-0.5">
+                  <img src={idx.iconUrl} alt={idx.name} class="max-h-6 max-w-[110px] object-contain" />
+                  <span class="font-bold text-xs text-slate-800 tracking-tight">{idx.name}</span>
+                </div>
+              ) : idx.name === 'Google Scholar' ? (
                 <span class="font-bold text-sm tracking-wide">
                   <span class="text-blue-600">G</span><span class="text-red-500">o</span><span class="text-amber-500">o</span><span class="text-blue-600">g</span><span class="text-emerald-500">l</span><span class="text-red-500">e</span>
                   <span class="text-slate-600 font-serif italic ml-1">Scholar</span>

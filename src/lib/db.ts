@@ -555,6 +555,7 @@ export async function getDbIndexing(d1?: any): Promise<IndexingPlatform[]> {
           status: r.status,
           description: r.description,
           showInSidebar: Boolean(r.show_in_sidebar),
+          iconUrl: r.icon_url || undefined,
         }));
       }
     } catch (e) {
@@ -568,16 +569,21 @@ export async function toggleDbIndexingSidebar(name: string, showInSidebar: boole
   await updateDbIndexingPlatform({ name, showInSidebar }, d1);
 }
 
-export async function updateDbIndexingPlatform(data: { name: string; url?: string; showInSidebar?: boolean }, d1?: any): Promise<void> {
+export async function updateDbIndexingPlatform(data: { name: string; url?: string; showInSidebar?: boolean; iconUrl?: string }, d1?: any): Promise<void> {
   const target = memoryStore.indexing.find((i) => i.name === data.name);
   if (target) {
     if (data.url !== undefined) target.url = data.url;
     if (data.showInSidebar !== undefined) target.showInSidebar = data.showInSidebar;
+    if (data.iconUrl !== undefined) target.iconUrl = data.iconUrl;
   }
 
   const db = d1 || globalD1Instance;
   if (db) {
     try {
+      if (data.iconUrl !== undefined) {
+        await db.prepare('UPDATE indexing_platforms SET icon_url = ? WHERE name = ?')
+          .bind(data.iconUrl, data.name).run();
+      }
       if (data.url !== undefined && data.showInSidebar !== undefined) {
         await db.prepare('UPDATE indexing_platforms SET url = ?, show_in_sidebar = ? WHERE name = ?')
           .bind(data.url, data.showInSidebar ? 1 : 0, data.name).run();
@@ -601,6 +607,7 @@ export async function addDbIndexingPlatform(platform: {
   status?: string;
   description?: string;
   showInSidebar?: boolean;
+  iconUrl?: string;
 }, d1?: any): Promise<void> {
   const id = `idx-${Date.now()}`;
   const category = platform.category || 'International';
@@ -608,6 +615,7 @@ export async function addDbIndexingPlatform(platform: {
   const description = platform.description || `Pangkalan data pengindeks ${platform.name}.`;
   const showInSidebar = platform.showInSidebar !== undefined ? Boolean(platform.showInSidebar) : true;
   const sortOrder = memoryStore.indexing.length + 1;
+  const iconUrl = platform.iconUrl || '';
 
   memoryStore.indexing.push({
     name: platform.name,
@@ -617,16 +625,17 @@ export async function addDbIndexingPlatform(platform: {
     status,
     description,
     showInSidebar,
+    iconUrl: iconUrl || undefined,
   });
 
   const db = d1 || globalD1Instance;
   if (db) {
     try {
       await db.prepare(`
-        INSERT OR REPLACE INTO indexing_platforms (id, name, category, url, status, description, show_in_sidebar, sort_order)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT OR REPLACE INTO indexing_platforms (id, name, category, url, status, description, show_in_sidebar, sort_order, icon_url)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
-        id, platform.name, category, platform.url, status, description, showInSidebar ? 1 : 0, sortOrder
+        id, platform.name, category, platform.url, status, description, showInSidebar ? 1 : 0, sortOrder, iconUrl
       ).run();
     } catch (e) {
       console.warn('D1 add indexing platform error:', e);

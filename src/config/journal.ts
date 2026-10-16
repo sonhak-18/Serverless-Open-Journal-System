@@ -6,6 +6,7 @@ export interface IndexingPlatform {
   status: 'Indexed' | 'In Process' | 'Evaluation';
   description: string;
   showInSidebar: boolean;
+  iconUrl?: string;
 }
 
 export interface JournalConfig {
