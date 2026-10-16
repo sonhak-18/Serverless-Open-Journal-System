@@ -46,7 +46,7 @@ const navLinks = [
         <!-- Journal Logo (Navy, Teal, Gold - Fully Sharp & Vibrant on White) -->
         <a href="/" class="flex-shrink-0 group" title={`Beranda ${journalConfig.name}`}>
           <img
-            src="/images/jtaap-logo-v2.png"
+            src={journalConfig.branding?.logoUrl || '/images/jtaap-logo-v2.png'}
             alt={`Logo ${journalConfig.shortName}`}
             class="h-16 md:h-20 w-auto object-contain group-hover:opacity-95 transition-opacity"
           />

@@ -60,6 +60,11 @@ export async function getDbSettings(d1?: any): Promise<JournalConfig> {
           publicationFrequency: row.publication_frequency || memoryStore.settings.publicationFrequency,
           license: row.license || memoryStore.settings.license,
           licenseUrl: row.license_url || memoryStore.settings.licenseUrl,
+          branding: {
+            logoUrl: row.logo_url || memoryStore.settings.branding?.logoUrl || '/images/jtaap-logo-v2.png',
+            faviconUrl: row.favicon_url || memoryStore.settings.branding?.faviconUrl || '/favicon.png',
+            templateUrl: row.template_url || memoryStore.settings.branding?.templateUrl || '/template-jtaap.docx',
+          },
           features: {
             showIndexingBlock: row.show_indexing_block !== undefined ? Boolean(row.show_indexing_block) : memoryStore.settings.features.showIndexingBlock,
             showToolsBlock: row.show_tools_block !== undefined ? Boolean(row.show_tools_block) : memoryStore.settings.features.showToolsBlock,
@@ -114,6 +119,9 @@ export async function updateDbSettings(data: {
   publicationFrequency?: string;
   license?: string;
   licenseUrl?: string;
+  logoUrl?: string;
+  faviconUrl?: string;
+  templateUrl?: string;
   turnitinMaxSimilarity?: number;
   reviewTimeEstimate?: string;
   email?: string;
@@ -204,10 +212,25 @@ export async function updateDbSettings(data: {
     if (!s.currentIssue) s.currentIssue = { volume: 1, issue: 1, year: 2026, period: '', theme: '', coverUrl: '' };
     s.currentIssue.coverUrl = data.currentCoverUrl;
   }
+  if (!s.branding) {
+    s.branding = {
+      logoUrl: '/images/jtaap-logo-v2.png',
+      faviconUrl: '/favicon.png',
+      templateUrl: '/template-jtaap.docx',
+    };
+  }
+  if (data.logoUrl !== undefined) s.branding.logoUrl = data.logoUrl;
+  if (data.faviconUrl !== undefined) s.branding.faviconUrl = data.faviconUrl;
+  if (data.templateUrl !== undefined) s.branding.templateUrl = data.templateUrl;
 
   const db = d1 || globalD1Instance;
   if (db) {
     try {
+      // Auto-migrate schema columns if not already present
+      try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN logo_url TEXT DEFAULT "/images/jtaap-logo-v2.png"').run(); } catch (_) {}
+      try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN favicon_url TEXT DEFAULT "/favicon.png"').run(); } catch (_) {}
+      try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN template_url TEXT DEFAULT "/template-jtaap.docx"').run(); } catch (_) {}
+
       const res = await db.prepare(`
         UPDATE journal_settings SET
           name = ?, name_en = ?, short_name = ?, accredited_text = ?,
@@ -219,7 +242,8 @@ export async function updateDbSettings(data: {
           show_issn_block = ?, gdrive_base_url = ?, pdf_directory_path = ?,
           announcement_title = ?, announcement_content = ?, announcement_active = ?,
           announcement_date = ?, current_volume = ?, current_issue = ?,
-          current_year = ?, current_period = ?, current_theme = ?, current_cover_url = ?
+          current_year = ?, current_period = ?, current_theme = ?, current_cover_url = ?,
+          logo_url = ?, favicon_url = ?, template_url = ?
         WHERE id = 'default'
       `).bind(
         s.name, s.nameEn, s.shortName, s.accreditedText,
@@ -236,7 +260,8 @@ export async function updateDbSettings(data: {
         s.announcement?.active ? 1 : 0, s.announcement?.date || '',
         s.currentIssue?.volume || 1, s.currentIssue?.issue || 1,
         s.currentIssue?.year || 2026, s.currentIssue?.period || '',
-        s.currentIssue?.theme || '', s.currentIssue?.coverUrl || ''
+        s.currentIssue?.theme || '', s.currentIssue?.coverUrl || '',
+        s.branding.logoUrl, s.branding.faviconUrl, s.branding.templateUrl
       ).run();
 
       if (!res?.meta?.changes) {
@@ -248,10 +273,11 @@ export async function updateDbSettings(data: {
             email, whatsapp_number, whatsapp_display, whatsapp_message,
             turnitin_max_similarity, review_time_estimate, gdrive_base_url, pdf_directory_path,
             announcement_title, announcement_content, announcement_active, announcement_date,
-            current_volume, current_issue, current_year, current_period, current_theme, current_cover_url
+            current_volume, current_issue, current_year, current_period, current_theme, current_cover_url,
+            logo_url, favicon_url, template_url
           ) VALUES (
             'default', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
           )
         `).bind(
           s.name, s.nameEn, s.shortName, s.accreditedText, s.publisher, s.institution,
@@ -264,7 +290,8 @@ export async function updateDbSettings(data: {
           s.announcement?.active ? 1 : 0, s.announcement?.date || '',
           s.currentIssue?.volume || 1, s.currentIssue?.issue || 1,
           s.currentIssue?.year || 2026, s.currentIssue?.period || '',
-          s.currentIssue?.theme || '', s.currentIssue?.coverUrl || ''
+          s.currentIssue?.theme || '', s.currentIssue?.coverUrl || '',
+          s.branding.logoUrl, s.branding.faviconUrl, s.branding.templateUrl
         ).run();
       }
     } catch (e) {

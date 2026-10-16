@@ -1,7 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import SidebarOJS from '../components/SidebarOJS.astro';
-import { journalConfig } from '../config/journal';
+import { getDbSettings } from '../lib/db';
+
+const d1 = (Astro.locals as any)?.runtime?.env?.DB;
+const journalConfig = await getDbSettings(d1);
+const templateUrl = journalConfig.branding?.templateUrl || '/template-jtaap.docx';
+const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.startsWith('https://');
 ---
 
 <Layout title="Author Guidelines & Publication Ethics" description={`Pedoman penulisan dan standar etika penerbitan ${journalConfig.name}`}>
@@ -311,8 +316,10 @@ import { journalConfig } from '../config/journal';
                 </p>
               </div>
               <a
-                href="/template-jtaap.docx"
-                download="Template_Naskah_JTAAP (2026).docx"
+                href={templateUrl}
+                download={isExternalTemplate ? undefined : `Template_Naskah_${journalConfig.shortName}.docx`}
+                target={isExternalTemplate ? '_blank' : undefined}
+                rel={isExternalTemplate ? 'noopener noreferrer' : undefined}
                 class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#0f284e] hover:bg-[#183e6d] text-white text-base font-bold rounded shadow transition-all shrink-0 group"
               >
                 <svg class="w-5 h-5 text-amber-400 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

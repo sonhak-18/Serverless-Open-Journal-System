@@ -28,7 +28,20 @@ CREATE TABLE IF NOT EXISTS journal_settings (
   turnitin_max_similarity INTEGER DEFAULT 20,
   review_time_estimate TEXT NOT NULL,
   gdrive_base_url TEXT NOT NULL,
-  pdf_directory_path TEXT NOT NULL
+  pdf_directory_path TEXT NOT NULL,
+  logo_url TEXT DEFAULT '/images/jtaap-logo-v2.png',
+  favicon_url TEXT DEFAULT '/favicon.png',
+  template_url TEXT DEFAULT '/template-jtaap.docx',
+  announcement_title TEXT DEFAULT 'Call for Papers: Volume 1 Nomor 1 (2026)',
+  announcement_content TEXT DEFAULT 'Redaksi JTAAP mengundang akademisi, peneliti, dan praktisi untuk mengirimkan naskah orisinal.',
+  announcement_active INTEGER DEFAULT 1,
+  announcement_date TEXT DEFAULT '2026-03-01',
+  current_volume INTEGER DEFAULT 1,
+  current_issue INTEGER DEFAULT 1,
+  current_year INTEGER DEFAULT 2026,
+  current_period TEXT DEFAULT 'Maret 2026',
+  current_theme TEXT DEFAULT 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan',
+  current_cover_url TEXT DEFAULT ''
 );
 
 -- 2. Tabel Dewan Redaksi & Reviewer

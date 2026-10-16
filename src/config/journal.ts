@@ -23,6 +23,11 @@ export interface JournalConfig {
   language: string;
   license: string;
   licenseUrl: string;
+  branding: {
+    logoUrl: string;
+    faviconUrl: string;
+    templateUrl: string;
+  };
   features: {
     showIndexingBlock: boolean; // Bisa dimatikan atau dinyalakan
     showToolsBlock: boolean;
@@ -88,6 +93,12 @@ export const journalConfig: JournalConfig = {
   language: 'Bahasa Indonesia dan Bahasa Inggris',
   license: 'Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)',
   licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+
+  branding: {
+    logoUrl: '/images/jtaap-logo-v2.png',
+    faviconUrl: '/favicon.png',
+    templateUrl: '/template-jtaap.docx',
+  },
 
   features: {
     showIndexingBlock: true, // Ubah false jika ingin menyembunyikan panel indexing di sidebar

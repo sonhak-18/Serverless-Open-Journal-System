@@ -156,7 +156,8 @@ npm run deploy:cdn
 
 * **URL:** `http://localhost:4321/admin` (atau `https://jurnal.example.com/admin`)
 * **Default Username:** `admin` | **Default Password:** `admin123`
-* Di dalam menu **"Google Drive Index"**, klik tombol **"Muat Berkas Drive"** untuk melihat seluruh berkas yang ada di Google Drive dan memilihnya langsung ke formulir penerbitan naskah.
+* **Branding & Identitas Visual (Tab Profil Jurnal):** Mengatur URL Logo Header, URL Favicon Tab Browser, dan URL Tautan Unduh Template Manuskrip Word (.docx) secara langsung via GUI tanpa perlu build ulang.
+* **Manajemen Berkas Drive (Tab Google Drive Index):** Klik tombol **"Muat Berkas Drive"** untuk melihat seluruh berkas yang ada di Google Drive secara langsung dan memilihnya ke formulir penerbitan naskah.
 
 ---
 
@@ -237,6 +238,28 @@ Untuk rotasi kuota otomatis dan pencegahan limit unduhan (750 GB/hari per akun),
 3. Di panel redaksi `/admin` portal jurnal (Tab Google Drive Index):
    * Masukkan URL CDN: `https://cdn.example.com/one`.
    * Klik tombol **Muat Berkas Drive** untuk memeriksa berkas secara langsung.
+
+---
+
+### E. Konfigurasi Lanjutan CDN (Direct Link, Pengalihan, Unduh & Hotlink)
+
+1. **Pengalihan Otomatis ke Web Utama (Direct Link Redirection):**
+   * Setiap akses langsung ke root CDN (`/`, `/one`, `/two/`, atau path yang berakhiran slash `/`) otomatis dialihkan (HTTP 302 Redirect) ke portal web utama (`PORTAL_URL`).
+   * Halaman 404 menampilkan tautan langsung kembali ke web portal utama.
+   * Konfigurasikan URL portal utama di `repository-worker/wrangler.toml`:
+     ```toml
+     [vars]
+     MAIN_PORTAL_URL = "https://jurnal.example.com"
+     ```
+2. **Mode Penampil PDF vs Paksa Unduh Berkas:**
+   * **Inline Stream (Standar):** `https://cdn.example.com/one/artikel.pdf` (Browser otomatis membuka Native PDF Viewer bawaan).
+   * **Paksa Unduh (Download):** Tambahkan `?download=true` (contoh: `https://cdn.example.com/one/template-jurnal.docx?download=true`) agar browser langsung memunculkan dialog unduh.
+   * Tautan lawas dengan parameter `?a=view` otomatis dibersihkan dengan HTTP 302 Redirect.
+3. **Proteksi Akses & Anti-Hotlink (CORS):**
+   * Di `repository-worker/worker.js`, ganti `cors_domain: "*"` menjadi domain web jurnal Anda (contoh: `cors_domain: "https://jurnal.example.com"`) untuk membatasi pemanggilan berkas hanya dari website resmi Anda.
+4. **Hosting Template Manuskrip, Logo & Favicon Langsung di Google Drive CDN:**
+   * Anda dapat meletakkan file template Word (`template-jurnal.docx`), file logo (`logo.png`), dan favicon (`favicon.png`) di folder Google Drive yang sama dengan PDF naskah.
+   * Pasang tautan CDN-nya di Panel Admin (`/admin` > Profil Jurnal) untuk mengubah logo, favicon, atau template naskah secara instan tanpa menyentuh kode.
 
 ---
 

@@ -20,6 +20,8 @@ const sidebarLinks = [
 ];
 
 const sidebarIndexers = indexingList.filter((idx) => idx.showInSidebar);
+const templateUrl = journalConfig.branding?.templateUrl || '/template-jtaap.docx';
+const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.startsWith('https://');
 ---
 
 <aside class="space-y-6" aria-label="Sidebar Standarisasi Jurnal">
@@ -44,8 +46,10 @@ const sidebarIndexers = indexingList.filter((idx) => idx.showInSidebar);
       Template:
     </div>
     <a
-      href="/template-jtaap.docx"
-      download="Template_Naskah_JTAAP (2026).docx"
+      href={templateUrl}
+      download={isExternalTemplate ? undefined : `Template_Naskah_${journalConfig.shortName}.docx`}
+      target={isExternalTemplate ? '_blank' : undefined}
+      rel={isExternalTemplate ? 'noopener noreferrer' : undefined}
       class="flex items-center gap-3 p-3 border border-slate-200 bg-slate-50 hover:bg-slate-100 rounded-sm transition-colors group shadow-2xs"
       title="Unduh Template Manuskrip Word (.docx)"
     >

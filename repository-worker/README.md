@@ -86,7 +86,78 @@ Sistem menggunakan penomoran semantik yang mencerminkan urutan drive penyimpanan
 
 ---
 
-## 5. Cara Deployment
+## 5. Konfigurasi Lanjutan CDN Repositori Dokumen
+
+Cloudflare Worker repositori ini memiliki beberapa konfigurasi penting untuk mengontrol pengalihan direct link, proteksi akses, serta mode unduhan:
+
+### A. Pengalihan Otomatis ke Web Utama (Direct Link Redirection)
+* **Pengalihan Root & Direktori:**
+  Jika ada pengunjung atau bot yang mengakses alamat root CDN (`https://cdn.example.com/`, `/one`, `/two/`, atau path yang berakhiran slash `/`), worker otomatis mengembalikan HTTP 302 Redirect ke alamat portal utama (`PORTAL_URL`).
+* **Halaman 404 (Berkas Tidak Ditemukan):**
+  Jika berkas yang diminta tidak ada di Google Drive, worker mengembalikan halaman HTML dengan pesan informatif dan tombol navigasi kembali ke beranda portal jurnal.
+* **Cara Mengatur Alamat Portal Utama (`PORTAL_URL`):**
+  Alamat web portal utama dapat dikonfigurasi melalui 3 cara (urutan prioritas):
+  1. **File `private-config.json` lokal:**
+     ```json
+     {
+       "portal_url": "https://jurnal.example.com"
+     }
+     ```
+  2. **File `wrangler.toml` (Environment Variables):**
+     ```toml
+     [vars]
+     MAIN_PORTAL_URL = "https://jurnal.example.com"
+     ```
+  3. **Cloudflare Dashboard:**
+     Buka Worker > **Settings** > **Variables** > tambahkan variabel `MAIN_PORTAL_URL` dengan nilai URL web portal Anda.
+
+---
+
+### B. Mode Tampilan Penampil PDF vs Paksa Unduh (Force Download)
+Worker mendukung dua mode pengaliran dokumen:
+1. **Mode Penampil PDF Bawaan Peramban (Native Inline Viewer - Standar):**
+   * **Format URL:** `https://cdn.example.com/one/JTAAP_V1N1_01_artikel.pdf`
+   * **Header HTTP:** `Content-Disposition: inline`, `Accept-Ranges: bytes`
+   * **Perilaku:** Browser modern langsung membuka penampil PDF interaktif dengan thumbnail halaman, fitur zoom, dan pencarian teks tanpa mengunduh file ke disk terlebih dahulu.
+2. **Mode Paksa Unduh Berkas (Force Download / Attachment):**
+   * **Format URL:** `https://cdn.example.com/one/JTAAP_V1N1_01_artikel.pdf?download=true`
+   * **Header HTTP:** `Content-Disposition: attachment; filename="JTAAP_V1N1_01_artikel.pdf"`
+   * **Perilaku:** Browser langsung memicu kotak dialog "Simpan Berkas" (Save As). Sangat direkomendasikan untuk berkas Microsoft Word (`.docx`), template naskah, atau arsip data (`.zip`).
+3. **Pembersihan Parameter Warisan (`?a=view`):**
+   * Jika ada tautan lawas yang mengakses `?a=view`, worker secara cerdas melakukan HTTP 302 Redirect untuk membuang query string tersebut dan menyajikan penampil inline yang bersih.
+
+---
+
+### C. Proteksi Hotlink & Konfigurasi Batasan Domain (CORS)
+Pada objek `authConfig` di [`worker.js`](file:///d:/Gits/Private/sektansia-press/repository-worker/worker.js):
+```javascript
+const authConfig = {
+  enable_cors_file_down: true,
+  cors_domain: "*", // Atau batasi ke domain web portal Anda
+  ...
+};
+```
+* **Buka untuk Semua Domain (Default):** Nilai `cors_domain: "*"` mengizinkan pembaca dan mesin pencari akademik (seperti Google Scholar) memuat dokumen tanpa hambatan CORS.
+* **Membatasi Anti-Hotlink:** Jika Anda ingin mencegah website luar menyematkan dokumen atau mencuri bandwidth CDN Anda, ganti nilai `cors_domain` menjadi domain resmi jurnal Anda, contoh: `cors_domain: "https://jurnal.example.com"`.
+
+---
+
+### D. Distribusi Berkas Template Jurnal, Logo & Favicon via CDN Worker
+Anda dapat memanfaatkan folder Google Drive yang sama untuk menampung seluruh aset visual dan template resmi jurnal:
+1. Unggah berkas `template-jurnal.docx`, `logo.png`, dan `favicon.png` ke folder Google Drive naskah Anda.
+2. Tautan CDN untuk berkas-berkas tersebut otomatis tersedia:
+   * **Template Manuskrip (.docx):**
+     `https://cdn.example.com/one/template-jurnal.docx?download=true`
+   * **Logo Jurnal (Header):**
+     `https://cdn.example.com/one/logo.png`
+   * **Favicon Jurnal (Tab Peramban):**
+     `https://cdn.example.com/one/favicon.png`
+3. Masuk ke **Panel Redaksi (Admin)** di `/admin` > tab **Profil Jurnal** > bagian **Identitas Visual & Berkas Template Naskah**.
+4. Tempelkan tautan-tautan CDN di atas dan klik **Simpan Profil Jurnal**. Seluruh logo, favicon, dan tombol unduh template di seluruh portal otomatis terupdate ke tautan CDN tanpa perlu melakukan build atau deploy ulang portal!
+
+---
+
+## 6. Cara Deployment
 
 Worker ini dikonfigurasi melalui file [`wrangler.toml`](file:///d:/Gits/Private/sektansia-press/repository-worker/wrangler.toml) pada direktori ini:
 
@@ -101,7 +172,7 @@ npx wrangler deploy
 
 ---
 
-## 6. Tutorial Setup CDN Repositori Dokumen dari Awal
+## 7. Tutorial Setup CDN Repositori Dokumen dari Awal
 
 Panduan ini ditujukan jika Anda ingin menduplikasi, mengatur ulang, atau menyiapkan CDN repositori dokumen untuk jurnal lain.
 

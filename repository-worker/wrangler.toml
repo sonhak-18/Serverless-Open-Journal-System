@@ -2,5 +2,11 @@ name = "jttap"
 main = "worker.js"
 compatibility_date = "2024-09-23"
 
-# Cloudflare Route / Custom Domain (Ganti dengan domain CDN Anda)
-# cdn.example.com/*
+# Cloudflare Route / Custom Domain (Ganti dengan domain CDN Anda, contoh: cdn.example.com/*)
+
+# Variabel Lingkungan Worker (Dapat diatur di sini atau di Cloudflare Dashboard):
+# [vars]
+# MAIN_PORTAL_URL = "https://jurnal.example.com"
+# ADMIN_SECRET_TOKEN = "your-secret-admin-token"
+# GDRIVE_ROOT_FOLDER_ID = "YOUR_GOOGLE_DRIVE_FOLDER_ID"
+

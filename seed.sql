@@ -8,7 +8,8 @@ INSERT OR REPLACE INTO journal_settings (
   address, e_issn, p_issn, doi_prefix, publication_frequency, license,
   license_url, show_indexing_block, show_tools_block, show_issn_block,
   email, whatsapp_number, whatsapp_display, whatsapp_message,
-  turnitin_max_similarity, review_time_estimate, gdrive_base_url, pdf_directory_path
+  turnitin_max_similarity, review_time_estimate, gdrive_base_url, pdf_directory_path,
+  logo_url, favicon_url, template_url
 ) VALUES (
   'default',
   'Jurnal Terbuka Audit, Akuntansi, dan Pajak',
@@ -32,7 +33,10 @@ INSERT OR REPLACE INTO journal_settings (
   20,
   '3 sampai 7 Hari Kerja',
   'https://cdn.example.com/one',
-  ''
+  '',
+  '/images/jtaap-logo-v2.png',
+  '/favicon.png',
+  '/template-jtaap.docx'
 );
 
 -- 2. Inisialisasi Pangkalan Data Pengindeks
