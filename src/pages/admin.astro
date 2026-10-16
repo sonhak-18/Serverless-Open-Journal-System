@@ -1880,7 +1880,14 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     setAuthenticated(true);
   }
 
-  logoutBtn?.addEventListener('click', () => {
+  logoutBtn?.addEventListener('click', async () => {
+    try {
+      await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'logout' }),
+      });
+    } catch (_) {}
     setAuthenticated(false);
     showToast('✓ Anda telah berhasil keluar dari sesi panel redaksi.');
   });

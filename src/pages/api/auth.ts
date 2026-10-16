@@ -18,9 +18,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
       const validPin = pin && pin === storedPin;
 
       if (validUser && validPin) {
+        const sessionId = crypto.randomUUID();
         return new Response(JSON.stringify({ success: true, username: storedUsername }), {
           status: 200,
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Set-Cookie': `sektansia_session=${sessionId}; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=86400`,
+          },
         });
       } else {
         const errorMsg = !validUser && !validPin
@@ -33,6 +37,16 @@ export const POST: APIRoute = async ({ request, locals }) => {
           headers: { 'Content-Type': 'application/json' },
         });
       }
+    }
+
+    if (action === 'logout') {
+      return new Response(JSON.stringify({ success: true, message: 'Berhasil keluar.' }), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Set-Cookie': 'sektansia_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=Strict; Max-Age=0',
+        },
+      });
     }
 
     if (action === 'change_pin' || action === 'change_credentials') {
