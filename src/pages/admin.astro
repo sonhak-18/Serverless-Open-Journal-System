@@ -952,118 +952,213 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
               </div>
             </div>
 
-            <!-- Bagian Branding: Logo, Favicon & Template Dokumen -->
+            <!-- Bagian Branding: Unggah Berkas Logo, Favicon & Template Manuskrip -->
             <div class="mt-6 pt-6 border-t border-slate-200">
               <div class="mb-4">
                 <h3 class="text-sm font-bold text-academic-navy flex items-center gap-1.5">
                   <svg class="w-4 h-4 text-academic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span>Identitas Visual & Berkas Template Naskah</span>
+                  <span>Unggah Berkas Logo, Favicon & Template Manuskrip</span>
                 </h3>
                 <p class="text-xs text-slate-500 mt-0.5">
-                  Sesuaikan logo header, favicon tab peramban, serta tautan berkas template naskah Microsoft Word (.docx).
+                  Unggah berkas langsung dari perangkat Anda tanpa perlu membuat tautan CDN. Berkas tersimpan mandiri di database Cloudflare D1.
                 </p>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded border border-slate-200">
-                <!-- 1. Logo Jurnal -->
-                <div>
-                  <div class="flex items-center justify-between mb-1">
-                    <label for="cfg-logo-url" class="font-semibold text-academic-navy">
-                      URL / Path Logo Jurnal (Header)
-                    </label>
-                    <span class="text-[11px] text-slate-500">Default: /images/jtaap-logo-v2.png</span>
-                  </div>
-                  <input
-                    type="text"
-                    id="cfg-logo-url"
-                    value={journalConfig.branding?.logoUrl || '/images/jtaap-logo-v2.png'}
-                    placeholder="/images/jtaap-logo-v2.png atau https://cdn.../logo.png"
-                    class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white font-mono"
-                  />
-                  <!-- Preview Box Logo -->
-                  <div class="mt-2 p-2 bg-white border border-slate-200 rounded flex items-center gap-3">
-                    <div class="h-10 w-24 bg-slate-100 border border-slate-200 rounded flex items-center justify-center p-1 shrink-0 overflow-hidden">
-                      <img
-                        id="preview-logo-img"
-                        src={journalConfig.branding?.logoUrl || '/images/jtaap-logo-v2.png'}
-                        alt="Pratinjau Logo"
-                        class="max-h-full max-w-full object-contain"
-                        onerror="this.src='/images/jtaap-logo-v2.png'"
-                      />
+              <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- 1. Logo Jurnal -->
+                  <div class="bg-slate-50 p-4 rounded border border-slate-200 flex flex-col justify-between">
+                    <div>
+                      <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-academic-navy text-xs">Logo Jurnal (Header)</span>
+                        <span id="status-logo-file" class="text-[11px] text-slate-500">
+                          {journalConfig.branding?.logoUrl?.startsWith('data:') ? '✓ Menggunakan berkas custom' : 'Default sistem'}
+                        </span>
+                      </div>
+
+                      <!-- Pratinjau Logo -->
+                      <div class="h-20 bg-white border border-slate-200 rounded flex items-center justify-center p-2 mb-3 overflow-hidden">
+                        <img
+                          id="preview-logo-img"
+                          src={journalConfig.branding?.logoUrl || '/images/jtaap-logo-v2.png'}
+                          alt="Pratinjau Logo"
+                          class="max-h-full max-w-full object-contain"
+                          onerror="this.src='/images/jtaap-logo-v2.png'"
+                        />
+                      </div>
                     </div>
-                    <span class="text-[11px] text-slate-500 leading-tight">
-                      Pratinjau logo header. Mendukung path lokal repositori atau tautan URL CDN eksternal.
-                    </span>
+
+                    <div class="space-y-2">
+                      <div class="flex items-center gap-2">
+                        <input
+                          type="file"
+                          id="upload-logo-file"
+                          accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                          class="hidden"
+                        />
+                        <label
+                          for="upload-logo-file"
+                          class="flex-1 cursor-pointer py-2 px-3 bg-white hover:bg-slate-100 border border-slate-300 rounded text-center text-xs font-semibold text-academic-navy shadow-2xs transition-colors flex items-center justify-center gap-1.5"
+                        >
+                          <svg class="w-3.5 h-3.5 text-academic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                          </svg>
+                          <span>Pilih Berkas Logo</span>
+                        </label>
+                        <button
+                          type="button"
+                          id="btn-reset-logo"
+                          class="px-2.5 py-2 text-xs text-slate-500 hover:text-rose-600 bg-white border border-slate-300 rounded transition-colors"
+                          title="Kembalikan ke logo bawaan"
+                        >
+                          Reset
+                        </button>
+                      </div>
+
+                      <!-- Input tersimpan / manual -->
+                      <details class="text-[11px] text-slate-500">
+                        <summary class="cursor-pointer hover:underline text-slate-600">Opsi tautan manual / data URL</summary>
+                        <input
+                          type="text"
+                          id="cfg-logo-url"
+                          value={journalConfig.branding?.logoUrl || '/images/jtaap-logo-v2.png'}
+                          class="w-full mt-1 px-2 py-1 border border-slate-300 rounded font-mono text-[10px] bg-white"
+                        />
+                      </details>
+                    </div>
+                  </div>
+
+                  <!-- 2. Favicon Jurnal -->
+                  <div class="bg-slate-50 p-4 rounded border border-slate-200 flex flex-col justify-between">
+                    <div>
+                      <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-academic-navy text-xs">Favicon Jurnal (Tab Browser)</span>
+                        <span id="status-favicon-file" class="text-[11px] text-slate-500">
+                          {journalConfig.branding?.faviconUrl?.startsWith('data:') ? '✓ Menggunakan berkas custom' : 'Default sistem'}
+                        </span>
+                      </div>
+
+                      <!-- Pratinjau Favicon -->
+                      <div class="h-20 bg-white border border-slate-200 rounded flex items-center justify-center p-2 mb-3">
+                        <div class="w-12 h-12 bg-slate-100 rounded border border-slate-200 flex items-center justify-center overflow-hidden shadow-2xs">
+                          <img
+                            id="preview-favicon-img"
+                            src={journalConfig.branding?.faviconUrl || '/favicon.png'}
+                            alt="Pratinjau Favicon"
+                            class="w-8 h-8 object-contain"
+                            onerror="this.src='/favicon.png'"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="space-y-2">
+                      <div class="flex items-center gap-2">
+                        <input
+                          type="file"
+                          id="upload-favicon-file"
+                          accept="image/x-icon,image/png,image/svg+xml"
+                          class="hidden"
+                        />
+                        <label
+                          for="upload-favicon-file"
+                          class="flex-1 cursor-pointer py-2 px-3 bg-white hover:bg-slate-100 border border-slate-300 rounded text-center text-xs font-semibold text-academic-navy shadow-2xs transition-colors flex items-center justify-center gap-1.5"
+                        >
+                          <svg class="w-3.5 h-3.5 text-academic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                          </svg>
+                          <span>Pilih Berkas Favicon</span>
+                        </label>
+                        <button
+                          type="button"
+                          id="btn-reset-fav"
+                          class="px-2.5 py-2 text-xs text-slate-500 hover:text-rose-600 bg-white border border-slate-300 rounded transition-colors"
+                          title="Kembalikan ke favicon bawaan"
+                        >
+                          Reset
+                        </button>
+                      </div>
+
+                      <details class="text-[11px] text-slate-500">
+                        <summary class="cursor-pointer hover:underline text-slate-600">Opsi tautan manual / data URL</summary>
+                        <input
+                          type="text"
+                          id="cfg-favicon-url"
+                          value={journalConfig.branding?.faviconUrl || '/favicon.png'}
+                          class="w-full mt-1 px-2 py-1 border border-slate-300 rounded font-mono text-[10px] bg-white"
+                        />
+                      </details>
+                    </div>
                   </div>
                 </div>
 
-                <!-- 2. Favicon Jurnal -->
-                <div>
-                  <div class="flex items-center justify-between mb-1">
-                    <label for="cfg-favicon-url" class="font-semibold text-academic-navy">
-                      URL / Path Favicon (Tab Browser)
-                    </label>
-                    <span class="text-[11px] text-slate-500">Default: /favicon.png</span>
-                  </div>
-                  <input
-                    type="text"
-                    id="cfg-favicon-url"
-                    value={journalConfig.branding?.faviconUrl || '/favicon.png'}
-                    placeholder="/favicon.png atau https://cdn.../favicon.png"
-                    class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white font-mono"
-                  />
-                  <!-- Preview Box Favicon -->
-                  <div class="mt-2 p-2 bg-white border border-slate-200 rounded flex items-center gap-3">
-                    <div class="w-10 h-10 bg-slate-100 border border-slate-200 rounded flex items-center justify-center p-1 shrink-0 overflow-hidden">
-                      <img
-                        id="preview-favicon-img"
-                        src={journalConfig.branding?.faviconUrl || '/favicon.png'}
-                        alt="Pratinjau Favicon"
-                        class="w-6 h-6 object-contain"
-                        onerror="this.src='/favicon.png'"
-                      />
+                <!-- 3. Template Manuskrip Word (.docx) -->
+                <div class="bg-slate-50 p-4 rounded border border-slate-200">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 mb-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-11 bg-white border border-slate-300 rounded flex flex-col items-center justify-between p-1 shrink-0 shadow-2xs">
+                        <svg class="w-5 h-5 text-blue-700" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                        </svg>
+                        <span class="text-[8px] font-bold font-mono text-blue-800 bg-blue-50 px-1 rounded-2xs">DOCX</span>
+                      </div>
+                      <div>
+                        <span class="font-bold text-academic-navy text-sm block">
+                          Berkas Template Manuskrip Word (.docx)
+                        </span>
+                        <span id="status-template-file" class="text-xs text-slate-600 block mt-0.5">
+                          {journalConfig.branding?.templateUrl?.startsWith('data:') ? '✓ Berkas kustom tersimpan di database' : 'Berkas bawaan sistem (/template-jtaap.docx)'}
+                        </span>
+                      </div>
                     </div>
-                    <span class="text-[11px] text-slate-500 leading-tight">
-                      Pratinjau favicon peramban. Format PNG, SVG, atau ICO disarankan.
-                    </span>
-                  </div>
-                </div>
 
-                <!-- 3. Template Manuskrip Word -->
-                <div class="md:col-span-2">
-                  <div class="flex items-center justify-between mb-1">
-                    <label for="cfg-template-url" class="font-semibold text-academic-navy">
-                      URL Berkas Unduhan Template Manuskrip (.docx)
-                    </label>
-                    <span class="text-[11px] text-slate-500">Default: /template-jtaap.docx</span>
+                    <div class="flex items-center gap-2 shrink-0">
+                      <input
+                        type="file"
+                        id="upload-template-file"
+                        accept=".docx,.doc"
+                        class="hidden"
+                      />
+                      <label
+                        for="upload-template-file"
+                        class="cursor-pointer py-2 px-3.5 bg-academic-navy hover:bg-academic-navy-light text-white rounded text-xs font-bold shadow-2xs transition-colors flex items-center gap-1.5"
+                      >
+                        <svg class="w-4 h-4 text-academic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        <span>Unggah File .docx Baru</span>
+                      </label>
+                      <a
+                        id="preview-template-btn"
+                        href="/api/template"
+                        target="_blank"
+                        class="py-2 px-3 bg-white hover:bg-slate-100 text-slate-700 rounded text-xs font-semibold border border-slate-300 shadow-2xs flex items-center gap-1.5 transition-colors"
+                        title="Unduh dan uji berkas template aktif saat ini"
+                      >
+                        <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span>Unduh Berkas Aktif</span>
+                      </a>
+                    </div>
                   </div>
-                  <div class="flex gap-2">
-                    <input
-                      type="text"
-                      id="cfg-template-url"
-                      value={journalConfig.branding?.templateUrl || '/template-jtaap.docx'}
-                      placeholder="/template-jtaap.docx atau https://cdn.example.com/one/Template.docx"
-                      class="flex-grow px-3 py-2 border border-slate-300 rounded text-xs bg-white font-mono"
-                    />
-                    <a
-                      id="preview-template-btn"
-                      href={journalConfig.branding?.templateUrl || '/template-jtaap.docx'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded shrink-0 flex items-center gap-1.5 transition-colors"
-                      title="Uji coba buka/unduh berkas template"
-                    >
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                      <span>Uji Tautan</span>
-                    </a>
+
+                  <div class="flex items-center justify-between text-[11px] text-slate-500">
+                    <p>
+                      Berkas yang diunggah akan otomatis disimpan langsung di database dan disajikan saat pembaca mengklik tombol "Unduh Template (.docx)" di Sidebar, Guidelines, atau Submit.
+                    </p>
+                    <details class="text-[11px] text-slate-500 shrink-0 ml-4">
+                      <summary class="cursor-pointer hover:underline text-slate-600">Tautan manual</summary>
+                      <input
+                        type="text"
+                        id="cfg-template-url"
+                        value={journalConfig.branding?.templateUrl || '/template-jtaap.docx'}
+                        class="mt-1 px-2 py-1 border border-slate-300 rounded font-mono text-[10px] bg-white w-64"
+                      />
+                    </details>
                   </div>
-                  <p class="text-[11px] text-slate-500 mt-1">
-                    Tautan ini digunakan otomatis pada seluruh tombol "Unduh Template (.docx)" di Sidebar, Author Guidelines, dan Online Submission. Anda bisa memasukkan tautan langsung dari Cloudflare Worker CDN (contoh: <code>https://cdn.example.com/one/Template_Naskah.docx?download=true</code>).
-                  </p>
                 </div>
               </div>
             </div>
@@ -2403,23 +2498,118 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     });
   });
 
-  // Live Preview & Simpan Profil & Identitas Jurnal
+  // Live Preview, Unggah Berkas Langsung & Simpan Profil Jurnal
   const inputLogo = document.getElementById('cfg-logo-url') as HTMLInputElement;
   const imgLogo = document.getElementById('preview-logo-img') as HTMLImageElement;
+  const fileLogo = document.getElementById('upload-logo-file') as HTMLInputElement;
+  const statusLogo = document.getElementById('status-logo-file');
+  const btnResetLogo = document.getElementById('btn-reset-logo');
+
+  fileLogo?.addEventListener('change', () => {
+    const file = fileLogo.files?.[0];
+    if (!file) return;
+    if (file.size > 1.5 * 1024 * 1024) {
+      alert('Ukuran berkas logo terlalu besar (maksimal 1.5 MB).');
+      fileLogo.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      if (inputLogo) inputLogo.value = result;
+      if (imgLogo) imgLogo.src = result;
+      if (statusLogo) {
+        statusLogo.textContent = `✓ Berkas baru: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+        statusLogo.className = 'text-[11px] font-semibold text-emerald-700';
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  btnResetLogo?.addEventListener('click', () => {
+    if (inputLogo) inputLogo.value = '/images/jtaap-logo-v2.png';
+    if (imgLogo) imgLogo.src = '/images/jtaap-logo-v2.png';
+    if (fileLogo) fileLogo.value = '';
+    if (statusLogo) {
+      statusLogo.textContent = 'Kembali ke default sistem';
+      statusLogo.className = 'text-[11px] text-slate-500';
+    }
+  });
+
   inputLogo?.addEventListener('input', () => {
     if (imgLogo) imgLogo.src = inputLogo.value.trim() || '/images/jtaap-logo-v2.png';
   });
 
   const inputFav = document.getElementById('cfg-favicon-url') as HTMLInputElement;
   const imgFav = document.getElementById('preview-favicon-img') as HTMLImageElement;
+  const fileFav = document.getElementById('upload-favicon-file') as HTMLInputElement;
+  const statusFav = document.getElementById('status-favicon-file');
+  const btnResetFav = document.getElementById('btn-reset-fav');
+
+  fileFav?.addEventListener('change', () => {
+    const file = fileFav.files?.[0];
+    if (!file) return;
+    if (file.size > 1 * 1024 * 1024) {
+      alert('Ukuran berkas favicon terlalu besar (maksimal 1 MB).');
+      fileFav.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      if (inputFav) inputFav.value = result;
+      if (imgFav) imgFav.src = result;
+      if (statusFav) {
+        statusFav.textContent = `✓ Favicon baru: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+        statusFav.className = 'text-[11px] font-semibold text-emerald-700';
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  btnResetFav?.addEventListener('click', () => {
+    if (inputFav) inputFav.value = '/favicon.png';
+    if (imgFav) imgFav.src = '/favicon.png';
+    if (fileFav) fileFav.value = '';
+    if (statusFav) {
+      statusFav.textContent = 'Kembali ke default sistem';
+      statusFav.className = 'text-[11px] text-slate-500';
+    }
+  });
+
   inputFav?.addEventListener('input', () => {
     if (imgFav) imgFav.src = inputFav.value.trim() || '/favicon.png';
   });
 
   const inputTpl = document.getElementById('cfg-template-url') as HTMLInputElement;
   const btnTpl = document.getElementById('preview-template-btn') as HTMLAnchorElement;
+  const fileTpl = document.getElementById('upload-template-file') as HTMLInputElement;
+  const statusTpl = document.getElementById('status-template-file');
+
+  fileTpl?.addEventListener('change', () => {
+    const file = fileTpl.files?.[0];
+    if (!file) return;
+    if (file.size > 2.5 * 1024 * 1024) {
+      alert('Ukuran berkas template terlalu besar (maksimal 2.5 MB).');
+      fileTpl.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      if (inputTpl) inputTpl.value = result;
+      if (statusTpl) {
+        statusTpl.textContent = `✓ Berkas baru dipilih: ${file.name} (${Math.round(file.size / 1024)} KB) - klik "Simpan Profil Jurnal"`;
+        statusTpl.className = 'text-xs font-bold text-emerald-700';
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
   inputTpl?.addEventListener('input', () => {
-    if (btnTpl) btnTpl.href = inputTpl.value.trim() || '/template-jtaap.docx';
+    if (btnTpl && !inputTpl.value.startsWith('data:')) {
+      btnTpl.href = inputTpl.value.trim() || '/api/template';
+    }
   });
 
   const formProfile = document.getElementById('form-profile-settings');
