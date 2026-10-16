@@ -213,38 +213,42 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
         Indexed by :
       </div>
       <div class="p-3 bg-white space-y-2.5">
-        {sidebarIndexers.map((idx) => (
-          <a
-            href={idx.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block p-2 border border-slate-200 hover:border-slate-400 bg-white text-center rounded-xs transition-colors"
-            title={`Kunjungi ${idx.name}`}
-          >
-            {idx.name === 'Google Scholar' ? (
-              <span class="font-bold text-sm tracking-wide">
-                <span class="text-blue-600">G</span><span class="text-red-500">o</span><span class="text-amber-500">o</span><span class="text-blue-600">g</span><span class="text-emerald-500">l</span><span class="text-red-500">e</span>
-                <span class="text-slate-600 font-serif italic ml-1">Scholar</span>
-              </span>
-            ) : idx.name.includes('Garuda') ? (
-              <span class="font-bold text-xs tracking-wider text-red-700">
-                GARUDA <span class="text-[10px] text-slate-500 font-normal">(Garba Rujukan Digital)</span>
-              </span>
-            ) : idx.name.includes('Crossref') ? (
-              <span class="font-bold text-xs tracking-wide text-slate-800">
-                Crossref <span class="text-[10px] text-slate-500 font-mono font-normal">DOI Member</span>
-              </span>
-            ) : (
-              <span class="font-bold text-xs tracking-wide text-cyan-800">
-                {idx.name}
-              </span>
-            )}
-          </a>
-        ))}
+        {sidebarIndexers.length > 0 ? (
+          sidebarIndexers.map((idx) => (
+            <a
+              href={idx.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block p-2 border border-slate-200 hover:border-slate-400 bg-white text-center rounded-xs transition-colors"
+              title={`Kunjungi ${idx.name}`}
+            >
+              {idx.name === 'Google Scholar' ? (
+                <span class="font-bold text-sm tracking-wide">
+                  <span class="text-blue-600">G</span><span class="text-red-500">o</span><span class="text-amber-500">o</span><span class="text-blue-600">g</span><span class="text-emerald-500">l</span><span class="text-red-500">e</span>
+                  <span class="text-slate-600 font-serif italic ml-1">Scholar</span>
+                </span>
+              ) : idx.name.includes('Garuda') ? (
+                <span class="font-bold text-xs tracking-wider text-red-700">
+                  GARUDA <span class="text-[10px] text-slate-500 font-normal">(Garba Rujukan Digital)</span>
+                </span>
+              ) : idx.name.includes('Crossref') ? (
+                <span class="font-bold text-xs tracking-wide text-slate-800">
+                  Crossref <span class="text-[10px] text-slate-500 font-mono font-normal">DOI Member</span>
+                </span>
+              ) : (
+                <span class="font-bold text-xs tracking-wide text-cyan-800">
+                  {idx.name}
+                </span>
+              )}
+            </a>
+          ))
+        ) : (
+          <p class="text-xs text-slate-500 italic text-center py-2">Belum ada pengindeks yang diaktifkan.</p>
+        )}
 
         <div class="pt-1 text-center">
           <a href="/indexing" class="text-[11px] text-blue-700 hover:underline font-medium">
-            Lihat Seluruh Pengindeks ({journalConfig.indexing.length})
+            Lihat Seluruh Pengindeks ({sidebarIndexers.length})
           </a>
         </div>
       </div>

@@ -305,7 +305,7 @@ export async function getDbArticles(d1?: any): Promise<Article[]> {
   if (db) {
     try {
       const { results } = await db.prepare('SELECT * FROM articles ORDER BY publish_date DESC').all();
-      if (results && Array.isArray(results) && results.length > 0) {
+      if (results && Array.isArray(results)) {
         return results.map((r: any) => {
           let authors = [];
           let keywords = [];
@@ -455,8 +455,15 @@ export async function getDbEditorial(d1?: any): Promise<{
   if (db) {
     try {
       const { results } = await db.prepare('SELECT * FROM editorial_members ORDER BY sort_order ASC').all();
-      if (results && Array.isArray(results) && results.length > 0) {
-        const eic = results.find((m: any) => m.type === 'eic') || memoryStore.editorial.editorInChief;
+      if (results && Array.isArray(results)) {
+        if (results.length === 0) {
+          return {
+            editorInChief: { name: '', affiliation: '', email: '' },
+            editors: [],
+            reviewers: [],
+          };
+        }
+        const eic = results.find((m: any) => m.type === 'eic') || { name: '', affiliation: '', email: '' };
         const editors = results.filter((m: any) => m.type === 'editor');
         const reviewers = results.filter((m: any) => m.type === 'reviewer');
         return {
@@ -539,7 +546,7 @@ export async function getDbIndexing(d1?: any): Promise<IndexingPlatform[]> {
   if (db) {
     try {
       const { results } = await db.prepare('SELECT * FROM indexing_platforms ORDER BY sort_order ASC').all();
-      if (results && Array.isArray(results) && results.length > 0) {
+      if (results && Array.isArray(results)) {
         return results.map((r: any) => ({
           name: r.name,
           category: r.category,
@@ -583,6 +590,59 @@ export async function updateDbIndexingPlatform(data: { name: string; url?: strin
       }
     } catch (e) {
       console.warn('D1 update indexing error:', e);
+    }
+  }
+}
+
+export async function addDbIndexingPlatform(platform: {
+  name: string;
+  category?: string;
+  url: string;
+  status?: string;
+  description?: string;
+  showInSidebar?: boolean;
+}, d1?: any): Promise<void> {
+  const id = `idx-${Date.now()}`;
+  const category = platform.category || 'International';
+  const status = platform.status || 'Indexed';
+  const description = platform.description || `Pangkalan data pengindeks ${platform.name}.`;
+  const showInSidebar = platform.showInSidebar !== undefined ? Boolean(platform.showInSidebar) : true;
+  const sortOrder = memoryStore.indexing.length + 1;
+
+  memoryStore.indexing.push({
+    name: platform.name,
+    category,
+    url: platform.url,
+    logoText: platform.name,
+    status,
+    description,
+    showInSidebar,
+  });
+
+  const db = d1 || globalD1Instance;
+  if (db) {
+    try {
+      await db.prepare(`
+        INSERT OR REPLACE INTO indexing_platforms (id, name, category, url, status, description, show_in_sidebar, sort_order)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        id, platform.name, category, platform.url, status, description, showInSidebar ? 1 : 0, sortOrder
+      ).run();
+    } catch (e) {
+      console.warn('D1 add indexing platform error:', e);
+    }
+  }
+}
+
+export async function deleteDbIndexingPlatform(name: string, d1?: any): Promise<void> {
+  memoryStore.indexing = memoryStore.indexing.filter((i) => i.name !== name);
+
+  const db = d1 || globalD1Instance;
+  if (db) {
+    try {
+      await db.prepare('DELETE FROM indexing_platforms WHERE name = ?').bind(name).run();
+    } catch (e) {
+      console.warn('D1 delete indexing platform error:', e);
     }
   }
 }

@@ -30,17 +30,25 @@ const { editorInChief, editors, reviewers } = await getDbEditorial(d1);
           <h2 class="text-xl sm:text-2xl font-serif font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
             Editor-in-Chief
           </h2>
-          <div class="p-6 bg-white border border-slate-200 rounded shadow-2xs space-y-1.5">
-            <h3 class="text-lg sm:text-xl font-bold text-slate-900">
-              {editorInChief.name}
-            </h3>
-            <p class="text-base text-slate-700">
-              {editorInChief.affiliation}
-            </p>
-            <p class="text-sm text-slate-600 font-mono pt-1">
-              Email: <a href={`mailto:${editorInChief.email}`} class="text-academic-teal hover:underline font-semibold">{editorInChief.email}</a>
-            </p>
-          </div>
+          {editorInChief && editorInChief.name ? (
+            <div class="p-6 bg-white border border-slate-200 rounded shadow-2xs space-y-1.5">
+              <h3 class="text-lg sm:text-xl font-bold text-slate-900">
+                {editorInChief.name}
+              </h3>
+              <p class="text-base text-slate-700">
+                {editorInChief.affiliation}
+              </p>
+              {editorInChief.email && (
+                <p class="text-sm text-slate-600 font-mono pt-1">
+                  Email: <a href={`mailto:${editorInChief.email}`} class="text-academic-teal hover:underline font-semibold">{editorInChief.email}</a>
+                </p>
+              )}
+            </div>
+          ) : (
+            <div class="p-6 bg-slate-50 border border-dashed border-slate-300 rounded text-sm text-slate-500 italic">
+              Data Editor-in-Chief belum diatur. Dewan redaksi dapat dikonfigurasi melalui panel admin.
+            </div>
+          )}
         </div>
 
         <!-- Managing & Associate Editors -->
@@ -48,21 +56,27 @@ const { editorInChief, editors, reviewers } = await getDbEditorial(d1);
           <h2 class="text-xl sm:text-2xl font-serif font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
             Managing & Section Editors
           </h2>
-          <div class="space-y-3.5">
-            {editors.map((editor) => (
-              <div class="p-5 bg-white border border-slate-200 rounded shadow-2xs space-y-1">
-                <h3 class="text-base sm:text-lg font-bold text-slate-900">
-                  {editor.name}
-                </h3>
-                <p class="text-sm sm:text-base text-academic-teal font-semibold">
-                  {editor.role}
-                </p>
-                <p class="text-base text-slate-700">
-                  {editor.affiliation}
-                </p>
-              </div>
-            ))}
-          </div>
+          {editors.length > 0 ? (
+            <div class="space-y-3.5">
+              {editors.map((editor) => (
+                <div class="p-5 bg-white border border-slate-200 rounded shadow-2xs space-y-1">
+                  <h3 class="text-base sm:text-lg font-bold text-slate-900">
+                    {editor.name}
+                  </h3>
+                  <p class="text-sm sm:text-base text-academic-teal font-semibold">
+                    {editor.role}
+                  </p>
+                  <p class="text-base text-slate-700">
+                    {editor.affiliation}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div class="p-6 bg-slate-50 border border-dashed border-slate-300 rounded text-sm text-slate-500 italic">
+              Belum ada managing atau section editor yang didaftarkan.
+            </div>
+          )}
         </div>
 
         <!-- Peer Reviewers / Mitra Bestari -->
@@ -70,18 +84,24 @@ const { editorInChief, editors, reviewers } = await getDbEditorial(d1);
           <h2 class="text-xl sm:text-2xl font-serif font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
             Peer Reviewers (Mitra Bestari)
           </h2>
-          <div class="space-y-3.5">
-            {reviewers.map((reviewer) => (
-              <div class="p-5 bg-slate-50 border border-slate-200 rounded space-y-1">
-                <h3 class="text-base sm:text-lg font-bold text-slate-900">
-                  {reviewer.name}
-                </h3>
-                <p class="text-base text-slate-700">
-                  {reviewer.affiliation}
-                </p>
-              </div>
-            ))}
-          </div>
+          {reviewers.length > 0 ? (
+            <div class="space-y-3.5">
+              {reviewers.map((reviewer) => (
+                <div class="p-5 bg-slate-50 border border-slate-200 rounded space-y-1">
+                  <h3 class="text-base sm:text-lg font-bold text-slate-900">
+                    {reviewer.name}
+                  </h3>
+                  <p class="text-base text-slate-700">
+                    {reviewer.affiliation}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div class="p-6 bg-slate-50 border border-dashed border-slate-300 rounded text-sm text-slate-500 italic">
+              Belum ada mitra bestari (peer reviewers) yang didaftarkan.
+            </div>
+          )}
         </div>
       </main>
 

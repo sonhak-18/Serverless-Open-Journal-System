@@ -126,11 +126,18 @@ const issueDoiUrl = cleanPrefix.includes('/jtaap')
           </div>
 
           <!-- List Item Artikel OJS -->
-          <div class="divide-y divide-slate-200">
-            {displayArticles.map((article) => (
-              <ArticleItemOJS article={article} storage={journalConfig.storage} />
-            ))}
-          </div>
+          {displayArticles.length > 0 ? (
+            <div class="divide-y divide-slate-200">
+              {displayArticles.map((article) => (
+                <ArticleItemOJS article={article} storage={journalConfig.storage} />
+              ))}
+            </div>
+          ) : (
+            <div class="py-10 px-6 text-center border border-dashed border-slate-300 rounded bg-slate-50 text-slate-600 font-sans text-sm space-y-2">
+              <p class="font-medium text-academic-navy">Belum ada naskah terbit pada edisi ini.</p>
+              <p class="text-xs text-slate-500">Naskah yang telah lolos penelaahan sejawat (peer review) dan disetujui untuk publikasi akan tampil di bagian ini.</p>
+            </div>
+          )}
         </div>
       </main>
 

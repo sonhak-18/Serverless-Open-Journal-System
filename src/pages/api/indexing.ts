@@ -1,7 +1,7 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { updateDbIndexingPlatform, getDbIndexing } from '../../lib/db';
+import { updateDbIndexingPlatform, addDbIndexingPlatform, deleteDbIndexingPlatform, getDbIndexing } from '../../lib/db';
 import { invalidateJournalCache } from '../../lib/kv';
 
 export const POST: APIRoute = async ({ request, locals }) => {
@@ -10,17 +10,36 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const kv = (locals as any)?.runtime?.env?.KV;
 
     const body = await request.json();
-    const { name, showInSidebar, url } = body;
+    const { action, name, category, status, description, showInSidebar, url } = body;
 
-    if (!name) {
-      return new Response(JSON.stringify({ success: false, error: 'Nama pengindeks diperlukan' }), { status: 400 });
+    if (action === 'add') {
+      if (!name || !url) {
+        return new Response(JSON.stringify({ success: false, error: 'Nama pengindeks dan tautan URL wajib diisi' }), { status: 400 });
+      }
+      await addDbIndexingPlatform({
+        name,
+        category,
+        url,
+        status,
+        description,
+        showInSidebar: showInSidebar !== undefined ? Boolean(showInSidebar) : true,
+      }, d1);
+    } else if (action === 'delete') {
+      if (!name) {
+        return new Response(JSON.stringify({ success: false, error: 'Nama pengindeks diperlukan untuk menghapus' }), { status: 400 });
+      }
+      await deleteDbIndexingPlatform(name, d1);
+    } else {
+      // Default: update
+      if (!name) {
+        return new Response(JSON.stringify({ success: false, error: 'Nama pengindeks diperlukan' }), { status: 400 });
+      }
+      await updateDbIndexingPlatform({
+        name,
+        url,
+        showInSidebar: showInSidebar !== undefined ? Boolean(showInSidebar) : undefined,
+      }, d1);
     }
-
-    await updateDbIndexingPlatform({
-      name,
-      url,
-      showInSidebar: showInSidebar !== undefined ? Boolean(showInSidebar) : undefined,
-    }, d1);
 
     await invalidateJournalCache(kv);
 

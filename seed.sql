@@ -59,49 +59,6 @@ INSERT OR REPLACE INTO editorial_members (id, type, name, role, affiliation, ema
 ('rev-2', 'reviewer', 'Dr. Siti Rahmawati, S.E., M.Ak.', NULL, 'Universitas Diponegoro', NULL, 6),
 ('rev-3', 'reviewer', 'Wahyu Pratama, S.E., M.Sc., Ph.D.', NULL, 'Universitas Airlangga', NULL, 7);
 
--- 4. Inisialisasi Artikel Terbit
-INSERT OR REPLACE INTO articles (
-  id, slug, title, authors_json, abstract, keywords_json,
-  volume, issue, year, pages, first_page, last_page,
-  publish_date, received_date, accepted_date, doi,
-  pdf_file_name, file_size_bytes, subject, abstract_views, pdf_downloads
-) VALUES
-(
-  'art-1',
-  'analisis-efektivitas-audit-berbasis-risiko-sektor-publik',
-  'Analisis Efektivitas Audit Berbasis Risiko dalam Mendeteksi Potensi Fraud Pengadaan Barang dan Jasa Pemerintah Daerah',
-  '[{"name":"Ahmad Faisal Pratama","affiliation":"Program Pascasarjana Akuntansi Sektor Publik, Universitas Gadjah Mada"},{"name":"Dr. Rina Kusuma Dewi","affiliation":"Departemen Akuntansi, Universitas Gadjah Mada"}]',
-  'Penelitian ini bertujuan untuk menguji efektivitas implementasi Risk-Based Internal Audit (RBIA) dalam memitigasi dan mendeteksi anomali pada proses pengadaan barang dan jasa pada lima pemerintah daerah di Pulau Jawa. Menggunakan pendekatan kualitatif-verifikatif dengan teknik audit forensik data analitik, penelitian menemukan bahwa penilaian risiko yang dinamis pada tahap perencanaan pengadaan berhasil meningkatkan rasio deteksi potensi korupsi pengadaan hingga 34%. Hasil penelitian menyarankan standarisasi sistem continuous auditing dan peningkatan kapabilitas auditor internal aparat pengawasan intern pemerintah (APIP).',
-  '["Audit Berbasis Risiko","Fraud","Pengadaan Barang dan Jasa","APIP","Akuntansi Sektor Publik"]',
-  1, 1, 2026, '1-14', 1, 14,
-  '2026-03-30', '2026-02-14', '2026-03-20',
-  'https://doi.org/10.00000/jtaap.v1i1.1',
-  'jtaap-v1n1-01-faisal-audit-risiko.pdf',
-  452000, 'Audit', 380, 145
-),
-(
-  'art-2',
-  'dampak-implementasi-coretax-administration-system-kepatuhan-wajib-pajak-badan',
-  'Dampak Kesiapan Implementasi Core Tax Administration System (CTAS) terhadap Kepatuhan Sukarela Wajib Pajak Badan',
-  '[{"name":"Dian Anggraini","affiliation":"Fakultas Ekonomi dan Bisnis, Universitas Indonesia"},{"name":"Prof. Irwan Syahputra","affiliation":"Pusat Studi Perpajakan Nasional, Universitas Indonesia"}]',
-  'Pembaruan Sistem Inti Administrasi Perpajakan (PSIAP) atau Core Tax Administration System menjadi tonggak digitalisasi perpajakan di Indonesia. Studi empiris ini menganalisis tingkat kesiapan korporasi dan pengaruh interoperabilitas platform terhadap voluntary compliance wajib pajak badan. Melalui survei struktural terhadap 184 manajer pajak perusahaan manufaktur dan jasa di wilayah Jakarta, temuan menunjukkan bahwa perceived ease of use dan transparansi rekonsiliasi faktur pajak digital berkorelasi positif signifikan terhadap niat kepatuhan sukarela. Implikasi penelitian mendorong peningkatan edukasi teknis integrasi API sistem akuntansi internal perusahaan dengan server Direktorat Jenderal Pajak.',
-  '["Core Tax System","Kepatuhan Sukarela","Wajib Pajak Badan","Digitalisasi Pajak","Akuntansi Perpajakan"]',
-  1, 1, 2026, '15-28', 15, 28,
-  '2026-03-30', '2026-02-18', '2026-03-22',
-  'https://doi.org/10.00000/jtaap.v1i1.2',
-  'jtaap-v1n1-02-dian-coretax-kepatuhan.pdf',
-  518000, 'Pajak', 420, 168
-),
-(
-  'art-3',
-  'pengaruh-pengungkapan-esg-terhadap-kualitas-laba-dan-biaya-modal',
-  'Pengaruh Pengungkapan Environmental, Social, and Governance (ESG) terhadap Kualitas Laba Akuntansi dan Biaya Modal Ekuitas',
-  '[{"name":"Rian Aditya Nugroho","affiliation":"Jurusan Akuntansi, Universitas Diponegoro"},{"name":"Dr. Maya Indraswari","affiliation":"Jurusan Akuntansi, Universitas Diponegoro"}]',
-  'Transparansi laporan keberlanjutan kian menjadi fokus utama pemangku kepentingan pasar modal. Riset ini mengeksplorasi hubungan antara skor pengungkapan ESG (Environmental, Social, Governance) terhadap kualitas laba yang diukur melalui discretionary accruals, serta dampaknya terhadap cost of equity capital pada perusahaan indeks LQ45 periode 2022-2025. Hasil regresi data panel fixed effects mengindikasikan bahwa keterbukaan informasi pilar tata kelola (governance) dan lingkungan (environmental) mampu menurunkan praktik perataan laba oportunistik, yang berimplikasi pada penurunan premi risiko yang diminta oleh investor.',
-  '["ESG Disclosure","Kualitas Laba","Biaya Modal Ekuitas","Sustainability Reporting","Tata Kelola Perusahaan"]',
-  1, 1, 2026, '29-44', 29, 44,
-  '2026-03-30', '2026-02-25', '2026-03-26',
-  'https://doi.org/10.00000/jtaap.v1i1.3',
-  'jtaap-v1n1-03-rian-kualitas-laba-esg.pdf',
-  488000, 'Akuntansi', 315, 112
-);
+-- 4. Inisialisasi Artikel Terbit (Kosong untuk Fresh Install dari Nol)
+-- Naskah artikel dapat ditambahkan langsung melalui Panel Admin (/admin).
+

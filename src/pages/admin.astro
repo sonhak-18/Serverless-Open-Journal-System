@@ -623,41 +623,48 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                   <th class="p-3 font-semibold text-right">Aksi</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-200">
-                {articles.map((item) => (
-                  <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="p-3 font-medium text-academic-navy max-w-xs truncate">
-                      {item.title}
-                    </td>
-                    <td class="p-3 text-slate-600">
-                      {item.authors.map(a => a.name).join(', ')}
-                    </td>
-                    <td class="p-3">
-                      <span class="academic-badge bg-slate-100 border text-slate-800">
-                        {item.subject}
-                      </span>
-                    </td>
-                    <td class="p-3 text-slate-600">
-                      Vol. {item.volume} No. {item.issue}
-                    </td>
-                    <td class="p-3 text-right space-x-2">
-                      <a
-                        href={`/article/${item.slug}`}
-                        target="_blank"
-                        class="text-blue-700 hover:underline font-semibold"
-                      >
-                        Buka
-                      </a>
-                      <button
-                        type="button"
-                        class="btn-delete-article text-red-600 hover:text-red-800 font-semibold"
-                        data-slug={item.slug}
-                      >
-                        Hapus
-                      </button>
+                {articles.length === 0 ? (
+                  <tr>
+                    <td colspan="5" class="p-8 text-center text-slate-500 italic bg-slate-50/50">
+                      Belum ada naskah terbit di database. Tambahkan artikel baru melalui tab "Tambah Artikel" di atas.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  articles.map((item) => (
+                    <tr class="hover:bg-slate-50 transition-colors">
+                      <td class="p-3 font-medium text-academic-navy max-w-xs truncate">
+                        {item.title}
+                      </td>
+                      <td class="p-3 text-slate-600">
+                        {item.authors.map(a => a.name).join(', ')}
+                      </td>
+                      <td class="p-3">
+                        <span class="academic-badge bg-slate-100 border text-slate-800">
+                          {item.subject}
+                        </span>
+                      </td>
+                      <td class="p-3 text-slate-600">
+                        Vol. {item.volume} No. {item.issue}
+                      </td>
+                      <td class="p-3 text-right space-x-2">
+                        <a
+                          href={`/article/${item.slug}`}
+                          target="_blank"
+                          class="text-blue-700 hover:underline font-semibold"
+                        >
+                          Buka
+                        </a>
+                        <button
+                          type="button"
+                          class="btn-delete-article text-red-600 hover:text-red-800 font-semibold"
+                          data-slug={item.slug}
+                        >
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -1542,7 +1549,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
 
           <!-- Tabel Status Pengindeks -->
           <div class="overflow-x-auto mb-6">
-            <table class="w-full text-xs text-left border-collapse">
+            <table id="table-indexing" class="w-full text-xs text-left border-collapse">
               <thead>
                 <tr class="bg-slate-100 text-slate-700 border-b border-slate-300">
                   <th class="p-2.5 font-semibold">Nama Pengindeks</th>
@@ -1550,54 +1557,167 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                   <th class="p-2.5 font-semibold">Status</th>
                   <th class="p-2.5 font-semibold text-center">Tampil di Sidebar</th>
                   <th class="p-2.5 font-semibold">Tautan URL</th>
+                  <th class="p-2.5 font-semibold text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
-                {indexing.map((idx) => (
-                  <tr class="hover:bg-slate-50">
-                    <td class="p-2.5 font-bold text-slate-900">{idx.name}</td>
-                    <td class="p-2.5 text-slate-600">{idx.category}</td>
-                    <td class="p-2.5">
-                      <span class={`text-[10px] font-bold px-2 py-0.5 rounded-xs uppercase ${
-                        idx.status === 'Indexed'
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : idx.status === 'In Process'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-amber-100 text-amber-800'
-                      }`}>
-                        {idx.status}
-                      </span>
-                    </td>
-                    <td class="p-2.5 text-center">
-                      <input
-                        type="checkbox"
-                        class="toggle-index-sidebar cursor-pointer"
-                        data-name={idx.name}
-                        checked={idx.showInSidebar}
-                      />
-                    </td>
-                    <td class="p-2.5">
-                      <div class="flex items-center gap-1.5 min-w-[280px]">
-                        <input
-                          type="url"
-                          value={idx.url}
-                          class="input-index-url w-full px-2.5 py-1 text-xs font-mono border border-slate-300 rounded focus:border-blue-600 outline-none"
-                          data-name={idx.name}
-                          placeholder="https://..."
-                        />
-                        <button
-                          type="button"
-                          class="btn-save-index-url shrink-0 px-3 py-1 bg-slate-700 hover:bg-slate-800 text-white text-[11px] font-semibold rounded transition-colors"
-                          data-name={idx.name}
-                        >
-                          Simpan
-                        </button>
-                      </div>
+                {indexing.length === 0 ? (
+                  <tr id="row-indexing-empty">
+                    <td colspan="6" class="p-8 text-center text-slate-500 italic bg-slate-50/50">
+                      Belum ada pangkalan data pengindeks di database. Gunakan formulir di bawah untuk menambahkan pengindeks baru.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  indexing.map((idx) => (
+                    <tr class="hover:bg-slate-50">
+                      <td class="p-2.5 font-bold text-slate-900">{idx.name}</td>
+                      <td class="p-2.5 text-slate-600">{idx.category}</td>
+                      <td class="p-2.5">
+                        <span class={`text-[10px] font-bold px-2 py-0.5 rounded-xs uppercase ${
+                          idx.status === 'Indexed'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : idx.status === 'In Process'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-amber-100 text-amber-800'
+                        }`}>
+                          {idx.status}
+                        </span>
+                      </td>
+                      <td class="p-2.5 text-center">
+                        <input
+                          type="checkbox"
+                          class="toggle-index-sidebar cursor-pointer"
+                          data-name={idx.name}
+                          checked={idx.showInSidebar}
+                        />
+                      </td>
+                      <td class="p-2.5">
+                        <div class="flex items-center gap-1.5 min-w-[260px]">
+                          <input
+                            type="url"
+                            value={idx.url}
+                            class="input-index-url w-full px-2.5 py-1 text-xs font-mono border border-slate-300 rounded focus:border-blue-600 outline-none"
+                            data-name={idx.name}
+                            placeholder="https://..."
+                          />
+                          <button
+                            type="button"
+                            class="btn-save-index-url shrink-0 px-3 py-1 bg-slate-700 hover:bg-slate-800 text-white text-[11px] font-semibold rounded transition-colors"
+                            data-name={idx.name}
+                          >
+                            Simpan
+                          </button>
+                        </div>
+                      </td>
+                      <td class="p-2.5 text-right">
+                        <button
+                          type="button"
+                          class="btn-delete-indexing text-red-600 hover:text-red-800 font-semibold text-xs px-2.5 py-1 rounded hover:bg-red-50 transition-colors"
+                          data-name={idx.name}
+                        >
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
+          </div>
+
+          <!-- Formulir Tambah Pangkalan Pengindeks Baru -->
+          <div class="pt-6 border-t border-slate-200">
+            <h3 class="text-sm font-bold text-academic-navy mb-1 flex items-center gap-2">
+              <span class="inline-block w-2.5 h-2.5 rounded-full bg-academic-gold"></span>
+              Tambah Pangkalan Pengindeks Baru
+            </h3>
+            <p class="text-xs text-slate-500 mb-4">
+              Daftarkan pengindeks baru (misal: Google Scholar, Garuda, SINTA, Crossref, DOAJ, Scopus, Dimension, BASE, Scilit).
+            </p>
+
+            <form id="form-add-indexing" class="space-y-4 bg-slate-50 p-4 rounded border border-slate-200">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Pengindeks *</label>
+                  <input
+                    type="text"
+                    id="new-idx-name"
+                    required
+                    placeholder="Contoh: Google Scholar"
+                    class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:border-academic-navy outline-none bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori *</label>
+                  <select
+                    id="new-idx-category"
+                    class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:border-academic-navy outline-none bg-white"
+                  >
+                    <option value="International">International</option>
+                    <option value="National">National</option>
+                    <option value="Institutional">Institutional</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Status Akreditasi / Indeks *</label>
+                  <select
+                    id="new-idx-status"
+                    class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:border-academic-navy outline-none bg-white"
+                  >
+                    <option value="Indexed">Indexed (Terindeks)</option>
+                    <option value="In Process">In Process (Dalam Proses)</option>
+                    <option value="Evaluation">Evaluation (Tahap Evaluasi)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan URL Resmi Pengindeks *</label>
+                  <input
+                    type="url"
+                    id="new-idx-url"
+                    required
+                    placeholder="https://scholar.google.com/citations?user=..."
+                    class="w-full px-3 py-2 text-xs font-mono border border-slate-300 rounded focus:border-academic-navy outline-none bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Deskripsi Singkat Pengindeks</label>
+                  <input
+                    type="text"
+                    id="new-idx-desc"
+                    placeholder="Contoh: Pangkalan data rujukan sitasi ilmiah internasional terbesar."
+                    class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:border-academic-navy outline-none bg-white"
+                  />
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-700">
+                  <input
+                    type="checkbox"
+                    id="new-idx-sidebar"
+                    checked
+                    class="rounded text-academic-navy focus:ring-0 cursor-pointer"
+                  />
+                  <span>Tampilkan langsung pada bilah samping (Sidebar) beranda</span>
+                </label>
+
+                <button
+                  type="submit"
+                  class="px-4 py-2 bg-academic-navy hover:bg-slate-800 text-white text-xs font-semibold rounded shadow-xs transition-colors flex items-center gap-1.5"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                  Simpan & Tambah Pengindeks
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -2926,6 +3046,90 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
         }
       } catch (err: any) {
         showToast('Gagal menyimpan URL: ' + err.message, true);
+      }
+    });
+  });
+
+  // 6b. Tambah Pengindeks Baru
+  const formAddIndexing = document.getElementById('form-add-indexing');
+  formAddIndexing?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = (document.getElementById('new-idx-name') as HTMLInputElement).value.trim();
+    const category = (document.getElementById('new-idx-category') as HTMLSelectElement).value;
+    const status = (document.getElementById('new-idx-status') as HTMLSelectElement).value;
+    const url = (document.getElementById('new-idx-url') as HTMLInputElement).value.trim();
+    const description = (document.getElementById('new-idx-desc') as HTMLInputElement).value.trim();
+    const showInSidebar = (document.getElementById('new-idx-sidebar') as HTMLInputElement).checked;
+
+    if (!name || !url) {
+      showToast('Nama pengindeks dan tautan URL wajib diisi!', true);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/indexing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'add',
+          name,
+          category,
+          status,
+          url,
+          description,
+          showInSidebar,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast(`✓ Berhasil menambahkan pangkalan pengindeks "${name}"!`);
+        setTimeout(() => window.location.reload(), 900);
+      } else {
+        showToast('Gagal menambahkan pengindeks: ' + json.error, true);
+      }
+    } catch (err: any) {
+      showToast('Gagal menambahkan pengindeks: ' + err.message, true);
+    }
+  });
+
+  // 6c. Hapus Pengindeks
+  document.querySelectorAll<HTMLButtonElement>('.btn-delete-indexing').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const name = btn.getAttribute('data-name');
+      if (!name) return;
+      if (!confirm(`Apakah Anda yakin ingin menghapus pengindeks "${name}" dari pangkalan data jurnal?`)) {
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/indexing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', name }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast(`✓ Pengindeks "${name}" berhasil dihapus.`);
+          const row = btn.closest('tr');
+          row?.remove();
+          const remainingRows = document.querySelectorAll('#table-indexing tbody tr');
+          if (remainingRows.length === 0) {
+            const tbody = document.querySelector('#table-indexing tbody');
+            if (tbody) {
+              tbody.innerHTML = `
+                <tr id="row-indexing-empty">
+                  <td colspan="6" class="p-8 text-center text-slate-500 italic bg-slate-50/50">
+                    Belum ada pangkalan data pengindeks di database. Gunakan formulir di bawah untuk menambahkan pengindeks baru.
+                  </td>
+                </tr>
+              `;
+            }
+          }
+        } else {
+          showToast('Gagal menghapus pengindeks: ' + json.error, true);
+        }
+      } catch (err: any) {
+        showToast('Gagal menghapus: ' + err.message, true);
       }
     });
   });
