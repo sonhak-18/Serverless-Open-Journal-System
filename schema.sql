@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS journal_settings (
   show_indexing_block INTEGER DEFAULT 1,
   show_tools_block INTEGER DEFAULT 1,
   show_issn_block INTEGER DEFAULT 1,
+  show_editorial_team INTEGER DEFAULT 1,
+  has_active_issue INTEGER DEFAULT 0,
   email TEXT NOT NULL,
   whatsapp_number TEXT NOT NULL,
   whatsapp_display TEXT NOT NULL,
@@ -91,4 +93,17 @@ CREATE TABLE IF NOT EXISTS indexing_platforms (
   show_in_sidebar INTEGER DEFAULT 1,
   sort_order INTEGER DEFAULT 0,
   icon_url TEXT
+);
+
+-- 5. Tabel Edisi & Terbitan (Volume / Issue Archives)
+CREATE TABLE IF NOT EXISTS journal_issues (
+  id TEXT PRIMARY KEY,
+  volume INTEGER NOT NULL,
+  issue INTEGER NOT NULL,
+  year INTEGER NOT NULL,
+  period TEXT NOT NULL,
+  theme TEXT,
+  cover_url TEXT DEFAULT '',
+  is_current INTEGER DEFAULT 0,
+  created_at TEXT NOT NULL
 );

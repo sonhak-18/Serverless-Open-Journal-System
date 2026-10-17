@@ -1,15 +1,20 @@
 ---
 import { getDbSettings, getDbIndexing } from '../lib/db';
+import { issnToEan13, generateEan13BarcodeSvgBars } from '../lib/issn';
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const journalConfig = await getDbSettings(d1);
 const indexingList = await getDbIndexing(d1);
 const waUrl = `https://wa.me/${journalConfig.submission.whatsappNumber}?text=${encodeURIComponent(journalConfig.submission.whatsappDefaultMessage)}`;
 
+const showEditorial = journalConfig.features?.showEditorialTeam !== false;
+
 const sidebarLinks = [
   { label: 'Focus and Scope', href: '/guidelines#focus-scope' },
-  { label: 'Editorial Team', href: '/editorial-team' },
-  { label: 'Peer Reviewers', href: '/editorial-team#reviewers' },
+  ...(showEditorial ? [
+    { label: 'Editorial Team', href: '/editorial-team' },
+    { label: 'Peer Reviewers', href: '/editorial-team#reviewers' },
+  ] : []),
   { label: 'Author Guidelines', href: '/guidelines#author-guidelines' },
   { label: 'Peer Review Process', href: '/guidelines#review-process' },
   { label: 'Publication Ethics', href: '/guidelines#ethics' },
@@ -17,6 +22,7 @@ const sidebarLinks = [
   { label: 'Journal Template', href: '/guidelines#template' },
   { label: 'Abstracting and Indexing', href: '/indexing' },
   { label: 'Online Submission', href: '/submit' },
+  { label: 'Search / Cari Artikel', href: '/search' },
 ];
 
 const sidebarIndexers = indexingList.filter((idx) => idx.showInSidebar);
@@ -38,6 +44,30 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
         </svg>
       </a>
     ))}
+  </div>
+
+  <!-- 1.5. Kotak Pencarian Cepat OJS -->
+  <div class="border border-slate-300 bg-white p-3 rounded-sm shadow-2xs">
+    <div class="text-xs font-bold text-slate-800 mb-2">
+      Pencarian Artikel:
+    </div>
+    <form action="/search" method="GET" class="flex gap-1.5">
+      <input
+        type="search"
+        name="query"
+        placeholder="Kata kunci, judul, penulis..."
+        class="flex-grow px-2.5 py-1.5 text-xs border border-slate-300 rounded-sm text-slate-800 focus:outline-none focus:border-[#16707a] bg-white"
+      />
+      <button
+        type="submit"
+        class="px-3 py-1.5 bg-[#0f284e] hover:bg-[#183e6d] text-white text-xs font-semibold rounded-sm transition-colors flex items-center justify-center cursor-pointer"
+        title="Cari"
+      >
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </button>
+    </form>
   </div>
 
   <!-- 2. Kotak Template Naskah (Modern Material Design Icon) -->
@@ -75,53 +105,52 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
     </a>
   </div>
 
-  <!-- 3. Kotak ISSN & Barcode -->
-  {journalConfig.features.showIssnBlock && (
-    <div class="border border-slate-300 bg-white rounded-sm overflow-hidden">
-      <div class="bg-[#0f284e] text-white text-xs font-bold py-1.5 px-3">
-        ISSN
+  <!-- 3. Kotak ISSN & Barcode Otentik EAN-13 (GS1 / ISO 3297) -->
+  {journalConfig.features.showIssnBlock && (() => {
+    const targetIssn = journalConfig.pIssn || journalConfig.eIssn || '2999-7119';
+    const { ean13, formatted: eanFormatted } = issnToEan13(targetIssn);
+    const { rects } = generateEan13BarcodeSvgBars(ean13);
+
+    return (
+      <div class="border border-slate-300 bg-white rounded-sm overflow-hidden shadow-2xs">
+        <div class="bg-[#0f284e] text-white text-xs font-bold py-1.5 px-3 flex items-center justify-between">
+          <span>ISSN</span>
+          <span class="text-[10px] font-medium text-slate-200 font-mono">ISO 3297</span>
+        </div>
+        <div class="p-3.5 text-center space-y-2.5">
+          <!-- e-ISSN Resmi (Teks murni tanpa link) -->
+          <div class="text-xs font-bold text-slate-800 flex items-center justify-center gap-1.5 flex-wrap">
+            <span class="text-slate-600 font-medium">e-ISSN:</span>
+            <span class="font-mono text-academic-navy bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+              {journalConfig.eIssn}
+            </span>
+            <span class="text-[10px] text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded font-semibold border border-emerald-200">Online</span>
+          </div>
+
+          <!-- Barcode SVG Otentik EAN-13 GS1 -->
+          <div class="inline-block p-2 bg-white border border-slate-200 rounded">
+            <svg class="h-14 w-44 mx-auto" viewBox="0 0 160 52" fill="currentColor">
+              {rects.map((r) => (
+                <rect x={r.x} y={r.y} width={r.width} height={r.height} />
+              ))}
+              <text x="80" y="48" font-size="10" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-weight="bold" letter-spacing="1.5">
+                {eanFormatted}
+              </text>
+            </svg>
+          </div>
+
+          <!-- p-ISSN Resmi (Teks murni tanpa link) -->
+          <div class="text-xs font-bold text-slate-800 flex items-center justify-center gap-1.5 flex-wrap">
+            <span class="text-slate-600 font-normal">p-ISSN:</span>
+            <span class="font-mono text-slate-800 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+              {journalConfig.pIssn}
+            </span>
+            <span class="text-[10px] text-blue-800 bg-blue-50 px-1.5 py-0.5 rounded font-semibold border border-blue-200">Print</span>
+          </div>
+        </div>
       </div>
-      <div class="p-4 text-center">
-        <div class="text-xs font-bold text-slate-700 mb-2">
-          e-ISSN: {journalConfig.eIssn}
-        </div>
-        <div class="inline-block p-2 bg-white border border-slate-200">
-          <svg class="h-12 w-44 mx-auto" viewBox="0 0 160 50" fill="currentColor">
-            <rect x="0" y="0" width="3" height="40" />
-            <rect x="5" y="0" width="2" height="40" />
-            <rect x="10" y="0" width="4" height="40" />
-            <rect x="17" y="0" width="2" height="40" />
-            <rect x="22" y="0" width="5" height="40" />
-            <rect x="30" y="0" width="2" height="40" />
-            <rect x="35" y="0" width="3" height="40" />
-            <rect x="41" y="0" width="4" height="40" />
-            <rect x="48" y="0" width="2" height="40" />
-            <rect x="53" y="0" width="3" height="40" />
-            <rect x="59" y="0" width="5" height="40" />
-            <rect x="67" y="0" width="2" height="40" />
-            <rect x="72" y="0" width="3" height="40" />
-            <rect x="78" y="0" width="4" height="40" />
-            <rect x="85" y="0" width="2" height="40" />
-            <rect x="90" y="0" width="4" height="40" />
-            <rect x="97" y="0" width="3" height="40" />
-            <rect x="103" y="0" width="2" height="40" />
-            <rect x="108" y="0" width="5" height="40" />
-            <rect x="116" y="0" width="3" height="40" />
-            <rect x="122" y="0" width="2" height="40" />
-            <rect x="127" y="0" width="4" height="40" />
-            <rect x="134" y="0" width="3" height="40" />
-            <rect x="140" y="0" width="2" height="40" />
-            <rect x="145" y="0" width="5" height="40" />
-            <rect x="153" y="0" width="3" height="40" />
-            <text x="80" y="49" font-size="9" text-anchor="middle" font-family="monospace">9 773048 289007</text>
-          </svg>
-        </div>
-        <div class="text-[11px] text-slate-500 mt-1">
-          p-ISSN: {journalConfig.pIssn}
-        </div>
-      </div>
-    </div>
-  )}
+    );
+  })()}
 
   <!-- 4. Kotak Tools Referensi & Penulisan -->
   {journalConfig.features.showToolsBlock && (

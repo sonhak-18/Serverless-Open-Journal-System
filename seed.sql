@@ -7,6 +7,7 @@ INSERT OR REPLACE INTO journal_settings (
   id, name, name_en, short_name, accredited_text, publisher, institution,
   address, e_issn, p_issn, doi_prefix, publication_frequency, license,
   license_url, show_indexing_block, show_tools_block, show_issn_block,
+  show_editorial_team, has_active_issue,
   email, whatsapp_number, whatsapp_display, whatsapp_message,
   turnitin_max_similarity, review_time_estimate, gdrive_base_url, pdf_directory_path,
   logo_url, favicon_url, template_url
@@ -19,13 +20,14 @@ INSERT OR REPLACE INTO journal_settings (
   'BN Organization',
   'Bawera Nitijana Research',
   'Jl. R.E. Martadinata No. 42, Bandung 40115, Jawa Barat, Indonesia',
-  '3048-289X',
-  '3048-2903',
+  '2999-7127',
+  '2999-7119',
   '10.00000',
   'Terbit 4 Kali Setahun (Maret, Juni, September, Desember)',
   'Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)',
   'https://creativecommons.org/licenses/by-sa/4.0/',
   1, 1, 1,
+  1, 0,
   'redaksi@sektansia.org',
   '6281234567890',
   '+62 812-3456-7890',
@@ -61,4 +63,8 @@ INSERT OR REPLACE INTO editorial_members (id, type, name, role, affiliation, ema
 
 -- 4. Inisialisasi Artikel Terbit (Kosong untuk Fresh Install dari Nol)
 -- Naskah artikel dapat ditambahkan langsung melalui Panel Admin (/admin).
+
+-- 5. Inisialisasi Edisi & Terbitan Perdana
+INSERT OR REPLACE INTO journal_issues (id, volume, issue, year, period, theme, cover_url, is_current, created_at) VALUES
+('issue-v1n1', 1, 1, 2026, 'Maret 2026', 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan', '', 1, '2026-03-01T00:00:00.000Z');
 

@@ -5,12 +5,14 @@ const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const journalConfig = await getDbSettings(d1);
 
 const pathname = Astro.url.pathname;
+const showEditorial = journalConfig.features?.showEditorialTeam !== false;
 
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/current', label: 'Current' },
   { href: '/archives', label: 'Archives' },
-  { href: '/editorial-team', label: 'Editorial Team' },
+  { href: '/search', label: 'Search' },
+  ...(showEditorial ? [{ href: '/editorial-team', label: 'Editorial Team' }] : []),
   { href: '/guidelines', label: 'Guidelines & Ethics' },
   { href: '/indexing', label: 'Abstracting & Indexing' },
   { href: '/submit', label: 'Submissions' },
@@ -27,6 +29,13 @@ const navLinks = [
         <span>{journalConfig.institution}</span>
       </div>
       <div class="flex items-center space-x-3 text-xs">
+        <a href="/search" class="hover:text-white transition-colors flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <span>Search</span>
+        </a>
+        <span class="text-slate-600">|</span>
         <a href="/submit" class="hover:text-white transition-colors">Submit Paper</a>
         <span class="text-slate-600">|</span>
         <a href="/admin" rel="nofollow" class="hover:text-white font-medium text-slate-200 transition-colors flex items-center gap-1">

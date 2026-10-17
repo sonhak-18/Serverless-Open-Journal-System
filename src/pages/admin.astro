@@ -2,13 +2,14 @@
 export const prerender = false;
 
 import Layout from '../layouts/Layout.astro';
-import { getDbSettings, getDbArticles, getDbEditorial, getDbIndexing } from '../lib/db';
+import { getDbSettings, getDbArticles, getDbEditorial, getDbIndexing, getDbIssues } from '../lib/db';
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const journalConfig = await getDbSettings(d1);
 const articles = await getDbArticles(d1);
 const editorial = await getDbEditorial(d1);
 const indexing = await getDbIndexing(d1);
+const issues = await getDbIssues(d1);
 
 const { editorInChief, editors, reviewers } = editorial;
 
@@ -159,7 +160,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
           class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px]"
           data-tab="tab-volume-settings"
         >
-          Edisi & Terbitan
+          Edisi & Terbitan ({issues.length})
         </button>
         <button
           type="button"
@@ -688,6 +689,20 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
             </a>
           </div>
 
+          <!-- Visibilitas Tab Tim Redaksi di Publik -->
+          <div class="bg-blue-50/80 border border-blue-200 rounded p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div>
+              <span class="font-bold text-academic-navy text-sm block">Visibilitas Publik Menu & Halaman Tim Redaksi:</span>
+              <p class="text-slate-600 mt-0.5">
+                Aktifkan opsi ini untuk menampilkan tab menu "Editorial Team" di bar navigasi utama, sidebar kanan OJS, serta kartu tautan publik JTAAP. Jika dinonaktifkan (misalnya struktur tim masih dalam tahap penataan), menu ini akan disembunyikan dari pengunjung publik.
+              </p>
+            </div>
+            <label class="flex items-center gap-2 cursor-pointer shrink-0 bg-white px-3.5 py-2 rounded border border-blue-300 font-semibold text-slate-800 shadow-2xs hover:bg-slate-50 transition-colors">
+              <input type="checkbox" id="toggle-editorial-team" checked={journalConfig.features.showEditorialTeam !== false} class="rounded text-blue-600 w-4 h-4 cursor-pointer" />
+              <span>Tampilkan di Publik</span>
+            </label>
+          </div>
+
           <!-- Section A: Pemimpin Redaksi (Editor-in-Chief) -->
           <div class="bg-slate-50 p-4 rounded border border-slate-200 space-y-3">
             <span class="font-serif font-bold text-sm text-academic-navy block">
@@ -959,6 +974,103 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
               </div>
             </div>
 
+            <!-- Organisasi, Penerbit & Legalitas ISSN -->
+            <div class="mt-6 pt-6 border-t border-slate-200">
+              <div class="mb-3">
+                <h3 class="text-sm font-bold text-academic-navy flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                  <span>Lembaga Penerbit, Afiliasi Riset & Legalitas ISSN</span>
+                </h3>
+                <p class="text-xs text-slate-500 mt-0.5">
+                  Informasi badan penerbit, alamat sekretariat, serta nomor identifikasi serial e-ISSN dan p-ISSN resmi.
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded border border-slate-200">
+                <div>
+                  <label for="cfg-org-name" class="block font-semibold text-academic-navy mb-1">
+                    Nama Organisasi / Komunitas Riset
+                  </label>
+                  <input
+                    type="text"
+                    id="cfg-org-name"
+                    value={journalConfig.institution}
+                    class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label for="cfg-pub-name" class="block font-semibold text-academic-navy mb-1">
+                    Penerbit (Publisher Press)
+                  </label>
+                  <input
+                    type="text"
+                    id="cfg-pub-name"
+                    value={journalConfig.publisher}
+                    class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white font-medium"
+                  />
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label for="cfg-address" class="block font-semibold text-academic-navy mb-1">
+                    Alamat Sekretariat Redaksi
+                  </label>
+                  <input
+                    type="text"
+                    id="cfg-address"
+                    value={journalConfig.address}
+                    class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white"
+                  />
+                </div>
+
+                <div class="sm:col-span-2 bg-blue-50/70 border border-blue-200 rounded p-3 text-xs space-y-1.5">
+                  <div class="font-bold text-academic-navy flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Kaidah Baku Numerasi ISSN (ISO 3297)</span>
+                  </div>
+                  <p class="text-slate-600 leading-relaxed text-xs">
+                    Format baku: <strong>8 digit angka</strong> dipisahkan tanda strip (<code>XXXX-XXXX</code>). Digit ke-8 adalah <em>angka pemeriksa (check digit)</em> yang dihitung menggunakan algoritma <strong>Modulo 11 berbobot</strong> (dapat bernilai 0–9 atau huruf X).
+                  </p>
+                </div>
+
+                <div>
+                  <label for="cfg-eissn" class="block font-semibold text-academic-navy mb-1 flex items-center justify-between">
+                    <span>Nomor e-ISSN (Online)</span>
+                    <span id="eissn-status" class="text-xs text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono border border-emerald-200">ISO 3297 Valid</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="cfg-eissn"
+                    value={journalConfig.eIssn || '2999-7127'}
+                    placeholder="2999-7127"
+                    maxlength="9"
+                    class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white font-mono font-bold text-slate-800 focus:border-academic-navy outline-none"
+                  />
+                  <span class="text-xs text-slate-500 mt-1 block">Untuk publikasi versi online / e-journal.</span>
+                </div>
+
+                <div>
+                  <label for="cfg-pissn" class="block font-semibold text-academic-navy mb-1 flex items-center justify-between">
+                    <span>Nomor p-ISSN (Print)</span>
+                    <span id="pissn-status" class="text-xs text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded font-mono border border-blue-200">ISO 3297 Valid</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="cfg-pissn"
+                    value={journalConfig.pIssn || '2999-7119'}
+                    placeholder="2999-7119"
+                    maxlength="9"
+                    class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white font-mono font-bold text-slate-800 focus:border-academic-navy outline-none"
+                  />
+                  <span class="text-xs text-slate-500 mt-1 block">Untuk edisi cetak fisik & barcode EAN-13.</span>
+                </div>
+              </div>
+            </div>
+
             <!-- Bagian Branding: Unggah Berkas Logo, Favicon & Template Manuskrip -->
             <div class="mt-6 pt-6 border-t border-slate-200">
               <div class="mb-4">
@@ -1187,18 +1299,292 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
 
       <!-- TAB: PENGATURAN EDISI & TERBITAN AKTIF (VOLUME / ISSUE) -->
       <div id="tab-volume-settings" class="tab-panel hidden space-y-6">
+        <!-- Panel 1: Status Publikasi Jurnal (Call for Papers vs Terbitan Aktif) -->
+        <div class="academic-card p-6 rounded border border-academic-border bg-white shadow-xs">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4 mb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-academic-navy text-xs font-bold">1</span>
+                <h2 class="text-lg font-serif font-bold text-academic-navy">
+                  Status Publikasi Edisi Jurnal
+                </h2>
+              </div>
+              <p class="text-xs text-academic-ink-muted mt-1">
+                Atur apakah jurnal saat ini telah memiliki edisi terbitan resmi atau masih dalam masa Call for Papers menuju edisi perdana.
+              </p>
+            </div>
+
+            <div class="flex items-center gap-3 shrink-0 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="toggle-active-issue"
+                  checked={journalConfig.features?.hasActiveIssue === true}
+                  class="sr-only peer"
+                />
+                <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                <span id="active-issue-status-text" class="ml-3 text-xs font-bold text-slate-800">
+                  {journalConfig.features?.hasActiveIssue ? 'Edisi Aktif Terpublikasi' : 'Mode Call for Papers (Menuju Edisi Perdana)'}
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class={`p-4 rounded border text-xs leading-relaxed ${journalConfig.features?.hasActiveIssue ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-amber-50 border-amber-200 text-amber-900'}`} id="active-issue-notice">
+            {journalConfig.features?.hasActiveIssue ? (
+              <p>
+                <strong>Status Terbitan Aktif:</strong> Halaman Beranda JTAAP dan menu <em>Current Issue</em> saat ini menampilkan edisi resmi (Vol. {journalConfig.currentIssue?.volume ?? 1} No. {journalConfig.currentIssue?.issue ?? 1}) beserta daftar artikel naskah yang telah terbit.
+              </p>
+            ) : (
+              <p>
+                <strong>Status Call for Papers:</strong> Karena belum ada naskah yang diterbitkan, sistem menyajikan tampilan profesional <em>"Menuju Edisi Perdana / Call for Papers"</em> di seluruh halaman publik tanpa menampilkan volume rilis yang kosong.
+              </p>
+            )}
+          </div>
+        </div>
+
+        <!-- Panel 2: Daftar Edisi & Terbitan (Issue Archives & Manager) -->
+        <div class="academic-card p-6 rounded border border-academic-border bg-white shadow-xs">
+          <div class="border-b border-slate-200 pb-3 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-academic-navy text-xs font-bold">2</span>
+                <h2 class="text-lg font-serif font-bold text-academic-navy">
+                  Daftar Edisi & Terbitan ({issues.length})
+                </h2>
+              </div>
+              <p class="text-xs text-academic-ink-muted mt-1">
+                Kelola volume dan edisi jurnal. Anda dapat menambahkan terbitan baru atau menghapus edisi yang belum terisi.
+              </p>
+            </div>
+            <a
+              href="#form-add-new-issue"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-800 hover:bg-blue-100 border border-blue-200 rounded text-xs font-semibold transition-colors self-start sm:self-auto"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              <span>Tambah Edisi Baru</span>
+            </a>
+          </div>
+
+          {issues.length > 0 ? (
+            <div class="overflow-x-auto border border-slate-200 rounded">
+              <table class="w-full text-left border-collapse text-xs" id="table-issues">
+                <thead class="bg-slate-100/75 border-b border-slate-200 font-semibold text-slate-700">
+                  <tr>
+                    <th class="p-3">Edisi / Terbitan</th>
+                    <th class="p-3">Periode & Tahun</th>
+                    <th class="p-3">Tema Khusus</th>
+                    <th class="p-3 text-center">Status</th>
+                    <th class="p-3 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 font-sans">
+                  {issues.map((item) => (
+                    <tr class="hover:bg-slate-50 transition-colors">
+                      <td class="p-3 font-semibold text-slate-900">
+                        <div class="flex items-center gap-2">
+                          <span class="px-2 py-0.5 bg-slate-100 font-mono text-xs rounded border border-slate-200">
+                            Vol. {item.volume} No. {item.issue}
+                          </span>
+                        </div>
+                      </td>
+                      <td class="p-3 text-slate-700">
+                        {item.period || '-'} ({item.year})
+                      </td>
+                      <td class="p-3 text-slate-600 max-w-xs truncate" title={item.theme || ''}>
+                        {item.theme || '<em class="text-slate-400">Tidak ada tema</em>'}
+                      </td>
+                      <td class="p-3 text-center">
+                        {(item.isCurrent || item.is_current === 1) ? (
+                          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            Terbitan Terkini
+                          </span>
+                        ) : (
+                          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                            Arsip
+                          </span>
+                        )}
+                      </td>
+                      <td class="p-3 text-right space-x-1 whitespace-nowrap">
+                        {!(item.isCurrent || item.is_current === 1) && (
+                          <button
+                            type="button"
+                            class="btn-set-current-issue px-2.5 py-1 text-xs font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-50 border border-blue-200 rounded transition-colors"
+                            data-id={item.id}
+                            data-volume={item.volume}
+                            data-issue={item.issue}
+                            title="Jadikan edisi ini sebagai Terbitan Terkini"
+                          >
+                            Jadikan Terkini
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          class="btn-delete-issue px-2.5 py-1 text-xs font-medium text-rose-600 hover:text-rose-800 hover:bg-rose-50 border border-rose-200 rounded transition-colors"
+                          data-id={item.id}
+                          data-label={`Vol. ${item.volume} No. ${item.issue}`}
+                          title="Hapus edisi ini"
+                        >
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div class="py-8 px-6 text-center border border-dashed border-slate-300 rounded bg-slate-50 text-slate-600 text-xs space-y-2">
+              <p class="font-bold text-academic-navy">Belum ada Edisi / Volume yang Didaftarkan</p>
+              <p class="text-slate-500 max-w-md mx-auto">
+                Hal ini wajar karena jurnal belum memiliki paper yang rilis. Tambahkan edisi terbitan di bawah saat proses penyusunan volume naskah siap dimulai.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <!-- Panel 3: Tambah Edisi / Volume Baru -->
+        <div id="form-add-new-issue" class="academic-card p-6 rounded border border-academic-border bg-white shadow-xs">
+          <div class="border-b border-slate-200 pb-3 mb-5">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-academic-navy text-xs font-bold">3</span>
+              <h2 class="text-lg font-serif font-bold text-academic-navy">
+                Tambah Edisi / Terbitan Baru
+              </h2>
+            </div>
+            <p class="text-xs text-academic-ink-muted mt-1">
+              Buat volume dan nomor terbitan baru untuk mengelompokkan naskah artikel yang akan terbit.
+            </p>
+          </div>
+
+          <form id="form-add-issue" class="space-y-4 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded border border-slate-200">
+              <div>
+                <label for="new-issue-vol" class="block font-semibold text-slate-800 mb-1">
+                  Volume <span class="text-rose-600">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="new-issue-vol"
+                  min="1"
+                  value={issues.length > 0 ? Math.max(...issues.map(i => i.volume)) : 1}
+                  required
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-xs bg-white outline-none focus:border-academic-navy"
+                />
+              </div>
+
+              <div>
+                <label for="new-issue-num" class="block font-semibold text-slate-800 mb-1">
+                  Nomor Issue <span class="text-rose-600">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="new-issue-num"
+                  min="1"
+                  value={issues.length > 0 ? (issues[issues.length - 1].issue + 1) : 1}
+                  required
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-xs bg-white outline-none focus:border-academic-navy"
+                />
+              </div>
+
+              <div>
+                <label for="new-issue-year" class="block font-semibold text-slate-800 mb-1">
+                  Tahun Terbit <span class="text-rose-600">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="new-issue-year"
+                  min="2020"
+                  max="2040"
+                  value={new Date().getFullYear()}
+                  required
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-xs bg-white outline-none focus:border-academic-navy"
+                />
+              </div>
+
+              <div class="sm:col-span-3">
+                <label for="new-issue-period" class="block font-semibold text-slate-800 mb-1">
+                  Periode / Bulan Publikasi <span class="text-rose-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="new-issue-period"
+                  placeholder="Contoh: Maret 2026 atau September 2026"
+                  required
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white outline-none focus:border-academic-navy"
+                />
+              </div>
+
+              <div class="sm:col-span-3">
+                <label for="new-issue-theme" class="block font-semibold text-slate-800 mb-1">
+                  Tema Khusus / Keterangan Edisi
+                </label>
+                <input
+                  type="text"
+                  id="new-issue-theme"
+                  placeholder="Contoh: Tata Kelola Keberlanjutan & Transformasi Kebijakan Fiskal"
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white outline-none focus:border-academic-navy"
+                />
+              </div>
+
+              <div class="sm:col-span-3">
+                <label for="new-issue-cover" class="block font-semibold text-slate-800 mb-1">
+                  URL Gambar Sampul (Cover Image Opsional)
+                </label>
+                <input
+                  type="url"
+                  id="new-issue-cover"
+                  placeholder="https://cdn.example.com/cover-vol1.jpg atau kosongkan untuk mockup otomatis"
+                  class="w-full px-3 py-2 border border-slate-300 rounded text-xs bg-white font-mono outline-none focus:border-academic-navy"
+                />
+              </div>
+
+              <div class="sm:col-span-3 flex items-center gap-2 pt-1">
+                <input
+                  type="checkbox"
+                  id="new-issue-is-current"
+                  class="rounded text-blue-600 w-4 h-4 cursor-pointer"
+                  checked={issues.length === 0}
+                />
+                <label for="new-issue-is-current" class="text-xs font-semibold text-slate-800 cursor-pointer">
+                  Jadikan langsung sebagai Terbitan Terkini (Current Issue)
+                </label>
+              </div>
+            </div>
+
+            <div class="flex justify-end pt-2">
+              <button
+                type="submit"
+                class="px-5 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white font-semibold rounded text-xs transition-colors shadow flex items-center gap-2"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Simpan Edisi Baru</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Panel 4: Rincian Edisi Aktif (Current Issue Settings) -->
         <div class="academic-card p-6 rounded border border-academic-border bg-white shadow-xs">
           <div class="border-b border-slate-200 pb-3 mb-6">
-            <h2 class="text-lg font-serif font-bold text-academic-navy">
-              Pengaturan Terbitan Aktif (Current Issue & Volume)
-            </h2>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-academic-navy text-xs font-bold">4</span>
+              <h2 class="text-lg font-serif font-bold text-academic-navy">
+                Rincian Informasi Terbitan Aktif (Current Issue)
+              </h2>
+            </div>
             <p class="text-xs text-academic-ink-muted mt-1">
-              Atur edisi yang sedang tayang pada bagian "Current Issue" di beranda dan halaman terbitan terkini.
+              Atur detail teks dan tema edisi yang sedang tayang pada bagian "Current Issue" di beranda dan halaman terbitan terkini.
             </p>
           </div>
 
           <!-- Kartu Info Integrasi DOI per Volume -->
-          <div class="bg-amber-50 border border-amber-200 rounded p-4 text-xs space-y-2">
+          <div class="bg-amber-50 border border-amber-200 rounded p-4 text-xs space-y-2 mb-5">
             <div class="font-bold text-academic-navy flex items-center gap-1.5">
               <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -1210,7 +1596,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
             </p>
             <div class="font-mono text-amber-900 bg-white p-2.5 rounded border border-amber-300 font-semibold flex items-center justify-between flex-wrap gap-2">
               <span id="vol-doi-formula-preview">https://doi.org/{defaultDoiPrefix}/jtaap.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.[nomor_urut_artikel]</span>
-              <span class="text-[11px] font-sans font-normal text-slate-500">Contoh Naskah #1: https://doi.org/{defaultDoiPrefix}/jtaap.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.1</span>
+              <span class="text-xs font-sans font-normal text-slate-500">Contoh Naskah #1: https://doi.org/{defaultDoiPrefix}/jtaap.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.1</span>
             </div>
           </div>
 
@@ -1310,7 +1696,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                 </svg>
-                <span>Simpan Terbitan Aktif</span>
+                <span>Simpan Detail Terbitan Aktif</span>
               </button>
             </div>
           </form>
@@ -2158,11 +2544,22 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     });
   });
 
-  // Restore active tab
-  const savedTab = sessionStorage.getItem('sektansia_active_tab');
-  if (savedTab && document.getElementById(savedTab)) {
-    switchTab(savedTab);
+  // Restore active tab with URL hash support
+  if (window.location.hash === '#form-add-new-issue' || window.location.hash === '#tab-volume-settings') {
+    switchTab('tab-volume-settings');
+  } else {
+    const savedTab = sessionStorage.getItem('sektansia_active_tab');
+    if (savedTab && document.getElementById(savedTab)) {
+      switchTab(savedTab);
+    }
   }
+
+  // Intercept anchor link to #form-add-new-issue so it activates tab-volume-settings
+  document.querySelectorAll('a[href="#form-add-new-issue"]').forEach((link) => {
+    link.addEventListener('click', () => {
+      switchTab('tab-volume-settings');
+    });
+  });
 
   // Dynamic Authors Builder Logic
   const authorsContainer = document.getElementById('authors-container');
@@ -2782,9 +3179,58 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     }
   });
 
+  // Validasi Real-time ISSN ISO 3297 Modulo 11
+  function checkIssnInput(inputEl: HTMLInputElement | null, statusEl: HTMLElement | null, type: 'e-ISSN' | 'p-ISSN') {
+    if (!inputEl || !statusEl) return;
+    const val = inputEl.value.trim().toUpperCase().replace(/[^0-9X-]/g, '');
+    if (!val) {
+      statusEl.textContent = 'Kosong';
+      statusEl.className = 'text-xs text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded font-mono';
+      return;
+    }
+
+    const clean = val.replace(/-/g, '');
+    if (clean.length === 8) {
+      let sum = 0;
+      for (let i = 0; i < 7; i++) sum += (8 - i) * parseInt(clean[i], 10);
+      const rem = sum % 11;
+      const expected = rem === 0 ? '0' : (11 - rem === 10 ? 'X' : String(11 - rem));
+      const actual = clean[7];
+      if (expected === actual) {
+        statusEl.textContent = `✓ ${type} Valid (ISO 3297)`;
+        statusEl.className = 'text-xs text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono border border-emerald-200';
+      } else {
+        statusEl.textContent = `⚠ Check Digit Salah! Seharusnya ${expected}`;
+        statusEl.className = 'text-xs text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded font-mono border border-rose-200 font-bold';
+      }
+    } else {
+      statusEl.textContent = `${clean.length}/8 digit`;
+      statusEl.className = 'text-xs text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-mono border border-amber-200';
+    }
+  }
+
+  const inputEIssn = document.getElementById('cfg-eissn') as HTMLInputElement | null;
+  const statusEIssn = document.getElementById('eissn-status');
+  inputEIssn?.addEventListener('input', () => {
+    let v = inputEIssn.value.toUpperCase().replace(/[^0-9X]/g, '');
+    if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4, 8);
+    inputEIssn.value = v;
+    checkIssnInput(inputEIssn, statusEIssn, 'e-ISSN');
+  });
+
+  const inputPIssn = document.getElementById('cfg-pissn') as HTMLInputElement | null;
+  const statusPIssn = document.getElementById('pissn-status');
+  inputPIssn?.addEventListener('input', () => {
+    let v = inputPIssn.value.toUpperCase().replace(/[^0-9X]/g, '');
+    if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4, 8);
+    inputPIssn.value = v;
+    checkIssnInput(inputPIssn, statusPIssn, 'p-ISSN');
+  });
+
   const formProfile = document.getElementById('form-profile-settings');
   formProfile?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    sessionStorage.setItem('sektansia_active_tab', 'tab-profile-settings');
     const data = {
       name: (document.getElementById('cfg-journal-name') as HTMLInputElement).value,
       nameEn: (document.getElementById('cfg-journal-name-en') as HTMLInputElement).value,
@@ -2799,6 +3245,11 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       templateUrl: (document.getElementById('cfg-template-url') as HTMLInputElement)?.value.trim() || '/template-jtaap.docx',
       turnitinMaxSimilarity: Number((document.getElementById('cfg-similarity') as HTMLInputElement).value) || 20,
       reviewTimeEstimate: (document.getElementById('cfg-review-time') as HTMLInputElement).value,
+      institution: (document.getElementById('cfg-org-name') as HTMLInputElement)?.value,
+      publisher: (document.getElementById('cfg-pub-name') as HTMLInputElement)?.value,
+      address: (document.getElementById('cfg-address') as HTMLInputElement)?.value,
+      eIssn: (document.getElementById('cfg-eissn') as HTMLInputElement)?.value,
+      pIssn: (document.getElementById('cfg-pissn') as HTMLInputElement)?.value,
     };
 
     try {
@@ -2818,10 +3269,176 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     }
   });
 
+  // Toggle Visibilitas Tim Redaksi di Publik
+  const toggleEditorialTeam = document.getElementById('toggle-editorial-team') as HTMLInputElement | null;
+  toggleEditorialTeam?.addEventListener('change', async () => {
+    sessionStorage.setItem('sektansia_active_tab', 'tab-editorial-settings');
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ showEditorialTeam: toggleEditorialTeam.checked }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast(`✓ Visibilitas Tim Redaksi: ${toggleEditorialTeam.checked ? 'Ditampilkan' : 'Disembunyikan'} di seluruh halaman publik.`);
+      } else {
+        showToast('Gagal mengubah visibilitas: ' + json.error, true);
+        toggleEditorialTeam.checked = !toggleEditorialTeam.checked;
+      }
+    } catch (err: any) {
+      showToast('Gagal menyimpan: ' + err.message, true);
+      toggleEditorialTeam.checked = !toggleEditorialTeam.checked;
+    }
+  });
+
+  // Toggle Mode Terbitan Aktif vs Call for Papers
+  const toggleActiveIssue = document.getElementById('toggle-active-issue') as HTMLInputElement | null;
+  const activeIssueStatusText = document.getElementById('active-issue-status-text');
+  const activeIssueNotice = document.getElementById('active-issue-notice');
+
+  toggleActiveIssue?.addEventListener('change', async () => {
+    sessionStorage.setItem('sektansia_active_tab', 'tab-volume-settings');
+    const isChecked = toggleActiveIssue.checked;
+    try {
+      const res = await fetch('/api/issues', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'toggle_active', hasActiveIssue: isChecked }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        if (activeIssueStatusText) {
+          activeIssueStatusText.textContent = isChecked
+            ? 'Edisi Aktif Terpublikasi'
+            : 'Mode Call for Papers (Menuju Edisi Perdana)';
+        }
+        if (activeIssueNotice) {
+          activeIssueNotice.className = `p-4 rounded border text-xs leading-relaxed ${
+            isChecked ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-amber-50 border-amber-200 text-amber-900'
+          }`;
+          activeIssueNotice.innerHTML = isChecked
+            ? '<p><strong>Status Terbitan Aktif:</strong> Halaman Beranda JTAAP dan menu <em>Current Issue</em> saat ini menampilkan edisi resmi beserta daftar artikel naskah yang telah terbit.</p>'
+            : '<p><strong>Status Call for Papers:</strong> Karena belum ada naskah yang diterbitkan, sistem menyajikan tampilan profesional <em>"Menuju Edisi Perdana / Call for Papers"</em> di seluruh halaman publik tanpa menampilkan volume rilis yang kosong.</p>';
+        }
+        showToast(
+          isChecked
+            ? '✓ Status Publikasi: Edisi aktif kini dipublikasikan di halaman depan & Current Issue.'
+            : '✓ Status Publikasi: Mode Call for Papers aktif (edisi kosong disembunyikan).'
+        );
+      } else {
+        showToast('Gagal mengubah status edisi: ' + json.error, true);
+        toggleActiveIssue.checked = !isChecked;
+      }
+    } catch (err: any) {
+      showToast('Gagal menyimpan: ' + err.message, true);
+      toggleActiveIssue.checked = !isChecked;
+    }
+  });
+
+  // Tambah Edisi / Volume Baru
+  const formAddIssue = document.getElementById('form-add-issue');
+  formAddIssue?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    sessionStorage.setItem('sektansia_active_tab', 'tab-volume-settings');
+    const vol = Number((document.getElementById('new-issue-vol') as HTMLInputElement).value) || 1;
+    const iss = Number((document.getElementById('new-issue-num') as HTMLInputElement).value) || 1;
+    const year = Number((document.getElementById('new-issue-year') as HTMLInputElement).value) || new Date().getFullYear();
+    const period = (document.getElementById('new-issue-period') as HTMLInputElement).value.trim();
+    const theme = (document.getElementById('new-issue-theme') as HTMLInputElement).value.trim();
+    const coverUrl = (document.getElementById('new-issue-cover') as HTMLInputElement).value.trim();
+    const isCurrent = (document.getElementById('new-issue-is-current') as HTMLInputElement).checked;
+
+    try {
+      const res = await fetch('/api/issues', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'add',
+          volume: vol,
+          issue: iss,
+          year,
+          period,
+          theme,
+          coverUrl,
+          isCurrent,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast(`✓ Edisi Vol. ${vol} No. ${iss} (${year}) berhasil ditambahkan! Memuat ulang...`);
+        setTimeout(() => window.location.reload(), 900);
+      } else {
+        showToast('Gagal menambahkan edisi: ' + json.error, true);
+      }
+    } catch (err: any) {
+      showToast('Gagal menambahkan edisi: ' + err.message, true);
+    }
+  });
+
+  // Hapus Edisi
+  document.querySelectorAll<HTMLButtonElement>('.btn-delete-issue').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      sessionStorage.setItem('sektansia_active_tab', 'tab-volume-settings');
+      const id = btn.getAttribute('data-id');
+      const label = btn.getAttribute('data-label') || 'Edisi ini';
+      if (!id) return;
+      if (!confirm(`Apakah Anda yakin ingin menghapus ${label}? Tindakan ini tidak dapat dibatalkan.`)) {
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/issues', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', id }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast(`✓ ${label} berhasil dihapus dari database! Memuat ulang...`);
+          setTimeout(() => window.location.reload(), 900);
+        } else {
+          showToast('Gagal menghapus edisi: ' + json.error, true);
+        }
+      } catch (err: any) {
+        showToast('Gagal menghapus edisi: ' + err.message, true);
+      }
+    });
+  });
+
+  // Jadikan Terbitan Terkini
+  document.querySelectorAll<HTMLButtonElement>('.btn-set-current-issue').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      sessionStorage.setItem('sektansia_active_tab', 'tab-volume-settings');
+      const id = btn.getAttribute('data-id');
+      const volume = Number(btn.getAttribute('data-volume'));
+      const issue = Number(btn.getAttribute('data-issue'));
+      if (!id) return;
+
+      try {
+        const res = await fetch('/api/issues', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'set_current', id, volume, issue }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          showToast(`✓ Edisi Vol. ${volume} No. ${issue} kini diset sebagai Terbitan Terkini! Memuat ulang...`);
+          setTimeout(() => window.location.reload(), 900);
+        } else {
+          showToast('Gagal mengubah edisi terkini: ' + json.error, true);
+        }
+      } catch (err: any) {
+        showToast('Gagal menyimpan: ' + err.message, true);
+      }
+    });
+  });
+
   // Simpan Edisi & Terbitan Aktif (Volume / Issue)
   const formVolume = document.getElementById('form-volume-settings');
   formVolume?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    sessionStorage.setItem('sektansia_active_tab', 'tab-volume-settings');
     const data = {
       currentVolume: Number((document.getElementById('cfg-vol-num') as HTMLInputElement).value) || 1,
       currentIssue: Number((document.getElementById('cfg-issue-num') as HTMLInputElement).value) || 1,
@@ -2852,6 +3469,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
   const formAnnouncement = document.getElementById('form-announcement-settings');
   formAnnouncement?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    sessionStorage.setItem('sektansia_active_tab', 'tab-announcement-settings');
     const data = {
       announcementActive: (document.getElementById('cfg-ann-active') as HTMLInputElement).checked,
       announcementTitle: (document.getElementById('cfg-ann-title') as HTMLInputElement).value,

@@ -33,6 +33,8 @@ export interface JournalConfig {
     showIndexingBlock: boolean; // Bisa dimatikan atau dinyalakan
     showToolsBlock: boolean;
     showIssnBlock: boolean;
+    showEditorialTeam?: boolean;
+    hasActiveIssue?: boolean;
   };
   submission: {
     email: string;
@@ -87,8 +89,8 @@ export const journalConfig: JournalConfig = {
   publisher: 'BN Organization',
   institution: 'Bawera Nitijana Research',
   address: 'Jl. R.E. Martadinata No. 42, Bandung 40115, Jawa Barat, Indonesia',
-  eIssn: '3048-289X',
-  pIssn: '3048-2903',
+  eIssn: '2999-7127',
+  pIssn: '2999-7119',
   doiPrefix: '10.00000',
   publicationFrequency: 'Terbit 4 Kali Setahun (Maret, Juni, September, Desember)',
   language: 'Bahasa Indonesia dan Bahasa Inggris',
@@ -105,6 +107,8 @@ export const journalConfig: JournalConfig = {
     showIndexingBlock: true, // Ubah false jika ingin menyembunyikan panel indexing di sidebar
     showToolsBlock: true,
     showIssnBlock: true,
+    showEditorialTeam: true,
+    hasActiveIssue: false,
   },
 
   submission: {
