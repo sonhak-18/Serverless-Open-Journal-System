@@ -212,7 +212,6 @@ Seluruh artikel yang diterbitkan oleh JTEBA berstatus akses terbuka penuh (*Diam
   3. Pemeriksaan akhir kebahasaan dan tata letak (*copyediting*);
   4. Pemeliharaan sistem repositori data terbuka dan infrastruktur peladen cloud bebas henti (*serverless architecture*).
 - **Ketentuan Pembayaran:** Instruksi tagihan dan nomor rekening resmi hanya disampaikan melalui surat elektronik resmi redaksi (`redaksi@praniti.or.id`) bersamaan dengan pengiriman LoA resmi.
-- **Kebijakan Keringanan Biaya (*Waiver Policy*):** Keputusan penerimaan naskah semata-mata bersandar pada keunggulan ilmiah dan bebas dari faktor finansial. Mahasiswa sarjana (S1) mandiri atau peneliti yang tidak memiliki sokongan dana riset dapat mengajukan permohonan keringanan atau pembebasan biaya (*fee waiver*) secara tertulis kepada Editor-in-Chief sebelum naskah masuk ke tahap penerbitan akhir (*galley publication*).
 
 ---
 
