@@ -103,19 +103,19 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
                 <tr>
                   <th class="py-3 px-4 font-bold border-b border-slate-300">Jenis</th>
                   <th class="py-3 px-4 font-bold border-b border-slate-300">Deskripsi</th>
-                  <th class="py-3 px-4 font-bold border-b border-slate-300">Panjang (kata, termasuk daftar pustaka)</th>
+                  <th class="py-3 px-4 font-bold border-b border-slate-300">Panjang</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200 bg-white">
                 <tr class="hover:bg-slate-50">
                   <td class="py-3 px-4 font-semibold text-slate-900">Artikel riset orisinal</td>
                   <td class="py-3 px-4">Penelitian empiris kuantitatif, kualitatif, atau <em>mixed methods</em></td>
-                  <td class="py-3 px-4 font-mono font-medium">4.000 - 7.500</td>
+                  <td class="py-3 px-4 font-medium text-slate-900">Maksimal 20 halaman</td>
                 </tr>
                 <tr class="hover:bg-slate-50">
                   <td class="py-3 px-4 font-semibold text-slate-900">Telaah literatur kritis</td>
                   <td class="py-3 px-4"><em>Critical literature review</em> yang sistematis dan mutakhir</td>
-                  <td class="py-3 px-4 font-mono font-medium">4.000 - 7.000</td>
+                  <td class="py-3 px-4 font-medium text-slate-900">Maksimal 20 halaman</td>
                 </tr>
               </tbody>
             </table>
@@ -192,7 +192,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
               3. Panjang Naskah
             </h3>
             <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
-              Artikel riset orisinal memiliki panjang 4.000 hingga 7.500 kata, termasuk daftar pustaka, tabel, dan gambar pendukung. Panjang jenis artikel lain mengikuti tabel Jenis Artikel.
+              Naskah memiliki panjang <strong>maksimal 20 halaman</strong> (A4, mengikuti templat {journalConfig.shortName}), tidak termasuk bagian <em>cover</em> (judul, penulis, <em>Article Info</em>, dan abstrak) serta Daftar Pustaka. Tabel, gambar, dan lampiran dihitung dalam batas 20 halaman.
             </p>
           </div>
 
@@ -309,7 +309,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
               </li>
               <li class="flex items-start gap-2.5">
                 <span class="text-emerald-700 font-bold shrink-0">✓</span>
-                <span>Panjang naskah 4.000-7.500 kata (artikel riset).</span>
+                <span>Panjang naskah maksimal 20 halaman, tidak termasuk cover dan Daftar Pustaka.</span>
               </li>
               <li class="flex items-start gap-2.5">
                 <span class="text-emerald-700 font-bold shrink-0">✓</span>

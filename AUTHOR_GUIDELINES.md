@@ -41,8 +41,8 @@ JTEBA mempublikasikan artikel orisinal hasil penelitian empiris (kuantitatif, ku
 
 | Jenis | Deskripsi | Panjang |
 |---|---|---|
-| **Artikel riset orisinal** | Penelitian empiris kuantitatif, kualitatif, atau *mixed methods* | 4.000 – 7.500 kata (maksimal 20 halaman) |
-| **Telaah literatur kritis** | *Critical literature review* yang sistematis, integratif, dan mutakhir | 4.000 – 7.000 kata (maksimal 20 halaman) |
+| **Artikel riset orisinal** | Penelitian empiris kuantitatif, kualitatif, atau *mixed methods* | Maksimal 20 halaman |
+| **Telaah literatur kritis** | *Critical literature review* yang sistematis dan mutakhir | Maksimal 20 halaman |
 
 ---
 
@@ -82,7 +82,7 @@ JTEBA mempublikasikan artikel orisinal hasil penelitian empiris (kuantitatif, ku
 **Kata Kunci.** 3–5 kata atau frasa spesifik dalam bahasa Inggris, dipisahkan tanda titik koma (;).
 
 ### 3. Panjang Naskah
-Naskah memiliki panjang rentang **4.000 hingga 7.500 kata** (atau maksimal 20 halaman format A4 mengikuti templat resmi JTEBA), tidak termasuk bagian lembar judul (*cover*), *Article Info*, abstrak, dan Daftar Pustaka. Seluruh tabel, bagan, gambar, dan lampiran dihitung ke dalam batas maksimal halaman tersebut.
+Naskah memiliki panjang **maksimal 20 halaman** (A4, mengikuti templat JTEBA), tidak termasuk bagian *cover* (judul, penulis, *Article Info*, dan abstrak) serta Daftar Pustaka. Tabel, gambar, dan lampiran dihitung dalam batas 20 halaman.
 
 ### 4. Format Penulisan
 
@@ -121,7 +121,7 @@ Sebelum menekan tombol kirim atau menyerahkan naskah ke redaksi, pastikan seluru
 - [ ] Naskah telah diformat menggunakan templat resmi Microsoft Word JTEBA dan seluruh teks petunjuk di dalamnya telah dihapus.
 - [ ] Berkas naskah anonim (*blinded manuscript*) dan halaman identitas (*title page*) telah dipisahkan menjadi dua berkas `.docx` yang berbeda.
 - [ ] Abstrak ditulis dalam bahasa Inggris (150–250 kata) disertai 3–5 kata kunci spesifik.
-- [ ] Panjang naskah berada dalam batas 4.000–7.500 kata (maksimal 20 halaman).
+- [ ] Panjang naskah maksimal 20 halaman, tidak termasuk cover dan Daftar Pustaka.
 - [ ] Seluruh sitasi dan daftar pustaka disusun konsisten dengan format APA Style 7th Edition berbasis *reference manager*.
 - [ ] Skor indeks kemiripan (*similarity index*) pada uji Turnitin berada di bawah 20%.
 - [ ] Seluruh pernyataan wajib (kontribusi CRediT, sumber pendanaan, konflik kepentingan, ketersediaan data terbuka, dan pemanfaatan AI) telah diisi lengkap pada halaman identitas.
