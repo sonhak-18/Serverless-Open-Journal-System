@@ -4,6 +4,7 @@ import { issnToEan13, generateEan13BarcodeSvgBars } from '../lib/issn';
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const journalConfig = await getDbSettings(d1);
+const indexingList = await getDbIndexing(d1);
 const rawWaNum = journalConfig.submission?.whatsappNumber || journalConfig.submission?.whatsappDisplay || '628981822777';
 const cleanWaPhone = rawWaNum.replace(/\D/g, '');
 const waMsg = journalConfig.submission?.whatsappDefaultMessage || 'Halo Redaksi JTEBA, saya ingin berkonsultasi mengenai publikasi naskah.';
