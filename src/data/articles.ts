@@ -23,7 +23,7 @@ export interface Article {
   doi: string;
   pdfFileName: string;
   fileSizeBytes: number;
-  subject: 'Audit' | 'Akuntansi' | 'Pajak';
+  subject?: string;
   references?: string[];
 }
 
@@ -44,9 +44,9 @@ export const issues: Issue[] = [
     issue: 1,
     year: 2026,
     monthRange: 'Januari - Maret 2026',
-    title: 'Volume 1 Nomor 1 (2026): Edisi Perdana Riset Terapan Audit dan Perpajakan',
-    description: 'Terbitan reguler yang memuat artikel orisinal mengenai efektivitas audit berbasis risiko, kepatuhan wajib pajak badan, dan tata kelola pelaporan keuangan digital.',
-    publishDate: '2026-03-30',
+    title: 'Volume 1 Nomor 1 (2026): Edisi Perdana',
+    description: 'Edisi perdana yang mempublikasikan hasil riset empiris dan telaah literatur kritis di bidang akuntansi keberlanjutan & ESG, perpajakan & kebijakan fiskal, auditing & tata kelola, serta dinamika ekonomi dan bisnis terapan.',
+    publishDate: '2026-03-31',
     isCurrent: true,
   },
 ];

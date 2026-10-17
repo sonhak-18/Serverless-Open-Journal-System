@@ -33,8 +33,8 @@ export interface JournalConfig {
     showIndexingBlock: boolean; // Bisa dimatikan atau dinyalakan
     showToolsBlock: boolean;
     showIssnBlock: boolean;
-    showEditorialTeam?: boolean;
-    hasActiveIssue?: boolean;
+    showEditorialTeam?: boolean; // Tampilkan/sembunyikan tab informasi Tim Redaksi
+    hasActiveIssue?: boolean; // Status rilis: false jika belum ada naskah terbit (Call for Papers)
   };
   submission: {
     email: string;
@@ -82,29 +82,29 @@ export interface JournalConfig {
 }
 
 export const journalConfig: JournalConfig = {
-  name: 'Jurnal Terbuka Audit, Akuntansi, dan Pajak',
-  nameEn: 'Journal of Open Audit, Accounting, and Taxation',
-  shortName: 'JTAAP',
+  name: 'Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas',
+  nameEn: 'Open Journal of Economics, Business, and Accountability',
+  shortName: 'JTEBA',
   accreditedText: 'Open Access Scientific Peer-Reviewed Journal',
-  publisher: 'BN Organization',
-  institution: 'Bawera Nitijana Research',
-  address: 'Jl. R.E. Martadinata No. 42, Bandung 40115, Jawa Barat, Indonesia',
+  publisher: 'Organisasi Riset dan Publikasi Ilmiah Praniti',
+  institution: 'Organisasi Riset dan Publikasi Ilmiah Praniti',
+  address: 'Indonesia',
   eIssn: '2999-7127',
   pIssn: '2999-7119',
   doiPrefix: '10.00000',
-  publicationFrequency: 'Terbit 4 Kali Setahun (Maret, Juni, September, Desember)',
+  publicationFrequency: '2 Kali/Tahun (Maret & September)',
   language: 'Bahasa Indonesia dan Bahasa Inggris',
   license: 'Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)',
   licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
 
   branding: {
-    logoUrl: '/images/jtaap-logo-v2.png',
-    faviconUrl: '/favicon.png',
-    templateUrl: '/template-jtaap.docx',
+    logoUrl: '/images/logo-jteba.png',
+    faviconUrl: '/favicon-jteba.png',
+    templateUrl: '/template-jteba.docx',
   },
 
   features: {
-    showIndexingBlock: true, // Ubah false jika ingin menyembunyikan panel indexing di sidebar
+    showIndexingBlock: true,
     showToolsBlock: true,
     showIssnBlock: true,
     showEditorialTeam: true,
@@ -112,17 +112,17 @@ export const journalConfig: JournalConfig = {
   },
 
   submission: {
-    email: 'redaksi@sektansia.org',
+    email: 'redaksi@jteba.org',
     whatsappNumber: '6281234567890',
     whatsappDisplay: '+62 812-3456-7890',
-    whatsappDefaultMessage: 'Halo Redaksi JTAAP, saya ingin mengajukan manuskrip artikel ilmiah untuk proses review dan penerbitan.',
+    whatsappDefaultMessage: 'Halo Redaksi JTEBA, saya ingin mengajukan manuskrip artikel ilmiah untuk proses review dan penerbitan.',
     turnitinMaxSimilarity: 20,
     reviewTimeEstimate: '3 sampai 7 Hari Kerja',
   },
 
   announcement: {
     title: 'Call for Papers: Volume 1 Nomor 1 (2026)',
-    content: 'Redaksi JTAAP mengundang akademisi, peneliti, auditor, dan praktisi perpajakan untuk mengirimkan naskah orisinal hasil riset empiris atau kajian konseptual.',
+    content: 'Redaksi JTEBA mengundang akademisi, peneliti, praktisi, dan profesional untuk mengirimkan naskah orisinal hasil riset empiris atau telaah literatur kritis di bidang akuntansi keberlanjutan & ESG, perpajakan & kebijakan fiskal, auditing & tata kelola, serta dinamika ekonomi & bisnis terapan.',
     active: true,
     date: '2026-03-01',
   },
@@ -132,7 +132,7 @@ export const journalConfig: JournalConfig = {
     issue: 1,
     year: 2026,
     period: 'Maret 2026',
-    theme: 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan',
+    theme: 'Edisi Perdana: Akuntabilitas Keberlanjutan, Tata Kelola Fiskal & Transformasi Bisnis Hijau',
   },
 
   storage: {
@@ -142,45 +142,12 @@ export const journalConfig: JournalConfig = {
 
   editorial: {
     editorInChief: {
-      name: 'Dr. H. Hendra Setiawan, S.E., M.Ak., Ak., CA.',
-      affiliation: 'Departemen Akuntansi & Forensik Keuangan, Bawera Nitijana Research',
-      email: 'editor.chief@sektansia.org',
+      name: '',
+      affiliation: '',
+      email: '',
     },
-    editors: [
-      {
-        name: 'M. Farhan Al-Ghifari, M.Sc., CFE.',
-        role: 'Managing Editor (Audit & Investigasi Fraud)',
-        affiliation: 'Pusat Kajian Audit Sektor Publik',
-      },
-      {
-        name: 'Siti Rahmawati, M.Ak., BKP.',
-        role: 'Associate Editor (Perpajakan & Kebijakan Fiskal)',
-        affiliation: 'Lembaga Riset Perpajakan Terapan',
-      },
-      {
-        name: 'Budi Darmawan, S.E., M.Si., Ak.',
-        role: 'Associate Editor (Sistem Informasi Akuntansi)',
-        affiliation: 'Laboratorium Digital Forensik Akuntansi',
-      },
-    ],
-    reviewers: [
-      {
-        name: 'Prof. Dr. Irwan Hidayat, M.Si., Ak.',
-        affiliation: 'Universitas Gadjah Mada',
-      },
-      {
-        name: 'Dr. Nurul Fadilah, S.E., M.Si.',
-        affiliation: 'Universitas Airlangga',
-      },
-      {
-        name: 'Haryono Tri Wibowo, S.E., M.Ak.',
-        affiliation: 'Institut Akuntan Publik Indonesia',
-      },
-      {
-        name: 'Dr. Wahyudi Pratama, S.E., M.Sc.',
-        affiliation: 'Universitas Padjadjaran',
-      },
-    ],
+    editors: [],
+    reviewers: [],
   },
 
   indexing: [
@@ -208,7 +175,7 @@ export const journalConfig: JournalConfig = {
       url: 'https://search.crossref.org',
       logoText: 'Crossref',
       status: 'Indexed',
-      description: 'Lembaga registrasi Digital Object Identifier (DOI) resmi publikasi akademik internasional.',
+      description: 'Organisasi registrasi Digital Object Identifier (DOI) resmi publikasi akademik internasional.',
       showInSidebar: true,
     },
     {
@@ -285,7 +252,7 @@ export function getWhatsAppSubmissionUrl(paperTitle?: string): string {
   const phone = journalConfig.submission.whatsappNumber;
   let text = journalConfig.submission.whatsappDefaultMessage;
   if (paperTitle) {
-    text = `Halo Redaksi JTAAP, saya ingin mengajukan konfirmasi terkait naskah: "${paperTitle}".`;
+    text = `Halo Redaksi JTEBA, saya ingin mengajukan konfirmasi terkait naskah: "${paperTitle}".`;
   }
   return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 }
@@ -293,9 +260,9 @@ export function getWhatsAppSubmissionUrl(paperTitle?: string): string {
 export function getEmailSubmissionUrl(paperTitle?: string): string {
   const email = journalConfig.submission.email;
   const subject = paperTitle 
-    ? `[SUBMISSION JTAAP] - ${paperTitle}` 
-    : '[SUBMISSION JTAAP] Pengajuan Naskah Artikel Ilmiah';
-  const body = `Kepada Yth. Dewan Redaksi JTAAP,
+    ? `[SUBMISSION JTEBA] - ${paperTitle}` 
+    : '[SUBMISSION JTEBA] Pengajuan Naskah Artikel Ilmiah';
+  const body = `Kepada Yth. Dewan Redaksi JTEBA,
 
 Dengan ini saya mengajukan naskah artikel ilmiah untuk proses review dan penerbitan.
 

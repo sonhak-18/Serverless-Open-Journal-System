@@ -1,0 +1,96 @@
+---
+export const prerender = false;
+
+import Layout from '../../../layouts/Layout.astro';
+import SidebarOJS from '../../../components/SidebarOJS.astro';
+import { getDbSettings, getDbArticles, getDbIssues } from '../../../lib/db';
+
+const d1 = (Astro.locals as any)?.runtime?.env?.DB;
+const journalConfig = await getDbSettings(d1);
+const allArticles = await getDbArticles(d1);
+const issues = await getDbIssues(d1);
+---
+
+<Layout title="Archives" description={`Arsip terbitan berkala ${journalConfig.name}`}>
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Kolom Kiri: Arsip Edisi (~68%) -->
+      <main class="lg:col-span-8 space-y-6">
+        <div class="text-xs text-slate-500 mb-2">
+          <a href="/index/JTEBA" class="hover:underline">Home</a> &gt; <span>Archives</span>
+        </div>
+
+        <div class="border-b-2 border-academic-gold pb-2">
+          <h1 class="text-3xl sm:text-4xl font-serif font-bold text-academic-navy">
+            Archives
+          </h1>
+        </div>
+
+        <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
+          Seluruh volume dan nomor terbitan {journalConfig.name} diarsipkan secara permanen untuk mendukung aksesibilitas literatur akademik jangka panjang.
+        </p>
+
+        {issues.length > 0 ? (
+          <div class="space-y-4">
+            {issues.map((issue) => {
+              const issueArticles = allArticles.filter(a => a.volume === issue.volume && a.issue === issue.issue);
+              return (
+                <div class="p-6 border border-slate-300 bg-white rounded shadow-2xs space-y-3">
+                  <div class="border-b border-slate-200 pb-2.5 flex flex-wrap items-center justify-between gap-2">
+                    <h2 class="text-lg sm:text-xl font-bold text-academic-navy">
+                      <a href={issue.is_current === 1 ? '/index/JTEBA/current' : `/index/JTEBA/archives#vol-${issue.volume}`} class="hover:underline">
+                        Vol. {issue.volume} No. {issue.issue} ({issue.year}): {issue.period || 'Terbitan'}
+                      </a>
+                    </h2>
+                    <span class="text-sm text-slate-500 font-mono font-medium">
+                      {issueArticles.length} Naskah
+                    </span>
+                  </div>
+
+                  {issue.theme && (
+                    <p class="text-base text-slate-700 leading-relaxed italic">
+                      {issue.theme}
+                    </p>
+                  )}
+
+                  <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-sm text-slate-600">
+                    <span>Periode Publikasi: {issue.period || '-'} ({issue.year})</span>
+                    <a href={issue.is_current === 1 ? '/index/JTEBA/current' : `/index/JTEBA/archives#vol-${issue.volume}`} class="text-academic-teal hover:underline font-bold">
+                      Lihat Isi Terbitan →
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div class="py-12 px-6 text-center border border-dashed border-slate-300 rounded bg-slate-50 text-slate-600 font-sans text-sm space-y-3">
+            <svg class="w-10 h-10 text-slate-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <p class="font-bold text-academic-navy text-base">Belum Ada Arsip Terbitan Sebelumnya</p>
+            <p class="text-slate-500 max-w-md mx-auto text-xs sm:text-sm">
+              Jurnal ini saat ini sedang menyelenggarakan penerimaan naskah (Call for Papers) menuju Edisi Perdana. Seluruh nomor terbitan yang dirilis akan diarsipkan secara otomatis di halaman ini.
+            </p>
+            <div class="pt-2">
+              <a
+                href="/index/JTEBA/submission"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-academic-navy text-white text-xs font-semibold rounded hover:bg-academic-navy-light transition-colors"
+              >
+                <span>Kirim Naskah ke Edisi Perdana</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        )}
+      </main>
+
+      <!-- Kolom Kanan: Sidebar Standarisasi OJS (~32%) -->
+      <div class="lg:col-span-4">
+        <SidebarOJS />
+      </div>
+    </div>
+  </div>
+</Layout>

@@ -1,6 +1,6 @@
-# Serverless Open Journal System (OJS)
+# JTEBA: Serverless Open Journal System (OJS)
 
-Platform web publikasi jurnal ilmiah modern berbasis **Astro + Tailwind CSS** yang dirancang untuk di-host 100% tanpa biaya di **Cloudflare Pages**, terintegrasi dengan **Cloudflare D1** (SQLite Relasional di Edge), **Cloudflare Workers KV** (Global Edge Cache & Real-Time Metrics), dan repositori penyimpanan PDF terdistribusi via **Cloudflare Repository Worker** dengan rotasi Google Service Accounts. Presisi mengikuti estetika klasik Open Journal Systems (OJS) dengan performa edge ultra-cepat.
+Platform web publikasi jurnal ilmiah modern **JTEBA (Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas)** berbasis **Astro + Tailwind CSS** yang dirancang untuk di-host 100% tanpa biaya di **Cloudflare Pages**, terintegrasi dengan **Cloudflare D1** (SQLite Relasional di Edge), **Cloudflare Workers KV** (Global Edge Cache & Real-Time Metrics), dan repositori penyimpanan PDF terdistribusi via **Cloudflare Repository Worker** dengan rotasi Google Service Accounts. Presisi mengikuti estetika klasik Open Journal Systems (OJS) dengan performa edge ultra-cepat.
 
 ---
 
@@ -57,7 +57,7 @@ sequenceDiagram
     participant Drive as Google Drive Storage
 
     Reader->>Portal: Klik tombol "UNDUH / BACA PDF"
-    Portal->>CDN: GET /one/JTAAP_V1N1_01_artikel.pdf
+    Portal->>CDN: GET /one/JTEBA_V1N1_01_artikel.pdf
     alt Akses Direktori / Beranda CDN
         CDN-->>Portal: HTTP 302 Redirect ke https://jurnal.example.com
     else Tautan Menggunakan Parameter Lama (?a=view)
@@ -75,28 +75,28 @@ sequenceDiagram
 
 ---
 
-## 3. Diagram Alur Siklus Hidup Edisi & Terbitan (Issue Lifecycle)
+## 3. Diagram Alur Siklus Hidup Edisi & Terbitan JTEBA (Issue Lifecycle)
 
 ```mermaid
 flowchart TD
-    Start([Editor Buka Panel /admin]) --> CheckStatus{Status Edisi Aktif?}
+    Start([Dewan Redaksi Buka /index/JTEBA/admin]) --> CheckStatus{Status Edisi Aktif?}
 
-    CheckStatus -->|Belum Ada Naskah / Edisi Baru| ModeCFP["Mode Call for Papers Aktif (hasActiveIssue = false)"]
-    ModeCFP --> RenderCFP["Halaman Beranda & /current:<br/>Tampilkan Banner Call for Papers Resmi (Menuju Edisi Perdana)"]
-    RenderCFP --> NoEmptyIssue["Sembunyikan Volume/Nomor Kosong dari Pembaca"]
+    CheckStatus -->|Naskah Belum Terbit / Volume Baru| ModeCFP["Mode Call for Papers Aktif (hasActiveIssue = false)"]
+    ModeCFP --> RenderCFP["Halaman Beranda JTEBA & /current:<br/>Tampilkan Banner Call for Papers Resmi (Menuju Edisi Perdana)"]
+    RenderCFP --> NoEmptyIssue["Sembunyikan Volume/Nomor Kosong dari Pengunjung Publik"]
 
-    CheckStatus -->|Naskah Siap / Edisi Terbit| ModeActive["Mode Edisi Aktif Terpublikasi (hasActiveIssue = true)"]
+    CheckStatus -->|Naskah Siap Rilis / Volume Aktif| ModeActive["Mode Edisi Aktif Terpublikasi (hasActiveIssue = true)"]
     ModeActive --> SelectIssue["Pilih Terbitan Terkini (Current Issue)"]
-    SelectIssue --> RenderActive["Halaman Beranda & /current:<br/>Tampilkan Volume & Daftar Artikel Lengkap"]
+    SelectIssue --> RenderActive["Halaman Beranda JTEBA & /current:<br/>Tampilkan Volume & Daftar Artikel Ilmiah Lengkap"]
 
-    subgraph IssueManager["Manajer Edisi & Terbitan (/api/issues)"]
+    subgraph IssueManager["Manajer Edisi & Terbitan JTEBA (/api/issues)"]
         AddIssue["1. Tambah Edisi Baru (Vol, Issue, Tahun, Tema)"]
         SetCurrent["2. Set sebagai Terbitan Terkini"]
         DeleteIssue["3. Hapus Edisi Kosong / Arsip"]
     end
 
     Start --> IssueManager
-    IssueManager -->|Update D1 & Flush Cache KV| CheckStatus
+    IssueManager -->|Update Cloudflare D1 & Flush KV Cache| CheckStatus
 ```
 
 ---
@@ -106,7 +106,7 @@ flowchart TD
 ```mermaid
 flowchart LR
     subgraph Input["Input ISSN Redaksi"]
-        RawISSN["8 Digit ISSN (cth: 2999-7119)"]
+        RawISSN["8 Digit ISSN (cth: 2999-7119 / 2999-7127)"]
     end
 
     subgraph Engine["Mesin Validasi (src/lib/issn.ts)"]
@@ -125,7 +125,7 @@ flowchart LR
     Modulo11 -->|ISSN Valid| EANConv
     EANConv --> EANCheck
     EANCheck --> SVGRender
-    SVGRender --> Sidebar["Tampil di Sidebar OJS Publik"]
+    SVGRender --> Sidebar["Tampil di Sidebar OJS Publik JTEBA"]
 ```
 
 ---
@@ -136,18 +136,16 @@ flowchart LR
 2. **Native Browser PDF Viewer:** Naskah dibuka menggunakan engine PDF bawaan browser (Chrome, Edge, Firefox, Safari) yang dilengkapi *thumbnail page*, seleksi teks, *smooth scroll*, tombol cetak, dan unduh tanpa beban script pihak ketiga yang lambat.
 3. **Sequential Multi-Drive Routing:** Alamat naskah mencerminkan urutan drive penyimpanan yang elegan (`/one/`, `/two/`, `/three/`), dengan tetap mendukung kompatibilitas format lama (`/0:/`).
 4. **Validasi Numerasi ISSN ISO 3297 Modulo 11 & Barcode GS1 EAN-13 SVG:**
-   * Pemeriksaan algoritma Modulo 11 berbobot otomatis (check digit 0–9 atau X) dengan umpan balik visual langsung (*badge* status) pada formulir admin.
-   * Pembuatan kode batang GS1 EAN-13 berbasis grafik vektor SVG presisi tanpa dependensi library eksternal, yang tampil di Sidebar OJS.
+   * Pemeriksaan algoritma Modulo 11 berbobot otomatis (check digit 0–9 atau X) dengan umpan balik visual langsung (*badge* status) pada formulir admin JTEBA.
+   * Pembuatan kode batang GS1 EAN-13 berbasis grafik vektor SVG presisi tanpa dependensi library eksternal, yang tampil di Sidebar OJS publik.
 5. **Siklus Hidup Terbitan & Mode Call for Papers Dinamis:**
-   * Mendukung saklar mode *Call for Papers (Menuju Edisi Perdana)* jika jurnal belum memiliki naskah rilis, sehingga halaman Beranda dan `/current` menyajikan informasi call for papers resmi tanpa menampilkan volume kosong.
+   * Mendukung saklar mode *Call for Papers (Menuju Edisi Perdana)* jika JTEBA belum memiliki naskah rilis, sehingga halaman Beranda dan `/current` menyajikan informasi call for papers resmi tanpa menampilkan volume kosong.
    * Transisi instan ke *Mode Edisi Aktif Terpublikasi* saat terbitan resmi dirilis.
 6. **Mesin Pencarian Naskah Multi-Parameter (`/search`):**
-   * Pencarian terindeks dengan filter judul, abstrak, nama penulis, afiliasi lembaga, bidang kajian ilmiah (*subject*), dan rentang tahun publikasi.
-7. **100% GUI Admin Dashboard (/admin):** Pengelolaan lengkap tanpa perlu mengedit file kode secara manual:
-   * Tambah & terbitkan naskah baru dengan generator slug URL dan formula DOI otomatis.
-   * Kelola identitas penerbit, legalitas ISSN, dan dewan redaksi (termasuk kontrol visibilitas publik dewan redaksi).
-   * Manajer arsip volume dan edisi terbitan (tambah edisi baru, atur terbitan terkini, hapus edisi).
-   * **Manajemen Berkas Google Drive (Live):** Melihat daftar seluruh file PDF di Google Drive secara langsung, menyalin tautan resmi, dan memilih berkas untuk form penerbitan.
+   * Pencarian terindeks dengan filter judul, abstrak, nama penulis, afiliasi organisasi, bidang kajian ilmiah (*Audit, Akuntansi, Pajak*), dan rentang tahun publikasi.
+7. **Arsitektur Panel Administrasi 2-Tingkat (Two-Tier Admin Studio):**
+   * **Level 1 - Admin Portal Open Gate (`/admin`):** Mengelola identitas organisasi penerbit (Praniti), kartu-kartu jurnal binaan, dan aset portal.
+   * **Level 2 - Editorial Studio JTEBA (`/index/JTEBA/admin`):** Pengelolaan naskah terbit, dewan redaksi, legalitas ISSN, 4 panel edisi & terbitan, pengumuman, narahubung WhatsApp, Google Drive index, indeksasi, dan kredensial PIN redaksi.
    * Tab persisten berbasis `sessionStorage` dengan dukungan hash navigasi (`#form-add-new-issue`).
 8. **Arsitektur Database SQLite D1 dengan Dynamic Partial Updates:**
    * Menggunakan query builder dinamis yang mencegah penimpaan kolom database yang tidak disentuh (misal: pengisian pengumuman tidak akan mereset data volume atau kontak).
@@ -161,14 +159,14 @@ flowchart LR
 ## 6. Struktur Proyek
 
 ```text
-serverless-open-journal-system/
+JTEBA-Open-Journal-System/
 ├── repository-worker/          # Script Cloudflare Worker Repositori Dokumen
 │   ├── worker.js              # Core Worker: Service Accounts, Router /one/, & Admin API
-│   ├── wrangler.toml          # Konfigurasi deployment worker CDN
+│   ├── wrangler.toml          # Konfigurasi deployment worker CDN jteba
 │   └── README.md              # Dokumentasi teknis repositori worker
 ├── src/
 │   ├── components/            # Komponen UI OJS (Header, SidebarOJS, ArticleItem, dll.)
-│   ├── config/                # Konfigurasi utama jurnal & generator URL (journal.ts)
+│   ├── config/                # Konfigurasi utama jurnal & generator URL
 │   ├── data/                  # Data in-memory fallback
 │   ├── layouts/               # Layout dasar Astro dengan metadata akademik
 │   ├── lib/                   # Integrasi Cloudflare D1, KV, dan modul ISSN
@@ -182,17 +180,21 @@ serverless-open-journal-system/
 │       │   ├── editorial.ts   # Kelola anggota dewan redaksi & reviewer
 │       │   ├── indexing.ts    # Kelola pangkalan pengindeksan ilmiah
 │       │   ├── issues.ts      # Manajemen volume, nomor edisi, & status rilis
+│       │   ├── portal-*.ts    # API portal Open Gate Praniti
 │       │   ├── settings.ts    # Pembaruan profil, identitas, & kontak jurnal
 │       │   └── template.ts    # Endpoint penyaji berkas template manuskrip Word
-│       ├── admin.astro        # Panel Administrasi Redaksi GUI terintegrasi
-│       ├── archives.astro     # Halaman arsip volume & edisi masa lalu
+│       ├── admin.astro        # Level 1: Panel Admin Portal Open Gate
+│       ├── index/             # Portal Multi-Jurnal
+│       │   └── JTEBA/         # Jurnal JTEBA
+│       │       ├── admin.astro # Level 2: Editorial Studio GUI JTEBA
+│       │       ├── archives.astro
+│       │       ├── current.astro
+│       │       ├── editorial-team.astro
+│       │       ├── guidelines.astro
+│       │       ├── index.astro
+│       │       └── submit.astro
 │       ├── article/           # Halaman detail naskah artikel ilmiah
-│       ├── current.astro      # Halaman terbitan terkini / Call for Papers
-│       ├── editorial-team.astro # Halaman dewan redaksi & mitra bestari
-│       ├── guidelines.astro   # Petunjuk penulisan bagi penulis naskah
-│       ├── index.astro        # Beranda jurnal (edisi aktif / inaugural banner)
-│       ├── search.astro       # Mesin pencarian artikel ilmiah multi-filter
-│       └── submit.astro       # Halaman pengajuan naskah online
+│       └── search.astro       # Mesin pencarian artikel ilmiah multi-filter
 ├── schema.sql                 # Skema tabel relasional database D1
 ├── seed.sql                   # Data awal inisialisasi instalasi jurnal
 └── wrangler.toml              # Konfigurasi Cloudflare Pages & D1/KV bindings
@@ -203,9 +205,8 @@ serverless-open-journal-system/
 ## 7. Cara Menjalankan Secara Lokal
 
 ```bash
-# 1. Clone repositori
-git clone https://github.com/sonhak-18/Serverless-Open-Journal-System.git
-cd Serverless-Open-Journal-System
+# 1. Masuk ke direktori
+cd JTEBA-Open-Journal-System
 
 # 2. Instal dependensi
 npm install
@@ -241,21 +242,26 @@ npm run deploy:cdn
 
 ---
 
-## 9. Panel Administrasi Redaksi (Editorial Studio GUI)
+## 9. Panel Administrasi 2-Tingkat (Two-Tier Admin Studio)
 
-* **URL Akses:** `http://localhost:4321/admin` (atau `https://jurnal.example.com/admin`)
+### A. Level 1: Admin Portal Open Gate (`/admin`)
+* **URL:** `http://localhost:4321/admin`
+* **Fungsi:** Mengelola identitas organisasi riset & penerbit (Praniti), kartu-kartu jurnal binaan, aset branding portal, dan autentikasi sesi portal.
+
+### B. Level 2: Editorial Studio GUI JTEBA (`/index/JTEBA/admin`)
+* **URL:** `http://localhost:4321/index/JTEBA/admin`
 * **Default Username:** `admin` | **Default PIN / Password:** `admin123`
 * **Navigasi Tab Terstruktur (Persisten via sessionStorage):**
-  1. **Terbitkan Naskah:** Tambah naskah artikel baru lengkap dengan generator slug URL, input multi-penulis dinamis, abstrak, kata kunci, dan penomoran DOI resmi.
+  1. **Terbitkan Naskah:** Tambah naskah artikel baru lengkap dengan generator slug URL, input multi-penulis dinamis, abstrak, kata kunci, dan penomoran DOI resmi JTEBA.
   2. **Naskah Terbit:** Tabel daftar artikel yang telah rilis dengan penghitung unduhan, pratinjau PDF, dan dialog konfirmasi hapus aman.
   3. **Tim Redaksi:** Kelola Pemimpin Redaksi (*Editor-in-Chief*), dewan editor bidang, dan mitra bestari (*reviewer*), dilengkapi saklar *Visibilitas Publik Menu & Halaman Tim Redaksi*.
-  4. **Profil Jurnal:** Pengaturan nama jurnal, inisial akronim, frekuensi, batas similarity Turnitin, lembaga penerbit (*publisher*), komunitas riset, alamat sekretariat, validasi real-time nomor e-ISSN/p-ISSN berstandar ISO 3297, serta pengunggah berkas logo, favicon, dan template Word (.docx).
+  4. **Profil Jurnal:** Pengaturan nama jurnal, inisial akronim, frekuensi, batas similarity Turnitin, organisasi penerbit (*publisher*), komunitas riset, alamat sekretariat, validasi real-time nomor e-ISSN/p-ISSN berstandar ISO 3297, serta pengunggah berkas logo, favicon, dan template Word (.docx).
   5. **Edisi & Terbitan:**
      * *Panel 1 (Status Publikasi):* Beralih antara *Mode Call for Papers (Menuju Edisi Perdana)* dan *Edisi Aktif Terpublikasi*.
      * *Panel 2 (Daftar Edisi & Terbitan):* Inventaris seluruh volume dan nomor terbitan beserta tombol *Jadikan Terkini* dan *Hapus*.
      * *Panel 3 (Tambah Edisi Baru):* Pendaftaran volume, nomor issue, tahun, periode bulan, tema edisi, dan cover.
      * *Panel 4 (Rincian Edisi Aktif):* Pengaturan detail teks volume aktif dan preview formula penomoran DOI per volume.
-  6. **Pengumuman:** Formulir pembuatan kartu pengumuman redaksi atau *Call for Papers* di beranda.
+  6. **Pengumuman:** Formulir pembuatan kartu pengumuman redaksi atau *Call for Papers* di beranda JTEBA.
   7. **Kontak & Narahubung:** Pengaturan tombol WhatsApp cepat, email redaksi, serta saklar tampilan widget sidebar (Pengindeks, Tools, ISSN Barcode).
   8. **Google Drive Index:** Sinkronisasi live berkas PDF di Google Drive dan integrasi pemilihan berkas instan ke form penerbitan.
   9. **Indeksasi & Akreditasi:** Kelola pangkalan data pengindeks (Google Scholar, Garuda, Crossref, Dimensions, SINTA) beserta tautan dan ikon.
@@ -273,6 +279,7 @@ npm run deploy:cdn
 | `/api/editorial` | `POST` | Menambah, menyunting, atau menghapus anggota dewan redaksi dan mitra bestari. |
 | `/api/indexing` | `POST` | Mengelola platform pengindeksan ilmiah dan status keterlihatan di sidebar. |
 | `/api/auth` | `POST` | Otentikasi sesi admin GUI dan pembaruan kredensial PIN / username. |
+| `/api/portal-*` | `POST` | Endpoint administrasi aset & kartu Open Gate Portal Praniti. |
 | `/api/template` | `GET` | Menyajikan unduhan berkas template manuskrip Word (`.docx`) aktif. |
 
 ---
@@ -335,7 +342,7 @@ Untuk rotasi kuota otomatis dan pencegahan limit unduhan (750 GB/hari per akun),
    repository-worker/serviceaccounts.json
    ```
    *(File ini sudah otomatis diabaikan oleh `.gitignore` sehingga tidak akan bocor ke GitHub).*
-2. Buka `repository-worker/worker.js` dan sesuaikan:
+2. Buka [`repository-worker/worker.js`](file:///d:/Gits/Private/JTEBA-Open-Journal-System/repository-worker/worker.js) dan sesuaikan:
    * `id`: Ganti `YOUR_GOOGLE_DRIVE_FOLDER_ID` dengan ID Folder Drive Anda.
    * `admin_token`: Ganti `your-secret-admin-token` dengan token rahasia pilihan Anda.
    * `PORTAL_URL`: Ganti dengan URL domain portal jurnal Anda (misal `https://jurnal.example.com`).

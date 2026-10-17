@@ -1,0 +1,242 @@
+---
+export const prerender = false;
+
+import Layout from '../../../layouts/Layout.astro';
+import SidebarOJS from '../../../components/SidebarOJS.astro';
+import ArticleItemOJS from '../../../components/ArticleItemOJS.astro';
+import { getDbSettings, getDbArticles } from '../../../lib/db';
+
+const d1 = (Astro.locals as any)?.runtime?.env?.DB;
+const journalConfig = await getDbSettings(d1);
+const allArticles = await getDbArticles(d1);
+
+const curVolume = journalConfig.currentIssue?.volume ?? 1;
+const curIssue = journalConfig.currentIssue?.issue ?? 1;
+const curYear = journalConfig.currentIssue?.year ?? 2026;
+const curPeriod = journalConfig.currentIssue?.period || 'Maret 2026';
+const curTheme = journalConfig.currentIssue?.theme || 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan';
+const curCoverUrl = journalConfig.currentIssue?.coverUrl || '';
+
+const cleanPeriod = curPeriod.replace(new RegExp(`\\s*\\(?${curYear}\\)?`, 'g'), '').trim();
+const displayPeriodWithYear = cleanPeriod ? `${cleanPeriod} ${curYear}` : String(curYear);
+
+const currentArticles = allArticles.filter(a => a.volume === curVolume && a.issue === curIssue);
+const displayArticles = currentArticles.length > 0 ? currentArticles : allArticles;
+
+const rawPrefix = (journalConfig.doiPrefix || '10.00000').trim().replace(/^https?:\/\/doi\.org\//i, '').replace(/\/$/, '');
+const cleanPrefix = (rawPrefix.includes('zenodo') || !rawPrefix.startsWith('10.')) ? '10.00000' : rawPrefix;
+const issueDoiUrl = cleanPrefix.includes(`/${journalConfig.shortName.toLowerCase()}`) 
+  ? `https://doi.org/${cleanPrefix}.v${curVolume}i${curIssue}`
+  : `https://doi.org/${cleanPrefix}/${journalConfig.shortName.toLowerCase()}.v${curVolume}i${curIssue}`;
+---
+
+<Layout title={journalConfig.features?.hasActiveIssue ? `Current Issue - Vol. ${curVolume} No. ${curIssue}` : "Current Issue - Menuju Edisi Perdana"} description={`Terbitan terkini ${journalConfig.name} - Vol. ${curVolume} No. ${curIssue}`}>
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Kolom Kiri: Edisi Terkini (~68%) -->
+      <main class="lg:col-span-8 space-y-6">
+        <div class="text-xs text-slate-500 mb-2">
+          <a href="/index/JTEBA" class="hover:underline">Home</a> &gt; <span>Current Issue</span>
+        </div>
+
+        {journalConfig.features?.hasActiveIssue ? (
+          <div>
+            <div class="border-b-2 border-academic-gold pb-2">
+              <h1 class="text-2xl md:text-3xl font-serif font-bold text-slate-900">
+                Vol. {curVolume} No. {curIssue} ({curYear}): {curPeriod}
+              </h1>
+              {curTheme && (
+                <p class="text-base text-slate-700 italic mt-1">
+                  Tema: {curTheme}
+                </p>
+              )}
+            </div>
+
+            <!-- Detail Terbitan & Cover -->
+            <div class="p-6 border border-slate-200 bg-white rounded flex flex-col sm:flex-row gap-6 items-start shadow-2xs mt-4">
+              {curCoverUrl ? (
+                <img
+                  src={curCoverUrl}
+                  alt={`Cover ${journalConfig.shortName} Vol. ${curVolume} No. ${curIssue}`}
+                  class="w-36 shrink-0 border border-slate-300 shadow-xs aspect-[3/4] object-cover rounded"
+                />
+              ) : (
+                <div class="w-36 shrink-0 border border-slate-300 shadow-xs bg-[#0f284e] text-white p-4 flex flex-col justify-between aspect-[3/4] text-center rounded">
+                  <div>
+                    <span class="text-xs font-bold uppercase tracking-widest block text-[#c89b3c]">{journalConfig.shortName}</span>
+                    <span class="text-xs font-bold mt-2.5 block leading-tight">
+                      {journalConfig.name.toUpperCase()}
+                    </span>
+                  </div>
+                  <div class="text-xs text-slate-300 border-t border-[#c89b3c]/40 pt-1 font-mono">
+                    Vol. {curVolume} No. {curIssue} ({curYear})
+                  </div>
+                </div>
+              )}
+
+              <div class="text-base text-slate-800 space-y-3 leading-relaxed">
+                <p class="font-medium text-slate-900">{curTheme}</p>
+                <div class="pt-3 text-sm text-slate-600 border-t border-slate-100 space-y-1.5">
+                  <div>
+                    <strong>DOI Edisi:</strong>{' '}
+                    <a href={issueDoiUrl} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
+                      {issueDoiUrl}
+                    </a>
+                  </div>
+                  <div>
+                    <strong>Periode:</strong> {curPeriod} ({curYear})
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Daftar Naskah OJS -->
+            <div class="mt-8 space-y-3">
+              <div class="border-b-2 border-academic-gold pb-2 flex justify-between items-baseline">
+                <h2 class="text-xl sm:text-2xl font-serif font-bold text-academic-navy">
+                  Articles
+                </h2>
+                <span class="text-sm text-slate-600 font-medium">
+                  {displayArticles.length} Naskah Terbit
+                </span>
+              </div>
+
+              {displayArticles.length > 0 ? (
+                <div class="divide-y divide-slate-200">
+                  {displayArticles.map((article) => (
+                    <ArticleItemOJS article={article} storage={journalConfig.storage} />
+                  ))}
+                </div>
+              ) : (
+                <div class="py-10 px-6 text-center border border-dashed border-slate-300 rounded bg-slate-50 text-slate-600 font-sans text-sm space-y-2">
+                  <p class="font-medium text-academic-navy">Belum ada naskah terbit pada edisi ini.</p>
+                  <p class="text-xs text-slate-500">Naskah yang telah lolos penelaahan sejawat (peer review) dan disetujui untuk publikasi akan tampil di bagian ini.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div class="space-y-6">
+            <div class="border-b-2 border-academic-gold pb-2 flex justify-between items-baseline flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-xs font-bold rounded uppercase tracking-wider">
+                  Call for Papers
+                </span>
+                <span class="text-xs text-slate-500 font-mono">Target Publikasi: {displayPeriodWithYear}</span>
+              </div>
+              <h1 class="text-2xl md:text-3xl font-serif font-bold text-slate-900 mt-1">
+                Menuju Edisi Perdana (Inaugural Issue)
+              </h1>
+            </div>
+
+            <!-- Card Undangan Publikasi -->
+            <div class="p-6 border border-slate-200 bg-white rounded shadow-2xs space-y-4">
+              <div class="flex flex-col sm:flex-row gap-6 items-start">
+                <!-- Cover Gambar Edisi (Dinamis dari Input Admin) / Mockup Elegan -->
+                {curCoverUrl ? (
+                  <img
+                    src={curCoverUrl}
+                    alt={`Cover Edisi Perdana ${journalConfig.shortName} Vol. ${curVolume} No. ${curIssue}`}
+                    class="w-36 sm:w-44 shrink-0 border border-slate-300 shadow-xs aspect-[3/4] object-cover rounded"
+                  />
+                ) : (
+                  <div class="w-36 shrink-0 border border-slate-300 shadow-xs bg-[#0f284e] text-white p-4 flex flex-col justify-between aspect-[3/4] text-center rounded">
+                    <div>
+                      <span class="text-xs font-bold uppercase tracking-widest block text-[#c89b3c]">{journalConfig.shortName}</span>
+                      <span class="text-xs font-bold mt-2.5 block leading-tight">
+                        {journalConfig.name.toUpperCase()}
+                      </span>
+                    </div>
+                    <div class="text-xs text-amber-300 border-t border-[#c89b3c]/40 pt-1 font-mono uppercase">
+                      Call for Papers
+                    </div>
+                    <div class="text-xs text-slate-200 pt-1 border-t border-[#c89b3c]/30 font-mono">
+                      {displayPeriodWithYear}
+                    </div>
+                  </div>
+                )}
+
+                <div class="space-y-3 text-slate-700 text-sm leading-relaxed flex-1">
+                  <p>
+                    Saat ini <strong>{journalConfig.name} ({journalConfig.shortName})</strong> belum merilis terbitan resmi karena seluruh naskah yang masuk sedang berada dalam tahapan <em>Double-Blind Peer Review</em> oleh para mitra bestari terakreditasi.
+                  </p>
+                  <p>
+                    Dewan Redaksi mengundang akademisi, peneliti, dosen, dan mahasiswa pascasarjana untuk berpartisipasi menerbitkan karya ilmiah orisinalnya dalam <strong>Edisi Perdana (Vol. {curVolume} No. {curIssue})</strong> periode <strong>{displayPeriodWithYear}</strong>.
+                  </p>
+
+                  <!-- Tema Edisi (Dinamis dari Input Admin) -->
+                  {curTheme && (
+                    <div class="p-3.5 bg-amber-50/80 border border-amber-200 rounded text-sm text-amber-950 font-medium space-y-1">
+                      <span class="font-bold text-amber-900 block text-xs uppercase tracking-wider">
+                        Tema Khusus Edisi Perdana:
+                      </span>
+                      <p class="leading-relaxed italic">
+                        "{curTheme}"
+                      </p>
+                    </div>
+                  )}
+
+                  <!-- Ketentuan Singkat Pengajuan -->
+                  <div class="p-4 bg-slate-50 rounded border border-slate-200 text-xs space-y-2">
+                    <div class="font-bold text-academic-navy">Ketentuan Singkat Pengajuan:</div>
+                    <ul class="list-disc list-inside text-slate-600 space-y-1">
+                      <li>Naskah ditulis sesuai template resmi jurnal (berkas .docx).</li>
+                      <li>Tingkat kemiripan (similarity) maksimal <strong>{journalConfig.submission?.turnitinMaxSimilarity || 20}%</strong> melalui Turnitin / iThenticate.</li>
+                      <li>Estimasi waktu proses penelaahan: <strong>{journalConfig.submission?.reviewTimeEstimate || '3 sampai 7 Hari Kerja'}</strong>.</li>
+                      <li>Memuat abstrak Bahasa Indonesia & Bahasa Inggris yang informatif.</li>
+                    </ul>
+                  </div>
+
+                  <div class="pt-2 flex flex-wrap items-center gap-3">
+                    <a
+                      href="/index/JTEBA/submission"
+                      class="px-5 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center gap-1.5"
+                    >
+                      <span>Ajukan Naskah (Submit Manuscript)</span>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </a>
+                    <a
+                      href={journalConfig.branding?.templateUrl || '/template-jteba.docx'}
+                      download
+                      class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded border border-slate-300 transition-colors flex items-center gap-1.5"
+                    >
+                      <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      <span>Unduh Template MS Word</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bagian Naskah Terbit Mode Call for Papers -->
+            <div class="mt-8 space-y-3">
+              <div class="border-b-2 border-academic-gold pb-2 flex justify-between items-baseline">
+                <h2 class="text-xl sm:text-2xl font-serif font-bold text-academic-navy">
+                  Articles
+                </h2>
+                <span class="text-sm text-slate-500 font-medium">
+                  Status: Call for Papers
+                </span>
+              </div>
+              <div class="py-12 px-6 text-center border border-dashed border-slate-300 rounded bg-slate-50 text-slate-600 font-sans text-xs space-y-2">
+                <p class="font-bold text-academic-navy text-sm">Belum Ada Naskah yang Terbit</p>
+                <p class="text-slate-500 max-w-md mx-auto">
+                  Seluruh artikel yang lolos penelaahan sejawat akan segera dipublikasikan di halaman ini secara berkala.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      <!-- Kolom Kanan: Sidebar Standarisasi OJS (~32%) -->
+      <div class="lg:col-span-4">
+        <SidebarOJS />
+      </div>
+    </div>
+  </div>
+</Layout>

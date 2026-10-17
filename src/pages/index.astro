@@ -2,284 +2,671 @@
 export const prerender = false;
 
 import Layout from '../layouts/Layout.astro';
-import SidebarOJS from '../components/SidebarOJS.astro';
-import ArticleItemOJS from '../components/ArticleItemOJS.astro';
-import { getDbSettings, getDbArticles } from '../lib/db';
+import { getDbSettings, getDbArticles, getDbPortalSettings } from '../lib/db';
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const journalConfig = await getDbSettings(d1);
 const allArticles = await getDbArticles(d1);
+const portal = await getDbPortalSettings(d1);
 
 const curVolume = journalConfig.currentIssue?.volume ?? 1;
 const curIssue = journalConfig.currentIssue?.issue ?? 1;
 const curYear = journalConfig.currentIssue?.year ?? 2026;
-const curPeriod = journalConfig.currentIssue?.period || 'Maret 2026';
-const curTheme = journalConfig.currentIssue?.theme || 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan';
-const curCoverUrl = journalConfig.currentIssue?.coverUrl || '';
 
-const cleanPeriod = curPeriod.replace(new RegExp(`\\s*\\(?${curYear}\\)?`, 'g'), '').trim();
-const displayPeriodWithYear = cleanPeriod ? `${cleanPeriod} ${curYear}` : String(curYear);
-
-const currentArticles = allArticles.filter(a => a.volume === curVolume && a.issue === curIssue);
-const displayArticles = currentArticles.length > 0 ? currentArticles : allArticles;
-
-const rawPrefix = (journalConfig.doiPrefix || '10.00000').trim().replace(/^https?:\/\/doi\.org\//i, '').replace(/\/$/, '');
-const cleanPrefix = (rawPrefix.includes('zenodo') || !rawPrefix.startsWith('10.')) ? '10.00000' : rawPrefix;
-const issueDoiUrl = cleanPrefix.includes(`/${journalConfig.shortName.toLowerCase()}`) 
-  ? `https://doi.org/${cleanPrefix}.v${curVolume}i${curIssue}`
-  : `https://doi.org/${cleanPrefix}/${journalConfig.shortName.toLowerCase()}.v${curVolume}i${curIssue}`;
+const cacheBuster = '20261017v2';
+const withVersion = (url?: string) => {
+  if (!url || url.startsWith('data:') || url.includes('?v=')) return url;
+  return `${url}?v=${cacheBuster}`;
+};
 ---
 
-<Layout>
-  <div class="max-w-7xl mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Kolom Kiri: Konten Utama Jurnal (~68%) -->
-      <main class="lg:col-span-8 space-y-6">
-        <!-- Pengumuman Redaksi dari Database -->
-        {journalConfig.announcement?.active && (
-          <div class="p-5 sm:p-6 bg-amber-50/70 border border-amber-200/80 rounded space-y-2 shadow-2xs">
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded">
-                Pengumuman Redaksi
-              </span>
-              <span class="text-xs text-slate-500 font-mono">
-                {journalConfig.announcement.date}
-              </span>
-            </div>
-            <h2 class="text-lg sm:text-xl font-serif font-bold text-academic-navy pt-0.5">
-              {journalConfig.announcement.title}
-            </h2>
-            <p class="text-base sm:text-lg text-slate-800 leading-relaxed pt-1">
-              {journalConfig.announcement.content}
-            </p>
-          </div>
-        )}
-
-        <!-- Bagian Terbitan Terkini (Current Issue Preview) / Call for Papers Mode -->
-        {journalConfig.features?.hasActiveIssue ? (
-          <div class="space-y-4">
-            <div class="border-b-2 border-academic-gold pb-2 flex justify-between items-baseline">
-              <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Terbitan Terkini (Current Issue)
-                </span>
-                <h2 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy mt-0.5">
-                  Vol. {curVolume} No. {curIssue} ({curYear}): {curPeriod}
-                </h2>
-              </div>
-              <a href="/current" class="text-xs text-blue-700 hover:underline font-semibold hidden sm:inline-block">
-                Halaman Terbitan Terkini →
-              </a>
-            </div>
-            {curTheme && (
-              <p class="text-base text-slate-700 italic mt-1">
-                Tema: {curTheme}
-              </p>
-            )}
-
-            <!-- Cover Jurnal & Metadata Terbitan -->
-            <div class="p-6 border border-slate-200 bg-white rounded flex flex-col sm:flex-row gap-6 items-start shadow-2xs">
-              {curCoverUrl ? (
-                <img
-                  src={curCoverUrl}
-                  alt={`Cover ${journalConfig.shortName} Vol. ${curVolume} No. ${curIssue}`}
-                  class="w-36 sm:w-40 shrink-0 border border-slate-300 shadow-xs aspect-[3/4] object-cover rounded"
-                />
-              ) : (
-                <!-- Cover Mockup Jurnal (Academic Navy & Gold) -->
-                <div class="w-36 sm:w-40 shrink-0 border border-slate-300 shadow-xs bg-[#0f284e] text-white p-4 flex flex-col justify-between aspect-[3/4] text-center rounded">
-                  <div>
-                    <span class="text-xs font-bold uppercase tracking-widest block text-[#c89b3c]">{journalConfig.shortName}</span>
-                    <span class="text-xs font-bold mt-2.5 block leading-tight">
-                      {journalConfig.name.toUpperCase()}
-                    </span>
-                  </div>
-                  <div class="text-xs text-slate-300 border-t border-[#c89b3c]/40 pt-1 font-mono">
-                    Vol. {curVolume} No. {curIssue} ({curYear})
-                  </div>
-                </div>
-              )}
-
-              <!-- Deskripsi & Info Resmi Terbitan -->
-              <div class="text-base text-slate-800 space-y-3 leading-relaxed">
-                <p>
-                  <strong>{journalConfig.name} ({journalConfig.shortName})</strong> adalah jurnal ilmiah telaah sejawat (<em>peer-reviewed</em>) yang mempublikasikan hasil riset teoretis dan empiris di bidang pemeriksaan akuntansi, pelaporan keuangan, auditing, tata kelola, dan perpajakan terapan.
-                </p>
-                <p class="text-slate-700">
-                  {curTheme}
-                </p>
-                <div class="pt-3 text-sm text-slate-600 border-t border-slate-100 space-y-1.5">
-                  <div>
-                    <strong>DOI Edisi:</strong>{' '}
-                    <a href={issueDoiUrl} target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono">
-                      {issueDoiUrl}
-                    </a>
-                  </div>
-                  <div>
-                    <strong>Periode Publikasi:</strong> {curPeriod} ({curYear})
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Daftar Artikel Terbitan -->
-            <div class="mt-8 space-y-3">
-              <div class="border-b-2 border-academic-gold pb-1.5 flex justify-between items-baseline">
-                <h2 class="text-lg font-serif font-bold text-academic-navy">
-                  Articles
-                </h2>
-                <span class="text-xs sm:text-sm text-slate-500 font-medium">
-                  {displayArticles.length} Naskah Terbit
-                </span>
-              </div>
-
-              {displayArticles.length > 0 ? (
-                <div class="divide-y divide-slate-200">
-                  {displayArticles.map((article) => (
-                    <ArticleItemOJS article={article} storage={journalConfig.storage} />
-                  ))}
-                </div>
-              ) : (
-                <div class="py-10 px-6 text-center border border-dashed border-slate-300 rounded bg-slate-50 text-slate-600 font-sans text-sm space-y-2">
-                  <p class="font-medium text-academic-navy">Belum ada naskah terbit pada edisi ini.</p>
-                  <p class="text-xs text-slate-500">Naskah yang telah disetujui akan tampil di bagian ini.</p>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div class="space-y-6">
-            <div class="border-b-2 border-academic-gold pb-2 flex justify-between items-baseline flex-wrap gap-2">
-              <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">
-                  Call for Papers & Naskah Ilmiah
-                </span>
-                <h2 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy mt-1.5">
-                  Menuju Edisi Perdana (Inaugural Issue)
-                </h2>
-              </div>
-              <span class="text-xs font-mono text-slate-500 font-semibold bg-slate-50 px-2.5 py-1 rounded border border-slate-200">
-                Target Terbit: {displayPeriodWithYear}
-              </span>
-            </div>
-
-            <!-- Kartu Undangan Naskah Terhubung Admin -->
-            <div class="p-6 border border-slate-200 bg-white rounded flex flex-col sm:flex-row gap-6 items-start shadow-2xs">
-              <!-- Cover Mockup Jurnal Elegan -->
-              {curCoverUrl ? (
-                <img
-                  src={curCoverUrl}
-                  alt={`Cover Edisi Perdana ${journalConfig.shortName} Vol. ${curVolume} No. ${curIssue}`}
-                  class="w-36 sm:w-44 shrink-0 border border-slate-300 shadow-xs aspect-[3/4] object-cover rounded"
-                />
-              ) : (
-                <div class="w-36 sm:w-44 shrink-0 border border-slate-300 shadow-xs bg-[#0f284e] text-white p-4 flex flex-col justify-between aspect-[3/4] text-center rounded">
-                  <div>
-                    <span class="text-xs font-bold uppercase tracking-widest block text-[#c89b3c]">{journalConfig.shortName}</span>
-                    <span class="text-xs font-bold mt-2 block leading-snug">
-                      {journalConfig.name.toUpperCase()}
-                    </span>
-                  </div>
-                  <div class="py-3 border-y border-[#c89b3c]/30 my-2">
-                    <span class="text-xs font-bold text-amber-300 block uppercase tracking-wider">Call for Papers</span>
-                    <span class="text-xs text-slate-200 block mt-0.5">Vol. {curVolume} No. {curIssue}</span>
-                  </div>
-                  <div class="text-xs text-slate-200 font-mono">
-                    {displayPeriodWithYear}
-                  </div>
-                </div>
-              )}
-
-              <!-- Deskripsi & Rincian dari Pengaturan Admin -->
-              <div class="text-sm text-slate-800 space-y-3 leading-relaxed flex-1">
-                <p>
-                  <strong>{journalConfig.name} ({journalConfig.shortName})</strong> saat ini membuka penerimaan naskah ilmiah (<em>Call for Papers</em>) untuk diterbitkan pada <strong>Edisi Perdana (Vol. {curVolume} No. {curIssue})</strong> periode <strong>{displayPeriodWithYear}</strong>.
-                </p>
-
-                <!-- Tema Edisi -->
-                {curTheme && (
-                  <div class="p-3.5 bg-amber-50/80 border border-amber-200 rounded text-sm text-amber-950 font-medium space-y-1">
-                    <span class="font-bold text-amber-900 block text-xs uppercase tracking-wider">
-                      Tema Khusus Edisi Perdana:
-                    </span>
-                    <p class="leading-relaxed italic">
-                      "{curTheme}"
-                    </p>
-                  </div>
-                )}
-
-                <!-- Teks Pengumuman / Ruang Lingkup -->
-                {journalConfig.announcement?.active && journalConfig.announcement.content ? (
-                  <div class="p-3.5 bg-slate-50 border border-slate-200 rounded text-xs text-slate-700 leading-relaxed">
-                    <strong class="text-academic-navy block mb-1">{journalConfig.announcement.title || 'Informasi Redaksi & Submisi'}:</strong>
-                    <p>{journalConfig.announcement.content}</p>
-                  </div>
-                ) : (
-                  <p class="text-slate-600 text-xs sm:text-sm">
-                    Kami mengundang para peneliti, akademisi, dosen, dan praktisi untuk mengirimkan hasil riset empiris bermutu tinggi yang orisinal dan belum pernah dipublikasikan di media lain.
-                  </p>
-                )}
-
-                <!-- Ketentuan Penulisan Dinamis dari Admin -->
-                <div class="bg-slate-50 p-3.5 rounded border border-slate-200 text-xs space-y-1.5">
-                  <div class="font-semibold text-academic-navy">Ketentuan Penulisan & Peer Review:</div>
-                  <ul class="list-disc list-inside text-slate-600 space-y-0.5">
-                    <li>Naskah disusun sesuai fokus dan ruang lingkup ilmiah terbitan berkala.</li>
-                    <li>Tingkat kemiripan (similarity) maksimal <strong>{journalConfig.submission?.turnitinMaxSimilarity || 20}%</strong> melalui Turnitin atau iThenticate.</li>
-                    <li>Estimasi waktu review redaksi: <strong>{journalConfig.submission?.reviewTimeEstimate || '3 sampai 7 Hari Kerja'}</strong>.</li>
-                    <li>Naskah wajib disusun sesuai pedoman dan template resmi jurnal (.docx).</li>
-                  </ul>
-                </div>
-
-                <div class="pt-2 flex flex-wrap items-center gap-3">
-                  <a
-                    href="/submit"
-                    class="px-4 py-2 bg-academic-navy hover:bg-academic-navy-light text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center gap-1.5"
-                  >
-                    <span>Kirim Naskah (Submit Paper)</span>
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </a>
-                  <a
-                    href={journalConfig.branding?.templateUrl || '/template-jtaap.docx'}
-                    download
-                    class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded border border-slate-300 transition-colors flex items-center gap-1.5"
-                  >
-                    <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    <span>Unduh Template Naskah</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bagian Naskah Terbit Mode Call for Papers -->
-            <div class="mt-8 space-y-3">
-              <div class="border-b-2 border-academic-gold pb-1.5 flex justify-between items-baseline">
-                <h2 class="text-lg font-serif font-bold text-academic-navy">
-                  Articles
-                </h2>
-                <span class="text-xs text-slate-500 font-medium">
-                  Menuju Edisi Perdana
-                </span>
-              </div>
-              <div class="py-10 px-6 text-center border border-dashed border-slate-300 rounded bg-slate-50 text-slate-600 font-sans text-xs space-y-2">
-                <p class="font-bold text-academic-navy text-sm">Penerimaan Naskah Sedang Berlangsung</p>
-                <p class="text-slate-500 max-w-lg mx-auto">
-                  Naskah yang telah lolos tahap <em>Double-Blind Peer Review</em> akan segera dipublikasikan pada Edisi Perdana (Vol. {curVolume} No. {curIssue}). Silakan submit naskah Anda melalui menu Pengajuan Naskah.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
-
-      <!-- Kolom Kanan: Sidebar Standarisasi Jurnal (~32%) -->
-      <div class="lg:col-span-4">
-        <SidebarOJS />
+<Layout 
+  title={portal.orgName}
+  exactTitle={true}
+  description={portal.description}
+  faviconUrl={withVersion(portal.faviconUrl || '/favicon-jteba.png')}
+  showHeader={false}
+  showFooter={false}
+>
+  <!-- TOP UTILITY BAR -->
+  <div class="bg-[#07172e] text-slate-300 text-xs py-2 px-4 border-b border-[#0f2c59]/80">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+      <div class="flex items-center gap-2 font-medium">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span class="text-slate-200 tracking-wide font-semibold">PRANITI INSTITUTE</span>
+        <span class="text-slate-500">•</span>
+        <span class="text-slate-400 italic">{portal.orgName}</span>
+      </div>
+      <div class="flex items-center gap-4 text-xs">
+        <span class="font-mono text-slate-400 bg-white/5 px-2 py-0.5 rounded border border-white/10">
+          {portal.domainDisplay}
+        </span>
       </div>
     </div>
   </div>
+
+  <!-- MODERN NAVIGATION BAR -->
+  <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
+      <!-- Official Logo Brand (Prominent & Crisp) -->
+      <a href="/" class="flex items-center gap-3 group py-1" title={`Beranda ${portal.orgName}`}>
+        <img
+          src={withVersion(portal.logoUrl || '/images/logo-praniti.png')}
+          alt={`Logo Resmi ${portal.orgName}`}
+          class="h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+        />
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <div class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
+        <a href="#journals" class="hover:text-[#0f2c59] transition-colors">Jurnal Ilmiah</a>
+        <a href="#about" class="hover:text-[#0f2c59] transition-colors">Profil Organisasi</a>
+        <a href="#values" class="hover:text-[#0f2c59] transition-colors">Nilai PRANITI</a>
+        <a href="#programs" class="hover:text-[#0f2c59] transition-colors">Klaster Riset</a>
+      </div>
+
+      <!-- Quick Action Button to Flagship Journal -->
+      <div class="flex items-center gap-2.5">
+        <a
+          href={portal.flagshipJournalUrl || '/index/JTEBA'}
+          class="px-4 py-2 bg-[#0f2c59] hover:bg-[#183e6d] text-white text-xs font-bold rounded shadow-xs transition-all flex items-center gap-1.5"
+        >
+          <span>Kunjungi JTEBA</span>
+          <svg class="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MODERN HERO BANNER (Clean, Prestigious, Academic Elegance) -->
+  <header class="bg-gradient-to-b from-slate-900 via-[#0b2040] to-[#0f2c59] text-white py-16 sm:py-20 px-4 relative overflow-hidden">
+    <!-- Subtle Geometric Glow Background -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(30,86,49,0.22),transparent_45%),radial-gradient(circle_at_80%_70%,rgba(200,155,60,0.15),transparent_45%)] pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto relative z-10 space-y-8">
+      <div class="max-w-3xl space-y-4">
+        <!-- Live Pill Badge -->
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/15 rounded-full text-xs font-semibold tracking-wider text-emerald-300">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Portal Gerbang Penerbit Ilmiah Mandiri</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight">
+          {portal.orgName}
+        </h1>
+        <p class="text-base sm:text-xl text-slate-200 font-light tracking-wide">
+          {portal.orgNameEn}
+        </p>
+
+        <!-- Slogan Resmi Tagline Card -->
+        <div class="p-4 sm:p-5 bg-white/5 border border-white/15 rounded-xl backdrop-blur-md space-y-1.5 border-l-4 border-l-[#c89b3c]">
+          <div class="text-base sm:text-lg font-bold text-amber-300 tracking-wide">
+            "{portal.sloganId}"
+          </div>
+          <div class="text-xs sm:text-sm text-slate-300 italic">
+            "{portal.sloganEn}"
+          </div>
+        </div>
+
+        <p class="text-sm sm:text-base text-slate-300 leading-relaxed pt-1">
+          {portal.description}
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3 pt-3">
+          <a
+            href="#journals"
+            class="px-5 py-3 bg-[#c89b3c] hover:bg-[#b0842b] text-slate-900 font-bold text-xs uppercase tracking-wider rounded shadow-md transition-all flex items-center gap-2"
+          >
+            <span>Daftar Jurnal Berkala</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </a>
+          <a
+            href="/index/JTEBA"
+            class="px-5 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-xs uppercase tracking-wider rounded transition-all flex items-center gap-2"
+          >
+            <span>Buka Jurnal JTEBA</span>
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 4 HIGHLIGHT PILL CARDS (Modern Grid) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-white/10">
+        <div class="p-4 bg-white/5 border border-white/10 rounded-xl backdrop-blur-sm space-y-1">
+          <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5 uppercase tracking-wider">
+            <span>✓</span> Open Access
+          </div>
+          <div class="text-sm font-semibold text-white">Akses Terbuka Penuh</div>
+          <p class="text-xs text-slate-300">Bebas diakses, dibaca, dan diunduh tanpa pembatasan biaya bagi pembaca.</p>
+        </div>
+
+        <div class="p-4 bg-white/5 border border-white/10 rounded-xl backdrop-blur-sm space-y-1">
+          <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5 uppercase tracking-wider">
+            <span>✓</span> COPE Compliant
+          </div>
+          <div class="text-sm font-semibold text-white">Integritas Akademik</div>
+          <p class="text-xs text-slate-300">Menolak manipulasi data, fabrikasi naskah, dan praktik rekayasa sitasi.</p>
+        </div>
+
+        <div class="p-4 bg-white/5 border border-white/10 rounded-xl backdrop-blur-sm space-y-1">
+          <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5 uppercase tracking-wider">
+            <span>✓</span> Hak Cipta Penulis
+          </div>
+          <div class="text-sm font-semibold text-white">Lisensi CC BY-SA 4.0</div>
+          <p class="text-xs text-slate-300">Penulis memegang hak cipta penuh atas manuskrip yang dipublikasikan.</p>
+        </div>
+
+        <div class="p-4 bg-white/5 border border-white/10 rounded-xl backdrop-blur-sm space-y-1">
+          <div class="text-amber-300 font-bold text-xs flex items-center gap-1.5 uppercase tracking-wider font-mono">
+            <span>🏛️</span> Domain Resmi
+          </div>
+          <div class="text-sm font-semibold text-white font-mono">ejournal.praniti.or.id</div>
+          <p class="text-xs text-slate-300">Infrastruktur penerbitan OJS 3 terpusat dan berkecepatan tinggi.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN OPEN GATE CONTENT BODY -->
+  <main class="max-w-7xl mx-auto px-4 py-16 space-y-20">
+
+    <!-- SECTION 1: PUSAT PUBLIKASI JURNAL BERKALA ILMIAH -->
+    <section id="journals" class="space-y-8 scroll-mt-24">
+      <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-4 gap-3">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-[#c89b3c] font-mono block">
+            Journal Publishing Cluster
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-[#0f2c59] mt-1">
+            Pusat Publikasi Jurnal Berkala Ilmiah
+          </h2>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-600 max-w-md">
+          Pengelolaan jurnal elektronik berbasis sistem penelaahan sejawat ganda (<em class="text-slate-800">double-blind peer review</em>) taat asas.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <!-- KARTU JURNAL UTAMA: JTEBA (Modern Rework) -->
+        <article class="lg:col-span-8 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
+          <div class="p-6 sm:p-8 space-y-6">
+            <!-- Header Badge Row -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-full flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span>Open Access</span>
+                </span>
+                {journalConfig.features?.hasActiveIssue ? (
+                  <span class="px-3 py-1 bg-blue-50 text-blue-800 border border-blue-200 text-xs font-bold rounded-full font-mono">
+                    Vol. {curVolume} No. {curIssue} ({curYear})
+                  </span>
+                ) : (
+                  <span class="px-3 py-1 bg-blue-50 text-blue-800 border border-blue-200 text-xs font-bold rounded-full">
+                    Menuju Edisi Perdana
+                  </span>
+                )}
+                <span class="px-3 py-1 bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold rounded-full">
+                  Call for Papers
+                </span>
+              </div>
+              <span class="text-xs font-mono font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
+                Singkatan: JTEBA
+              </span>
+            </div>
+
+            <!-- Title & Subtitle with Emblem -->
+            <div class="flex items-start gap-4">
+              <img
+                src={withVersion(portal.flagshipJournalEmblemUrl || '/favicon-jteba.png')}
+                alt={`Emblem Resmi ${portal.flagshipJournalName}`}
+                class="w-14 h-14 rounded-xl border border-slate-200 shadow-xs object-contain shrink-0 hidden sm:block bg-white p-1.5"
+              />
+              <div class="space-y-1">
+                <h3 class="text-2xl sm:text-3xl font-bold text-[#0f2c59] leading-snug">
+                  <a href={portal.flagshipJournalUrl || '/index/JTEBA'} class="hover:text-emerald-700 transition-colors">
+                    {portal.flagshipJournalName || 'JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas'}
+                  </a>
+                </h3>
+                <p class="text-sm sm:text-base text-slate-500 italic font-medium">
+                  {portal.flagshipJournalEn || 'Open Journal of Economics, Business, and Accountability'}
+                </p>
+              </div>
+            </div>
+
+            <!-- Focus & Scope Pillars Grid -->
+            <div class="space-y-2.5 pt-2">
+              <div class="text-xs font-bold uppercase tracking-wider text-slate-700">
+                Fokus dan Ruang Lingkup Publikasi (Focus & Scope):
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3.5 bg-emerald-50/60 border border-emerald-200 rounded-xl space-y-1">
+                  <strong class="text-emerald-950 font-bold block text-sm">A. Akuntansi Keberlanjutan & ESG</strong>
+                  <p class="text-slate-700 leading-relaxed text-xs">
+                    Sustainability reporting (GRI, IFRS S1 & S2), pengungkapan ESG, akuntansi lingkungan & karbon.
+                  </p>
+                </div>
+
+                <div class="p-3.5 bg-amber-50/60 border border-amber-200 rounded-xl space-y-1">
+                  <strong class="text-amber-950 font-bold block text-sm">B. Perpajakan & Kebijakan Fiskal</strong>
+                  <p class="text-slate-700 leading-relaxed text-xs">
+                    Tax compliance, tax avoidance, pajak karbon, perpajakan ekonomi digital & kebijakan fiskal makro.
+                  </p>
+                </div>
+
+                <div class="p-3.5 bg-blue-50/60 border border-blue-200 rounded-xl space-y-1">
+                  <strong class="text-blue-950 font-bold block text-sm">C. Auditing, Forensik & Tata Kelola</strong>
+                  <p class="text-slate-700 leading-relaxed text-xs">
+                    Audit quality, fraud investigation, whistleblowing system, dan Good Corporate Governance (GCG).
+                  </p>
+                </div>
+
+                <div class="p-3.5 bg-indigo-50/60 border border-indigo-200 rounded-xl space-y-1">
+                  <strong class="text-indigo-950 font-bold block text-sm">D. Dinamika Ekonomi & Bisnis Terapan</strong>
+                  <p class="text-slate-700 leading-relaxed text-xs">
+                    Kinerja korporasi, kewirausahaan hijau, keuangan digital/fintech, dan UMKM berkelanjutan.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Extra Metadata Row -->
+            <div class="flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-slate-600 pt-2 border-t border-slate-100">
+              <div><strong>Frekuensi Terbit:</strong> {journalConfig.publicationFrequency || '2 Kali/Tahun (Maret & September)'}</div>
+              <div><strong>Penelaahan:</strong> Double-Blind Peer Review</div>
+              <div><strong>Penerbit:</strong> {journalConfig.publisher}</div>
+              {journalConfig.features?.showIssnBlock && (
+                <>
+                  <div><strong>e-ISSN:</strong> <span class="font-mono text-slate-800 font-semibold">{journalConfig.eIssn}</span> (Online)</div>
+                  <div><strong>p-ISSN:</strong> <span class="font-mono text-slate-800 font-semibold">{journalConfig.pIssn}</span> (Print)</div>
+                </>
+              )}
+            </div>
+          </div>
+
+          <!-- Bottom Action Buttons Cluster -->
+          <div class="bg-slate-50 border-t border-slate-200 p-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+              <a
+                href="/index/JTEBA"
+                class="px-4 py-2.5 bg-[#0f2c59] hover:bg-[#183e6d] text-white text-xs font-bold rounded-lg shadow-xs transition-colors flex items-center gap-1.5"
+              >
+                <span>Lihat Jurnal (View Journal)</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
+              <a
+                href="/index/JTEBA/current"
+                class="px-3.5 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs rounded-lg transition-colors"
+              >
+                Terbitan Terkini
+              </a>
+              <a
+                href="/index/JTEBA/archives"
+                class="px-3.5 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs rounded-lg transition-colors"
+              >
+                Arsip
+              </a>
+              <a
+                href="/index/JTEBA/guidelines"
+                class="px-3.5 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs rounded-lg transition-colors"
+              >
+                Pedoman Penulis
+              </a>
+              <a
+                href="/index/JTEBA/search"
+                class="px-3.5 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs rounded-lg transition-colors flex items-center gap-1"
+              >
+                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <span>Cari Artikel</span>
+              </a>
+            </div>
+
+            <a
+              href="/index/JTEBA/submit"
+              class="w-full sm:w-auto text-center px-4 py-2.5 bg-[#c89b3c] hover:bg-[#b0842b] text-slate-900 font-bold text-xs uppercase tracking-wider rounded-lg shadow-xs transition-colors flex items-center justify-center gap-1.5"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              <span>Kirim Naskah (Submit)</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- KARTU JURNAL INTIATIF (FORTHCOMING) -->
+        <article class="lg:col-span-4 bg-gradient-to-br from-slate-50 to-slate-100/80 border border-slate-200 border-dashed rounded-2xl p-6 sm:p-7 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <span class="px-2.5 py-0.5 bg-purple-100 text-purple-900 border border-purple-200 text-xs font-bold rounded-full">
+                Segera Hadir
+              </span>
+              <span class="text-xs font-mono text-slate-500">Forthcoming</span>
+            </div>
+
+            <div class="space-y-1">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Lini Bahasa & Sastra Inggris</span>
+              <h3 class="text-xl font-bold text-slate-800 leading-snug">
+                Journal of English Studies, Applied Linguistics, and Literature
+              </h3>
+              <p class="text-xs text-slate-600 italic font-medium">
+                Wadah Telaah Kritis Bahasa, Linguistik Terapan, dan Sastra Inggris
+              </p>
+            </div>
+
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Praniti tengah menyiapkan wadah publikasi berkala mandiri untuk mengkaji kritik sastra (Literary Criticism), analisis wacana kritis (Critical Discourse Analysis), studi penerjemahan, serta komunikasi bisnis internasional.
+            </p>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 text-xs text-slate-700 space-y-1.5">
+              <div class="font-bold text-slate-900 text-xs">Cakupan Inisiatif:</div>
+              <ul class="list-disc list-inside space-y-1 text-slate-700 text-xs">
+                <li>Kritik Sastra & Sastra Bandingan</li>
+                <li>Linguistik Terapan & Sosiolinguistik</li>
+                <li>Analisis Wacana & Retorika Korporasi</li>
+                <li>English for Specific Purposes (ESP)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-200">
+            <div class="p-3 bg-purple-50/80 rounded-xl border border-purple-200 text-center text-xs text-purple-950 font-medium">
+              Tahap persiapan dewan editorial & sistem OJS.
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SECTION 2: FILOSOFI & ETIMOLOGI PRANITI -->
+    <section id="about" class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-10 shadow-xs space-y-6 scroll-mt-24">
+      <div class="border-b border-slate-200 pb-4">
+        <span class="text-xs font-bold uppercase tracking-wider text-[#c89b3c] font-mono block">
+          Etymology & Philosophical Foundation
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-[#0f2c59] mt-1">
+          Filosofi & Arti Nama Praniti (प्रणीति)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <!-- Sanskerta Callout -->
+        <div class="md:col-span-5 bg-gradient-to-br from-[#0f2c59] to-[#184687] text-white p-7 sm:p-8 rounded-2xl shadow-sm space-y-4">
+          <div class="text-4xl sm:text-5xl text-amber-300 font-bold">
+            प्रणीति
+          </div>
+          <h3 class="text-lg font-bold text-white">
+            Praniti (Sanskerta / Khazanah Klasik)
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-light">
+            Mengandung makna tindakan menuntun, kepemimpinan yang arif (<em class="text-amber-200 font-normal">guided conduct</em>), kebijaksanaan terarah, serta penyusunan karya secara saksama dan beraturan.
+          </p>
+        </div>
+
+        <div class="md:col-span-7 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
+          <p>
+            Secara filosofis akademik, <strong>Organisasi Riset dan Publikasi Ilmiah Praniti</strong> berkedudukan sebagai kompas moral dan intelektual yang mengarahkan akademisi, peneliti, dan praktisi dalam melahirkan karya ilmiah yang sahih secara metodologis, mandiri, akuntabel, serta memberikan kemaslahatan nyata bagi peradaban dan literasi global.
+          </p>
+          <div class="p-4 bg-slate-50 border-l-4 border-l-[#0f2c59] rounded-r-xl text-xs sm:text-sm text-slate-800 space-y-1.5">
+            <strong class="text-[#0f2c59] block font-bold text-sm">Visi Organisasi:</strong>
+            <blockquote class="italic leading-relaxed text-slate-700">
+              "Menjadi organisasi riset dan penerbitan ilmiah independen terkemuka yang menjunjung tinggi keterbukaan ilmu (open science), integritas akademik, serta keunggulan multidisiplin pada rumpun ilmu ekonomi-bisnis berkelanjutan dan humaniora-sastra di tingkat nasional maupun internasional."
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: 7 NILAI DASAR P-R-A-N-I-T-I (Modern Grid) -->
+    <section id="values" class="space-y-6 scroll-mt-24">
+      <div class="border-b border-slate-200 pb-4">
+        <span class="text-xs font-bold uppercase tracking-wider text-[#c89b3c] font-mono block">
+          Core Values
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-[#0f2c59] mt-1">
+          Tujuh Nilai Dasar — P-R-A-N-I-T-I
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1">
+          Prinsip fundamental yang memandu setiap kebijakan editorial dan riset terapan organisasi.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- P -->
+        <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
+              P
+            </span>
+            <h3 class="text-base font-bold text-slate-900">Profesional</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Berkomitmen penuh pada standar baku tata kelola penerbitan ilmiah, objektivitas penelaahan sejawat, dan ketepatan periodisitas terbitan.
+          </p>
+        </div>
+
+        <!-- R -->
+        <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
+              R
+            </span>
+            <h3 class="text-base font-bold text-slate-900">Resik & Transparan</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Menolak segala bentuk manipulasi data, fabrikasi karya, rekayasa sitasi, serta praktik publikasi yang mencederai integritas etika ilmiah.
+          </p>
+        </div>
+
+        <!-- A -->
+        <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
+              A
+            </span>
+            <h3 class="text-base font-bold text-slate-900">Akuntabel</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Memastikan setiap naskah, laporan riset, dan kebijakan editorial dapat dipertanggungjawabkan metodologi, keabsahan data, serta rujukannya.
+          </p>
+        </div>
+
+        <!-- N -->
+        <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
+              N
+            </span>
+            <h3 class="text-base font-bold text-slate-900">Nalar Kritis</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Menempatkan ketajaman analisis logis, objektivitas berpikir, dan kemandirian ilmiah di atas segala kepentingan pragmatis golongan.
+          </p>
+        </div>
+
+        <!-- I -->
+        <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
+              I
+            </span>
+            <h3 class="text-base font-bold text-slate-900">Inklusif & Terbuka</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Menyediakan ruang berekspresi ilmiah yang setara bagi setiap akademisi, peneliti mandiri, maupun praktisi tanpa sekat senioritas atau asal institusi.
+          </p>
+        </div>
+
+        <!-- T -->
+        <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
+              T
+            </span>
+            <h3 class="text-base font-bold text-slate-900">Tanggap Isu Kontemporer</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Responsif terhadap dinamika global, khususnya krisis lingkungan (akuntansi hijau & ESG), etika fiskal/bisnis, hingga perkembangan bahasa dan sastra digital.
+          </p>
+        </div>
+
+        <!-- I (Inovatif) Span Full -->
+        <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2 sm:col-span-2 lg:col-span-3">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
+              I
+            </span>
+            <h3 class="text-base font-bold text-slate-900">Inovatif</h3>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Memanfaatkan infrastruktur teknologi informasi secara optimal dalam tata kelola alur kerja editorial, preservasi digital, serta standarisasi metadata global (Crossref/DOI).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: MISI ORGANISASI & PILAR PROGRAM KLASTER -->
+    <section id="programs" class="grid grid-cols-1 md:grid-cols-12 gap-8 scroll-mt-24">
+      <!-- 5 Misi Utama -->
+      <div class="md:col-span-6 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-5">
+        <div class="border-b border-slate-100 pb-3">
+          <span class="text-xs font-mono font-bold uppercase text-[#c89b3c]">Mission</span>
+          <h3 class="text-xl font-bold text-[#0f2c59] mt-0.5">5 Misi Utama Organisasi</h3>
+        </div>
+        <ol class="space-y-3.5 text-xs sm:text-sm text-slate-700 leading-relaxed list-decimal list-inside pl-1">
+          {portal.missions && portal.missions.map((mission) => {
+            const parts = mission.split(':');
+            return parts.length > 1 ? (
+              <li><strong>{parts[0]}:</strong>{parts.slice(1).join(':')}</li>
+            ) : (
+              <li>{mission}</li>
+            );
+          })}
+        </ol>
+      </div>
+
+      <!-- Klaster Riset B & C -->
+      <div class="md:col-span-6 space-y-5">
+        <!-- Klaster B -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-2.5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+            <span class="text-xs font-mono font-bold text-[#c89b3c] uppercase">Klaster B</span>
+            <span class="text-xs text-slate-500 font-mono">Interdisciplinary Research</span>
+          </div>
+          <h4 class="text-base font-bold text-slate-900">Riset Terapan & Kajian Antardisiplin</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Mengkaji titik temu antara komunikasi bisnis internasional, narasi korporasi (corporate narrative disclosure), retorika pengungkapan laporan ESG, analisis semiotika laporan tahunan, serta penyusunan ringkasan kebijakan (Policy Briefs).
+          </p>
+        </div>
+
+        <!-- Klaster C -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-2.5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+            <span class="text-xs font-mono font-bold text-[#c89b3c] uppercase">Klaster C</span>
+            <span class="text-xs text-slate-500 font-mono">Academic Capacity & Services</span>
+          </div>
+          <h4 class="text-base font-bold text-slate-900">Pengembangan Kapasitas & Layanan Bahasa</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Lokakarya tata kelola sistem OJS 3, etika publikasi ilmiah internasional, pendampingan penulisan artikel ilmiah (academic writing), uji kemiripan teks (similarity check), serta penyuntingan naskah (copyediting & proofreading).
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODERN INSTITUTIONAL FOOTER -->
+  <footer class="bg-[#07172e] text-slate-300 border-t border-[#0f2c59] mt-20 pt-12 pb-8 px-4">
+    <div class="max-w-7xl mx-auto space-y-10">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        <!-- Logo & About on Left -->
+        <div class="md:col-span-6 space-y-4">
+          <img
+            src={withVersion('/images/logo-praniti.png')}
+            alt="Logo Resmi Praniti"
+            class="h-12 w-auto object-contain brightness-0 invert opacity-95"
+          />
+          <p class="text-xs text-slate-300 leading-relaxed max-w-lg">
+            Organisasi riset dan penerbitan ilmiah independen yang berdedikasi memajukan peradaban ilmu melalui publikasi berkala berkualitas tinggi, riset antardisiplin, dan keterbukaan akses pengetahuan secara global.
+          </p>
+          <div class="text-xs text-[#c89b3c] italic font-semibold">
+            "Menuntun Nalar, Mengabdi pada Kebenaran Ilmiah"
+          </div>
+        </div>
+
+        <!-- Quick Journal Links -->
+        <div class="md:col-span-3 space-y-2.5">
+          <h5 class="text-xs font-mono font-bold uppercase tracking-wider text-white border-b border-slate-800 pb-2">
+            Publikasi Berkala
+          </h5>
+          <ul class="space-y-2 text-xs text-slate-300">
+            <li>
+              <a href="/index/JTEBA" class="hover:text-amber-300 transition-colors">
+                JTEBA (Ekonomi, Bisnis & Akuntabilitas)
+              </a>
+            </li>
+            <li>
+              <a href="/index/JTEBA/current" class="hover:text-amber-300 transition-colors">
+                Terbitan Terkini JTEBA
+              </a>
+            </li>
+            <li>
+              <a href="/index/JTEBA/archives" class="hover:text-amber-300 transition-colors">
+                Arsip Terbitan JTEBA
+              </a>
+            </li>
+            <li>
+              <a href="/index/JTEBA/guidelines" class="hover:text-amber-300 transition-colors">
+                Pedoman Penulis & Etika
+              </a>
+            </li>
+            <li>
+              <a href="/index/JTEBA/submit" class="hover:text-amber-300 transition-colors">
+                Pengiriman Naskah Online
+              </a>
+            </li>
+            <li>
+              <a href="/index/JTEBA/search" class="hover:text-amber-300 transition-colors">
+                Pencarian Naskah (Search)
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Institutional Links -->
+        <div class="md:col-span-3 space-y-2.5">
+          <h5 class="text-xs font-mono font-bold uppercase tracking-wider text-white border-b border-slate-800 pb-2">
+            Navigasi Portal
+          </h5>
+          <ul class="space-y-2 text-xs text-slate-300">
+            <li><a href="#about" class="hover:text-amber-300 transition-colors">Filosofi Praniti (प्रणीति)</a></li>
+            <li><a href="#values" class="hover:text-amber-300 transition-colors">Tujuh Nilai Dasar P-R-A-N-I-T-I</a></li>
+            <li><a href="/index/JTEBA/indexing" class="hover:text-amber-300 transition-colors">Indeksasi & Repositori</a></li>
+            <li><a href="/admin" class="hover:text-amber-300 transition-colors">Admin Portal Penerbit</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="border-t border-slate-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-300 gap-3">
+        <div>
+          Copyright © 2026 Organisasi Riset dan Publikasi Ilmiah Praniti. Hak Cipta Dilindungi Undang-Undang.
+        </div>
+        <div class="flex items-center gap-3">
+          <span>Creative Commons CC BY-SA 4.0</span>
+          <span>•</span>
+          <span class="font-mono text-emerald-400 font-semibold">ejournal.praniti.or.id</span>
+        </div>
+      </div>
+    </div>
+  </footer>
 </Layout>

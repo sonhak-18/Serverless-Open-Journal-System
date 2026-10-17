@@ -8,21 +8,39 @@ import '../styles/global.css';
 
 interface Props {
   title?: string;
+  exactTitle?: boolean;
   description?: string;
   article?: Article;
+  faviconUrl?: string;
+  showHeader?: boolean;
+  showFooter?: boolean;
 }
 
-const { title, description, article } = Astro.props;
+const { 
+  title, 
+  exactTitle = false, 
+  description, 
+  article, 
+  faviconUrl,
+  showHeader = true, 
+  showFooter = true 
+} = Astro.props;
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const journalConfig = await getDbSettings(d1);
 
-const pageTitle = title 
-  ? `${title} | ${journalConfig.shortName}` 
-  : `${journalConfig.name} (${journalConfig.shortName})`;
+const effectiveFavicon = faviconUrl || journalConfig.branding?.faviconUrl || '/favicon-jteba.png';
+const cacheBuster = '20261017v2';
+const faviconWithVersion = effectiveFavicon.startsWith('data:') ? effectiveFavicon : `${effectiveFavicon}?v=${cacheBuster}`;
+
+const pageTitle = exactTitle
+  ? (title || journalConfig.name)
+  : (title 
+      ? `${title} | ${journalConfig.shortName}` 
+      : `${journalConfig.name} (${journalConfig.shortName})`);
 
 const metaDescription = description || 
-  `Portal publikasi ilmiah ${journalConfig.name}. Peer-reviewed Diamond Open Access bidang Audit, Akuntansi, dan Perpajakan. Diterbitkan oleh ${journalConfig.publisher}.`;
+  `Portal publikasi ilmiah ${journalConfig.name} (${journalConfig.shortName}). Open Access peer-reviewed bidang Akuntansi Keberlanjutan & ESG, Perpajakan, Auditing & Tata Kelola, serta Dinamika Ekonomi & Bisnis. Diterbitkan oleh ${journalConfig.publisher}.`;
 
 const canonicalOrigin = Astro.url.origin && !Astro.url.origin.includes('localhost') && !Astro.url.origin.includes('pages.dev')
   ? Astro.url.origin
@@ -45,12 +63,20 @@ if (article) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href={journalConfig.branding?.faviconUrl || '/favicon.png'} />
-    <link rel="apple-touch-icon" href={journalConfig.branding?.faviconUrl || '/favicon.png'} />
+    <link rel="icon" type="image/png" sizes="32x32" href={faviconWithVersion} />
+    <link rel="icon" type="image/png" sizes="192x192" href={faviconWithVersion} />
+    <link rel="icon" type="image/png" href={faviconWithVersion} />
+    <link rel="shortcut icon" href={faviconWithVersion} />
+    <link rel="apple-touch-icon" href={faviconWithVersion} />
     <link rel="canonical" href={canonicalUrl.toString()} />
 
+    <!-- Google Fonts: Open Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
+
     <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https: https://cloudflareinsights.com; object-src 'none'; frame-ancestors 'none';" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https: https://cloudflareinsights.com; object-src 'none'; frame-ancestors 'none';" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 
@@ -90,11 +116,11 @@ if (article) {
     )}
   </head>
   <body data-article-slug={article?.slug} class="min-h-screen flex flex-col bg-academic-paper text-academic-ink selection:bg-red-100 selection:text-academic-navy">
-    <Header />
+    {showHeader && <Header />}
     <main class="flex-grow">
       <slot />
     </main>
-    <Footer />
+    {showFooter && <Footer />}
 
     <script>
       // Global PDF Download Tracker via Cloudflare KV

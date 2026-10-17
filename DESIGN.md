@@ -1,19 +1,19 @@
-# Sektansia Press Design Direction
+# JTEBA Design Direction
 
 ## Identity
-- **Publisher**: Sektansia Press
-- **Main Journal**: Jurnal Terbuka Audit, Akuntansi, dan Pajak (JTAAP)
-- **Scope**: Bidang keilmuan Audit, Akuntansi Keuangan, Akuntansi Manajemen, Sistem Informasi Akuntansi, dan Perpajakan.
-- **Model**: Diamond Open Access (Gratis submit, gratis publikasi, gratis akses baca).
+- **Publisher**: Organisasi Riset dan Publikasi Ilmiah Praniti
+- **Journal**: JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas (Open Journal of Economics, Business, and Accountability)
+- **Scope**: Akuntansi Keberlanjutan & Pelaporan ESG, Perpajakan & Kebijakan Fiskal, Auditing, Forensik & Tata Kelola, serta Dinamika Ekonomi & Bisnis Terapan.
+- **Model**: Open Access (Bebas biaya submit & review, APC terjangkau setelah LoA).
 
 ## Personality & Tone
-- **Dignified & Classic Academic**: Menampilkan wibawa ilmiah seperti jurnal universitas terkemuka.
-- **Transparent & Direct**: Alur penyerahan naskah, kebijakan peer-review, dan etika publikasi disajikan lugas tanpa birokrasi berbelit.
-- **High Readability**: Tipografi tajam dengan hierarki sitasi yang terstruktur rapi.
+- **Dignified & Classic Academic**: Menampilkan integritas dan wibawa ilmiah berstandar COPE.
+- **Transparent & Direct**: Alur penyerahan naskah, kebijakan peer-review double-blind, dan etika publikasi disajikan lugas dan transparan.
+- **High Readability**: Tipografi tajam dengan hierarki sitasi APA 7th Edition yang terstruktur rapi.
 
 ## Color Palette
-- **Primary Ink**: Deep Academic Navy (`#152338`) untuk masthead, judul jurnal, dan navigasi utama.
-- **Academic Accent**: Muted Burgundy / Crimson (`#7b1824`) untuk segel volume, status badge, dan aksen penting.
+- **Primary Ink**: Deep Academic Navy (`#0f284e` / `#0a1a33`) untuk masthead, judul jurnal, dan navigasi utama.
+- **Academic Accent**: Warm Gold (`#c89b3c`) dan Academic Teal (`#16707a`) untuk identitas, status badge, dan aksen penting.
 - **Background**: Warm Paper Off-White (`#fbfbfa`) dan Pure White (`#ffffff`) untuk kartu konten.
 - **Borders & Dividers**: Subtle Academic Slate (`#e2e8f0` dan `#cbd5e1`).
 - **Body Text**: Deep Ink Charcoal (`#1e293b`), teks sekunder (`#475569`) dengan rasio kontras WCAG AA/AAA.
@@ -25,7 +25,7 @@
 ## Dials
 - **ENERGY**: 2 (Tenang, stabil, terpercaya)
 - **RHYTHM**: 2 (Terstruktur, konsisten, hierarkis)
-- **MOTION**: 1 (Hanya transisi fungsional halus pada tombol dan modal dialog)
+- **MOTION**: 1 (Hanya transisi fungsional halus pada tombol dan navigasi)
 
 ## Component Design Specifications
 
@@ -36,7 +36,7 @@
   - Tipografi: Serif headline dengan tombol aksi ganda (*Petunjuk Penulisan* & *Kirim Naskah*).
 - **Active Issue Card**:
   - Border: `border-academic-border` berlatar putih bersih `bg-white` dengan bayangan lembut `shadow-xs`.
-  - Metadata: Segel terbitan monospaced `Vol. X No. Y (Tahun)` dan tautan DOI resmi.
+  - Metadata: Segel terbitan monospaced `Vol. X No. Y (Tahun)` dan tautan DOI resmi JTEBA.
 
 ### 2. Barcode GS1 EAN-13 & Validasi Status ISSN
 - **Rendering Vektor SVG**:
@@ -48,10 +48,10 @@
   - Digit Belum Lengkap: `bg-amber-50 text-amber-700 border-amber-200`
 
 ### 3. Mesin Pencarian Artikel Ilmiah (`/search`)
-- **Header Form**: Form input bersih dengan ikon kaca pembesar, tombol reset, dan filter terlipat (accordion) untuk tahun dan bidang ilmu (*Audit, Akuntansi, Pajak*).
+- **Header Form**: Form input bersih dengan ikon kaca pembesar, tombol reset, dan filter terlipat (accordion) untuk tahun dan bidang kajian (*Audit, Akuntansi, Pajak*).
 - **Hasil Temuan**: Kartu naskah bergaya OJS dengan judul bersambung ke halaman detail `/article/[slug]`, daftar penulis bercetak tebal, nomor halaman, dan tombol unduh PDF cepat.
 
-### 4. Navigasi Tab Admin GUI
+### 4. Navigasi Tab Admin GUI (Level 1 & Level 2)
 - **Active Tab**: Border bawah `border-academic-navy` 2px tebal, font tebal `font-bold`, teks `text-academic-navy`.
 - **Inactive Tab**: Border bawah `border-transparent`, teks netral `text-slate-600` dengan efek hover halus.
 - **Persistensi**: Sinkronisasi status aktif ke `sessionStorage` dengan fallback ke hash URL (`#form-add-new-issue`).

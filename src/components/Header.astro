@@ -5,17 +5,21 @@ const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const journalConfig = await getDbSettings(d1);
 
 const pathname = Astro.url.pathname;
+const rawLogo = journalConfig.branding?.logoUrl || '/images/logo-jteba.png';
+const cacheBuster = '20261017v2';
+const logoWithVersion = rawLogo.startsWith('data:') ? rawLogo : `${rawLogo}?v=${cacheBuster}`;
+
 const showEditorial = journalConfig.features?.showEditorialTeam !== false;
 
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/current', label: 'Current' },
-  { href: '/archives', label: 'Archives' },
-  { href: '/search', label: 'Search' },
-  ...(showEditorial ? [{ href: '/editorial-team', label: 'Editorial Team' }] : []),
-  { href: '/guidelines', label: 'Guidelines & Ethics' },
-  { href: '/indexing', label: 'Abstracting & Indexing' },
-  { href: '/submit', label: 'Submissions' },
+  { href: '/index/JTEBA', label: 'Home' },
+  { href: '/index/JTEBA/current', label: 'Current' },
+  { href: '/index/JTEBA/archives', label: 'Archives' },
+  { href: '/index/JTEBA/search', label: 'Search' },
+  ...(showEditorial ? [{ href: '/index/JTEBA/editorial-team', label: 'Editorial Team' }] : []),
+  { href: '/index/JTEBA/guidelines', label: 'Guidelines & Ethics' },
+  { href: '/index/JTEBA/indexing', label: 'Abstracting & Indexing' },
+  { href: '/index/JTEBA/submit', label: 'Submissions' },
 ];
 ---
 
@@ -23,22 +27,20 @@ const navLinks = [
   <!-- Topmost Access Bar (Publisher & Quick Action) -->
   <div class="bg-[#0a1a33] text-slate-300 text-xs py-2 px-4 border-b border-[#152f52]">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <div class="text-xs text-slate-300 font-medium flex items-center gap-1.5">
-        <span class="text-[#c89b3c] font-semibold">{journalConfig.publisher}</span>
+      <div class="text-xs text-slate-300 font-medium flex items-center gap-2">
+        <a href="/" class="text-[#c89b3c] hover:underline flex items-center gap-1 font-semibold" title="Kembali ke Halaman Gerbang Penerbit Praniti">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>Portal Penerbit Praniti</span>
+        </a>
         <span class="text-slate-500">/</span>
-        <span>{journalConfig.institution}</span>
+        <span class="text-slate-200 font-semibold">{journalConfig.shortName}</span>
       </div>
       <div class="flex items-center space-x-3 text-xs">
-        <a href="/search" class="hover:text-white transition-colors flex items-center gap-1">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <span>Search</span>
-        </a>
+        <a href="/index/JTEBA/submit" class="hover:text-white transition-colors">Submit Paper</a>
         <span class="text-slate-600">|</span>
-        <a href="/submit" class="hover:text-white transition-colors">Submit Paper</a>
-        <span class="text-slate-600">|</span>
-        <a href="/admin" rel="nofollow" class="hover:text-white font-medium text-slate-200 transition-colors flex items-center gap-1">
+        <a href="/index/JTEBA/admin" rel="nofollow" class="hover:text-white font-medium text-slate-200 transition-colors flex items-center gap-1">
           <svg class="w-3.5 h-3.5 text-[#c89b3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
           </svg>
@@ -53,17 +55,17 @@ const navLinks = [
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div class="flex items-center gap-6">
         <!-- Journal Logo (Navy, Teal, Gold - Fully Sharp & Vibrant on White) -->
-        <a href="/" class="flex-shrink-0 group" title={`Beranda ${journalConfig.name}`}>
+        <a href="/index/JTEBA" class="flex-shrink-0 group" title={`Beranda ${journalConfig.name}`}>
           <img
-            src={journalConfig.branding?.logoUrl || '/images/jtaap-logo-v2.png'}
+            src={logoWithVersion}
             alt={`Logo ${journalConfig.shortName}`}
-            class="h-16 md:h-20 w-auto object-contain group-hover:opacity-95 transition-opacity"
+            class="h-16 sm:h-18 md:h-22 w-auto max-w-[260px] sm:max-w-xs object-contain group-hover:opacity-95 transition-opacity"
           />
         </a>
 
         <!-- Title & Official Subtitles -->
         <div class="border-l-2 border-slate-200 pl-5">
-          <a href="/" class="hover:underline">
+          <a href="/index/JTEBA" class="hover:underline">
             <h1 class="text-2xl md:text-3xl font-bold text-[#0f284e] tracking-tight leading-tight">
               {journalConfig.name}
             </h1>
@@ -74,9 +76,15 @@ const navLinks = [
           <div class="flex flex-wrap items-center gap-3 text-xs text-slate-600 mt-2 font-medium">
             <span class="text-[#16707a] font-semibold">{journalConfig.accreditedText}</span>
             <span class="text-slate-300">•</span>
-            <span class="font-mono bg-slate-100 text-slate-800 px-2 py-0.5 rounded-2xs border border-slate-200">e-ISSN: {journalConfig.eIssn}</span>
-            <span class="text-slate-300">•</span>
-            <span class="font-mono bg-slate-100 text-slate-800 px-2 py-0.5 rounded-2xs border border-slate-200">p-ISSN: {journalConfig.pIssn}</span>
+            {journalConfig.features?.showIssnBlock ? (
+              <>
+                <span class="font-mono bg-slate-100 text-slate-800 px-2 py-0.5 rounded-2xs border border-slate-200">e-ISSN: {journalConfig.eIssn} (Online)</span>
+                <span class="text-slate-300">•</span>
+                <span class="font-mono bg-slate-100 text-slate-800 px-2 py-0.5 rounded-2xs border border-slate-200">p-ISSN: {journalConfig.pIssn} (Print)</span>
+              </>
+            ) : (
+              <span class="font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded-2xs border border-slate-200">ISSN: Dalam Pengajuan</span>
+            )}
           </div>
         </div>
       </div>
@@ -89,7 +97,9 @@ const navLinks = [
       <!-- Desktop Links -->
       <ul class="hidden md:flex flex-wrap items-center text-sm font-semibold">
         {navLinks.map((link) => {
-          const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+          const isActive = link.href === '/index/JTEBA' 
+            ? (pathname === '/index/JTEBA' || pathname === '/index/JTEBA/')
+            : (pathname === link.href || pathname.startsWith(link.href + '/'));
           return (
             <li>
               <a
@@ -107,10 +117,20 @@ const navLinks = [
         })}
       </ul>
 
-      <!-- Submit Naskah CTA Button (High Contrast Gold from Logo) -->
-      <div class="hidden md:flex items-center">
+      <!-- Submit Naskah CTA Button (High Contrast Gold from Logo) & Quick Search -->
+      <div class="hidden md:flex items-center gap-2">
         <a
-          href="/submit"
+          href="/index/JTEBA/search"
+          class="p-2 text-slate-300 hover:text-white hover:bg-[#183e6d] rounded-xs transition-colors"
+          title="Pencarian Naskah Artikel (Search)"
+          aria-label="Cari Artikel Jurnal"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </a>
+        <a
+          href="/index/JTEBA/submit"
           class="py-2 px-4 bg-[#c89b3c] hover:bg-[#b0842b] text-white font-bold text-xs uppercase tracking-wider rounded-xs shadow-xs transition-colors flex items-center gap-1.5"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,7 +161,9 @@ const navLinks = [
     <!-- Mobile Drawer -->
     <div id="ojs-mobile-menu" class="hidden md:hidden bg-[#0a1a33] px-4 py-2 border-t border-[#152f52] space-y-1">
       {navLinks.map((link) => {
-        const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+        const isActive = link.href === '/index/JTEBA'
+          ? (pathname === '/index/JTEBA' || pathname === '/index/JTEBA/')
+          : (pathname === link.href || pathname.startsWith(link.href + '/'));
         return (
           <a
             href={link.href}
@@ -155,7 +177,7 @@ const navLinks = [
       })}
       <div class="pt-2 pb-1">
         <a
-          href="/submit"
+          href="/index/JTEBA/submit"
           class="block text-center py-2.5 px-3 bg-[#c89b3c] hover:bg-[#b0842b] text-white font-bold text-sm rounded shadow-xs"
         >
           Submit Naskah

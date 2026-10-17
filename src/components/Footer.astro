@@ -32,7 +32,7 @@ const currentYear = new Date().getFullYear();
         <h3 class="text-xs font-bold uppercase text-slate-300 tracking-wider">
           Lisensi & Hak Akses
         </h3>
-        <p class="text-slate-400 leading-relaxed">
+        <p class="text-slate-300 leading-relaxed">
           Semua artikel yang diterbitkan oleh {journalConfig.shortName} didistribusikan di bawah lisensi resmi{' '}
           <a
             href={journalConfig.licenseUrl}
@@ -43,26 +43,26 @@ const currentYear = new Date().getFullYear();
             Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)
           </a>.
         </p>
-        <p class="text-[11px] text-slate-400 pt-1">
+        <p class="text-xs text-slate-400 pt-1">
           Penulis memegang hak cipta penuh tanpa batasan penyerahan naskah.
         </p>
       </div>
     </div>
 
     <!-- Baris Bawah OJS -->
-    <div class="border-t border-slate-800 mt-8 pt-5 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-3">
+    <div class="border-t border-slate-800 mt-8 pt-5 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-300 gap-3">
       <div>
         <p>
-          Copyright © {currentYear} {journalConfig.publisher}. Hak Cipta Dilindungi Undang-Undang.
+          Copyright © {currentYear} <a href="/" class="text-slate-200 hover:text-white font-medium hover:underline">{journalConfig.publisher}</a>. Hak Cipta Dilindungi Undang-Undang.
         </p>
       </div>
 
-      <div class="flex items-center space-x-3 text-slate-400">
-        <a href="/guidelines" class="hover:text-slate-200">Publication Ethics</a>
+      <div class="flex items-center space-x-3 text-slate-300">
+        <a href="/index/JTEBA/guidelines" class="hover:text-slate-200">Publication Ethics</a>
         <span>|</span>
-        <a href="/indexing" class="hover:text-slate-200">Indexing</a>
+        <a href="/index/JTEBA/indexing" class="hover:text-slate-200">Indexing</a>
         <span>|</span>
-        <a href="/admin" class="hover:text-emerald-300 font-medium text-slate-300">Panel Redaksi</a>
+        <a href="/index/JTEBA/admin" class="hover:text-emerald-300 font-medium text-slate-300">Panel Redaksi</a>
       </div>
     </div>
   </div>
