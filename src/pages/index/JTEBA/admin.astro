@@ -3703,10 +3703,12 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       document.querySelectorAll<HTMLButtonElement>('.btn-fill-filename').forEach(btn => {
         btn.addEventListener('click', (e) => {
           const fname = (e.currentTarget as HTMLElement).dataset.filename;
-          const inputPdf = document.getElementById('art-pdf') as HTMLInputElement | null;
+          const inputPdf = (document.getElementById('art-pdffile') || document.getElementById('art-pdf')) as HTMLInputElement | null;
           if (inputPdf && fname) {
             inputPdf.value = fname;
             switchTab('tab-add-article');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            inputPdf.focus();
             showToast(`✓ Nama file "${fname}" disalin ke form terbit naskah!`);
           }
         });
