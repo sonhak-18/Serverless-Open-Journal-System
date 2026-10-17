@@ -112,9 +112,9 @@ export const journalConfig: JournalConfig = {
   },
 
   submission: {
-    email: 'redaksi@jteba.org',
-    whatsappNumber: '6281234567890',
-    whatsappDisplay: '+62 812-3456-7890',
+    email: 'redaksi@praniti.or.id',
+    whatsappNumber: '628981822777',
+    whatsappDisplay: '+62 898-182-2777',
     whatsappDefaultMessage: 'Halo Redaksi JTEBA, saya ingin mengajukan manuskrip artikel ilmiah untuk proses review dan penerbitan.',
     turnitinMaxSimilarity: 20,
     reviewTimeEstimate: '3 sampai 7 Hari Kerja',
@@ -248,17 +248,18 @@ export function getPdfDownloadUrl(
   return path ? `${base}/${path}/${cleanFile}` : `${base}/${cleanFile}`;
 }
 
-export function getWhatsAppSubmissionUrl(paperTitle?: string): string {
-  const phone = journalConfig.submission.whatsappNumber;
-  let text = journalConfig.submission.whatsappDefaultMessage;
+export function getWhatsAppSubmissionUrl(paperTitle?: string, phoneOverride?: string, messageOverride?: string): string {
+  const rawPhone = phoneOverride || journalConfig.submission.whatsappNumber;
+  const cleanPhone = rawPhone.replace(/\D/g, '');
+  let text = messageOverride || journalConfig.submission.whatsappDefaultMessage;
   if (paperTitle) {
     text = `Halo Redaksi JTEBA, saya ingin mengajukan konfirmasi terkait naskah: "${paperTitle}".`;
   }
-  return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
 }
 
-export function getEmailSubmissionUrl(paperTitle?: string): string {
-  const email = journalConfig.submission.email;
+export function getEmailSubmissionUrl(paperTitle?: string, emailOverride?: string): string {
+  const email = emailOverride || journalConfig.submission.email;
   const subject = paperTitle 
     ? `[SUBMISSION JTEBA] - ${paperTitle}` 
     : '[SUBMISSION JTEBA] Pengajuan Naskah Artikel Ilmiah';

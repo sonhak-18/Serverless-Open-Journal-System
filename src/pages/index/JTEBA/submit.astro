@@ -11,8 +11,12 @@ const journalConfig = await getDbSettings(d1);
 const templateUrl = journalConfig.branding?.templateUrl || '/template-jteba.docx';
 const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.startsWith('https://');
 
-const waUrl = getWhatsAppSubmissionUrl();
-const emailUrl = getEmailSubmissionUrl();
+const waUrl = getWhatsAppSubmissionUrl(
+  undefined,
+  journalConfig.submission?.whatsappNumber || journalConfig.submission?.whatsappDisplay,
+  journalConfig.submission?.whatsappDefaultMessage
+);
+const emailUrl = getEmailSubmissionUrl(undefined, journalConfig.submission?.email);
 ---
 
 <Layout title="Online Submission" description={`Petunjuk penyerahan naskah artikel ilmiah ${journalConfig.name}`}>

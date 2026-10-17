@@ -4,8 +4,10 @@ import { issnToEan13, generateEan13BarcodeSvgBars } from '../lib/issn';
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const journalConfig = await getDbSettings(d1);
-const indexingList = await getDbIndexing(d1);
-const waUrl = `https://wa.me/${journalConfig.submission.whatsappNumber}?text=${encodeURIComponent(journalConfig.submission.whatsappDefaultMessage)}`;
+const rawWaNum = journalConfig.submission?.whatsappNumber || journalConfig.submission?.whatsappDisplay || '628981822777';
+const cleanWaPhone = rawWaNum.replace(/\D/g, '');
+const waMsg = journalConfig.submission?.whatsappDefaultMessage || 'Halo Redaksi JTEBA, saya ingin berkonsultasi mengenai publikasi naskah.';
+const waUrl = `https://wa.me/${cleanWaPhone}?text=${encodeURIComponent(waMsg)}`;
 
 const showEditorial = journalConfig.features?.showEditorialTeam !== false;
 
