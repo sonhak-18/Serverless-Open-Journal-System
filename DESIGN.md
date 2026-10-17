@@ -26,3 +26,32 @@
 - **ENERGY**: 2 (Tenang, stabil, terpercaya)
 - **RHYTHM**: 2 (Terstruktur, konsisten, hierarkis)
 - **MOTION**: 1 (Hanya transisi fungsional halus pada tombol dan modal dialog)
+
+## Component Design Specifications
+
+### 1. Banner Edisi Perdana (Call for Papers Mode) vs Active Issue Card
+- **Call for Papers Card**:
+  - Border: `border-amber-300` dengan latar gradasi halus `bg-amber-50/60`.
+  - Iconography: Ikon kalender dan pengumuman emas `text-amber-800`.
+  - Tipografi: Serif headline dengan tombol aksi ganda (*Petunjuk Penulisan* & *Kirim Naskah*).
+- **Active Issue Card**:
+  - Border: `border-academic-border` berlatar putih bersih `bg-white` dengan bayangan lembut `shadow-xs`.
+  - Metadata: Segel terbitan monospaced `Vol. X No. Y (Tahun)` dan tautan DOI resmi.
+
+### 2. Barcode GS1 EAN-13 & Validasi Status ISSN
+- **Rendering Vektor SVG**:
+  - Dihasilkan via `src/lib/issn.ts` dengan lebar garis presisi (proporsi bar hitam dan putih baku GS1).
+  - Latar putih dengan kontras maksimal (`#000000` di atas `#ffffff`) dan tipografi monospaced di bawah garis bar untuk keterbacaan pemindai optik.
+- **Badge Status ISO 3297 di Admin GUI**:
+  - Valid: `bg-emerald-50 text-emerald-700 border-emerald-200`
+  - Check Digit Salah: `bg-rose-50 text-rose-700 border-rose-200 font-bold animate-pulse`
+  - Digit Belum Lengkap: `bg-amber-50 text-amber-700 border-amber-200`
+
+### 3. Mesin Pencarian Artikel Ilmiah (`/search`)
+- **Header Form**: Form input bersih dengan ikon kaca pembesar, tombol reset, dan filter terlipat (accordion) untuk tahun dan bidang ilmu (*Audit, Akuntansi, Pajak*).
+- **Hasil Temuan**: Kartu naskah bergaya OJS dengan judul bersambung ke halaman detail `/article/[slug]`, daftar penulis bercetak tebal, nomor halaman, dan tombol unduh PDF cepat.
+
+### 4. Navigasi Tab Admin GUI
+- **Active Tab**: Border bawah `border-academic-navy` 2px tebal, font tebal `font-bold`, teks `text-academic-navy`.
+- **Inactive Tab**: Border bawah `border-transparent`, teks netral `text-slate-600` dengan efek hover halus.
+- **Persistensi**: Sinkronisasi status aktif ke `sessionStorage` dengan fallback ke hash URL (`#form-add-new-issue`).
