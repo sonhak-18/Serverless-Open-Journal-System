@@ -55,8 +55,11 @@ const issues = await getDbIssues(d1);
 
                   <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-sm text-slate-600">
                     <span>Periode Publikasi: {issue.period || '-'} ({issue.year})</span>
-                    <a href={issue.is_current === 1 ? '/index/JTEBA/current' : `/index/JTEBA/archives#vol-${issue.volume}`} class="text-academic-teal hover:underline font-bold">
-                      Lihat Isi Terbitan →
+                    <a href={issue.is_current === 1 ? '/index/JTEBA/current' : `/index/JTEBA/archives#vol-${issue.volume}`} class="inline-flex items-center gap-1 text-academic-teal hover:underline font-bold py-1 min-h-[36px]">
+                      <span>Lihat Isi Terbitan</span>
+                      <svg class="w-4 h-4 text-academic-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                      </svg>
                     </a>
                   </div>
                 </div>

@@ -87,12 +87,18 @@ const creds = isAuthenticated ? await getDbPortalAdminCredentials(kv) : { userna
           </form>
 
           <div class="text-center pt-2 border-t border-slate-700/60 flex items-center justify-between text-xs text-slate-400">
-            <a href="/" class="hover:text-white transition-colors">
-              ← Ke Beranda Portal
+            <a href="/" class="inline-flex items-center gap-1.5 hover:text-white transition-colors min-h-[36px] py-1">
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+              </svg>
+              <span>Ke Beranda Portal</span>
             </a>
             <span class="text-slate-600">•</span>
-            <a href="/index/JTEBA" class="hover:text-amber-300 transition-colors">
-              Portal JTEBA →
+            <a href="/index/JTEBA" class="inline-flex items-center gap-1.5 hover:text-amber-300 transition-colors min-h-[36px] py-1">
+              <span>Portal JTEBA</span>
+              <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
             </a>
           </div>
         </div>
@@ -782,12 +788,12 @@ const creds = isAuthenticated ? await getDbPortalAdminCredentials(kv) : { userna
           statusBox.classList.remove('hidden');
           if (data.success) {
             statusBox.className = 'p-3 rounded-lg text-xs font-semibold bg-emerald-950/80 border border-emerald-800 text-emerald-200';
-            statusBox.innerText = '✓ ' + data.message;
+            statusBox.innerText = data.message;
             document.getElementById('cred-current-pin').value = '';
             document.getElementById('cred-new-pin').value = '';
           } else {
             statusBox.className = 'p-3 rounded-lg text-xs font-semibold bg-red-950/80 border border-red-800 text-red-200';
-            statusBox.innerText = '✕ ' + data.error;
+            statusBox.innerText = data.error;
           }
         } catch (err) {
           alert('Terjadi kesalahan jaringan: ' + err.message);
@@ -844,12 +850,12 @@ const creds = isAuthenticated ? await getDbPortalAdminCredentials(kv) : { userna
           });
           const data = await res.json();
           if (data.success) {
-            statusMsg.innerHTML = '<span class="text-emerald-400 font-bold">✓ Sukses! Pengaturan dan aset gambar berhasil disimpan ke database D1.</span>';
+            statusMsg.innerHTML = '<span class="text-emerald-400 font-bold">Sukses: Pengaturan dan aset gambar berhasil disimpan ke database D1.</span>';
           } else {
-            statusMsg.innerHTML = '<span class="text-red-400 font-bold">✕ Gagal: ' + (data.error || 'Terjadi kesalahan') + '</span>';
+            statusMsg.innerHTML = '<span class="text-red-400 font-bold">Gagal: ' + (data.error || 'Terjadi kesalahan') + '</span>';
           }
         } catch (err) {
-          statusMsg.innerHTML = '<span class="text-red-400 font-bold">✕ Error: ' + err.message + '</span>';
+          statusMsg.innerHTML = '<span class="text-red-400 font-bold">Error: ' + err.message + '</span>';
         } finally {
           saveBtn.disabled = false;
           saveBtn.innerText = 'Simpan Perubahan Portal';

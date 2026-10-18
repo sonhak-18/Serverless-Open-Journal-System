@@ -68,8 +68,11 @@ const issueDoiUrl = cleanPrefix.includes(`/${journalConfig.shortName.toLowerCase
                   Vol. {curVolume} No. {curIssue} ({curYear}): {curPeriod}
                 </h2>
               </div>
-              <a href="/index/JTEBA/current" class="text-xs text-blue-700 hover:underline font-semibold hidden sm:inline-block">
-                Halaman Terbitan Terkini →
+              <a href="/index/JTEBA/current" class="inline-flex items-center gap-1 text-xs text-blue-700 hover:underline font-semibold hidden sm:inline-flex min-h-[32px]">
+                <span>Halaman Terbitan Terkini</span>
+                <svg class="w-3.5 h-3.5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
               </a>
             </div>
             {curTheme && (

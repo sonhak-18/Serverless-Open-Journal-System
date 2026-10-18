@@ -74,9 +74,12 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     </div>
 
     <!-- Alert Notifikasi Global -->
-    <div id="admin-toast" class="hidden mb-6 p-4 rounded border text-xs sm:text-sm font-semibold flex items-center justify-between transition-all">
-      <span id="admin-toast-msg"></span>
-      <button type="button" aria-label="Tutup notifikasi" onclick="document.getElementById('admin-toast').classList.add('hidden')" class="text-slate-500 hover:text-slate-700 ml-4 p-1">
+    <div id="admin-toast" class="hidden mb-6 p-4 rounded border text-xs sm:text-sm font-semibold flex items-center justify-between transition-all shadow-xs">
+      <div class="flex items-center gap-2.5">
+        <span id="admin-toast-icon" class="shrink-0 flex items-center"></span>
+        <span id="admin-toast-msg"></span>
+      </div>
+      <button type="button" aria-label="Tutup notifikasi" onclick="document.getElementById('admin-toast').classList.add('hidden')" class="text-slate-500 hover:text-slate-700 ml-4 p-1 min-w-[32px] min-h-[32px] flex items-center justify-center">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -141,7 +144,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       <!-- Konten Dashboard Admin (Hanya Dirender di Server Jika Terotentikasi) -->
       <div id="admin-dashboard-content" class="space-y-8">
       <!-- Navigasi Tab Admin -->
-      <div class="flex border-b border-academic-border text-xs sm:text-sm font-medium space-x-1 sm:space-x-3 overflow-x-auto pb-1" role="tablist">
+      <div class="flex border-b border-academic-border text-xs sm:text-sm font-medium space-x-1 sm:space-x-3 overflow-x-auto pb-1 scroll-smooth [-webkit-overflow-scrolling:touch] whitespace-nowrap" role="tablist">
         <button
           type="button"
           class="admin-tab active py-2.5 px-3.5 border-b-2 border-academic-navy text-academic-navy font-bold shrink-0 min-h-[44px] flex items-center gap-1.5"
@@ -283,13 +286,13 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                 <button
                   type="button"
                   id="btn-generate-slug"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold rounded shadow-2xs transition-colors self-start sm:self-auto shrink-0"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold rounded shadow-2xs transition-colors self-start sm:self-auto shrink-0 min-h-[38px]"
                   title="Generate slug dari judul naskah"
                 >
                   <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                   </svg>
-                  <span>⚡ Generate URL / Slug</span>
+                  <span>Generate URL / Slug</span>
                 </button>
               </div>
 
@@ -481,13 +484,13 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                 <button
                   type="button"
                   id="btn-generate-doi"
-                  class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#0f284e] hover:bg-[#183e6d] text-white text-xs font-semibold rounded shadow-2xs transition-colors self-start sm:self-auto shrink-0"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#0f284e] hover:bg-[#183e6d] text-white text-xs font-semibold rounded shadow-2xs transition-colors self-start sm:self-auto shrink-0 min-h-[38px]"
                   title="Generate nomor DOI otomatis sesuai urutan naskah"
                 >
                   <svg class="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                   </svg>
-                  <span>⚡ Generate DOI Otomatis</span>
+                  <span>Generate DOI Otomatis</span>
                 </button>
               </div>
 
@@ -703,8 +706,11 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                 Semua perubahan yang disimpan di sini langsung memperbarui halaman <code>/editorial-team</code> dan metadata publikasi.
               </p>
             </div>
-            <a href="/index/JTEBA/editorial-team" target="_blank" class="text-xs font-semibold text-blue-700 hover:underline">
-              Lihat Halaman Publik ↗
+            <a href="/index/JTEBA/editorial-team" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:underline min-h-[36px] py-1">
+              <span>Lihat Halaman Publik</span>
+              <svg class="w-3.5 h-3.5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
             </a>
           </div>
 
@@ -1112,7 +1118,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                       <div class="flex items-center justify-between mb-2">
                         <span class="font-bold text-academic-navy text-xs">Logo Jurnal (Header)</span>
                         <span id="status-logo-file" class="text-xs text-slate-500">
-                          {journalConfig.branding?.logoUrl?.startsWith('data:') ? '✓ Menggunakan berkas custom' : 'Default sistem'}
+                          {journalConfig.branding?.logoUrl?.startsWith('data:') ? 'Berkas kustom aktif' : 'Default sistem'}
                         </span>
                       </div>
 
@@ -1174,7 +1180,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                       <div class="flex items-center justify-between mb-2">
                         <span class="font-bold text-academic-navy text-xs">Favicon Jurnal (Tab Browser)</span>
                         <span id="status-favicon-file" class="text-xs text-slate-500">
-                          {journalConfig.branding?.faviconUrl?.startsWith('data:') ? '✓ Menggunakan berkas custom' : 'Default sistem'}
+                          {journalConfig.branding?.faviconUrl?.startsWith('data:') ? 'Berkas kustom aktif' : 'Default sistem'}
                         </span>
                       </div>
 
@@ -1247,7 +1253,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                           Berkas Template Manuskrip Word (.docx)
                         </span>
                         <span id="status-template-file" class="text-xs text-slate-600 block mt-0.5">
-                          {journalConfig.branding?.templateUrl?.startsWith('data:') ? '✓ Berkas kustom tersimpan di database' : 'Berkas bawaan sistem (/template-jteba.docx)'}
+                          {journalConfig.branding?.templateUrl?.startsWith('data:') ? 'Tersimpan di database' : 'Berkas bawaan sistem (/template-jteba.docx)'}
                         </span>
                       </div>
                     </div>
@@ -1918,9 +1924,12 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
             <a
               href="/index/JTEBA/indexing"
               target="_blank"
-              class="text-xs font-semibold text-blue-700 hover:underline"
+              class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:underline min-h-[36px] py-1"
             >
-              Buka Halaman Indexing Publik ↗
+              <span>Buka Halaman Indexing Publik</span>
+              <svg class="w-3.5 h-3.5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
             </a>
           </div>
 
@@ -2396,10 +2405,19 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
   function showToast(msg: string, isError = false) {
     const toast = document.getElementById('admin-toast');
     const toastMsg = document.getElementById('admin-toast-msg');
+    const toastIcon = document.getElementById('admin-toast-icon');
     if (!toast || !toastMsg) return;
-    toastMsg.innerText = msg;
-    toast.className = `mb-6 p-4 rounded-xs border text-xs font-semibold flex items-center justify-between transition-all ${
-      isError ? 'bg-red-50 text-red-800 border-red-300' : 'bg-emerald-50 text-emerald-800 border-emerald-300'
+    const cleanMsg = msg.replace(/^[✓✕⚡⚠\s]+/, '').trim();
+    toastMsg.innerText = cleanMsg;
+    if (toastIcon) {
+      if (isError) {
+        toastIcon.innerHTML = '<svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>';
+      } else {
+        toastIcon.innerHTML = '<svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+      }
+    }
+    toast.className = `mb-6 p-4 rounded-xs border text-xs sm:text-sm font-semibold flex items-center justify-between transition-all shadow-xs ${
+      isError ? 'bg-rose-50 text-rose-800 border-rose-300' : 'bg-emerald-50 text-emerald-800 border-emerald-300'
     }`;
     toast.classList.remove('hidden');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2724,7 +2742,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     artSlugInput.value = slugify(artTitleInput.value);
     isSlugManuallyEdited = false;
     updateSlugPreview();
-    showToast('✓ URL / Slug artikel berhasil digenerate dari judul!');
+    showToast('URL / Slug artikel berhasil digenerate dari judul!');
   });
 
   btnCopyUrl?.addEventListener('click', () => {
@@ -2736,7 +2754,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     const currentOrigin = window.location.origin;
     const url = `${currentOrigin}/article/${slug}`;
     navigator.clipboard.writeText(url).then(() => {
-      showToast('✓ Tautan artikel berhasil disalin: ' + url);
+      showToast('Tautan artikel berhasil disalin: ' + url);
     }).catch(() => {
       showToast('Gagal menyalin tautan', true);
     });
@@ -2779,7 +2797,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
 
   btnGenerateDoi?.addEventListener('click', () => {
     syncDoiFields();
-    showToast('✓ Nomor DOI berhasil digenerate otomatis!');
+    showToast('Nomor DOI berhasil digenerate otomatis!');
   });
 
   btnCopyDoi?.addEventListener('click', () => {
@@ -2789,7 +2807,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       return;
     }
     navigator.clipboard.writeText(doiVal).then(() => {
-      showToast('✓ DOI naskah berhasil disalin: ' + doiVal);
+      showToast('DOI naskah berhasil disalin: ' + doiVal);
     }).catch(() => {
       showToast('Gagal menyalin DOI', true);
     });
@@ -2897,7 +2915,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ Artikel berhasil diterbitkan dan tersimpan di database!');
+        showToast('Artikel berhasil diterbitkan dan tersimpan di database!');
         setTimeout(() => location.reload(), 1200);
       } else {
         showToast('Gagal menyimpan artikel: ' + json.error, true);
@@ -2939,7 +2957,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                 const currentRows = document.querySelectorAll('#tab-articles-list tbody tr').length - 1;
                 tabArt.textContent = `Naskah Terbit (${Math.max(0, currentRows)})`;
               }
-              showToast(`✓ Artikel "${slug}" berhasil dihapus dari database!`);
+              showToast(`Artikel "${slug}" berhasil dihapus dari database!`);
             } else {
               showToast('Gagal menghapus: ' + json.error, true);
             }
@@ -2968,7 +2986,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ Data Pemimpin Redaksi (Editor-in-Chief) berhasil diperbarui di database!');
+        showToast('Data Pemimpin Redaksi (Editor-in-Chief) berhasil diperbarui di database!');
       }
     } catch (err: any) {
       showToast('Gagal menyimpan: ' + err.message, true);
@@ -2992,7 +3010,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ Anggota Dewan Editor berhasil ditambahkan ke database!');
+        showToast('Anggota Dewan Editor berhasil ditambahkan ke database!');
         setTimeout(() => location.reload(), 1000);
       }
     } catch (err: any) {
@@ -3016,7 +3034,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ Mitra Bestari (Reviewer) berhasil ditambahkan ke database!');
+        showToast('Mitra Bestari (Reviewer) berhasil ditambahkan ke database!');
         setTimeout(() => location.reload(), 1000);
       }
     } catch (err: any) {
@@ -3057,7 +3075,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                 const totalRows = document.querySelectorAll('#tab-editorial-settings tbody tr').length - 1;
                 tabEd.textContent = `Tim Redaksi (${Math.max(0, totalRows)})`;
               }
-              showToast(`✓ Anggota "${name}" berhasil dihapus dari database!`);
+              showToast(`Anggota "${name}" berhasil dihapus dari database!`);
             } else {
               showToast('Gagal menghapus: ' + json.error, true);
             }
@@ -3149,7 +3167,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       if (inputLogo) inputLogo.value = cropped;
       if (imgLogo) imgLogo.src = cropped;
       if (statusLogo) {
-        statusLogo.textContent = `✓ Berkas logo dioptimalkan (${Math.round(cropped.length * 0.75 / 1024)} KB)`;
+        statusLogo.textContent = `Berkas logo dioptimalkan (${Math.round(cropped.length * 0.75 / 1024)} KB)`;
         statusLogo.className = 'text-xs font-semibold text-emerald-700';
       }
     };
@@ -3191,7 +3209,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       if (inputFav) inputFav.value = cropped;
       if (imgFav) imgFav.src = cropped;
       if (statusFav) {
-        statusFav.textContent = `✓ Favicon dioptimalkan (${Math.round(cropped.length * 0.75 / 1024)} KB)`;
+        statusFav.textContent = `Favicon dioptimalkan (${Math.round(cropped.length * 0.75 / 1024)} KB)`;
         statusFav.className = 'text-xs font-semibold text-emerald-700';
       }
     };
@@ -3230,7 +3248,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       const result = reader.result as string;
       if (inputTpl) inputTpl.value = result;
       if (statusTpl) {
-        statusTpl.textContent = `✓ Berkas baru dipilih: ${file.name} (${Math.round(file.size / 1024)} KB) - klik "Simpan Profil Jurnal"`;
+        statusTpl.textContent = `Berkas baru dipilih: ${file.name} (${Math.round(file.size / 1024)} KB) - klik "Simpan Profil Jurnal"`;
         statusTpl.className = 'text-xs font-bold text-emerald-700';
       }
     };
@@ -3261,10 +3279,10 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       const expected = rem === 0 ? '0' : (11 - rem === 10 ? 'X' : String(11 - rem));
       const actual = clean[7];
       if (expected === actual) {
-        statusEl.textContent = `✓ ${type} Valid (ISO 3297)`;
+        statusEl.textContent = `${type} Valid (ISO 3297)`;
         statusEl.className = 'text-xs text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-mono border border-emerald-200';
       } else {
-        statusEl.textContent = `⚠ Check Digit Salah! Seharusnya ${expected}`;
+        statusEl.textContent = `Check Digit Salah! Seharusnya ${expected}`;
         statusEl.className = 'text-xs text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded font-mono border border-rose-200 font-bold';
       }
     } else {
@@ -3323,7 +3341,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ Profil dan branding jurnal berhasil disimpan ke database Cloudflare D1!');
+        showToast('Profil dan branding jurnal berhasil disimpan ke database Cloudflare D1!');
       } else {
         showToast('Gagal menyimpan profil: ' + json.error, true);
       }
@@ -3344,7 +3362,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast(`✓ Visibilitas Tim Redaksi: ${toggleEditorialTeam.checked ? 'Ditampilkan' : 'Disembunyikan'} di seluruh halaman publik.`);
+        showToast(`Visibilitas Tim Redaksi: ${toggleEditorialTeam.checked ? 'Ditampilkan' : 'Disembunyikan'} di seluruh halaman publik.`);
       } else {
         showToast('Gagal mengubah visibilitas: ' + json.error, true);
         toggleEditorialTeam.checked = !toggleEditorialTeam.checked;
@@ -3386,8 +3404,8 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
         }
         showToast(
           isChecked
-            ? '✓ Status Publikasi: Edisi aktif kini dipublikasikan di halaman depan & Current Issue.'
-            : '✓ Status Publikasi: Mode Call for Papers aktif (edisi kosong disembunyikan).'
+            ? 'Status Publikasi: Edisi aktif kini dipublikasikan di halaman depan & Current Issue.'
+            : 'Status Publikasi: Mode Call for Papers aktif (edisi kosong disembunyikan).'
         );
       } else {
         showToast('Gagal mengubah status edisi: ' + json.error, true);
@@ -3429,7 +3447,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast(`✓ Edisi Vol. ${vol} No. ${iss} (${year}) berhasil ditambahkan! Memuat ulang...`);
+        showToast(`Edisi Vol. ${vol} No. ${iss} (${year}) berhasil ditambahkan! Memuat ulang...`);
         setTimeout(() => window.location.reload(), 900);
       } else {
         showToast('Gagal menambahkan edisi: ' + json.error, true);
@@ -3458,7 +3476,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
         });
         const json = await res.json();
         if (json.success) {
-          showToast(`✓ ${label} berhasil dihapus dari database! Memuat ulang...`);
+          showToast(`${label} berhasil dihapus dari database! Memuat ulang...`);
           setTimeout(() => window.location.reload(), 900);
         } else {
           showToast('Gagal menghapus edisi: ' + json.error, true);
@@ -3486,7 +3504,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
         });
         const json = await res.json();
         if (json.success) {
-          showToast(`✓ Edisi Vol. ${volume} No. ${issue} kini diset sebagai Terbitan Terkini! Memuat ulang...`);
+          showToast(`Edisi Vol. ${volume} No. ${issue} kini diset sebagai Terbitan Terkini! Memuat ulang...`);
           setTimeout(() => window.location.reload(), 900);
         } else {
           showToast('Gagal mengubah edisi terkini: ' + json.error, true);
@@ -3519,7 +3537,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ Edisi terbitan aktif berhasil disimpan ke database D1!');
+        showToast('Edisi terbitan aktif berhasil disimpan ke database D1!');
       } else {
         showToast('Gagal menyimpan edisi: ' + json.error, true);
       }
@@ -3548,7 +3566,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ Pengumuman redaksi berhasil disimpan ke database D1!');
+        showToast('Pengumuman redaksi berhasil disimpan ke database D1!');
       } else {
         showToast('Gagal menyimpan pengumuman: ' + json.error, true);
       }
@@ -3580,7 +3598,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ Seluruh data kontak & pengaturan jurnal berhasil disimpan ke database!');
+        showToast('Seluruh data kontak & pengaturan jurnal berhasil disimpan ke database!');
       }
     } catch (err: any) {
       showToast('Gagal menyimpan kontak: ' + err.message, true);
@@ -3602,7 +3620,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
         });
         const json = await res.json();
         if (json.success) {
-          showToast(`✓ Status tampilan "${name}" di sidebar berhasil diperbarui!`);
+          showToast(`Status tampilan "${name}" di sidebar berhasil diperbarui!`);
         }
       } catch (err: any) {
         showToast('Gagal mengupdate indexing: ' + err.message, true);
@@ -3642,7 +3660,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ Pengaturan URL & direktori Google Drive Index berhasil disimpan ke database!');
+        showToast('Pengaturan URL & direktori Google Drive Index berhasil disimpan ke database!');
       }
     } catch (err: any) {
       showToast('Gagal menyimpan: ' + err.message, true);
@@ -3722,7 +3740,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
           const url = (e.currentTarget as HTMLElement).dataset.url;
           if (url) {
             navigator.clipboard.writeText(url);
-            showToast('✓ Tautan /one/ berhasil disalin ke clipboard!');
+            showToast('Tautan /one/ berhasil disalin ke clipboard!');
           }
         });
       });
@@ -3736,12 +3754,12 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
             switchTab('tab-add-article');
             window.scrollTo({ top: 0, behavior: 'smooth' });
             inputPdf.focus();
-            showToast(`✓ Nama file "${fname}" disalin ke form terbit naskah!`);
+            showToast(`Nama file "${fname}" disalin ke form terbit naskah!`);
           }
         });
       });
 
-      showToast(`✓ Berhasil memuat ${data.files.length} berkas dari Google Drive!`);
+      showToast(`Berhasil memuat ${data.files.length} berkas dari Google Drive!`);
     } catch (err: any) {
       driveFilesPlaceholder.innerHTML = `<span class="text-rose-600">Gagal memuat berkas: ${err.message}</span>`;
       showToast('Gagal memuat berkas Google Drive: ' + err.message, true);
@@ -3771,7 +3789,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
         });
         const json = await res.json();
         if (json.success) {
-          showToast(`✓ Tautan URL untuk "${name}" berhasil diperbarui ke database!`);
+          showToast(`Tautan URL untuk "${name}" berhasil diperbarui ke database!`);
         } else {
           showToast('Gagal menyimpan URL: ' + json.error, true);
         }
@@ -3805,7 +3823,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
         previewNewIdxIcon.innerHTML = `<img src="${result}" alt="Preview Ikon" class="w-full h-full object-contain p-0.5" />`;
       }
       if (statusNewIdxIcon) {
-        statusNewIdxIcon.textContent = `✓ Berkas ikon: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+        statusNewIdxIcon.textContent = `Berkas ikon: ${file.name} (${Math.round(file.size / 1024)} KB)`;
         statusNewIdxIcon.className = 'text-xs font-semibold text-emerald-700 mt-1';
       }
     };
@@ -3846,7 +3864,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast(`✓ Berhasil menambahkan pangkalan pengindeks "${name}"!`);
+        showToast(`Berhasil menambahkan pangkalan pengindeks "${name}"!`);
         setTimeout(() => window.location.reload(), 800);
       } else {
         showToast('Gagal menambahkan pengindeks: ' + json.error, true);
@@ -3884,7 +3902,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
           });
           const json = await res.json();
           if (json.success) {
-            showToast(`✓ Ikon untuk "${name}" berhasil diperbarui ke database!`);
+            showToast(`Ikon untuk "${name}" berhasil diperbarui ke database!`);
             setTimeout(() => window.location.reload(), 800);
           } else {
             showToast('Gagal memperbarui ikon: ' + json.error, true);
@@ -3914,7 +3932,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
         });
         const json = await res.json();
         if (json.success) {
-          showToast(`✓ Pengindeks "${name}" berhasil dihapus.`);
+          showToast(`Pengindeks "${name}" berhasil dihapus.`);
           const row = btn.closest('tr');
           row?.remove();
           const remainingRows = document.querySelectorAll('#table-indexing tbody tr');
@@ -3961,7 +3979,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const json = await res.json();
       if (json.success) {
-        showToast('✓ Kredensial login (Username & PIN) berhasil diperbarui!');
+        showToast('Kredensial login (Username & PIN) berhasil diperbarui!');
         (formChangePin as HTMLFormElement).reset();
       } else {
         showToast(json.error || 'Gagal mengubah PIN', true);
