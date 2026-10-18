@@ -307,9 +307,11 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
       <div class="pt-2 border-t border-slate-200 space-y-1">
         <p>
           <span class="text-slate-500">Email:</span>{' '}
+          <!--email_off-->
           <a href={`mailto:${journalConfig.submission.email}`} class="text-blue-700 hover:underline font-mono">
             {journalConfig.submission.email}
           </a>
+          <!--/email_off-->
         </p>
         <p>
           <span class="text-slate-500">WhatsApp Redaksi:</span>{' '}

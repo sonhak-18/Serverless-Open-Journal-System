@@ -606,7 +606,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
               Corrections and Complaints (Koreksi dan Keluhan)
             </h3>
             <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
-              Dugaan pelanggaran etika, kesalahan pada artikel terbit, atau keberatan atas keputusan redaksi dapat disampaikan secara tertulis ke alamat surel redaksi: <a href={`mailto:${journalConfig.submission.email}`} class="text-academic-teal hover:underline font-semibold font-mono">{journalConfig.submission.email}</a>. Redaksi menindaklanjuti sesuai alur COPE, menjaga kerahasiaan pelapor, dan menerbitkan ralat (<em>corrigendum</em>) atau penarikan naskah (<em>retraction</em>) bila diperlukan.
+              Dugaan pelanggaran etika, kesalahan pada artikel terbit, atau keberatan atas keputusan redaksi dapat disampaikan secara tertulis ke alamat surel redaksi: <!--email_off--><a href={`mailto:${journalConfig.submission.email}`} class="text-academic-teal hover:underline font-semibold font-mono">{journalConfig.submission.email}</a><!--/email_off-->. Redaksi menindaklanjuti sesuai alur COPE, menjaga kerahasiaan pelapor, dan menerbitkan ralat (<em>corrigendum</em>) atau penarikan naskah (<em>retraction</em>) bila diperlukan.
             </p>
           </div>
         </section>
@@ -663,7 +663,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
               Keputusan penerimaan naskah sepenuhnya didasarkan pada kualitas substantif ilmiah dan tidak dipengaruhi oleh kemampuan penulis membayar. Biaya ini dialokasikan untuk pembiayaan operasional penyuntingan akhir (<em>copyediting</em>), tata letak standar jurnal (<em>layouting</em>), registrasi DOI permanen Crossref, serta pemeliharaan peladen repositori terbuka.
             </p>
             <p>
-              Rincian tagihan dan cara pembayaran resmi disampaikan oleh sekretariat redaksi kepada penulis korespondensi melalui surat elektronik resmi (<a href={`mailto:${journalConfig.submission.email}`} class="text-academic-teal hover:underline font-mono">{journalConfig.submission.email}</a>) atau narahubung resmi WhatsApp.
+              Rincian tagihan dan cara pembayaran resmi disampaikan oleh sekretariat redaksi kepada penulis korespondensi melalui surat elektronik resmi (<!--email_off--><a href={`mailto:${journalConfig.submission.email}`} class="text-academic-teal hover:underline font-mono">{journalConfig.submission.email}</a><!--/email_off-->) atau narahubung resmi WhatsApp.
             </p>
           </div>
         </section>
@@ -679,7 +679,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
             </div>
             <div>{journalConfig.publisher} · {journalConfig.address}</div>
             <div class="pt-2 flex flex-wrap gap-4 text-sm text-slate-600">
-              <span>Email: <a href={`mailto:${journalConfig.submission.email}`} class="text-academic-teal hover:underline font-mono font-semibold">{journalConfig.submission.email}</a></span>
+              <span>Email: <!--email_off--><a href={`mailto:${journalConfig.submission.email}`} class="text-academic-teal hover:underline font-mono font-semibold">{journalConfig.submission.email}</a><!--/email_off--></span>
               <span>•</span>
               <span>WhatsApp: <span class="font-mono font-semibold text-slate-800">{journalConfig.submission.whatsappDisplay}</span></span>
               <span>•</span>

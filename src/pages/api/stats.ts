@@ -9,12 +9,24 @@ const ALLOWED_HOSTS = [
 ];
 
 function isOriginAllowed(origin: string | null): boolean {
-  if (!origin) return true;
-  return true;
+  if (!origin) return true; // Same-origin request
+  try {
+    const url = new URL(origin);
+    const host = url.hostname.toLowerCase();
+    return (
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host === 'praniti.or.id' ||
+      host.endsWith('.praniti.or.id') ||
+      host.endsWith('.pages.dev')
+    );
+  } catch {
+    return false;
+  }
 }
 
 function getCorsHeaders(origin: string | null): Record<string, string> {
-  const allowed = origin || '*';
+  const allowed = (origin && isOriginAllowed(origin)) ? origin : 'https://ejournal.praniti.or.id';
   return {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': allowed,
@@ -48,7 +60,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const body = await request.json().catch(() => ({}));
     const { action, slug } = body;
 
-    // Validasi ketat format parameter
+    // 1. Validasi format parameter slug
     if (!slug || typeof slug !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(slug)) {
       return new Response(JSON.stringify({ error: 'Slug artikel tidak valid' }), {
         status: 400,
@@ -61,6 +73,22 @@ export const POST: APIRoute = async ({ request, locals }) => {
         status: 400,
         headers: getCorsHeaders(origin),
       });
+    }
+
+    // 2. Server-side validation: Verifikasi eksistensi artikel di database pencegah IDOR & spam state
+    const d1 = (locals as any)?.runtime?.env?.DB;
+    if (d1) {
+      try {
+        const articleExists = await d1.prepare('SELECT id FROM journal_articles WHERE slug = ? LIMIT 1').bind(slug).first();
+        if (!articleExists) {
+          return new Response(JSON.stringify({ error: 'Artikel tidak ditemukan' }), {
+            status: 404,
+            headers: getCorsHeaders(origin),
+          });
+        }
+      } catch (dbErr) {
+        console.error('Error verifying article slug:', dbErr);
+      }
     }
 
     const kv = (locals as any)?.runtime?.env?.KV;
@@ -114,6 +142,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 export const GET: APIRoute = async ({ request, url, locals }) => {
   const origin = request.headers.get('origin');
+  if (origin && !isOriginAllowed(origin)) {
+    return new Response(JSON.stringify({ error: 'Akses ditolak' }), {
+      status: 403,
+      headers: getCorsHeaders(origin),
+    });
+  }
+
   const slug = url.searchParams.get('slug');
 
   if (!slug || typeof slug !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(slug)) {

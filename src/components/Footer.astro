@@ -21,7 +21,7 @@ const currentYear = new Date().getFullYear();
           <strong>Alamat Redaksi:</strong> {journalConfig.address}
         </p>
         <div class="pt-2 flex flex-wrap gap-4 text-slate-400">
-          <span>Email: <a href={`mailto:${journalConfig.submission.email}`} class="text-slate-200 hover:underline font-mono">{journalConfig.submission.email}</a></span>
+          <span>Email: <!--email_off--><a href={`mailto:${journalConfig.submission.email}`} class="text-slate-200 hover:underline font-mono">{journalConfig.submission.email}</a><!--/email_off--></span>
           <span>•</span>
           <span>WhatsApp: <span class="text-slate-200 font-mono">{journalConfig.submission.whatsappDisplay}</span></span>
         </div>

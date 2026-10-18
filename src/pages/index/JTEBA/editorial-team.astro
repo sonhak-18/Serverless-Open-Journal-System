@@ -56,7 +56,7 @@ const { editorInChief, editors, reviewers } = await getDbEditorial(d1);
               </p>
               {editorInChief.email && (
                 <p class="text-sm text-slate-600 font-mono pt-1">
-                  Email: <a href={`mailto:${editorInChief.email}`} class="text-academic-teal hover:underline font-semibold">{editorInChief.email}</a>
+                  Email: <!--email_off--><a href={`mailto:${editorInChief.email}`} class="text-academic-teal hover:underline font-semibold">{editorInChief.email}</a><!--/email_off-->
                 </p>
               )}
             </div>

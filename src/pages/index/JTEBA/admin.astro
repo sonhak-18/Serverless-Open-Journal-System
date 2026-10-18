@@ -2376,6 +2376,14 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
 </Layout>
 
 <script>
+  // Keamanan: Bersihkan token repositori yang pernah tersimpan di localStorage
+  try {
+    localStorage.removeItem('repo_admin_token');
+  } catch (_) {}
+
+  // Simpan token otorisasi repositori hanya di memori sesi aktif (tidak persisten di disk/localStorage)
+  let memoryWorkerAdminToken: string | null = null;
+
   function showToast(msg: string, isError = false) {
     const toast = document.getElementById('admin-toast');
     const toastMsg = document.getElementById('admin-toast-msg');
@@ -2418,6 +2426,8 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
 
   logoutBtn?.addEventListener('click', async () => {
     try {
+      localStorage.removeItem('repo_admin_token');
+      memoryWorkerAdminToken = null;
       await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -3650,14 +3660,24 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
 
     try {
       const baseInput = (gdriveUrlInput?.value || '').trim().replace(/\/$/, '').replace(/\/(one|two|three|1|2|3|0:|1:|2:)$/i, '');
-      const savedToken = localStorage.getItem('repo_admin_token');
-      let activeToken = savedToken;
+      let activeToken = memoryWorkerAdminToken;
       if (!activeToken) {
-        activeToken = prompt('Masukkan Token Otorisasi Worker Repositori (admin_token):', 'your-secret-admin-token') || 'your-secret-admin-token';
-        localStorage.setItem('repo_admin_token', activeToken);
+        const inputPrompt = prompt('Masukkan Token Otorisasi Worker Repositori (admin_token):');
+        if (!inputPrompt || !inputPrompt.trim()) {
+          driveFilesPlaceholder.innerHTML = 'Sinkronisasi dibatalkan. Token otorisasi diperlukan untuk mengakses berkas repositori.';
+          return;
+        }
+        activeToken = inputPrompt.trim();
+        memoryWorkerAdminToken = activeToken;
       }
-      const endpoint = baseInput ? `${baseInput}/api/admin/files?token=${encodeURIComponent(activeToken)}` : `/api/admin/files?token=${encodeURIComponent(activeToken)}`;
-      const res = await fetch(endpoint);
+
+      // Kirim token via HTTP Authorization Header (bukan query parameter URL) untuk mencegah kebocoran log
+      const endpoint = baseInput ? `${baseInput}/api/admin/files` : `/api/admin/files`;
+      const res = await fetch(endpoint, {
+        headers: {
+          'Authorization': `Bearer ${activeToken}`,
+        },
+      });
       if (!res.ok) throw new Error('Status HTTP: ' + res.status);
       const data = await res.json();
       if (!data.success || !Array.isArray(data.files) || data.files.length === 0) {
