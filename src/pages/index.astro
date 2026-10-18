@@ -72,8 +72,8 @@ const withVersion = (url?: string) => {
           class="px-4 py-2 bg-[#0f2c59] hover:bg-[#183e6d] text-white text-xs font-bold rounded shadow-xs transition-all flex items-center gap-1.5"
         >
           <span>Kunjungi JTEBA</span>
-          <svg class="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          <svg class="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
           </svg>
         </a>
       </div>
@@ -120,8 +120,8 @@ const withVersion = (url?: string) => {
             class="px-5 py-3 bg-[#c89b3c] hover:bg-[#b0842b] text-slate-900 font-bold text-xs uppercase tracking-wider rounded shadow-md transition-all flex items-center gap-2"
           >
             <span>Daftar Jurnal Berkala</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <svg class="w-4 h-4 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
             </svg>
           </a>
           <a
@@ -129,8 +129,8 @@ const withVersion = (url?: string) => {
             class="px-5 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-xs uppercase tracking-wider rounded transition-all flex items-center gap-2"
           >
             <span>Buka Jurnal JTEBA</span>
-            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
           </a>
         </div>
@@ -140,7 +140,10 @@ const withVersion = (url?: string) => {
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-white/10">
         <div class="p-4 bg-white/5 border border-white/10 rounded-xl backdrop-blur-sm space-y-1">
           <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5 uppercase tracking-wider">
-            <span>✓</span> Open Access
+            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Open Access</span>
           </div>
           <div class="text-sm font-semibold text-white">Akses Terbuka Penuh</div>
           <p class="text-xs text-slate-300">Bebas diakses, dibaca, dan diunduh tanpa pembatasan biaya bagi pembaca.</p>
@@ -148,7 +151,10 @@ const withVersion = (url?: string) => {
 
         <div class="p-4 bg-white/5 border border-white/10 rounded-xl backdrop-blur-sm space-y-1">
           <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5 uppercase tracking-wider">
-            <span>✓</span> COPE Compliant
+            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>COPE Compliant</span>
           </div>
           <div class="text-sm font-semibold text-white">Integritas Akademik</div>
           <p class="text-xs text-slate-300">Menolak manipulasi data, fabrikasi naskah, dan praktik rekayasa sitasi.</p>
@@ -156,7 +162,10 @@ const withVersion = (url?: string) => {
 
         <div class="p-4 bg-white/5 border border-white/10 rounded-xl backdrop-blur-sm space-y-1">
           <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5 uppercase tracking-wider">
-            <span>✓</span> Hak Cipta Penulis
+            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Hak Cipta Penulis</span>
           </div>
           <div class="text-sm font-semibold text-white">Lisensi CC BY-SA 4.0</div>
           <p class="text-xs text-slate-300">Penulis memegang hak cipta penuh atas manuskrip yang dipublikasikan.</p>
@@ -164,7 +173,10 @@ const withVersion = (url?: string) => {
 
         <div class="p-4 bg-white/5 border border-white/10 rounded-xl backdrop-blur-sm space-y-1">
           <div class="text-amber-300 font-bold text-xs flex items-center gap-1.5 uppercase tracking-wider font-mono">
-            <span>🏛️</span> Domain Resmi
+            <svg class="w-4 h-4 text-amber-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
+            </svg>
+            <span>Domain Resmi</span>
           </div>
           <div class="text-sm font-semibold text-white font-mono">ejournal.praniti.or.id</div>
           <p class="text-xs text-slate-300">Infrastruktur penerbitan OJS 3 terpusat dan berkecepatan tinggi.</p>
@@ -298,8 +310,8 @@ const withVersion = (url?: string) => {
                 class="px-4 py-2.5 bg-[#0f2c59] hover:bg-[#183e6d] text-white text-xs font-bold rounded-lg shadow-xs transition-colors flex items-center gap-1.5"
               >
                 <span>Lihat Jurnal (View Journal)</span>
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                <svg class="w-3.5 h-3.5 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
               </a>
               <a
@@ -322,10 +334,10 @@ const withVersion = (url?: string) => {
               </a>
               <a
                 href="/index/JTEBA/search"
-                class="px-3.5 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs rounded-lg transition-colors flex items-center gap-1"
+                class="px-3.5 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs rounded-lg transition-colors flex items-center gap-1.5"
               >
-                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                 </svg>
                 <span>Cari Artikel</span>
               </a>
@@ -335,8 +347,8 @@ const withVersion = (url?: string) => {
               href="/index/JTEBA/submit"
               class="w-full sm:w-auto text-center px-4 py-2.5 bg-[#c89b3c] hover:bg-[#b0842b] text-slate-900 font-bold text-xs uppercase tracking-wider rounded-lg shadow-xs transition-colors flex items-center justify-center gap-1.5"
             >
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              <svg class="w-3.5 h-3.5 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
               <span>Kirim Naskah (Submit)</span>
             </a>

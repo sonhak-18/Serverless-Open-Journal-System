@@ -32,7 +32,10 @@ const apaCitation = `${firstAuthorLastName}, ${article.authors[0].name.charAt(0)
 const ieeeCitation = `${article.authors.map(a => `${a.name.charAt(0)}. ${a.name.split(' ').slice(-1)[0]}`).join(', ')}, "${article.title}," ${journalConfig.shortName}, vol. ${article.volume}, no. ${article.issue}, pp. ${article.pages}, ${article.year}, doi: ${cleanDoi}.`;
 const harvardCitation = `${firstAuthorLastName}, ${article.authors[0].name.charAt(0)}. (${article.year}) '${article.title}', ${journalConfig.name}, ${article.volume}(${article.issue}), pp. ${article.pages}. Available at: ${doiUrl}.`;
 
-const waInquiryUrl = getWhatsAppSubmissionUrl(article.title);
+const waInquiryUrl = getWhatsAppSubmissionUrl(
+  article.title,
+  journalConfig.submission?.whatsappNumber || journalConfig.submission?.whatsappDisplay
+);
 
 function formatReferenceLinks(text: string): string {
   const urlRegex = /(https?:\/\/[^\s\)]+)/g;
@@ -143,23 +146,27 @@ const articleReferences = (article.references && article.references.length > 0)
               data-track-download={article.slug}
               class="inline-flex items-center gap-2 px-5 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white text-sm sm:text-base font-bold rounded shadow-xs transition-colors tracking-wide"
             >
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
               </svg>
               <span>UNDUH / BACA PDF</span>
             </a>
           </div>
 
           <!-- Metrik Pembaca OJS (Real-Time Cloudflare KV) -->
-          <div class="pt-2 border-t border-slate-200 flex items-center gap-4 text-xs sm:text-sm text-slate-500 font-mono">
+          <div class="pt-2 border-t border-slate-200 flex items-center gap-4 text-xs sm:text-sm text-slate-700 font-mono">
             <span class="inline-flex items-center gap-1.5" title="Jumlah pembaca abstrak (Edge KV)">
-              <span class="text-emerald-700">📊</span>
-              <span>Abstract Views: <strong id="stat-views" class="text-slate-800 font-bold">{initialViews}</strong></span>
+              <svg class="w-4 h-4 text-emerald-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+              </svg>
+              <span>Abstract Views: <strong id="stat-views" class="text-slate-900 font-bold">{initialViews}</strong></span>
             </span>
-            <span>|</span>
+            <span class="text-slate-400">|</span>
             <span class="inline-flex items-center gap-1.5" title="Jumlah unduhan PDF resmi">
-              <span class="text-red-700">📄</span>
-              <span>PDF Downloads: <strong id="stat-downloads" class="text-slate-800 font-bold">{initialDownloads}</strong></span>
+              <svg class="w-4 h-4 text-rose-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              <span>PDF Downloads: <strong id="stat-downloads" class="text-slate-900 font-bold">{initialDownloads}</strong></span>
             </span>
           </div>
         </div>
@@ -229,15 +236,21 @@ const articleReferences = (article.references && article.references.length > 0)
           </div>
 
           <div class="mt-2.5 flex items-center justify-between">
-            <span id="copy-status" class="text-xs text-emerald-700 font-medium opacity-0 transition-opacity">
-              ✓ Sitasi berhasil disalin ke clipboard!
+            <span id="copy-status" class="inline-flex items-center gap-1.5 text-xs text-emerald-700 font-medium opacity-0 transition-opacity">
+              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+              <span>Sitasi berhasil disalin ke clipboard!</span>
             </span>
             <button
               type="button"
               id="btn-copy-citation"
-              class="px-3 py-1 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold rounded-xs transition-colors"
+              class="inline-flex items-center gap-1 px-3 py-1 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold rounded-xs transition-colors"
             >
-              Salin Sitasi
+              <svg class="w-3.5 h-3.5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+              </svg>
+              <span>Salin Sitasi</span>
             </button>
           </div>
         </div>
