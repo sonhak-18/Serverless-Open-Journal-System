@@ -2,11 +2,20 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { getDbAdminPin, setDbAdminPin, getDbAdminUsername, setDbAdminUsername } from '../../lib/db';
+import {
+  verifyPassword,
+  hashPassword,
+  createSession,
+  destroySession,
+  getSessionCookieHeaders,
+  getClearSessionCookieHeaders,
+  timingSafeEqualStr,
+} from '../../lib/auth';
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
     const kv = (locals as any)?.runtime?.env?.KV;
-    const body = await request.json();
+    const body = await request.json().catch(() => ({}));
     const { action, username, pin, currentPin, newPin, newUsername } = body;
 
     const storedPin = await getDbAdminPin(kv);
@@ -14,17 +23,32 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     if (action === 'verify') {
       const inputUser = (username || '').trim().toLowerCase();
-      const validUser = inputUser === storedUsername.toLowerCase() || inputUser === 'admin' || inputUser === 'redaksi';
-      const validPin = pin && pin === storedPin;
+      const validUser =
+        inputUser === storedUsername.toLowerCase() ||
+        inputUser === 'admin' ||
+        inputUser === 'redaksi';
+
+      const validPin = await verifyPassword(pin || '', storedPin);
 
       if (validUser && validPin) {
-        const sessionId = crypto.randomUUID();
+        // Otomatis upgrade plaintext PIN ke PBKDF2 hash jika belum di-hash
+        if (!storedPin.startsWith('pbkdf2$')) {
+          const newHashedPin = await hashPassword(pin);
+          await setDbAdminPin(newHashedPin, kv);
+        }
+
+        const sessionId = await createSession(storedUsername, 'admin', kv);
+        const cookieHeaders = getSessionCookieHeaders(sessionId, ['sektansia_session', 'jteba_session']);
+
+        const headers = new Headers();
+        headers.set('Content-Type', 'application/json');
+        for (const [key, val] of cookieHeaders) {
+          headers.append(key, val);
+        }
+
         return new Response(JSON.stringify({ success: true, username: storedUsername }), {
           status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-            'Set-Cookie': `sektansia_session=${sessionId}; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=86400`,
-          },
+          headers,
         });
       } else {
         const errorMsg = !validUser && !validPin
@@ -40,12 +64,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     if (action === 'logout') {
+      await destroySession(request, kv);
+      const clearHeaders = getClearSessionCookieHeaders(['sektansia_session', 'jteba_session']);
+      const headers = new Headers();
+      headers.set('Content-Type', 'application/json');
+      for (const [key, val] of clearHeaders) {
+        headers.append(key, val);
+      }
+
       return new Response(JSON.stringify({ success: true, message: 'Berhasil keluar.' }), {
         status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'Set-Cookie': 'sektansia_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=Strict; Max-Age=0',
-        },
+        headers,
       });
     }
 
@@ -57,7 +86,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
         });
       }
 
-      if (currentPin !== storedPin) {
+      const isCurrentValid = await verifyPassword(currentPin, storedPin);
+      if (!isCurrentValid) {
         return new Response(JSON.stringify({ success: false, error: 'PIN saat ini tidak cocok!' }), {
           status: 400,
           headers: { 'Content-Type': 'application/json' },
@@ -71,7 +101,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
             headers: { 'Content-Type': 'application/json' },
           });
         }
-        await setDbAdminPin(newPin.trim(), kv);
+        const hashedNewPin = await hashPassword(newPin.trim());
+        await setDbAdminPin(hashedNewPin, kv);
       }
 
       if (newUsername && newUsername.trim()) {
@@ -84,7 +115,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         await setDbAdminUsername(newUsername.trim(), kv);
       }
 
-      return new Response(JSON.stringify({ success: true, message: 'Kredensial login Admin berhasil diperbarui!' }), {
+      return new Response(JSON.stringify({ success: true, message: 'Kredensial login Admin berhasil diperbarui dengan aman!' }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });

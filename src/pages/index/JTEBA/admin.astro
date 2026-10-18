@@ -3,13 +3,19 @@ export const prerender = false;
 
 import Layout from '../../../layouts/Layout.astro';
 import { getDbSettings, getDbArticles, getDbEditorial, getDbIndexing, getDbIssues } from '../../../lib/db';
+import { verifySession } from '../../../lib/auth';
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
+const kv = (Astro.locals as any)?.runtime?.env?.KV;
+const session = await verifySession(Astro.request, kv);
+const isAuthenticated = !!session;
+
 const journalConfig = await getDbSettings(d1);
-const articles = await getDbArticles(d1);
-const editorial = await getDbEditorial(d1);
-const indexing = await getDbIndexing(d1);
-const issues = await getDbIssues(d1);
+// Hanya ambil data administrasi jika sesi terotentikasi di level server
+const articles = isAuthenticated ? await getDbArticles(d1) : [];
+const editorial = isAuthenticated ? await getDbEditorial(d1) : { editorInChief: { name: '', affiliation: '', email: '' }, editors: [], reviewers: [] };
+const indexing = isAuthenticated ? await getDbIndexing(d1) : [];
+const issues = isAuthenticated ? await getDbIssues(d1) : [];
 
 const { editorInChief, editors, reviewers } = editorial;
 
@@ -56,7 +62,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
         <button
           type="button"
           id="btn-admin-logout"
-          class="hidden px-3.5 py-1.5 bg-rose-700 hover:bg-rose-800 text-white text-xs font-semibold rounded transition-colors shadow-2xs flex items-center gap-1.5"
+          class={isAuthenticated ? "px-3.5 py-1.5 bg-rose-700 hover:bg-rose-800 text-white text-xs font-semibold rounded transition-colors shadow-2xs flex items-center gap-1.5" : "hidden"}
           title="Keluar dari Panel Admin"
         >
           <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -77,61 +83,63 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       </button>
     </div>
 
-    <!-- Area Login Sederhana (Gerbang Admin) -->
-    <div id="admin-login-lock" class="academic-card p-8 rounded border border-academic-border max-w-md mx-auto my-12 text-center shadow-sm">
-      <div class="w-12 h-12 rounded-full bg-academic-navy/10 text-academic-navy flex items-center justify-center mx-auto mb-4">
-        <svg class="w-6 h-6 text-academic-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-        </svg>
-      </div>
-      <h2 class="text-lg font-serif font-bold text-academic-navy">
-        Akses Khusus Dewan Redaksi
-      </h2>
-      <p class="text-xs sm:text-sm text-academic-ink-muted mt-1 mb-6">
-        Masukkan kata sandi atau PIN untuk masuk ke panel administrasi redaksi.
-      </p>
-
-      <form id="admin-login-form" class="space-y-4 text-left">
-        <div>
-          <label for="admin-username" class="block text-sm font-semibold text-slate-800 mb-1">
-            Nama Pengguna (Username)
-          </label>
-          <input
-            type="text"
-            id="admin-username"
-            required
-            autocomplete="username"
-            placeholder="Masukkan username (cth: admin)"
-            class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
-          />
+    {!isAuthenticated ? (
+      <!-- Area Login Sederhana (Gerbang Admin) -->
+      <div id="admin-login-lock" class="academic-card p-8 rounded border border-academic-border max-w-md mx-auto my-12 text-center shadow-sm">
+        <div class="w-12 h-12 rounded-full bg-academic-navy/10 text-academic-navy flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-academic-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
         </div>
-        <div>
-          <label for="admin-pin" class="block text-sm font-semibold text-slate-800 mb-1">
-            Kata Sandi / PIN Redaksi
-          </label>
-          <input
-            type="password"
-            id="admin-pin"
-            required
-            autocomplete="current-password"
-            placeholder="Masukkan kata sandi / PIN"
-            class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
-          />
-        </div>
-        <p id="login-error" class="text-xs text-rose-600 hidden">
-          Nama pengguna atau kata sandi salah. Silakan coba lagi.
+        <h2 class="text-lg font-serif font-bold text-academic-navy">
+          Akses Khusus Dewan Redaksi
+        </h2>
+        <p class="text-xs sm:text-sm text-academic-ink-muted mt-1 mb-6">
+          Masukkan kata sandi atau PIN untuk masuk ke panel administrasi redaksi.
         </p>
-        <button
-          type="submit"
-          class="w-full py-2.5 px-4 bg-academic-navy hover:bg-academic-navy-light text-white text-sm font-semibold rounded transition-colors shadow min-h-[44px]"
-        >
-          Masuk ke Panel Redaksi
-        </button>
-      </form>
-    </div>
 
-    <!-- Konten Dashboard Admin (Tersembunyi Sebelum Login) -->
-    <div id="admin-dashboard-content" class="hidden space-y-8">
+        <form id="admin-login-form" class="space-y-4 text-left">
+          <div>
+            <label for="admin-username" class="block text-sm font-semibold text-slate-800 mb-1">
+              Nama Pengguna (Username)
+            </label>
+            <input
+              type="text"
+              id="admin-username"
+              required
+              autocomplete="username"
+              placeholder="Masukkan username (cth: admin)"
+              class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
+            />
+          </div>
+          <div>
+            <label for="admin-pin" class="block text-sm font-semibold text-slate-800 mb-1">
+              Kata Sandi / PIN Redaksi
+            </label>
+            <input
+              type="password"
+              id="admin-pin"
+              required
+              autocomplete="current-password"
+              placeholder="Masukkan kata sandi / PIN"
+              class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none"
+            />
+          </div>
+          <p id="login-error" class="text-xs text-rose-600 hidden">
+            Nama pengguna atau kata sandi salah. Silakan coba lagi.
+          </p>
+          <button
+            type="submit"
+            id="login-submit-btn"
+            class="w-full py-2.5 px-4 bg-academic-navy hover:bg-academic-navy-light text-white text-sm font-semibold rounded transition-colors shadow min-h-[44px]"
+          >
+            Masuk ke Panel Redaksi
+          </button>
+        </form>
+      </div>
+    ) : (
+      <!-- Konten Dashboard Admin (Hanya Dirender di Server Jika Terotentikasi) -->
+      <div id="admin-dashboard-content" class="space-y-8">
       <!-- Navigasi Tab Admin -->
       <div class="flex border-b border-academic-border text-xs sm:text-sm font-medium space-x-1 sm:space-x-3 overflow-x-auto pb-1" role="tablist">
         <button
@@ -2330,6 +2338,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
         </div>
       </div>
     </div>
+    )}
   </div>
 
   <!-- Modal Konfirmasi Hapus Kustom (Indah, Bersih, Akademik) -->
@@ -2405,28 +2414,10 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
   const adminPinInput = document.getElementById('admin-pin') as HTMLInputElement | null;
   const logoutBtn = document.getElementById('btn-admin-logout');
 
-  function setAuthenticated(isAuth: boolean) {
-    if (isAuth) {
-      sessionStorage.setItem('jteba_admin_auth', 'true');
-      loginLock?.classList.add('hidden');
-      dashboardContent?.classList.remove('hidden');
-      logoutBtn?.classList.remove('hidden');
-      loginError?.classList.add('hidden');
-    } else {
-      sessionStorage.removeItem('jteba_admin_auth');
-      loginLock?.classList.remove('hidden');
-      dashboardContent?.classList.add('hidden');
-      logoutBtn?.classList.add('hidden');
-    }
-  }
-
-  if (sessionStorage.getItem('jteba_admin_auth') === 'true') {
-    setAuthenticated(true);
-  }
-
   logoutBtn?.addEventListener('click', async () => {
     try {
       localStorage.removeItem('repo_admin_token');
+      sessionStorage.removeItem('jteba_admin_auth');
       memoryWorkerAdminToken = null;
       await fetch('/api/auth', {
         method: 'POST',
@@ -2434,8 +2425,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
         body: JSON.stringify({ action: 'logout' }),
       });
     } catch (_) {}
-    setAuthenticated(false);
-    showToast('✓ Anda telah berhasil keluar dari sesi panel redaksi.');
+    window.location.reload();
   });
 
   loginForm?.addEventListener('submit', async (e) => {
@@ -2443,6 +2433,12 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     const username = adminUsernameInput?.value.trim();
     const pin = adminPinInput?.value.trim();
     if (!username || !pin) return;
+
+    const submitBtn = document.getElementById('login-submit-btn') as HTMLButtonElement | null;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Memverifikasi...';
+    }
 
     try {
       const res = await fetch('/api/auth', {
@@ -2452,15 +2448,22 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       });
       const data = await res.json();
       if (data.success) {
-        setAuthenticated(true);
-        if (adminPinInput) adminPinInput.value = '';
+        window.location.reload();
       } else {
         loginError?.classList.remove('hidden');
         if (loginError && data.error) loginError.textContent = data.error;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Masuk ke Panel Redaksi';
+        }
       }
     } catch (err: any) {
       loginError?.classList.remove('hidden');
       if (loginError) loginError.textContent = 'Gagal memverifikasi: ' + err.message;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Masuk ke Panel Redaksi';
+      }
     }
   });
 

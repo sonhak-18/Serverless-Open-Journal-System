@@ -37,9 +37,20 @@ const waInquiryUrl = getWhatsAppSubmissionUrl(
   journalConfig.submission?.whatsappNumber || journalConfig.submission?.whatsappDisplay
 );
 
+function escapeHtml(str: string): string {
+  return str.replace(/[&<>"']/g, (m) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+  }[m] || m));
+}
+
 function formatReferenceLinks(text: string): string {
-  const urlRegex = /(https?:\/\/[^\s\)]+)/g;
-  return text.replace(urlRegex, (url) => {
+  const safeText = escapeHtml(text || '');
+  const urlRegex = /(https?:\/\/[^\s\)\&]+)/g;
+  return safeText.replace(urlRegex, (url) => {
     return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline font-mono text-xs break-all">${url}</a>`;
   });
 }

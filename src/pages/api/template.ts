@@ -7,7 +7,7 @@ export const GET: APIRoute = async ({ locals }) => {
   try {
     const d1 = (locals as any)?.runtime?.env?.DB;
     const config = await getDbSettings(d1);
-    const templateUrl = config.branding?.templateUrl || '/template-jtaap.docx';
+    const templateUrl = config.branding?.templateUrl || '/template-jteba.docx';
 
     if (templateUrl.startsWith('data:')) {
       const parts = templateUrl.split(';base64,');
@@ -30,11 +30,28 @@ export const GET: APIRoute = async ({ locals }) => {
       }
     }
 
-    if (templateUrl.startsWith('http://') || templateUrl.startsWith('https://')) {
-      return Response.redirect(templateUrl, 302);
+    // Validasi URL eksternal (mencegah Open Redirect & Malware Tampering)
+    if (templateUrl.startsWith('https://')) {
+      try {
+        const parsed = new URL(templateUrl);
+        const host = parsed.hostname.toLowerCase();
+        const isTrustedHost =
+          host === 'praniti.or.id' ||
+          host.endsWith('.praniti.or.id') ||
+          host === 'drive.google.com' ||
+          host === 'docs.google.com' ||
+          host.endsWith('.pages.dev') ||
+          host === 'localhost' ||
+          host === '127.0.0.1';
+
+        if (isTrustedHost) {
+          return Response.redirect(templateUrl, 302);
+        }
+      } catch (_) {}
     }
 
-    return Response.redirect('/template-jtaap.docx', 302);
+    // Default template internal yang aman
+    return Response.redirect('/template-jteba.docx', 302);
   } catch (error: any) {
     return new Response('Gagal memuat template: ' + error.message, { status: 500 });
   }

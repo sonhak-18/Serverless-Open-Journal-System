@@ -2,6 +2,7 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { getDbPortalSettings, updateDbPortalSettings } from '../../lib/db';
+import { verifySession } from '../../lib/auth';
 
 export const GET: APIRoute = async ({ locals }) => {
   try {
@@ -24,11 +25,11 @@ export const GET: APIRoute = async ({ locals }) => {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    // Verifikasi sesi cookie praniti_portal_session atau sektansia_session
-    const cookieHeader = request.headers.get('cookie') || '';
-    const hasSession = cookieHeader.includes('praniti_portal_session=') || cookieHeader.includes('sektansia_session=');
+    const kv = (locals as any)?.runtime?.env?.KV;
+    // Verifikasi sesi kriptografis / KV (bukan sekadar .includes('cookie='))
+    const session = await verifySession(request, kv);
 
-    if (!hasSession) {
+    if (!session) {
       return new Response(JSON.stringify({ success: false, error: 'Sesi kedaluwarsa atau tidak terotorisasi. Silakan login kembali.' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },

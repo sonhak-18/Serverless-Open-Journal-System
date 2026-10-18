@@ -52,8 +52,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return context.redirect('/index/JTEBA/editorial-team', 302);
   }
   if (pathname.startsWith('/index/JTEBA/article/view/')) {
-    const slug = pathname.replace('/index/JTEBA/article/view/', '');
-    return context.redirect(`/index/JTEBA/article/${slug}`, 302);
+    const rawSlug = pathname.replace('/index/JTEBA/article/view/', '');
+    const cleanSlug = encodeURIComponent(rawSlug.replace(/[^a-zA-Z0-9_-]/g, ''));
+    if (!cleanSlug) {
+      return context.redirect('/index/JTEBA', 302);
+    }
+    return context.redirect(`/index/JTEBA/article/${cleanSlug}`, 302);
   }
 
   const response = await next();

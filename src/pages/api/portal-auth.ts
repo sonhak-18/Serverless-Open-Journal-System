@@ -2,11 +2,20 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { getDbPortalAdminCredentials, setDbPortalAdminCredentials } from '../../lib/db';
+import {
+  verifyPassword,
+  hashPassword,
+  createSession,
+  destroySession,
+  getSessionCookieHeaders,
+  getClearSessionCookieHeaders,
+  timingSafeEqualStr,
+} from '../../lib/auth';
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
     const kv = (locals as any)?.runtime?.env?.KV;
-    const body = await request.json();
+    const body = await request.json().catch(() => ({}));
     const { action, username, pin, currentPin, newUsername, newPin } = body;
 
     const creds = await getDbPortalAdminCredentials(kv);
@@ -14,16 +23,27 @@ export const POST: APIRoute = async ({ request, locals }) => {
     if (action === 'verify') {
       const inputUser = (username || '').trim().toLowerCase();
       const validUser = inputUser === creds.username.toLowerCase();
-      const validPin = pin && pin === creds.pin;
+      const validPin = await verifyPassword(pin || '', creds.pin);
 
       if (validUser && validPin) {
-        const sessionId = crypto.randomUUID();
+        // Otomatis upgrade plaintext PIN ke PBKDF2 hash jika belum di-hash
+        if (!creds.pin.startsWith('pbkdf2$')) {
+          const newHashedPin = await hashPassword(pin);
+          await setDbPortalAdminCredentials(creds.username, newHashedPin, kv);
+        }
+
+        const sessionId = await createSession(creds.username, 'portal_admin', kv);
+        const cookieHeaders = getSessionCookieHeaders(sessionId, ['praniti_portal_session', 'jteba_session']);
+
+        const headers = new Headers();
+        headers.set('Content-Type', 'application/json');
+        for (const [key, val] of cookieHeaders) {
+          headers.append(key, val);
+        }
+
         return new Response(JSON.stringify({ success: true, username: creds.username }), {
           status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-            'Set-Cookie': `praniti_portal_session=${sessionId}; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=86400`,
-          },
+          headers,
         });
       } else {
         const errorMsg = !validUser && !validPin
@@ -39,12 +59,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     if (action === 'logout') {
+      await destroySession(request, kv);
+      const clearHeaders = getClearSessionCookieHeaders(['praniti_portal_session', 'jteba_session']);
+      const headers = new Headers();
+      headers.set('Content-Type', 'application/json');
+      for (const [key, val] of clearHeaders) {
+        headers.append(key, val);
+      }
+
       return new Response(JSON.stringify({ success: true, message: 'Berhasil keluar dari admin portal.' }), {
         status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'Set-Cookie': 'praniti_portal_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=Strict; Max-Age=0',
-        },
+        headers,
       });
     }
 
@@ -56,7 +81,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
         });
       }
 
-      if (currentPin !== creds.pin) {
+      const isCurrentValid = await verifyPassword(currentPin, creds.pin);
+      if (!isCurrentValid) {
         return new Response(JSON.stringify({ success: false, error: 'Password / PIN saat ini tidak sesuai.' }), {
           status: 403,
           headers: { 'Content-Type': 'application/json' },
@@ -64,21 +90,25 @@ export const POST: APIRoute = async ({ request, locals }) => {
       }
 
       const targetUsername = (newUsername || creds.username).trim();
-      const targetPin = (newPin || creds.pin).trim();
+      const rawTargetPin = (newPin || '').trim();
 
-      if (!targetPin || targetPin.length < 6) {
-        return new Response(JSON.stringify({ success: false, error: 'Password baru minimal harus 6 karakter.' }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        });
+      let targetPinToStore = creds.pin;
+      if (rawTargetPin) {
+        if (rawTargetPin.length < 6) {
+          return new Response(JSON.stringify({ success: false, error: 'Password baru minimal harus 6 karakter.' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+        targetPinToStore = await hashPassword(rawTargetPin);
       }
 
-      await setDbPortalAdminCredentials(targetUsername, targetPin, kv);
+      await setDbPortalAdminCredentials(targetUsername, targetPinToStore, kv);
 
       return new Response(JSON.stringify({
         success: true,
-        message: 'Kredensial admin portal berhasil diperbarui.',
-        username: targetUsername
+        message: 'Kredensial admin portal berhasil diperbarui secara aman.',
+        username: targetUsername,
       }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },

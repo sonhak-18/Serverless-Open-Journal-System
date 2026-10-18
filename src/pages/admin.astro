@@ -3,15 +3,16 @@ export const prerender = false;
 
 import Layout from '../layouts/Layout.astro';
 import { getDbPortalSettings, getDbPortalAdminCredentials } from '../lib/db';
+import { verifySession } from '../lib/auth';
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const kv = (Astro.locals as any)?.runtime?.env?.KV;
 const portal = await getDbPortalSettings(d1);
-const creds = await getDbPortalAdminCredentials(kv);
 
-// Cek autentikasi sesi via cookie praniti_portal_session
-const cookieHeader = Astro.request.headers.get('cookie') || '';
-const isAuthenticated = cookieHeader.includes('praniti_portal_session=');
+// Cek autentikasi sesi valid (KV / Store terverifikasi)
+const session = await verifySession(Astro.request, kv);
+const isAuthenticated = !!session;
+const creds = isAuthenticated ? await getDbPortalAdminCredentials(kv) : { username: 'admin', pin: '' };
 ---
 
 <Layout

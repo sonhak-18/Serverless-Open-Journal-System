@@ -25,6 +25,67 @@ export function getGlobalD1(): any {
   return globalD1Instance;
 }
 
+let isSchemaInitialized = false;
+export async function ensureDbSchemaInitialized(db: any): Promise<void> {
+  if (isSchemaInitialized || !db) return;
+  try {
+    try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN show_editorial_team INTEGER DEFAULT 1').run(); } catch (_) {}
+    try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN has_active_issue INTEGER DEFAULT 0').run(); } catch (_) {}
+    try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN publication_frequency TEXT DEFAULT "4 Kali/Tahun (Maret, Juni, September, Desember)"').run(); } catch (_) {}
+    try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN logo_url TEXT DEFAULT "/images/logo.png"').run(); } catch (_) {}
+    try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN favicon_url TEXT DEFAULT "/favicon.png"').run(); } catch (_) {}
+    try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN template_url TEXT DEFAULT "/template-jteba.docx"').run(); } catch (_) {}
+    try {
+      await db.prepare(`
+        CREATE TABLE IF NOT EXISTS journal_issues (
+          id TEXT PRIMARY KEY,
+          volume INTEGER NOT NULL,
+          issue INTEGER NOT NULL,
+          year INTEGER NOT NULL,
+          period TEXT NOT NULL,
+          theme TEXT DEFAULT '',
+          cover_url TEXT DEFAULT '',
+          description TEXT DEFAULT '',
+          publish_date TEXT DEFAULT '',
+          is_current INTEGER DEFAULT 0
+        )
+      `).run();
+    } catch (_) {}
+    isSchemaInitialized = true;
+  } catch (_) {}
+}
+
+let isPortalSchemaInitialized = false;
+export async function ensurePortalSchemaInitialized(db: any): Promise<void> {
+  if (isPortalSchemaInitialized || !db) return;
+  try {
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS portal_settings (
+        id TEXT PRIMARY KEY,
+        org_name TEXT NOT NULL,
+        org_name_en TEXT NOT NULL,
+        slogan_id TEXT DEFAULT '',
+        slogan_en TEXT DEFAULT '',
+        description TEXT DEFAULT '',
+        domain_display TEXT DEFAULT '',
+        email TEXT DEFAULT '',
+        whatsapp TEXT DEFAULT '',
+        address TEXT DEFAULT '',
+        logo_url TEXT DEFAULT '',
+        favicon_url TEXT DEFAULT '',
+        call_for_papers_active INTEGER DEFAULT 1,
+        flagship_journal_name TEXT DEFAULT '',
+        flagship_journal_en TEXT DEFAULT '',
+        flagship_journal_url TEXT DEFAULT '',
+        flagship_journal_emblem_url TEXT DEFAULT '',
+        missions_json TEXT DEFAULT '[]'
+      )
+    `).run();
+    try { await db.prepare('ALTER TABLE portal_settings ADD COLUMN flagship_journal_emblem_url TEXT').run(); } catch (_) {}
+    isPortalSchemaInitialized = true;
+  } catch (_) {}
+}
+
 // Global in-memory cache for local dev / fallback
 let memoryStore: JtebaDatabase = {
   settings: JSON.parse(JSON.stringify(journalConfig)),
@@ -85,26 +146,7 @@ export async function getDbSettings(d1?: any): Promise<JournalConfig> {
           row.show_issn_block = 1;
         }
 
-        // Auto-migrasi kolom fitur baru jika belum ada
-        try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN show_editorial_team INTEGER DEFAULT 1').run(); } catch (_) {}
-        try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN has_active_issue INTEGER DEFAULT 0').run(); } catch (_) {}
-        try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN publication_frequency TEXT DEFAULT "4 Kali/Tahun (Maret, Juni, September, Desember)"').run(); } catch (_) {}
-        try {
-          await db.prepare(`
-            CREATE TABLE IF NOT EXISTS journal_issues (
-              id TEXT PRIMARY KEY,
-              volume INTEGER NOT NULL,
-              issue INTEGER NOT NULL,
-              year INTEGER NOT NULL,
-              period TEXT NOT NULL,
-              theme TEXT DEFAULT '',
-              cover_url TEXT DEFAULT '',
-              description TEXT DEFAULT '',
-              publish_date TEXT DEFAULT '',
-              is_current INTEGER DEFAULT 0
-            )
-          `).run();
-        } catch (_) {}
+        await ensureDbSchemaInitialized(db);
 
         const loadedSettings: JournalConfig = {
           ...memoryStore.settings,
@@ -365,20 +407,7 @@ export async function getDbIssues(d1?: any): Promise<JournalIssue[]> {
   const db = d1 || globalD1Instance;
   if (db) {
     try {
-      await db.prepare(`
-        CREATE TABLE IF NOT EXISTS journal_issues (
-          id TEXT PRIMARY KEY,
-          volume INTEGER NOT NULL,
-          issue INTEGER NOT NULL,
-          year INTEGER NOT NULL,
-          period TEXT NOT NULL,
-          theme TEXT DEFAULT '',
-          cover_url TEXT DEFAULT '',
-          description TEXT DEFAULT '',
-          publish_date TEXT DEFAULT '',
-          is_current INTEGER DEFAULT 0
-        )
-      `).run();
+      await ensureDbSchemaInitialized(db);
       const rows = await db.prepare('SELECT * FROM journal_issues ORDER BY volume DESC, issue DESC').all();
       if (rows && rows.results) {
         return (rows.results as any[]).map((r: any) => ({
@@ -1006,34 +1035,7 @@ export async function getDbPortalSettings(d1?: any): Promise<PortalSettings> {
   const db = d1 || globalD1Instance;
   if (db) {
     try {
-      // Pastikan tabel portal_settings ada di database D1
-      await db.prepare(`
-        CREATE TABLE IF NOT EXISTS portal_settings (
-          id TEXT PRIMARY KEY,
-          org_name TEXT NOT NULL,
-          org_name_en TEXT NOT NULL,
-          slogan_id TEXT NOT NULL,
-          slogan_en TEXT NOT NULL,
-          description TEXT NOT NULL,
-          domain_display TEXT NOT NULL,
-          email TEXT NOT NULL,
-          whatsapp TEXT NOT NULL,
-          address TEXT NOT NULL,
-          logo_url TEXT NOT NULL,
-          favicon_url TEXT NOT NULL,
-          call_for_papers_active INTEGER DEFAULT 1,
-          flagship_journal_name TEXT NOT NULL,
-          flagship_journal_en TEXT NOT NULL,
-          flagship_journal_url TEXT NOT NULL,
-          flagship_journal_emblem_url TEXT,
-          missions_json TEXT NOT NULL
-        )
-      `).run();
-
-      // Tambahkan kolom jika migrasi dari versi sebelumnya
-      try {
-        await db.prepare('ALTER TABLE portal_settings ADD COLUMN flagship_journal_emblem_url TEXT').run();
-      } catch (_) {}
+      await ensurePortalSchemaInitialized(db);
 
       const row = await db.prepare('SELECT * FROM portal_settings WHERE id = "default"').first();
       if (row) {

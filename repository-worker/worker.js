@@ -179,8 +179,9 @@ class GoogleDriveRepo {
 
   async get_single_file(filename) {
     if (this.files[filename]) return this.files[filename];
+    if (/[\r\n\0]/.test(filename)) return null;
     const parent = this.root.id;
-    const cleanName = decodeURIComponent(filename).replace(/'/g, "\\'");
+    const cleanName = decodeURIComponent(filename).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     const params = {
       supportsAllDrives: true,
       includeItemsFromAllDrives: true,
@@ -242,15 +243,25 @@ async function streamFile(gd, file, range = '', inline = true) {
   }
 
   const responseHeaders = new Headers(res.headers);
-  responseHeaders.set("Content-Type", file.mimeType || "application/pdf");
+  const safeInlineMimeTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
+  const declaredMime = (file.mimeType || 'application/pdf').toLowerCase();
+  const isSafeInline = safeInlineMimeTypes.includes(declaredMime);
+
+  // Jangan pernah izinkan inline HTML / SVG / JS dieksekusi di bawah origin CDN repositori
+  const safeContentType = (declaredMime === 'text/html' || declaredMime.includes('svg') || declaredMime.includes('javascript'))
+    ? 'application/octet-stream'
+    : declaredMime;
+
+  responseHeaders.set("Content-Type", safeContentType);
   responseHeaders.set("Accept-Ranges", "bytes");
   responseHeaders.set("Access-Control-Allow-Origin", "*");
+  responseHeaders.set("X-Content-Type-Options", "nosniff");
 
   if (file.size) {
     responseHeaders.set("Content-Length", file.size);
   }
 
-  if (inline) {
+  if (inline && isSafeInline) {
     responseHeaders.set("Content-Disposition", `inline; filename*=UTF-8''${encodeURIComponent(file.name)}`);
   } else {
     responseHeaders.set("Content-Disposition", `attachment; filename*=UTF-8''${encodeURIComponent(file.name)}`);
@@ -260,6 +271,17 @@ async function streamFile(gd, file, range = '', inline = true) {
     status: res.status,
     headers: responseHeaders
   });
+}
+
+function timingSafeEqualStr(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const enc = new TextEncoder();
+  const bufA = enc.encode(a);
+  const bufB = enc.encode(b);
+  if (bufA.length !== bufB.length) return false;
+  let diff = 0;
+  for (let i = 0; i < bufA.length; i++) diff |= bufA[i] ^ bufB[i];
+  return diff === 0;
 }
 
 // Main Request Handler
@@ -274,9 +296,12 @@ async function handleRequest(request) {
 
   // 2. Secret Admin API for file listing & management (used by JTAAP Admin Panel)
   if (path === '/api/admin/files') {
-    const token = url.searchParams.get('token') || request.headers.get('Authorization')?.replace(/^Bearer\s+/, '');
-    if (!token || token !== authConfig.admin_token) {
-      return new Response(JSON.stringify({ error: 'Unauthorized: Invalid or missing admin token' }), {
+    const authHeader = request.headers.get('Authorization') || '';
+    const token = authHeader.replace(/^Bearer\s+/i, '') || url.searchParams.get('token');
+    const isTokenValid = token && authConfig.admin_token && authConfig.admin_token !== 'your-secret-admin-token' && timingSafeEqualStr(token, authConfig.admin_token);
+
+    if (!isTokenValid) {
+      return new Response(JSON.stringify({ error: 'Unauthorized: Invalid or unconfigured admin token' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
