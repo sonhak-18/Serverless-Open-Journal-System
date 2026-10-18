@@ -98,9 +98,7 @@ let memoryStore: JtebaDatabase = {
   indexing: JSON.parse(JSON.stringify(journalConfig.indexing)),
 };
 
-// ==========================================
-// PUBLIC REPOSITORY METHODS (D1 & LOCAL READY)
-// ==========================================
+// Public repository methods for D1 and local fallback
 
 export interface JournalIssue {
   id: string;
@@ -977,9 +975,7 @@ export async function setDbAdminPin(newPin: string, kv?: any): Promise<void> {
   }
 }
 
-// ==========================================
-// PORTAL OPEN GATE (PUBLISHER) SETTINGS
-// ==========================================
+// Portal publisher settings
 
 export interface PortalSettings {
   id: string;

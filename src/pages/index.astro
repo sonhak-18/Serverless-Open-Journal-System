@@ -28,7 +28,6 @@ const withVersion = (url?: string) => {
   showHeader={false}
   showFooter={false}
 >
-  <!-- TOP UTILITY BAR -->
   <div class="bg-[#07172e] text-slate-300 text-xs py-2 px-4 border-b border-[#0f2c59]/80">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
       <div class="flex items-center gap-2 font-medium">
@@ -45,10 +44,8 @@ const withVersion = (url?: string) => {
     </div>
   </div>
 
-  <!-- MODERN NAVIGATION BAR -->
   <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-xs">
     <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
-      <!-- Official Logo Brand (Prominent & Crisp) -->
       <a href="/" class="flex items-center gap-3 group py-1" title={`Beranda ${portal.orgName}`}>
         <img
           src={withVersion(portal.logoUrl || '/images/logo-praniti.png')}
@@ -57,7 +54,6 @@ const withVersion = (url?: string) => {
         />
       </a>
 
-      <!-- Desktop Nav Links -->
       <div class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
         <a href="#journals" class="hover:text-[#0f2c59] transition-colors">Jurnal Ilmiah</a>
         <a href="#about" class="hover:text-[#0f2c59] transition-colors">Profil Organisasi</a>
@@ -65,7 +61,6 @@ const withVersion = (url?: string) => {
         <a href="#programs" class="hover:text-[#0f2c59] transition-colors">Klaster Riset</a>
       </div>
 
-      <!-- Quick Action Button to Flagship Journal -->
       <div class="flex items-center gap-2.5">
         <a
           href={portal.flagshipJournalUrl || '/index/JTEBA'}
@@ -80,14 +75,11 @@ const withVersion = (url?: string) => {
     </div>
   </nav>
 
-  <!-- MODERN HERO BANNER (Clean, Prestigious, Academic Elegance) -->
   <header class="bg-gradient-to-b from-slate-900 via-[#0b2040] to-[#0f2c59] text-white py-8 sm:py-16 md:py-20 px-4 relative overflow-hidden">
-    <!-- Subtle Geometric Glow Background -->
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(30,86,49,0.22),transparent_45%),radial-gradient(circle_at_80%_70%,rgba(200,155,60,0.15),transparent_45%)] pointer-events-none"></div>
 
     <div class="max-w-7xl mx-auto relative z-10 space-y-8">
       <div class="max-w-3xl space-y-4">
-        <!-- Live Pill Badge -->
         <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/15 rounded-full text-xs font-semibold tracking-wider text-emerald-300">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>Portal Gerbang Penerbit Ilmiah Mandiri</span>
@@ -100,7 +92,6 @@ const withVersion = (url?: string) => {
           {portal.orgNameEn}
         </p>
 
-        <!-- Slogan Resmi Tagline Card -->
         <div class="p-4 sm:p-5 bg-white/5 border border-white/15 rounded-xl backdrop-blur-md space-y-1.5 border-l-4 border-l-[#c89b3c]">
           <div class="text-base sm:text-lg font-bold text-amber-300 tracking-wide">
             "{portal.sloganId}"
@@ -136,7 +127,6 @@ const withVersion = (url?: string) => {
         </div>
       </div>
 
-      <!-- 4 HIGHLIGHT PILL CARDS (Modern Grid) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-white/10">
         <div class="p-4 bg-white/5 border border-white/10 rounded-xl backdrop-blur-sm space-y-1">
           <div class="text-emerald-400 font-bold text-xs flex items-center gap-1.5 uppercase tracking-wider">
@@ -185,10 +175,8 @@ const withVersion = (url?: string) => {
     </div>
   </header>
 
-  <!-- MAIN OPEN GATE CONTENT BODY -->
   <main class="max-w-7xl mx-auto px-4 py-16 space-y-20">
 
-    <!-- SECTION 1: PUSAT PUBLIKASI JURNAL BERKALA ILMIAH -->
     <section id="journals" class="space-y-8 scroll-mt-24">
       <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 pb-4 gap-3">
         <div>
@@ -205,10 +193,8 @@ const withVersion = (url?: string) => {
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-        <!-- KARTU JURNAL UTAMA: JTEBA (Modern Rework) -->
         <article class="lg:col-span-8 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden">
           <div class="p-6 sm:p-8 space-y-6">
-            <!-- Header Badge Row -->
             <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
               <div class="flex flex-wrap items-center gap-2">
                 <span class="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold rounded-full flex items-center gap-1.5">
@@ -233,7 +219,6 @@ const withVersion = (url?: string) => {
               </span>
             </div>
 
-            <!-- Title & Subtitle with Emblem -->
             <div class="flex items-start gap-4">
               <img
                 src={withVersion(portal.flagshipJournalEmblemUrl || '/favicon-jteba.png')}
@@ -252,7 +237,6 @@ const withVersion = (url?: string) => {
               </div>
             </div>
 
-            <!-- Focus & Scope Pillars Grid -->
             <div class="space-y-2.5 pt-2">
               <div class="text-xs font-bold uppercase tracking-wider text-slate-700">
                 Fokus dan Ruang Lingkup Publikasi (Focus & Scope):
@@ -288,7 +272,6 @@ const withVersion = (url?: string) => {
               </div>
             </div>
 
-            <!-- Extra Metadata Row -->
             <div class="flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-slate-600 pt-2 border-t border-slate-100">
               <div><strong>Frekuensi Terbit:</strong> {journalConfig.publicationFrequency || '4 Kali/Tahun (Maret, Juni, September, Desember)'}</div>
               <div><strong>Penelaahan:</strong> Double-Blind Peer Review</div>
@@ -302,7 +285,6 @@ const withVersion = (url?: string) => {
             </div>
           </div>
 
-          <!-- Bottom Action Buttons Cluster -->
           <div class="bg-slate-50 border-t border-slate-200 p-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <a
@@ -355,7 +337,6 @@ const withVersion = (url?: string) => {
           </div>
         </article>
 
-        <!-- KARTU JURNAL INTIATIF (FORTHCOMING) -->
         <article class="lg:col-span-4 bg-gradient-to-br from-slate-50 to-slate-100/80 border border-slate-200 border-dashed rounded-2xl p-6 sm:p-7 flex flex-col justify-between space-y-6">
           <div class="space-y-4">
             <div class="flex items-center justify-between gap-2 border-b border-slate-200 pb-3">
@@ -399,7 +380,6 @@ const withVersion = (url?: string) => {
       </div>
     </section>
 
-    <!-- SECTION 2: FILOSOFI & ETIMOLOGI PRANITI -->
     <section id="about" class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-10 shadow-xs space-y-6 scroll-mt-24">
       <div class="border-b border-slate-200 pb-4">
         <span class="text-xs font-bold uppercase tracking-wider text-[#967028] font-mono block">
@@ -411,7 +391,6 @@ const withVersion = (url?: string) => {
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-        <!-- Sanskerta Callout -->
         <div class="md:col-span-5 bg-gradient-to-br from-[#0f2c59] to-[#184687] text-white p-7 sm:p-8 rounded-2xl shadow-sm space-y-4">
           <div class="text-4xl sm:text-5xl text-amber-300 font-bold">
             प्रणीति
@@ -438,7 +417,6 @@ const withVersion = (url?: string) => {
       </div>
     </section>
 
-    <!-- SECTION 3: 7 NILAI DASAR P-R-A-N-I-T-I (Modern Grid) -->
     <section id="values" class="space-y-6 scroll-mt-24">
       <div class="border-b border-slate-200 pb-4">
         <span class="text-xs font-bold uppercase tracking-wider text-[#967028] font-mono block">
@@ -453,7 +431,6 @@ const withVersion = (url?: string) => {
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- P -->
         <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
           <div class="flex items-center gap-3">
             <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
@@ -466,7 +443,6 @@ const withVersion = (url?: string) => {
           </p>
         </div>
 
-        <!-- R -->
         <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
           <div class="flex items-center gap-3">
             <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
@@ -479,7 +455,6 @@ const withVersion = (url?: string) => {
           </p>
         </div>
 
-        <!-- A -->
         <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
           <div class="flex items-center gap-3">
             <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
@@ -492,7 +467,6 @@ const withVersion = (url?: string) => {
           </p>
         </div>
 
-        <!-- N -->
         <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
           <div class="flex items-center gap-3">
             <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
@@ -505,7 +479,6 @@ const withVersion = (url?: string) => {
           </p>
         </div>
 
-        <!-- I -->
         <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
           <div class="flex items-center gap-3">
             <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
@@ -518,7 +491,6 @@ const withVersion = (url?: string) => {
           </p>
         </div>
 
-        <!-- T -->
         <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2">
           <div class="flex items-center gap-3">
             <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
@@ -531,7 +503,6 @@ const withVersion = (url?: string) => {
           </p>
         </div>
 
-        <!-- I (Inovatif) Span Full -->
         <div class="p-5 bg-white border border-slate-200 rounded-xl shadow-2xs hover:border-[#0f2c59] transition-all space-y-2 sm:col-span-2 lg:col-span-3">
           <div class="flex items-center gap-3">
             <span class="w-9 h-9 rounded-lg bg-[#0f2c59] text-amber-300 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
@@ -546,9 +517,7 @@ const withVersion = (url?: string) => {
       </div>
     </section>
 
-    <!-- SECTION 4: MISI ORGANISASI & PILAR PROGRAM KLASTER -->
     <section id="programs" class="grid grid-cols-1 md:grid-cols-12 gap-8 scroll-mt-24">
-      <!-- 5 Misi Utama -->
       <div class="md:col-span-6 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-xs space-y-5">
         <div class="border-b border-slate-100 pb-3">
           <span class="text-xs font-mono font-bold uppercase text-[#967028]">Mission</span>
@@ -566,9 +535,7 @@ const withVersion = (url?: string) => {
         </ol>
       </div>
 
-      <!-- Klaster Riset B & C -->
       <div class="md:col-span-6 space-y-5">
-        <!-- Klaster B -->
         <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-2.5">
           <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
             <span class="text-xs font-mono font-bold text-[#967028] uppercase">Klaster B</span>
@@ -580,7 +547,6 @@ const withVersion = (url?: string) => {
           </p>
         </div>
 
-        <!-- Klaster C -->
         <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-2.5">
           <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
             <span class="text-xs font-mono font-bold text-[#967028] uppercase">Klaster C</span>
@@ -596,11 +562,9 @@ const withVersion = (url?: string) => {
 
   </main>
 
-  <!-- MODERN INSTITUTIONAL FOOTER -->
   <footer class="bg-[#07172e] text-slate-300 border-t border-[#0f2c59] mt-20 pt-12 pb-8 px-4">
     <div class="max-w-7xl mx-auto space-y-10">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-        <!-- Logo & About on Left -->
         <div class="md:col-span-6 space-y-4">
           <img
             src={withVersion('/images/logo-praniti.png')}
@@ -615,7 +579,6 @@ const withVersion = (url?: string) => {
           </div>
         </div>
 
-        <!-- Quick Journal Links -->
         <div class="md:col-span-3 space-y-2.5">
           <h5 class="text-xs font-mono font-bold uppercase tracking-wider text-white border-b border-slate-800 pb-2">
             Publikasi Berkala
@@ -654,7 +617,6 @@ const withVersion = (url?: string) => {
           </ul>
         </div>
 
-        <!-- Institutional Links -->
         <div class="md:col-span-3 space-y-2.5">
           <h5 class="text-xs font-mono font-bold uppercase tracking-wider text-white border-b border-slate-800 pb-2">
             Navigasi Portal
@@ -668,7 +630,6 @@ const withVersion = (url?: string) => {
         </div>
       </div>
 
-      <!-- Bottom Bar -->
       <div class="border-t border-slate-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-300 gap-3">
         <div>
           Copyright © 2026 Organisasi Riset dan Publikasi Ilmiah Praniti. Hak Cipta Dilindungi Undang-Undang.

@@ -2681,9 +2681,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     updateRemoveButtonsState();
   });
 
-  // ==========================================
-  // GENERATOR URL / SLUG & DOI OTOMATIS
-  // ==========================================
+  // Otomatisasi URL slug dan DOI naskah
   const artTitleInput = document.getElementById('art-title') as HTMLInputElement | null;
   const artSlugInput = document.getElementById('art-slug') as HTMLInputElement | null;
   const btnGenerateSlug = document.getElementById('btn-generate-slug');
@@ -2829,7 +2827,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
   cfgVolNum?.addEventListener('input', updateVolDoiFormulaPreview);
   cfgIssueNum?.addEventListener('input', updateVolDoiFormulaPreview);
 
-  // 1. Simpan Naskah Baru (Database)
+  // Pengiriman naskah baru
   const articleForm = document.getElementById('form-new-article');
   articleForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -2969,7 +2967,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     });
   });
 
-  // 2. Simpan Pemimpin Redaksi (EIC)
+  // Pembaruan data editor-in-chief
   const formEic = document.getElementById('form-eic');
   formEic?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -3575,7 +3573,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     }
   });
 
-  // 3. Simpan Kontak & Identitas Jurnal
+  // Pengaturan kontak dan metadata jurnal
   const formContact = document.getElementById('form-contact-settings');
   formContact?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -3605,7 +3603,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     }
   });
 
-  // 4. Toggle Indexing Sidebar
+  // Pengaturan tampilan pengindeks di sidebar
   document.querySelectorAll<HTMLInputElement>('.toggle-index-sidebar').forEach((chk) => {
     chk.addEventListener('change', async () => {
       const name = chk.getAttribute('data-name');
@@ -3628,7 +3626,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     });
   });
 
-  // 5. Simpan URL Google Drive
+  // Integrasi direktori repositori dokumen
   const formGDrive = document.getElementById('form-gdrive');
   const gdriveUrlInput = document.getElementById('cfg-gdrive-url') as HTMLInputElement | null;
   const gdrivePathInput = document.getElementById('cfg-gdrive-path') as HTMLInputElement | null;
@@ -3768,7 +3766,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
 
   btnSyncDrive?.addEventListener('click', loadDriveFiles);
 
-  // 6. Simpan Perubahan URL Platform Pengindeks
+  // Pembaruan URL pengindeks
   document.querySelectorAll<HTMLButtonElement>('.btn-save-index-url').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const name = btn.getAttribute('data-name');
@@ -3799,7 +3797,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     });
   });
 
-  // 6b. Preview & Konversi Ikon Pengindeks Baru
+  // Konversi berkas ikon pengindeks
   const inputNewIdxIconFile = document.getElementById('new-idx-icon-file') as HTMLInputElement | null;
   const inputNewIdxIconUrl = document.getElementById('new-idx-icon-url') as HTMLInputElement | null;
   const previewNewIdxIcon = document.getElementById('new-idx-icon-preview');
@@ -3830,7 +3828,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     reader.readAsDataURL(file);
   });
 
-  // 6c. Tambah Pengindeks Baru
+  // Pendaftaran entitas pengindeks baru
   const formAddIndexing = document.getElementById('form-add-indexing');
   formAddIndexing?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -3874,7 +3872,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     }
   });
 
-  // 6d. Ubah Ikon Pengindeks yang Sudah Ada di Tabel
+  // Pembaruan ikon pengindeks
   document.querySelectorAll<HTMLInputElement>('.row-idx-icon-file').forEach((input) => {
     input.addEventListener('change', () => {
       const name = input.getAttribute('data-name');
@@ -3915,7 +3913,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     });
   });
 
-  // 6e. Hapus Pengindeks
+  // Penghapusan entitas pengindeks
   document.querySelectorAll<HTMLButtonElement>('.btn-delete-indexing').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const name = btn.getAttribute('data-name');
@@ -3957,7 +3955,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     });
   });
 
-  // 7. Ganti Kata Sandi / PIN Panel Redaksi
+  // Pembaruan kredensial akun redaksi
   const formChangePin = document.getElementById('form-change-pin');
   formChangePin?.addEventListener('submit', async (e) => {
     e.preventDefault();

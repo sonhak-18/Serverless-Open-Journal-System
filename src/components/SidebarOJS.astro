@@ -34,7 +34,6 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
 ---
 
 <aside class="space-y-6" aria-label="Sidebar Standarisasi Jurnal">
-  <!-- 1. Menu Standarisasi OJS (Stacked Blue Buttons) -->
   <div class="space-y-1">
     {sidebarLinks.map((item) => (
       <a
@@ -49,7 +48,6 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
     ))}
   </div>
 
-  <!-- 1.5. Kotak Pencarian Cepat OJS -->
   <div class="border border-slate-300 bg-white p-3 rounded-sm shadow-2xs">
     <div class="text-xs font-bold text-slate-800 mb-2">
       Pencarian Artikel:
@@ -73,7 +71,6 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
     </form>
   </div>
 
-  <!-- 2. Kotak Template Naskah (Heroicons Document Icon) -->
   <div class="border border-slate-300 bg-white p-3 rounded-sm">
     <div class="text-xs font-bold italic text-slate-800 mb-2">
       Template:
@@ -106,7 +103,6 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
     </a>
   </div>
 
-  <!-- 3. Kotak ISSN & Barcode Otentik EAN-13 (GS1 / ISO 3297) -->
   {journalConfig.features.showIssnBlock && (() => {
     // Nomor p-ISSN digunakan sebagai basis barcode cetak standar serial terbitan berkala
     const targetIssn = journalConfig.pIssn || journalConfig.eIssn || '2999-7119';
@@ -120,7 +116,6 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
           <span class="text-xs font-medium text-slate-200 font-mono">ISO 3297</span>
         </div>
         <div class="p-3.5 text-center space-y-2.5">
-          <!-- e-ISSN Resmi (Teks murni tanpa link) -->
           <div class="text-xs font-bold text-slate-800 flex items-center justify-center gap-1.5 flex-wrap">
             <span class="text-slate-600 font-medium">e-ISSN:</span>
             <span class="font-mono text-academic-navy bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
@@ -129,7 +124,6 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
             <span class="text-xs text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded font-semibold border border-emerald-200">Online</span>
           </div>
 
-          <!-- Barcode SVG Otentik EAN-13 GS1 -->
           <div class="inline-block p-2 bg-white border border-slate-200 rounded">
             <svg class="h-14 w-44 mx-auto" viewBox="0 0 160 52" fill="currentColor">
               {rects.map((r) => (
@@ -141,7 +135,6 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
             </svg>
           </div>
 
-          <!-- p-ISSN Resmi (Teks murni tanpa link) -->
           <div class="text-xs font-bold text-slate-800 flex items-center justify-center gap-1.5 flex-wrap">
             <span class="text-slate-600 font-normal">p-ISSN:</span>
             <span class="font-mono text-slate-800 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
@@ -154,7 +147,6 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
     );
   })()}
 
-  <!-- 4. Kotak Tools Referensi & Penulisan -->
   {journalConfig.features.showToolsBlock && (
     <div class="border border-slate-300 bg-white p-3 rounded-sm">
       <div class="text-xs font-bold italic text-slate-800 mb-2">
@@ -214,7 +206,6 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
     </div>
   )}
 
-  <!-- 5. Kotak Plagiarisme -->
   <div class="border border-slate-300 bg-white p-3 rounded-sm">
     <div class="text-xs font-bold italic text-slate-800 mb-2">
       Plagiarism Tool :
@@ -237,7 +228,6 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
     </a>
   </div>
 
-  <!-- 6. Kotak Indexing (Indexed By - Bersih Tanpa Bocor Setup Link) -->
   {journalConfig.features.showIndexingBlock && (
     <div class="border border-slate-300 bg-white rounded-sm overflow-hidden">
       <div class="bg-[#0f284e] text-white text-xs font-bold py-1.5 px-3">
@@ -294,7 +284,6 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
     </div>
   )}
 
-  <!-- 7. Kotak Secretariat (Alamat & Kontak Redaksi) -->
   <div class="border border-slate-300 bg-white rounded-sm overflow-hidden">
     <div class="bg-[#0f284e] text-white text-xs font-bold py-1.5 px-3">
       Secretariat

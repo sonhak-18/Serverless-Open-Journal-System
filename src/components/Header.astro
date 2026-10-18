@@ -24,7 +24,6 @@ const navLinks = [
 ---
 
 <header class="border-b border-slate-200 bg-white">
-  <!-- Topmost Access Bar (Publisher & Quick Action) -->
   <div class="bg-[#0a1a33] text-slate-300 text-xs py-2 px-4 border-b border-[#152f52]">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="text-xs text-slate-300 font-medium flex items-center gap-2">
@@ -50,11 +49,9 @@ const navLinks = [
     </div>
   </div>
 
-  <!-- Main Journal Header Banner (Clean White Background for True Logo Contrast) -->
   <div class="bg-white py-6 px-4 border-b border-slate-100">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div class="flex items-center gap-6">
-        <!-- Journal Logo (Navy, Teal, Gold - Fully Sharp & Vibrant on White) -->
         <a href="/index/JTEBA" class="flex-shrink-0 group" title={`Beranda ${journalConfig.name}`}>
           <img
             src={logoWithVersion}
@@ -63,7 +60,6 @@ const navLinks = [
           />
         </a>
 
-        <!-- Title & Official Subtitles -->
         <div class="border-l-2 border-slate-200 pl-5">
           <a href="/index/JTEBA" class="hover:underline">
             <h1 class="text-2xl md:text-3xl font-bold text-[#0f284e] tracking-tight leading-tight">
@@ -91,10 +87,8 @@ const navLinks = [
     </div>
   </div>
 
-  <!-- Standard Academic Navy Navigation Bar -->
   <nav class="bg-[#0f284e] text-white border-b border-[#0a1a33] shadow-xs" aria-label="Navigasi Utama Jurnal">
     <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-      <!-- Desktop Links -->
       <ul class="hidden md:flex flex-wrap items-center text-sm font-semibold">
         {navLinks.map((link) => {
           const isActive = link.href === '/index/JTEBA' 
@@ -117,7 +111,6 @@ const navLinks = [
         })}
       </ul>
 
-      <!-- Submit Naskah CTA Button (High Contrast Gold from Logo) & Quick Search -->
       <div class="hidden md:flex items-center gap-2">
         <a
           href="/index/JTEBA/search"
@@ -140,7 +133,6 @@ const navLinks = [
         </a>
       </div>
 
-      <!-- Mobile Menu Toggle Button (tap target >= 44px) -->
       <div class="md:hidden py-1.5 flex items-center justify-between w-full">
         <span class="text-xs uppercase font-bold tracking-wider text-slate-200">Menu Jurnal</span>
         <button
@@ -158,7 +150,6 @@ const navLinks = [
       </div>
     </div>
 
-    <!-- Mobile Drawer -->
     <div id="ojs-mobile-menu" class="hidden md:hidden bg-[#0a1a33] px-4 py-2 border-t border-[#152f52] space-y-1">
       {navLinks.map((link) => {
         const isActive = link.href === '/index/JTEBA'
