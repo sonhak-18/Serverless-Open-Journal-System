@@ -3,10 +3,24 @@
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
-  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-XSS-Protection: 1; mode=block
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https: https://cloudflareinsights.com; object-src 'none'; frame-ancestors 'none';
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https: https://cloudflareinsights.com; object-src 'none'; frame-ancestors 'none';
 
-/template-jtaap.docx
+# Aset gambar & favicon: selalu revalidasi instan ke edge tanpa delay browser disk cache
+/images/*
+  Cache-Control: public, max-age=0, must-revalidate
+  Cloudflare-CDN-Cache-Control: max-age=60
+
+/favicon*
+  Cache-Control: public, max-age=0, must-revalidate
+  Cloudflare-CDN-Cache-Control: max-age=60
+
+/template-jteba.docx
   Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
-  Content-Disposition: attachment; filename="Template_Naskah_JTAAP (2026).docx"
+  Content-Disposition: attachment; filename="Template_Naskah_JTEBA.docx"
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Hashed Vite bundles bersifat immutable (aman di-cache)
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable

@@ -92,7 +92,7 @@ export const journalConfig: JournalConfig = {
   eIssn: '2999-7127',
   pIssn: '2999-7119',
   doiPrefix: '10.00000',
-  publicationFrequency: '2 Kali/Tahun (Maret & September)',
+  publicationFrequency: '4 Kali/Tahun (Maret, Juni, September, Desember)',
   language: 'Bahasa Indonesia dan Bahasa Inggris',
   license: 'Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)',
   licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',

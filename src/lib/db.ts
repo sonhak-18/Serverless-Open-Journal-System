@@ -54,20 +54,7 @@ export interface JournalIssue {
   isCurrent: boolean;
 }
 
-let memoryIssues: JournalIssue[] = [
-  {
-    id: 'issue-1',
-    volume: 1,
-    issue: 1,
-    year: 2026,
-    period: 'Maret 2026',
-    theme: 'Edisi Perdana: Inovasi Audit, Akuntansi Keberlanjutan & Modernisasi Sistem Perpajakan',
-    coverUrl: '',
-    description: 'Edisi perdana JTEBA',
-    publishDate: '2026-03-31',
-    isCurrent: true,
-  }
-];
+let memoryIssues: JournalIssue[] = [];
 
 export async function getDbSettings(d1?: any): Promise<JournalConfig> {
   const db = d1 || globalD1Instance;
@@ -101,6 +88,7 @@ export async function getDbSettings(d1?: any): Promise<JournalConfig> {
         // Auto-migrasi kolom fitur baru jika belum ada
         try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN show_editorial_team INTEGER DEFAULT 1').run(); } catch (_) {}
         try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN has_active_issue INTEGER DEFAULT 0').run(); } catch (_) {}
+        try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN publication_frequency TEXT DEFAULT "4 Kali/Tahun (Maret, Juni, September, Desember)"').run(); } catch (_) {}
         try {
           await db.prepare(`
             CREATE TABLE IF NOT EXISTS journal_issues (
@@ -314,6 +302,7 @@ export async function updateDbSettings(data: {
       try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN template_url TEXT DEFAULT "/template-jteba.docx"').run(); } catch (_) {}
       try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN show_editorial_team INTEGER DEFAULT 1').run(); } catch (_) {}
       try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN has_active_issue INTEGER DEFAULT 0').run(); } catch (_) {}
+      try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN publication_frequency TEXT DEFAULT "4 Kali/Tahun (Maret, Juni, September, Desember)"').run(); } catch (_) {}
 
       // Pastikan baris default sudah ada di database sebelum update parsial
       await db.prepare("INSERT OR IGNORE INTO journal_settings (id) VALUES ('default')").run().catch(() => {});
@@ -391,8 +380,8 @@ export async function getDbIssues(d1?: any): Promise<JournalIssue[]> {
         )
       `).run();
       const rows = await db.prepare('SELECT * FROM journal_issues ORDER BY volume DESC, issue DESC').all();
-      if (rows && rows.results && rows.results.length > 0) {
-        return rows.results.map((r: any) => ({
+      if (rows && rows.results) {
+        return (rows.results as any[]).map((r: any) => ({
           id: r.id,
           volume: Number(r.volume),
           issue: Number(r.issue),
@@ -405,18 +394,6 @@ export async function getDbIssues(d1?: any): Promise<JournalIssue[]> {
           isCurrent: Boolean(r.is_current),
           is_current: r.is_current ? 1 : 0,
         }));
-      } else {
-        try {
-          const init = memoryIssues[0];
-          await db.prepare(`
-            INSERT OR IGNORE INTO journal_issues (id, volume, issue, year, period, theme, cover_url, description, publish_date, is_current)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          `).bind(
-            init.id, init.volume, init.issue, init.year, init.period,
-            init.theme || '', init.coverUrl || '', init.description || '',
-            init.publishDate || '', init.isCurrent ? 1 : 0
-          ).run();
-        } catch (_) {}
       }
     } catch (e) {
       console.warn('D1 query issues error:', e);
