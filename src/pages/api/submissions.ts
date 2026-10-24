@@ -179,6 +179,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const apiKey = envApiKey || (settings.submission as any)?.resendApiKey || '';
 
     let emailSent = false;
+    let emailError: string | null = null;
     if (apiKey) {
       const emailResult = await sendSubmissionEmails({
         apiKey,
@@ -197,6 +198,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
         journalShortName: settings.shortName,
       });
       emailSent = emailResult.success;
+      if (!emailResult.success) {
+        emailError = emailResult.error || 'Resend gagal mengirimkan surel.';
+        console.warn('Submission email delivery warning:', emailResult.error);
+      }
+    } else {
+      emailError = 'Resend API Key belum diatur di menu Pengaturan Narahubung Redaksi.';
     }
 
     return new Response(JSON.stringify({
@@ -208,6 +215,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       phone: submissionRecord.phone,
       destinationEmail,
       emailSent,
+      emailError,
       createdAt: submissionRecord.createdAt,
     }), {
       status: 200,

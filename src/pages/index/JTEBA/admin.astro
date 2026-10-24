@@ -1890,15 +1890,27 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                 <label for="cfg-resend-key" class="block font-semibold text-slate-800 mb-1">
                   Resend API Key (Otomatisasi Kirim Berkas & Notifikasi Surel ke Gmail)
                 </label>
-                <input
-                  type="password"
-                  id="cfg-resend-key"
-                  value={(journalConfig.submission as any).resendApiKey || ''}
-                  placeholder="re_xxxxxxxxxxxxxx"
-                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
-                />
-                <span class="text-slate-500 text-[11px] mt-1 block">
-                  Dapatkan kunci gratis di <a href="https://resend.com" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline font-semibold">resend.com</a> (kuota 3.000 surel/bulan). Jika belum diisi, nomor registrasi tetap diterbitkan dan dicatat di database.
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="password"
+                    id="cfg-resend-key"
+                    value={(journalConfig.submission as any).resendApiKey || ''}
+                    placeholder="re_xxxxxxxxxxxxxx"
+                    class="flex-1 px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
+                  />
+                  <button
+                    type="button"
+                    id="btn-test-email"
+                    class="px-4 py-2 bg-blue-900 text-white rounded font-sans text-xs font-semibold hover:bg-blue-800 active:bg-blue-950 transition-colors whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <span>Uji Coba Pengiriman Surel</span>
+                  </button>
+                </div>
+                <div id="test-email-feedback" class="hidden mt-2 text-xs p-2.5 rounded border"></div>
+                <span class="text-slate-500 text-[11px] mt-1.5 block">
+                  Dapatkan kunci gratis di <a href="https://resend.com" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline font-semibold">resend.com</a> (kuota 3.000 surel/bulan).
+                  <strong class="text-slate-700">Penting:</strong> Jika domain <em>praniti.or.id</em> belum diverifikasi di menu Domains Resend, pengiriman akun free Resend hanya mengizinkan surel masuk ke email yang Anda daftarkan di akun Resend (Gmail Anda).
                 </span>
               </div>
 
@@ -3610,6 +3622,7 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       whatsappDisplay: (document.getElementById('cfg-wa-display') as HTMLInputElement).value,
       whatsappMessage: (document.getElementById('cfg-wa-msg') as HTMLInputElement).value,
       email: (document.getElementById('cfg-email') as HTMLInputElement).value,
+      resendApiKey: (document.getElementById('cfg-resend-key') as HTMLInputElement)?.value.trim() ?? '',
       showIndexingBlock: (document.getElementById('toggle-idx') as HTMLInputElement).checked,
       showToolsBlock: (document.getElementById('toggle-tools') as HTMLInputElement).checked,
       showIssnBlock: (document.getElementById('toggle-issn') as HTMLInputElement).checked,
@@ -3627,6 +3640,61 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       }
     } catch (err: any) {
       showToast('Gagal menyimpan kontak: ' + err.message, true);
+    }
+  });
+
+  // Tombol Uji Coba Pengiriman Resend Email
+  const btnTestEmail = document.getElementById('btn-test-email') as HTMLButtonElement | null;
+  const testEmailFeedback = document.getElementById('test-email-feedback');
+  btnTestEmail?.addEventListener('click', async () => {
+    const resendKeyInput = document.getElementById('cfg-resend-key') as HTMLInputElement;
+    const emailInput = document.getElementById('cfg-email') as HTMLInputElement;
+    const apiKey = resendKeyInput?.value.trim() || '';
+    const email = emailInput?.value.trim() || '';
+
+    if (!apiKey) {
+      if (testEmailFeedback) {
+        testEmailFeedback.className = 'mt-2 text-xs p-2.5 rounded border bg-amber-50 text-amber-800 border-amber-200 block';
+        testEmailFeedback.textContent = 'Silakan masukkan Resend API Key Anda (diawali "re_") terlebih dahulu sebelum melakukan pengujian.';
+      }
+      resendKeyInput?.focus();
+      return;
+    }
+
+    const origHtml = btnTestEmail.innerHTML;
+    btnTestEmail.disabled = true;
+    btnTestEmail.innerHTML = '<span class="inline-block animate-spin mr-1">↻</span> Mengirim surel uji coba...';
+    if (testEmailFeedback) {
+      testEmailFeedback.className = 'mt-2 text-xs p-2.5 rounded border bg-blue-50 text-blue-800 border-blue-200 block';
+      testEmailFeedback.textContent = 'Sedang mengirim surel uji coba ke ' + (email || 'alamat redaksi') + '...';
+    }
+
+    try {
+      const res = await fetch('/api/test-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey, email }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (testEmailFeedback) {
+          testEmailFeedback.className = 'mt-2 text-xs p-2.5 rounded border bg-emerald-50 text-emerald-800 border-emerald-300 block';
+          testEmailFeedback.innerHTML = '<strong>Pengujian Berhasil!</strong> ' + data.message;
+        }
+      } else {
+        if (testEmailFeedback) {
+          testEmailFeedback.className = 'mt-2 text-xs p-2.5 rounded border bg-rose-50 text-rose-800 border-rose-300 block';
+          testEmailFeedback.innerHTML = '<strong>Pengujian Gagal:</strong> ' + (data.error || 'Terjadi penolakan dari penyedia surel.');
+        }
+      }
+    } catch (err: any) {
+      if (testEmailFeedback) {
+        testEmailFeedback.className = 'mt-2 text-xs p-2.5 rounded border bg-rose-50 text-rose-800 border-rose-300 block';
+        testEmailFeedback.innerHTML = '<strong>Gagal:</strong> ' + (err.message || 'Gagal menghubungi server');
+      }
+    } finally {
+      btnTestEmail.disabled = false;
+      btnTestEmail.innerHTML = origHtml;
     }
   });
 
