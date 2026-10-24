@@ -51,160 +51,336 @@ export async function sendSubmissionEmails(
   // Sender address: verified domain praniti.or.id
   const senderAddress = fromEmail || 'JTEBA Submission <noreply@praniti.or.id>';
 
-  // Editorial notification email HTML
+  // 1. Editorial notification email HTML (Design System Resmi JTEBA)
   const editorialHtml = `
   <!DOCTYPE html>
-  <html>
+  <html lang="id">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>[JTEBA] Penyerahan Naskah Baru &mdash; ${regNumber}</title>
     <style>
-      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; background-color: #f8fafc; margin: 0; padding: 24px; }
-      .container { max-width: 640px; margin: 0 auto; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; }
-      .header { background: #0f284e; color: #ffffff; padding: 20px 24px; }
-      .header h1 { margin: 0 0 6px 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
-      .header p { margin: 0; font-size: 12px; color: #cbd5e1; }
-      .badge-bar { background: #f1f5f9; padding: 12px 24px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
-      .reg-badge { font-family: monospace; font-size: 14px; font-weight: 700; color: #0f284e; background: #e2e8f0; padding: 4px 10px; border-radius: 4px; border: 1px solid #cbd5e1; display: inline-block; }
-      .content { padding: 24px; }
-      .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-top: 20px; margin-bottom: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px; }
-      .data-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px; }
-      .data-table td { padding: 8px 0; vertical-align: top; }
-      .data-table td.label { width: 35%; color: #64748b; font-weight: 600; }
-      .data-table td.val { width: 65%; color: #0f172a; }
-      .abstract-box { background: #f8fafc; border-left: 3px solid #0f284e; padding: 12px 16px; font-size: 13px; color: #334155; line-height: 1.6; margin-top: 6px; font-style: italic; }
-      .alert-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 12px 16px; margin: 20px 0; font-size: 13px; color: #1e40af; }
-      .footer { background: #f8fafc; padding: 16px 24px; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; text-align: center; }
+      body { margin: 0; padding: 24px 0; background-color: #f4f6f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b; -webkit-font-smoothing: antialiased; }
+      @media only screen and (max-width: 480px) {
+        .container { width: 100% !important; }
+        .fluid-pad { padding: 20px !important; }
+      }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="header">
-        <h1>${journalName} (${journalShortName})</h1>
-        <p>Pemberitahuan Penyerahan Naskah Baru (New Manuscript Submission)</p>
-      </div>
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
+      <tr>
+        <td align="center" style="padding: 0 12px;">
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="container" style="max-width: 640px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 40, 78, 0.08); border: 1px solid #e2e8f0;">
+            <!-- Header -->
+            <tr>
+              <td class="fluid-pad" style="background-color: #0f284e; padding: 28px 32px; border-bottom: 4px solid #c89b3c; text-align: left;">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="background-color: #ffffff; padding: 6px 14px; border-radius: 6px; display: inline-block; margin-bottom: 14px;">
+                      <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="140" style="display: block; border: 0; max-width: 100%; height: auto;" />
+                    </td>
+                  </tr>
+                </table>
+                <div style="font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #c89b3c; margin-top: 14px; margin-bottom: 4px;">
+                  ORGANISASI RISET DAN PUBLIKASI ILMIAH PRANITI
+                </div>
+                <h1 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; line-height: 1.3; font-family: Georgia, 'Times New Roman', serif;">
+                  ${journalName} (${journalShortName})
+                </h1>
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 6px; font-family: 'Courier New', Courier, monospace;">
+                  e-ISSN: 2999-7127 | p-ISSN: 2999-7119 | Peer-Reviewed &amp; Open Access
+                </div>
+              </td>
+            </tr>
 
-      <div class="badge-bar">
-        <div>
-          <span style="font-size: 12px; color: #64748b;">Nomor Registrasi Naskah:</span><br>
-          <span class="reg-badge">${regNumber}</span>
-        </div>
-      </div>
+            <!-- Status Banner -->
+            <tr>
+              <td class="fluid-pad" style="background-color: #eff6ff; border-bottom: 1px solid #bfdbfe; padding: 14px 32px; text-align: left;">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                  <tr>
+                    <td style="vertical-align: middle;">
+                      <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #075985;">
+                        &#9684; PEMBERITAHUAN PENGAJUAN NASKAH BARU
+                      </span>
+                    </td>
+                    <td style="text-align: right; vertical-align: middle;">
+                      <span style="font-size: 11px; font-family: 'Courier New', Courier, monospace; color: #0369a1; font-weight: 700;">
+                        ID: ${regNumber}
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
 
-      <div class="content">
-        <div class="alert-box">
-          <strong>Petunjuk Balasan Redaksi:</strong> Anda dapat langsung menekan tombol <strong>"Reply" (Balas)</strong> di Gmail untuk merespons calon penulis. Alamat pengirim telah secara otomatis diarahkan ke <code>${authorEmail}</code>.
-        </div>
+            <!-- Content -->
+            <tr>
+              <td class="fluid-pad" style="padding: 28px 32px; font-size: 14px; line-height: 1.6; color: #334155;">
+                <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-left: 4px solid #3b82f6; border-radius: 0 6px 6px 0; padding: 12px 16px; margin-bottom: 22px; font-size: 13px; color: #1e40af;">
+                  <strong>Petunjuk Balasan Redaksi:</strong> Anda dapat langsung menekan tombol <strong>&ldquo;Reply&rdquo; (Balas)</strong> di Gmail untuk merespons calon penulis. Alamat balasan otomatis diarahkan ke <code>${authorEmail}</code>.
+                </div>
 
-        <div class="section-title">Data Penulis Korespondensi</div>
-        <table class="data-table">
-          <tr>
-            <td class="label">Nama Lengkap</td>
-            <td class="val"><strong>${authorName}</strong></td>
-          </tr>
-          <tr>
-            <td class="label">Alamat Surel (Email)</td>
-            <td class="val"><a href="mailto:${authorEmail}" style="color: #0369a1;">${authorEmail}</a></td>
-          </tr>
-          <tr>
-            <td class="label">WhatsApp / Telepon</td>
-            <td class="val"><a href="https://wa.me/${authorPhone.replace(/[^0-9]/g, '')}" style="color: #047857; text-decoration: none; font-weight: 600;">${authorPhone}</a></td>
-          </tr>
-          <tr>
-            <td class="label">Afiliasi / Institusi</td>
-            <td class="val">${affiliation}</td>
-          </tr>
-        </table>
+                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 8px;">
+                  Data Penulis Korespondensi:
+                </div>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 22px; font-size: 13px;">
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; width: 32%; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Nama Lengkap</td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; border-bottom: 1px solid #e2e8f0;">${authorName}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Alamat Surel</td>
+                    <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0;"><a href="mailto:${authorEmail}" style="color: #0369a1; text-decoration: underline;">${authorEmail}</a></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">WhatsApp / Telepon</td>
+                    <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0;"><a href="https://wa.me/${authorPhone.replace(/[^0-9]/g, '')}" style="color: #047857; text-decoration: none; font-weight: 600;">${authorPhone}</a></td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9;">Afiliasi / Institusi</td>
+                    <td style="padding: 10px 14px; color: #1e293b;">${affiliation}</td>
+                  </tr>
+                </table>
 
-        <div class="section-title">Informasi & Metadata Naskah</div>
-        <table class="data-table">
-          <tr>
-            <td class="label">Rumpun Fokus (Scope)</td>
-            <td class="val"><strong>${scopeCluster}</strong></td>
-          </tr>
-          <tr>
-            <td class="label">Judul Manuskrip</td>
-            <td class="val"><strong style="font-size: 15px; color: #0f284e;">${title}</strong></td>
-          </tr>
-          <tr>
-            <td class="label">Nama Berkas</td>
-            <td class="val"><code>${fileName}</code></td>
-          </tr>
-        </table>
+                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 8px;">
+                  Informasi &amp; Metadata Naskah:
+                </div>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 22px; font-size: 13px;">
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; width: 32%; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Rumpun Fokus</td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; border-bottom: 1px solid #e2e8f0;">${scopeCluster}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Judul Manuskrip</td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; line-height: 1.4; border-bottom: 1px solid #e2e8f0;">${title}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9;">Nama Berkas</td>
+                    <td style="padding: 10px 14px; font-family: 'Courier New', Courier, monospace; color: #334155;">${fileName}</td>
+                  </tr>
+                </table>
 
-        <div class="section-title">Abstrak / Surat Pengantar</div>
-        <div class="abstract-box">
-          ${abstract.replace(/\n/g, '<br>')}
-        </div>
-      </div>
+                <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 8px;">
+                  Abstrak / Surat Pengantar:
+                </div>
+                <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #0f284e; padding: 14px 16px; border-radius: 0 6px 6px 0; font-size: 13px; color: #334155; line-height: 1.6; font-style: italic;">
+                  ${abstract.replace(/\n/g, '<br>')}
+                </div>
+              </td>
+            </tr>
 
-      <div class="footer">
-        Surel ini dikirim secara otomatis oleh Portal Penerimaan Naskah ${journalShortName}.<br>
-        Organisasi Riset dan Publikasi Ilmiah Praniti.
-      </div>
-    </div>
+            <!-- Footer -->
+            <tr>
+              <td class="fluid-pad" style="background-color: #0a1a33; padding: 24px 32px; border-top: 1px solid #1e293b; color: #94a3b8; font-size: 11px; line-height: 1.6; text-align: center;">
+                <div style="font-weight: 700; color: #e2e8f0; margin-bottom: 4px;">
+                  Dewan Redaksi JTEBA &mdash; Organisasi Riset dan Publikasi Ilmiah Praniti
+                </div>
+                <div style="color: #cbd5e1;">
+                  Sekretariat: Mojokerto, Jawa Timur, Indonesia
+                </div>
+                <div style="margin-top: 8px;">
+                  Surel: <a href="mailto:redaksi@praniti.or.id" style="color: #c89b3c; text-decoration: none; font-weight: 600;">redaksi@praniti.or.id</a> &nbsp;|&nbsp; 
+                  Portal: <a href="https://ejournal.praniti.or.id/index/JTEBA" target="_blank" style="color: #c89b3c; text-decoration: none; font-weight: 600;">ejournal.praniti.or.id</a>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   </body>
   </html>
   `;
 
-  // Author receipt confirmation email HTML
+  // 2. Author receipt confirmation email HTML (Design System Resmi JTEBA)
   const authorHtml = `
   <!DOCTYPE html>
-  <html>
+  <html lang="id">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>[JTEBA] Tanda terima pengajuan naskah &mdash; ${regNumber}</title>
     <style>
-      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; background-color: #f8fafc; margin: 0; padding: 24px; }
-      .container { max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; }
-      .header { background: #0f284e; color: #ffffff; padding: 24px; text-align: center; }
-      .header h1 { margin: 0 0 6px 0; font-size: 18px; font-weight: 700; }
-      .header p { margin: 0; font-size: 12px; color: #cbd5e1; }
-      .content { padding: 24px; font-size: 14px; color: #334155; }
-      .badge-box { background: #f8fafc; border: 2px dashed #0f284e; border-radius: 6px; text-align: center; padding: 16px; margin: 20px 0; }
-      .reg-num { font-family: monospace; font-size: 18px; font-weight: 800; color: #0f284e; letter-spacing: 0.05em; }
-      .steps-box { background: #f1f5f9; border-radius: 6px; padding: 16px; margin: 20px 0; font-size: 13px; }
-      .steps-box ol { margin: 8px 0 0 0; padding-left: 20px; }
-      .steps-box li { margin-bottom: 6px; }
-      .footer { background: #f8fafc; padding: 16px; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; text-align: center; }
+      body { margin: 0; padding: 24px 0; background-color: #f4f6f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b; -webkit-font-smoothing: antialiased; }
+      @media only screen and (max-width: 480px) {
+        .container { width: 100% !important; }
+        .fluid-pad { padding: 20px !important; }
+      }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="header">
-        <h1>${journalName}</h1>
-        <p>Konfirmasi Penerimaan Manuskrip (Submission Acknowledgment)</p>
-      </div>
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
+      <tr>
+        <td align="center" style="padding: 0 12px;">
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="container" style="max-width: 640px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 40, 78, 0.08); border: 1px solid #e2e8f0;">
+            <!-- Header -->
+            <tr>
+              <td class="fluid-pad" style="background-color: #0f284e; padding: 28px 32px; border-bottom: 4px solid #c89b3c; text-align: left;">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="background-color: #ffffff; padding: 6px 14px; border-radius: 6px; display: inline-block; margin-bottom: 14px;">
+                      <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="140" style="display: block; border: 0; max-width: 100%; height: auto;" />
+                    </td>
+                  </tr>
+                </table>
+                <div style="font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #c89b3c; margin-top: 14px; margin-bottom: 4px;">
+                  ORGANISASI RISET DAN PUBLIKASI ILMIAH PRANITI
+                </div>
+                <h1 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; line-height: 1.3; font-family: Georgia, 'Times New Roman', serif;">
+                  ${journalName} (${journalShortName})
+                </h1>
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 6px; font-family: 'Courier New', Courier, monospace;">
+                  e-ISSN: 2999-7127 | p-ISSN: 2999-7119 | Peer-Reviewed &amp; Open Access
+                </div>
+              </td>
+            </tr>
 
-      <div class="content">
-        <p>Yth. <strong>${authorName}</strong>,</p>
-        <p>Terima kasih telah mengajukan naskah artikel ilmiah Anda ke <strong>${journalName} (${journalShortName})</strong>. Berkas naskah Anda telah berhasil dicatat dalam basis data sistem penerimaan kami dengan rincian sebagai berikut:</p>
+            <!-- Status Banner -->
+            <tr>
+              <td class="fluid-pad" style="background-color: #eff6ff; border-bottom: 1px solid #bfdbfe; padding: 14px 32px; text-align: left;">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                  <tr>
+                    <td style="vertical-align: middle;">
+                      <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #075985;">
+                        &#9684; TANDA TERIMA PENGAJUAN NASKAH (SUBMISSION ACKNOWLEDGEMENT)
+                      </span>
+                    </td>
+                    <td style="text-align: right; vertical-align: middle;">
+                      <span style="font-size: 11px; font-family: 'Courier New', Courier, monospace; color: #0369a1; font-weight: 700;">
+                        ID: ${regNumber}
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
 
-        <div class="badge-box">
-          <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 4px;">Nomor Registrasi Naskah Resmi:</div>
-          <div class="reg-num">${regNumber}</div>
-        </div>
+            <!-- Content -->
+            <tr>
+              <td class="fluid-pad" style="padding: 28px 32px; font-size: 14px; line-height: 1.6; color: #334155;">
+                <p style="margin: 0 0 16px 0; color: #1e293b;">
+                  Kepada Yth.<br>
+                  <strong style="color: #0f284e; font-size: 15px;">${authorName}</strong><br>
+                  <span style="color: #64748b; font-size: 13px;">${affiliation}</span>
+                </p>
 
-        <p><strong>Judul Naskah:</strong><br>${title}</p>
-        <p><strong>Rumpun Bidang Fokus:</strong><br>${scopeCluster}</p>
+                <p style="margin: 0 0 18px 0;">
+                  Dengan hormat,<br>
+                  Terima kasih telah mengajukan manuskrip artikel ilmiah Anda ke <strong>${journalName} (${journalShortName})</strong>. Berkas manuskrip Anda telah <strong>berhasil diterima</strong> oleh sistem redaksi kami dan telah masuk ke dalam antrean penelaahan awal (<em>initial desk review</em>).
+                </p>
 
-        <div class="steps-box">
-          <strong>Tahap Selanjutnya:</strong>
-          <ol>
-            <li><strong>Pemeriksaan Format Awal (Desk Review)</strong>: Redaksi akan memeriksa kesesuaian template dan ambang batas Turnitin dalam 1–3 hari kerja.</li>
-            <li><strong>Penelaahan Sejawat Ganda (Double-Blind Peer Review)</strong>: Naskah yang lolos tahap awal akan diteruskan ke minimal 2 (dua) mitra bestari independen.</li>
-            <li><strong>Korespondensi Resmi</strong>: Setiap pembaruan status naskah akan disampaikan langsung melalui alamat surel ini dengan menyertakan nomor registrasi di atas.</li>
-          </ol>
-        </div>
+                <!-- Detail Table -->
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 24px; font-size: 13px;">
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; width: 32%; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">ID Registrasi</td>
+                    <td style="padding: 10px 14px; font-family: 'Courier New', Courier, monospace; font-weight: 700; color: #0f284e; border-bottom: 1px solid #e2e8f0;">${regNumber}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Judul Manuskrip</td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; line-height: 1.4; border-bottom: 1px solid #e2e8f0;">${title}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Rumpun Fokus</td>
+                    <td style="padding: 10px 14px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">${scopeCluster}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Nama Berkas</td>
+                    <td style="padding: 10px 14px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #334155; border-bottom: 1px solid #e2e8f0;">${fileName}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9;">Status Tahapan</td>
+                    <td style="padding: 10px 14px;">
+                      <span style="display: inline-block; background-color: #0284c7; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 3px;">
+                        DALAM PROSES PENELAAHAN AWAL (INITIAL DESK REVIEW)
+                      </span>
+                    </td>
+                  </tr>
+                </table>
 
-        <p>Mohon simpan nomor registrasi ini untuk seluruh komunikasi korespondensi berikutnya dengan dewan redaksi.</p>
+                <!-- Callout 1: Workflow -->
+                <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #0f284e; padding: 14px 18px; border-radius: 0 6px 6px 0; margin-bottom: 22px;">
+                  <strong style="color: #0f284e; font-size: 13px; display: block; margin-bottom: 8px;">
+                    Tahapan Selanjutnya (Editorial &amp; Review Workflow):
+                  </strong>
+                  <ol style="margin: 0; padding-left: 18px; font-size: 12px; line-height: 1.6; color: #475569;">
+                    <li style="margin-bottom: 6px;"><strong>Penelaahan Awal (Desk Review / 1&ndash;3 hari kerja):</strong> Managing Editor memeriksa kesesuaian ruang lingkup, format templat, anonimitas naskah, dan ambang kemiripan Turnitin (maksimal 20%).</li>
+                    <li style="margin-bottom: 6px;"><strong>Penelaahan Mitra Bestari (Double-Blind Review / 2&ndash;4 minggu):</strong> Naskah yang lolos tahap awal diteruskan kepada minimal 2 reviewer independen secara anonim.</li>
+                    <li style="margin-bottom: 0;"><strong>Keputusan Redaksi:</strong> Hasil evaluasi (diterima, revisi, atau ditolak) akan dikirimkan langsung melalui surel ini.</li>
+                  </ol>
+                </div>
 
-        <p style="margin-top: 24px;">Hormat kami,<br><strong>Dewan Redaksi ${journalShortName}</strong><br><span style="font-size: 12px; color: #64748b;">${destinationEmail}</span></p>
-      </div>
+                <!-- Callout 2: Transparansi Biaya -->
+                <div style="background-color: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #059669; padding: 12px 16px; border-radius: 0 6px 6px 0; margin-bottom: 24px; font-size: 12px; color: #065f46; line-height: 1.6;">
+                  <strong style="display: block; margin-bottom: 4px;">Kebijakan Transparansi Biaya:</strong>
+                  JTEBA tidak memungut biaya pengajuan (Rp0) maupun biaya penelaahan (Rp0). Biaya pemrosesan artikel (APC Rp100.000) hanya dikenakan apabila naskah Anda dinyatakan resmi Diterima (<em>Accepted</em>).
+                </div>
 
-      <div class="footer">
-        Surel ini dikirimkan secara otomatis sebagai tanda terima resmi penyerahan naskah.<br>
-        Organisasi Riset dan Publikasi Ilmiah Praniti.
-      </div>
-    </div>
+                <!-- CTA -->
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 24px 0 10px 0;">
+                  <tr>
+                    <td align="center">
+                      <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td align="center" style="background-color: #0f284e; border-radius: 6px;">
+                            <a href="https://ejournal.praniti.or.id/index/JTEBA" target="_blank" style="display: inline-block; background-color: #0f284e; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 700; padding: 12px 28px; border-radius: 6px; border: 1px solid #0f284e;">
+                              Buka Portal JTEBA &nearr;
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <p style="margin: 0 0 24px 0; font-size: 13px; color: #475569;">
+                  Apabila Anda memiliki pertanyaan, silakan membalas surel ini dengan menyertakan Nomor Registrasi naskah (<code>${regNumber}</code>).
+                </p>
+
+                <!-- Tanda Tangan -->
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin-top: 20px;">
+                  <tr>
+                    <td>
+                      <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">Hormat kami,</div>
+                      <div style="font-size: 15px; font-weight: 800; color: #0f284e; font-family: Georgia, serif;">
+                        Dewan Redaksi ${journalShortName}
+                      </div>
+                      <div style="font-size: 12px; font-weight: 600; color: #c89b3c; margin-top: 1px;">
+                        Editorial Board
+                      </div>
+                      <div style="font-size: 12px; color: #64748b; margin-top: 2px;">
+                        Organisasi Riset dan Publikasi Ilmiah Praniti
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td class="fluid-pad" style="background-color: #0a1a33; padding: 24px 32px; border-top: 1px solid #1e293b; color: #94a3b8; font-size: 11px; line-height: 1.6; text-align: center;">
+                <div style="font-weight: 700; color: #e2e8f0; margin-bottom: 4px;">
+                  Dewan Redaksi ${journalShortName} &mdash; Organisasi Riset dan Publikasi Ilmiah Praniti
+                </div>
+                <div style="color: #cbd5e1;">
+                  Sekretariat: Mojokerto, Jawa Timur, Indonesia
+                </div>
+                <div style="margin-top: 8px;">
+                  Surel: <a href="mailto:${destinationEmail}" style="color: #c89b3c; text-decoration: none; font-weight: 600;">${destinationEmail}</a> &nbsp;|&nbsp; 
+                  Portal: <a href="https://ejournal.praniti.or.id/index/JTEBA" target="_blank" style="color: #c89b3c; text-decoration: none; font-weight: 600;">ejournal.praniti.or.id</a>
+                </div>
+                <div style="margin-top: 14px; color: #64748b; font-size: 10px;">
+                  Email resmi ini dikirim otomatis dan tercatat dalam sistem penerbitan JTEBA.
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   </body>
   </html>
   `;

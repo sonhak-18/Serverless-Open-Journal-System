@@ -38,20 +38,38 @@ export const POST: APIRoute = async ({ request, locals }) => {
       reply_to: targetEmail,
       subject: `[JTEBA Test] Uji Coba Pengiriman Resend API (${new Date().toLocaleTimeString('id-ID')})`,
       html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; max-width: 560px; margin: 0 auto; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden;">
-          <div style="background: #0f284e; color: #ffffff; padding: 18px 24px;">
-            <h2 style="margin: 0; font-size: 17px; font-weight: 700;">Pengujian Resend API Berhasil</h2>
-            <p style="margin: 4px 0 0 0; font-size: 12px; color: #cbd5e1;">Portal JTEBA (Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas)</p>
-          </div>
-          <div style="padding: 24px; font-size: 14px;">
-            <p>Halo Dewan Redaksi,</p>
-            <p>Surel uji coba ini mengonfirmasi bahwa <strong>Resend API Key</strong> dan alamat surel penerima redaksi (<code>${targetEmail}</code>) telah terhubung dengan benar ke sistem portal penerimaan naskah.</p>
-            <div style="background: #f1f5f9; padding: 12px 16px; border-radius: 6px; font-size: 13px; margin: 16px 0;">
-              <div><strong>Alamat Tujuan:</strong> ${targetEmail}</div>
-              <div><strong>Waktu Pengujian:</strong> ${new Date().toISOString()}</div>
-              <div><strong>Status Integrasi:</strong> <span style="color: #047857; font-weight: bold;">Aktif & Siap Menerima Naskah</span></div>
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; max-width: 640px; margin: 24px auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 40, 78, 0.08);">
+          <div style="background-color: #0f284e; padding: 24px 28px; border-bottom: 4px solid #c89b3c;">
+            <div style="background-color: #ffffff; padding: 6px 14px; border-radius: 6px; display: inline-block; margin-bottom: 12px;">
+              <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="130" style="display: block; border: 0;" />
             </div>
-            <p style="font-size: 12px; color: #64748b;">Setiap kali calon penulis mengirimkan naskah lewat formulir online, berkas manuskrip dan nomor registrasi akan dikirimkan ke alamat ini dengan tombol Reply yang otomatis mengarah ke surel penulis.</p>
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #c89b3c; margin-bottom: 4px;">
+              ORGANISASI RISET DAN PUBLIKASI ILMIAH PRANITI
+            </div>
+            <h2 style="margin: 0; font-size: 18px; font-weight: 800; color: #ffffff; font-family: Georgia, serif;">
+              JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas
+            </h2>
+            <div style="font-size: 11px; color: #94a3b8; margin-top: 6px; font-family: 'Courier New', Courier, monospace;">
+              e-ISSN: 2999-7127 | p-ISSN: 2999-7119 | Peer-Reviewed &amp; Open Access
+            </div>
+          </div>
+          <div style="background-color: #f0fdf4; border-bottom: 1px solid #bbf7d0; padding: 12px 28px; font-size: 12px; font-weight: 800; color: #166534; text-transform: uppercase; letter-spacing: 0.5px;">
+            &#10003; Pengujian Resend API &mdash; Terhubung Berhasil
+          </div>
+          <div style="padding: 28px; font-size: 14px; color: #334155;">
+            <p style="margin-top: 0;">Halo Dewan Redaksi,</p>
+            <p>Surel uji coba ini mengonfirmasi bahwa <strong>Resend API Key</strong> dan pengirim resmi terverifikasi (<code>noreply@praniti.or.id</code>) telah terhubung dengan sempurna ke portal penerimaan naskah JTEBA.</p>
+            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 18px; margin: 18px 0; font-size: 13px;">
+              <div style="margin-bottom: 4px;"><strong>Alamat Penerima:</strong> ${targetEmail}</div>
+              <div style="margin-bottom: 4px;"><strong>Identitas Pengirim:</strong> noreply@praniti.or.id (Domain Terverifikasi)</div>
+              <div style="margin-bottom: 4px;"><strong>Waktu Pengujian:</strong> ${new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB</div>
+              <div><strong>Status Integrasi:</strong> <span style="color: #059669; font-weight: 700;">Aktif &amp; Siap Produksi</span></div>
+            </div>
+            <p style="font-size: 12px; color: #64748b; margin-bottom: 0;">Setiap kali calon penulis mengirimkan naskah online, berkas dokumen (.docx/.pdf) akan terlampir otomatis ke email ini dengan tombol Balas (Reply) langsung tertuju ke surel penulis.</p>
+          </div>
+          <div style="background-color: #0a1a33; padding: 18px 28px; border-top: 1px solid #1e293b; color: #94a3b8; font-size: 11px; text-align: center;">
+            Dewan Redaksi JTEBA &mdash; Organisasi Riset dan Publikasi Ilmiah Praniti<br>
+            Sekretariat: Mojokerto, Jawa Timur, Indonesia
           </div>
         </div>
       `,
