@@ -12,8 +12,14 @@ Repositori ini memuat berkas template email resmi **JTEBA (Jurnal Terbuka Ekonom
 ├── 01-tanda-terima-submission.txt     # Versi teks polos (plain text)
 ├── 02-loa-dan-tagihan-apc.html        # Surat penerimaan (LoA) & rincian APC
 ├── 02-loa-dan-tagihan-apc.txt         # Versi teks polos (plain text)
-├── 03-keputusan-editorial.html        # Keputusan revisi (D3/D4) & penolakan (D1/D2)
-├── 03-keputusan-editorial.txt         # Versi teks polos (plain text)
+│
+├── 03-keputusan-editorial.html        # Template master keputusan editorial (switchable)
+├── 03-keputusan-editorial.txt         # Versi teks polos master
+├── 03-d1-desk-reject.html             # Varian D1: Penolakan awal / Desk Reject (Siap pakai)
+├── 03-d2-tolak-review.html            # Varian D2: Penolakan setelah Peer Review (Siap pakai)
+├── 03-d3-revisi-minor.html            # Varian D3: Permintaan Revisi Minor (Siap pakai)
+├── 03-d4-revisi-mayor.html            # Varian D4: Permintaan Revisi Mayor (Siap pakai)
+│
 ├── 04-artikel-terbit.html             # Pengumuman publikasi resmi & DOI
 ├── 04-artikel-terbit.txt              # Versi teks polos (plain text)
 ├── /assets
@@ -23,20 +29,22 @@ Repositori ini memuat berkas template email resmi **JTEBA (Jurnal Terbuka Ekonom
 
 ---
 
-## 2. Daftar & Penjelasan Template
+## 2. Cara Menggunakan Varian Keputusan Editorial (D1, D2, D3, D4)
 
-| No | Berkas | Status / Warna | Pemicu (Trigger) | Penerima | CTA Utama |
-|---|---|---|---|---|---|
-| 1 | `01-tanda-terima-submission.html` | Info (Biru `#eff6ff`) | Naskah baru masuk lewat formulir submit | Penulis korespondensi | `Buka Portal JTEBA` |
-| 2 | `02-loa-dan-tagihan-apc.html` | Diterima (Hijau `#f0fdf4`) + APC (Kuning `#fffbeb`) | Naskah resmi dinyatakan diterima | Penulis korespondensi | `Kirim Bukti Pembayaran` |
-| 3 | `03-keputusan-editorial.html` | Revisi (Kuning `#fffbeb`) / Ditolak (Abu `#f1f5f9`) | Evaluasi reviewer / editor selesai | Penulis korespondensi | `Unggah Revisi di Portal` / `Buka Portal` |
-| 4 | `04-artikel-terbit.html` | Terbit (Hijau `#f0fdf4` + Emas `#c89b3c`) | Artikel resmi tayang online & ber-DOI | Semua penulis naskah | `Lihat Artikel di Portal` |
+Redaksi menyediakan berkas spesifik siap pakai untuk setiap jenis keputusan editorial tanpa perlu mengedit HTML manual:
+
+| Kode Varian | Kapan Digunakan | Berkas Siap Pakai | Warna Status & Badge | Tombol CTA |
+|---|---|---|---|---|
+| **D1 (Desk Reject)** | Penolakan awal sebelum ke mitra bestari (karena luar cakupan / format salah / Turnitin > 20%) | [`03-d1-desk-reject.html`](03-d1-desk-reject.html) | Abu-abu (`#f1f5f9`), Badge: `DITOLAK (DESK REVIEW)` | `Buka Portal JTEBA` |
+| **D2 (Tolak Review)** | Penolakan setelah proses penelaahan reviewer ganda selesai | [`03-d2-tolak-review.html`](03-d2-tolak-review.html) | Abu-abu (`#f1f5f9`), Badge: `DITOLAK` | `Buka Portal JTEBA` |
+| **D3 (Revisi Minor)** | Naskah diterima dengan catatan perbaikan kecil (ejaan, referensi, grafik) | [`03-d3-revisi-minor.html`](03-d3-revisi-minor.html) | Kuning (`#fffbeb`), Badge: `REVISI MINOR` | `Unggah Revisi di Portal JTEBA` |
+| **D4 (Revisi Mayor)** | Naskah butuh perbaikan mendasar (metodologi, analisis data, literatur) | [`03-d4-revisi-mayor.html`](03-d4-revisi-mayor.html) | Kuning (`#fffbeb`), Badge: `REVISI MAYOR` | `Unggah Revisi di Portal JTEBA` |
 
 ---
 
 ## 3. Daftar Placeholder Sistem
 
-Setiap placeholder ditulis menggunakan huruf kapital di dalam kurung siku `[NAMA_PLACEHOLDER]`. Pertahankan nama placeholder ini saat mengintegrasikan dengan sistem backend atau OJS.
+Setiap placeholder ditulis menggunakan huruf kapital di dalam kurung siku `[NAMA_PLACEHOLDER]`:
 
 | Placeholder | Keterangan / Sumber Nilai |
 |---|---|
