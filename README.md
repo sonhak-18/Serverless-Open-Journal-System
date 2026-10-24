@@ -130,7 +130,35 @@ flowchart LR
 
 ---
 
-## 5. Fitur Utama
+---
+
+## 5. Diagram Alur Penyerahan Naskah Online & Penomoran Registrasi Otomatis
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Author as Calon Penulis (Web Form)
+    participant Web as Sistem JTEBA (/index/JTEBA/submit)
+    participant API as Endpoint Serverless (/api/submissions)
+    participant D1 as Database D1 (journal_submissions)
+    participant Resend as Outbound Email Engine (Resend API)
+    participant CFRouting as Cloudflare Email Routing
+    actor Editor as Dewan Redaksi (Kotak Masuk Gmail)
+
+    Author->>Web: Isi formulir 2-kolom & unggah manuskrip (.docx/.pdf)
+    Web->>API: POST FormData (Validasi ekstensi, ukuran & honeypot)
+    API->>D1: Catat naskah & terbitkan Nomor Registrasi Terurut
+    D1-->>API: Nomor Registrasi (JTEBA-SUB-YYYYMM-XXXX)
+    API->>Resend: Kirim surel notifikasi (Attachment .docx + Reply-To Penulis)
+    Resend->>CFRouting: Kirim ke redaksi@praniti.or.id
+    CFRouting->>Editor: Teruskan otomatis ke Gmail Redaksi
+    API-->>Web: Respons Berhasil + Nomor Registrasi
+    Web-->>Author: Tampilkan Lencana Tanda Terima & Nomor Registrasi Resmi
+    Editor->>Editor: Buka Gmail & tekan tombol "Reply"
+    Editor-->>Author: Korespondensi telaah, revisi & LoA langsung ke surel penulis
+```
+
+## 6. Fitur Utama
 
 1. **Classic OJS 2-Column Layout:** Struktur visual 100% presisi mengikuti standar Open Journal Systems (proporsi 68% naskah, 32% sidebar standarisasi, tombol PDF khas, dan nomor halaman rata kanan).
 2. **Native Browser PDF Viewer:** Naskah dibuka menggunakan engine PDF bawaan browser (Chrome, Edge, Firefox, Safari) yang dilengkapi *thumbnail page*, seleksi teks, *smooth scroll*, tombol cetak, dan unduh tanpa beban script pihak ketiga yang lambat.
@@ -138,25 +166,39 @@ flowchart LR
 4. **Validasi Numerasi ISSN ISO 3297 Modulo 11 & Barcode GS1 EAN-13 SVG:**
    * Pemeriksaan algoritma Modulo 11 berbobot otomatis (check digit 0–9 atau X) dengan umpan balik visual langsung (*badge* status) pada formulir admin JTEBA.
    * Pembuatan kode batang GS1 EAN-13 berbasis grafik vektor SVG presisi tanpa dependensi library eksternal, yang tampil di Sidebar OJS publik.
-5. **Siklus Hidup Terbitan & Mode Call for Papers Dinamis:**
+5. **Formulir Penyerahan Naskah Online Terpadu (Direct Web Submission):**
+   * Antarmuka formal 2-kolom yang mengadopsi model kontak eksekutif Samsung CEO (*clean, readable, and accessible*).
+   * Menghilangkan ketergantungan pada sekadar tautan email `mailto:` mentah atau chat instan tanpa jejak audit.
+   * Dilengkapi proteksi anti-spam *honeypot* tanpa *captcha* visual yang membebani penulis.
+6. **Penomoran Registrasi Naskah Otomatis di Edge D1 (`JTEBA-SUB-YYYYMM-XXXX`):**
+   * Setiap naskah yang dikirimkan langsung memperoleh nomor registrasi unik berbasis urutan tahun-bulan dari tabel `journal_submissions` SQLite D1.
+   * Lencana nomor registrasi dapat langsung disalin oleh penulis di layar tanda terima web.
+7. **Notifikasi Surel Berkas Otomatis via Resend API dengan Dukungan `Reply-To`:**
+   * Berkas manuskrip (.docx/.doc/.pdf s.d. 15 MB) dilampirkan otomatis ke surel pemberitahuan ke `redaksi@praniti.or.id`.
+   * Integrasi header `Reply-To` memastikan ketika editor menekan tombol **"Reply" (Balas)** di Gmail, surel otomatis ditujukan ke calon penulis tanpa perlu menyalin alamat secara manual.
+   * Utas percakapan (*thread*) di Gmail otomatis terkelompok rapi berkat nomor registrasi baku pada subjek surel.
+8. **Modul Manajemen Naskah Masuk (*Submissions Studio*) di Panel Admin GUI:**
+   * Tab khusus di `/index/JTEBA/admin` yang menyajikan tabel seluruh naskah masuk, tanggal penyerahan, profil penulis, berkas, status naskah, dan tombol kontak instan (Balas Surel & Chat WhatsApp).
+   * Konfigurasi kunci API Resend langsung dari tab *Kontak & Narahubung* tanpa perlu deploy ulang.
+9. **Siklus Hidup Terbitan & Mode Call for Papers Dinamis:**
    * Mendukung saklar mode *Call for Papers (Menuju Edisi Perdana)* jika JTEBA belum memiliki naskah rilis, sehingga halaman Beranda dan `/current` menyajikan informasi call for papers resmi tanpa menampilkan volume kosong.
    * Transisi instan ke *Mode Edisi Aktif Terpublikasi* saat terbitan resmi dirilis.
-6. **Mesin Pencarian Naskah Multi-Parameter (`/search`):**
+10. **Mesin Pencarian Naskah Multi-Parameter (`/search`):**
    * Pencarian terindeks dengan filter judul, abstrak, nama penulis, afiliasi organisasi, bidang kajian ilmiah (*Audit, Akuntansi, Pajak*), dan rentang tahun publikasi.
-7. **Arsitektur Panel Administrasi 2-Tingkat (Two-Tier Admin Studio):**
+11. **Arsitektur Panel Administrasi 2-Tingkat (Two-Tier Admin Studio):**
    * **Level 1 - Admin Portal Open Gate (`/admin`):** Mengelola identitas organisasi penerbit (Praniti), kartu-kartu jurnal binaan, dan aset portal.
    * **Level 2 - Editorial Studio JTEBA (`/index/JTEBA/admin`):** Pengelolaan naskah terbit, dewan redaksi, legalitas ISSN, 4 panel edisi & terbitan, pengumuman, narahubung WhatsApp, Google Drive index, indeksasi, dan kredensial PIN redaksi.
    * Tab persisten berbasis `sessionStorage` dengan dukungan hash navigasi (`#form-add-new-issue`).
-8. **Arsitektur Database SQLite D1 dengan Dynamic Partial Updates:**
+12. **Arsitektur Database SQLite D1 dengan Dynamic Partial Updates:**
    * Menggunakan query builder dinamis yang mencegah penimpaan kolom database yang tidak disentuh (misal: pengisian pengumuman tidak akan mereset data volume atau kontak).
    * Migrasi skema otomatis saat runtime untuk tabel `journal_issues` dan kolom pendukung.
-9. **Rotasi 100 Service Accounts (GCP):** Repositori dokumen bebas dari batasan kuota unduhan akun tunggal karena ditenagai oleh 100 service accounts Google Cloud Platform yang berotasi otomatis.
-10. **Google Scholar Metadata Ready:** Meta tag sitasi akademik otomatis (`citation_title`, `citation_author`, `citation_pdf_url`, `citation_volume`, `citation_issue`, dll.) terisi otomatis untuk pengindeksan mesin pencari ilmiah.
-11. **Privasi Data Penuh:** Halaman direktori CDN tertutup total untuk publik. Pengunjung hanya dapat membaca berkas naskah resmi yang tautannya tersedia di portal.
+13. **Rotasi 100 Service Accounts (GCP):** Repositori dokumen bebas dari batasan kuota unduhan akun tunggal karena ditenagai oleh 100 service accounts Google Cloud Platform yang berotasi otomatis.
+14. **Google Scholar Metadata Ready:** Meta tag sitasi akademik otomatis (`citation_title`, `citation_author`, `citation_pdf_url`, `citation_volume`, `citation_issue`, dll.) terisi otomatis untuk pengindeksan mesin pencari ilmiah.
+15. **Privasi Data Penuh:** Halaman direktori CDN tertutup total untuk publik. Pengunjung hanya dapat membaca berkas naskah resmi yang tautannya tersedia di portal.
 
 ---
 
-## 6. Struktur Proyek
+## 7. Struktur Proyek
 
 ```text
 JTEBA-Open-Journal-System/
@@ -172,6 +214,7 @@ JTEBA-Open-Journal-System/
 │   ├── lib/                   # Integrasi Cloudflare D1, KV, dan modul ISSN
 │   │   ├── db.ts              # Driver relasional SQLite D1 & pembaruan parsial
 │   │   ├── cache.ts           # Global Edge KV Cache & metrik pembaca
+│   │   ├── email.ts           # Mesin pengiriman surel & lampiran naskah via Resend
 │   │   └── issn.ts            # Validasi ISO 3297 Modulo 11 & barcode GS1 EAN-13 SVG
 │   └── pages/                 # Routing halaman Astro
 │       ├── api/               # Endpoint REST API Serverless
@@ -182,6 +225,7 @@ JTEBA-Open-Journal-System/
 │       │   ├── issues.ts      # Manajemen volume, nomor edisi, & status rilis
 │       │   ├── portal-*.ts    # API portal Open Gate Praniti
 │       │   ├── settings.ts    # Pembaruan profil, identitas, & kontak jurnal
+│       │   ├── submissions.ts # API penyerahan naskah online & registrasi D1
 │       │   └── template.ts    # Endpoint penyaji berkas template manuskrip Word
 │       ├── admin.astro        # Level 1: Panel Admin Portal Open Gate
 │       ├── index/             # Portal Multi-Jurnal
@@ -202,7 +246,7 @@ JTEBA-Open-Journal-System/
 
 ---
 
-## 7. Cara Menjalankan Secara Lokal
+## 8. Cara Menjalankan Secara Lokal
 
 ```bash
 # 1. Masuk ke direktori
@@ -218,7 +262,7 @@ Buka browser di `http://localhost:4321`.
 
 ---
 
-## 8. Cara Deploy
+## 9. Cara Deploy
 
 ### Sekali Deploy Semua (Portal + CDN Worker):
 ```bash
@@ -242,7 +286,7 @@ npm run deploy:cdn
 
 ---
 
-## 9. Panel Administrasi 2-Tingkat (Two-Tier Admin Studio)
+## 10. Panel Administrasi 2-Tingkat (Two-Tier Admin Studio)
 
 ### A. Level 1: Admin Portal Open Gate (`/admin`)
 * **URL:** `http://localhost:4321/admin`

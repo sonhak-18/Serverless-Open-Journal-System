@@ -128,6 +128,18 @@ Sebelum menekan tombol kirim atau menyerahkan naskah ke redaksi, pastikan seluru
 - [ ] Pernyataan persetujuan responden (*informed consent*) atau izin komite etik dicantumkan apabila penelitian melibatkan subjek manusia atau data perseorangan.
 - [ ] Izin hak cipta resmi telah diperoleh secara tertulis untuk seluruh materi pihak ketiga (gambar, peta, kuesioner baku) yang dilampirkan.
 
+### 9. Prosedur Penyerahan Naskah Online (Online Submission Procedure)
+Pengiriman naskah ke JTEBA dilakukan secara terpadu melalui portal resmi pada laman:  
+👉 **[https://ejournal.praniti.or.id/index/JTEBA/submit](https://ejournal.praniti.or.id/index/JTEBA/submit)**
+
+Alur penyerahan naskah dirancang ringkas, transparan, dan mudah dipahami:
+1. **Pengisian Data Penulis Korespondensi:** Penulis mengisi nama lengkap, alamat surel aktif, konfirmasi surel, nomor WhatsApp aktif, institusi/afiliasi, serta kota dan negara.
+2. **Pemilihan Rumpun Fokus & Pengunggahan Berkas:** Penulis memilih rumpun bidang fokus yang sesuai, memasukkan judul lengkap dan abstrak/surat pengantar, serta mengunggah berkas manuskrip utama (`.docx` / `.doc` / `.pdf` maksimal 15 MB) yang telah disesuaikan dengan templat naskah.
+3. **Pernyataan Deklarasi Etika:** Penulis mencentang komitmen orisinalitas, persetujuan seluruh rekan penulis, dan kepatuhan terhadap pedoman penulisan.
+4. **Penerbitan Nomor Registrasi Otomatis:** Setelah tombol *Kirimkan Naskah* ditekan, sistem secara otomatis menerbitkan **Nomor Registrasi Naskah Resmi** (format: `JTEBA-SUB-YYYYMM-XXXX`). Nomor ini dicatat permanen dalam basis data jurnal dan ditampilkan langsung pada layar konfirmasi.
+5. **Surel Tanda Terima & Notifikasi Redaksi:** Salinan tanda terima resmi dikirimkan secara otomatis ke surel korespondensi penulis, dan berkas naskah diteruskan ke dewan redaksi.
+6. **Korespondensi Lanjutan:** Seluruh komunikasi telaah awal (*desk review*), perbaikan (*revisi*), hingga keputusan penerbitan (*LoA*) akan menggunakan nomor registrasi naskah tersebut melalui surel resmi `redaksi@praniti.or.id`.
+
 ---
 
 ## Peer Review Process (Proses Penelaahan Sejawat)
