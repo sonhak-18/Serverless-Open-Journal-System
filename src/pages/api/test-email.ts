@@ -39,11 +39,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
       subject: `[JTEBA Test] Uji Coba Pengiriman Resend API (${new Date().toLocaleTimeString('id-ID')})`,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; max-width: 640px; margin: 24px auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 40, 78, 0.08);">
-          <div style="background-color: #0f284e; padding: 24px 28px; border-bottom: 4px solid #c89b3c;">
-            <div style="background-color: #ffffff; padding: 6px 14px; border-radius: 6px; display: inline-block; margin-bottom: 12px;">
-              <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="130" style="display: block; border: 0;" />
+          <div style="background-color: #0f284e; padding: 26px 28px; border-bottom: 4px solid #c89b3c;">
+            <div style="background-color: #ffffff; padding: 8px 16px; border-radius: 6px; display: inline-block; margin-bottom: 12px;">
+              <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="140" style="display: block; border: 0;" />
             </div>
-            <div style="font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #c89b3c; margin-bottom: 4px;">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #c89b3c; margin-bottom: 4px;">
               ORGANISASI RISET DAN PUBLIKASI ILMIAH PRANITI
             </div>
             <h2 style="margin: 0; font-size: 18px; font-weight: 800; color: #ffffff; font-family: Georgia, serif;">

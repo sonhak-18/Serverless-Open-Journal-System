@@ -75,8 +75,12 @@ Setiap placeholder ditulis menggunakan huruf kapital di dalam kurung siku `[NAMA
 
 ## 4. Standar Teknis & Kompatibilitas Klien Email
 
+- **Tata Letak Proporsional & Banner Status Anti-Patah:**
+  - **Logo Chip:** Menggunakan berkas logo presisi yang telah dipangkas margin transparannya (*trimmed bounding box* 859x250) di dalam kotak chip putih (`padding: 8px 16px; border-radius: 6px;`) dengan proporsi seimbang terhadap masthead institusi.
+  - **Judul Banner 2 Tingkat:** Memisahkan judul bahasa Indonesia (huruf kapital tebal 11.5px) dengan sub-judul bahasa Inggris (11px semi-bold) secara vertikal sehingga tidak mendesak kolom ID naskah di layar desktop maupun seluler.
+  - **Badge ID Tiket Anti-Patah (`white-space: nowrap;`):** ID registrasi naskah dibungkus dalam sel tabel tiket mandiri berlatar putih dengan border lembut (`border: 1px solid [badgeBorder]; padding: 4px 10px; border-radius: 4px;`) berkode `white-space: nowrap;`. Ini menjamin teks `ID: [ID NASKAH]` tidak akan pernah terbelah atau patah dua baris di Outlook, Gmail, Apple Mail, maupun webmail lainnya.
 - **Layout Berbasis Tabel:** Menggunakan struktur tabel bertingkat dengan atribut `role="presentation"` dan `border="0" cellpadding="0" cellspacing="0"`.
 - **Garis Pemisah:** Garis pembatas kartu diterapkan pada elemen `<td>` (`border-bottom: 1px solid #e2e8f0;`) guna mencegah masalah rendering pada Microsoft Outlook desktop.
-- **Lebar Kontainer:** Terstandarisasi 640px maksimal, dengan penyesuaian responsif fluida hingga 100% pada layar ponsel pintar di bawah 480px.
+- **Lebar Kontainer:** Terstandarisasi 640px maksimal, dengan penyesuaian responsif fluida hingga 100% pada layar ponsel pintar di bawah 480px via `.stack-column` dan `.mobile-left`.
 - **Kontras Warna:** Telah memenuhi rasio standar minimum WCAG AA (minimal 4.5:1 untuk teks normal dan 3.0:1 untuk teks besar).
 - **Aksesibilitas Dark Mode:** Didukung melalui tag `<meta name="color-scheme" content="light dark">` dengan kontras yang tetap terjaga.

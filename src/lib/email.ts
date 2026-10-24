@@ -65,6 +65,8 @@ export async function sendSubmissionEmails(
       @media only screen and (max-width: 480px) {
         .container { width: 100% !important; }
         .fluid-pad { padding: 20px !important; }
+        .stack-column { display: block !important; width: 100% !important; box-sizing: border-box !important; }
+        .mobile-left { text-align: left !important; }
       }
     </style>
   </head>
@@ -73,20 +75,21 @@ export async function sendSubmissionEmails(
       <tr>
         <td align="center" style="padding: 0 12px;">
           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="container" style="max-width: 640px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 40, 78, 0.08); border: 1px solid #e2e8f0;">
-            <!-- Header -->
+            <!-- Header Masthead -->
             <tr>
-              <td class="fluid-pad" style="background-color: #0f284e; padding: 28px 32px; border-bottom: 4px solid #c89b3c; text-align: left;">
+              <td class="fluid-pad" style="background-color: #0f284e; padding: 26px 32px; border-bottom: 4px solid #c89b3c; text-align: left;">
+                <!-- Logo Chip Putih -->
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td style="background-color: #ffffff; padding: 6px 14px; border-radius: 6px; display: inline-block; margin-bottom: 14px;">
-                      <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="140" style="display: block; border: 0; max-width: 100%; height: auto;" />
+                    <td style="background-color: #ffffff; padding: 8px 16px; border-radius: 6px; display: inline-block;">
+                      <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="145" style="display: block; border: 0; max-width: 100%; height: auto;" />
                     </td>
                   </tr>
                 </table>
-                <div style="font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #c89b3c; margin-top: 14px; margin-bottom: 4px;">
+                <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #c89b3c; margin-top: 14px; margin-bottom: 4px;">
                   ORGANISASI RISET DAN PUBLIKASI ILMIAH PRANITI
                 </div>
-                <h1 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; line-height: 1.3; font-family: Georgia, 'Times New Roman', serif;">
+                <h1 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; line-height: 1.35; font-family: Georgia, 'Times New Roman', serif;">
                   ${journalName} (${journalShortName})
                 </h1>
                 <div style="font-size: 11px; color: #94a3b8; margin-top: 6px; font-family: 'Courier New', Courier, monospace;">
@@ -95,20 +98,28 @@ export async function sendSubmissionEmails(
               </td>
             </tr>
 
-            <!-- Status Banner -->
+            <!-- Status Banner Proporsional -->
             <tr>
-              <td class="fluid-pad" style="background-color: #eff6ff; border-bottom: 1px solid #bfdbfe; padding: 14px 32px; text-align: left;">
+              <td class="fluid-pad" style="background-color: #eff6ff; border-bottom: 1px solid #bfdbfe; padding: 12px 32px; text-align: left;">
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                   <tr>
-                    <td style="vertical-align: middle;">
-                      <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #075985;">
-                        &#9684; PEMBERITAHUAN PENGAJUAN NASKAH BARU
+                    <td class="stack-column" style="vertical-align: middle; padding-right: 12px;">
+                      <span style="font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: #075985; display: inline-block; vertical-align: middle;">
+                        PEMBERITAHUAN PENGAJUAN NASKAH BARU
+                      </span>
+                      <span style="font-size: 11px; font-weight: 600; color: #0284c7; display: block; margin-top: 2px; letter-spacing: 0.2px;">
+                        New Manuscript Submission Notice
                       </span>
                     </td>
-                    <td style="text-align: right; vertical-align: middle;">
-                      <span style="font-size: 11px; font-family: 'Courier New', Courier, monospace; color: #0369a1; font-weight: 700;">
-                        ID: ${regNumber}
-                      </span>
+                    <td class="stack-column mobile-left" align="right" style="vertical-align: middle; white-space: nowrap; padding-top: 4px;">
+                      <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="display: inline-table; vertical-align: middle;">
+                        <tr>
+                          <td style="background-color: #ffffff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 4px 10px; text-align: center; box-shadow: 0 1px 2px rgba(15, 40, 78, 0.05); white-space: nowrap;">
+                            <span style="font-size: 10px; font-weight: 700; color: #64748b; letter-spacing: 0.5px; text-transform: uppercase; margin-right: 4px;">ID:</span>
+                            <span style="font-family: 'Courier New', Courier, monospace; font-size: 12px; font-weight: 700; color: #0f284e; letter-spacing: 0.3px;">${regNumber}</span>
+                          </td>
+                        </tr>
+                      </table>
                     </td>
                   </tr>
                 </table>
@@ -208,6 +219,8 @@ export async function sendSubmissionEmails(
       @media only screen and (max-width: 480px) {
         .container { width: 100% !important; }
         .fluid-pad { padding: 20px !important; }
+        .stack-column { display: block !important; width: 100% !important; box-sizing: border-box !important; }
+        .mobile-left { text-align: left !important; }
       }
     </style>
   </head>
@@ -216,20 +229,21 @@ export async function sendSubmissionEmails(
       <tr>
         <td align="center" style="padding: 0 12px;">
           <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="container" style="max-width: 640px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 40, 78, 0.08); border: 1px solid #e2e8f0;">
-            <!-- Header -->
+            <!-- Header Masthead -->
             <tr>
-              <td class="fluid-pad" style="background-color: #0f284e; padding: 28px 32px; border-bottom: 4px solid #c89b3c; text-align: left;">
+              <td class="fluid-pad" style="background-color: #0f284e; padding: 26px 32px; border-bottom: 4px solid #c89b3c; text-align: left;">
+                <!-- Logo Chip Putih -->
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td style="background-color: #ffffff; padding: 6px 14px; border-radius: 6px; display: inline-block; margin-bottom: 14px;">
-                      <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="140" style="display: block; border: 0; max-width: 100%; height: auto;" />
+                    <td style="background-color: #ffffff; padding: 8px 16px; border-radius: 6px; display: inline-block;">
+                      <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="145" style="display: block; border: 0; max-width: 100%; height: auto;" />
                     </td>
                   </tr>
                 </table>
-                <div style="font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #c89b3c; margin-top: 14px; margin-bottom: 4px;">
+                <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #c89b3c; margin-top: 14px; margin-bottom: 4px;">
                   ORGANISASI RISET DAN PUBLIKASI ILMIAH PRANITI
                 </div>
-                <h1 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; line-height: 1.3; font-family: Georgia, 'Times New Roman', serif;">
+                <h1 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; line-height: 1.35; font-family: Georgia, 'Times New Roman', serif;">
                   ${journalName} (${journalShortName})
                 </h1>
                 <div style="font-size: 11px; color: #94a3b8; margin-top: 6px; font-family: 'Courier New', Courier, monospace;">
@@ -238,20 +252,28 @@ export async function sendSubmissionEmails(
               </td>
             </tr>
 
-            <!-- Status Banner -->
+            <!-- Status Banner Proporsional -->
             <tr>
-              <td class="fluid-pad" style="background-color: #eff6ff; border-bottom: 1px solid #bfdbfe; padding: 14px 32px; text-align: left;">
+              <td class="fluid-pad" style="background-color: #eff6ff; border-bottom: 1px solid #bfdbfe; padding: 12px 32px; text-align: left;">
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                   <tr>
-                    <td style="vertical-align: middle;">
-                      <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #075985;">
-                        &#9684; TANDA TERIMA PENGAJUAN NASKAH (SUBMISSION ACKNOWLEDGEMENT)
+                    <td class="stack-column" style="vertical-align: middle; padding-right: 12px;">
+                      <span style="font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: #075985; display: inline-block; vertical-align: middle;">
+                        TANDA TERIMA PENGAJUAN NASKAH
+                      </span>
+                      <span style="font-size: 11px; font-weight: 600; color: #0284c7; display: block; margin-top: 2px; letter-spacing: 0.2px;">
+                        Submission Acknowledgement
                       </span>
                     </td>
-                    <td style="text-align: right; vertical-align: middle;">
-                      <span style="font-size: 11px; font-family: 'Courier New', Courier, monospace; color: #0369a1; font-weight: 700;">
-                        ID: ${regNumber}
-                      </span>
+                    <td class="stack-column mobile-left" align="right" style="vertical-align: middle; white-space: nowrap; padding-top: 4px;">
+                      <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="display: inline-table; vertical-align: middle;">
+                        <tr>
+                          <td style="background-color: #ffffff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 4px 10px; text-align: center; box-shadow: 0 1px 2px rgba(15, 40, 78, 0.05); white-space: nowrap;">
+                            <span style="font-size: 10px; font-weight: 700; color: #64748b; letter-spacing: 0.5px; text-transform: uppercase; margin-right: 4px;">ID:</span>
+                            <span style="font-family: 'Courier New', Courier, monospace; font-size: 12px; font-weight: 700; color: #0f284e; letter-spacing: 0.3px;">${regNumber}</span>
+                          </td>
+                        </tr>
+                      </table>
                     </td>
                   </tr>
                 </table>
