@@ -3,149 +3,474 @@ export const prerender = false;
 
 import Layout from '../../../layouts/Layout.astro';
 import SidebarOJS from '../../../components/SidebarOJS.astro';
-import { getWhatsAppSubmissionUrl, getEmailSubmissionUrl } from '../../../config/journal';
+import { getWhatsAppSubmissionUrl } from '../../../config/journal';
 import { getDbSettings } from '../../../lib/db';
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const journalConfig = await getDbSettings(d1);
 const templateUrl = journalConfig.branding?.templateUrl || '/template-jteba.docx';
-const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.startsWith('https://');
 
 const waUrl = getWhatsAppSubmissionUrl(
   undefined,
   journalConfig.submission?.whatsappNumber || journalConfig.submission?.whatsappDisplay,
-  journalConfig.submission?.whatsappDefaultMessage
+  'Halo Redaksi JTEBA, saya telah mengirimkan naskah melalui formulir penyerahan online dan ingin mengonfirmasi penerimaan berkas.'
 );
-const emailUrl = getEmailSubmissionUrl(undefined, journalConfig.submission?.email);
 ---
 
-<Layout title="Online Submission" description={`Petunjuk penyerahan naskah artikel ilmiah ${journalConfig.name}`}>
+<Layout 
+  title="Online Submission" 
+  description={`Formulir resmi penyerahan naskah artikel ilmiah ${journalConfig.name}`}
+>
   <div class="max-w-7xl mx-auto px-4 py-8">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <!-- Kolom Kiri: Penyerahan Naskah (~68%) -->
+      <!-- Kolom Kiri: Formulir Penyerahan Naskah (~68%) -->
       <main class="lg:col-span-8 space-y-6">
-        <div class="text-xs text-slate-500 mb-2">
+        <!-- Breadcrumb Navigasi -->
+        <div class="text-xs text-slate-500 mb-1">
           <a href="/index/JTEBA" class="hover:underline">Home</a> &gt; <span>Submissions</span>
         </div>
 
+        <!-- Judul Halaman -->
         <div class="border-b-2 border-academic-gold pb-2">
-          <h1 class="text-3xl sm:text-4xl font-serif font-bold text-academic-navy">
-            Submissions (Penyerahan Naskah)
+          <h1 class="text-2xl sm:text-3xl font-serif font-bold text-academic-navy">
+            Online Submission (Penyerahan Naskah Ilmiah)
           </h1>
         </div>
 
-        <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
-          {journalConfig.name} ({journalConfig.shortName}) menerima naskah hasil penelitian empiris dan telaah literatur kritis di bidang akuntansi keberlanjutan & ESG, perpajakan & kebijakan fiskal, auditing & tata kelola, serta dinamika ekonomi dan bisnis terapan. Untuk mempercepat dan mempermudah proses korespondensi, calon penulis dapat menyerahkan manuskrip langsung ke narahubung redaksi melalui dua jalur resmi di bawah ini.
-        </p>
+        <!-- Deskripsi Panduan Pengiriman -->
+        <div class="space-y-2 text-sm sm:text-base text-slate-700 leading-relaxed">
+          <p>
+            {journalConfig.name} ({journalConfig.shortName}) menerima naskah hasil penelitian empiris dan telaah literatur kritis pada rumpun akuntansi keberlanjutan & ESG, perpajakan, tata kelola, dan bisnis terapan.
+          </p>
+          <p class="text-xs sm:text-sm text-slate-600 bg-slate-50 p-3 rounded border border-slate-200">
+            Lengkapi formulir di bawah ini untuk menerbitkan <strong>Nomor Registrasi Naskah Resmi</strong> dan memulai alur penelaahan sejawat ganda (<em>double-blind peer review</em>). Seluruh komunikasi editorial berikutnya akan menggunakan nomor registrasi yang diterbitkan.
+          </p>
+        </div>
 
-        <!-- Pilihan Jalur Penyerahan Naskah -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <!-- WhatsApp Redaksi -->
-          <div class="p-6 border border-slate-300 bg-white rounded shadow-2xs space-y-4">
-            <h2 class="text-lg sm:text-xl font-bold text-academic-navy flex items-center gap-2">
-              <svg class="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z" />
+        <!-- Notifikasi Wajib Diisi -->
+        <div class="text-xs text-slate-500 font-medium">
+          Bidang bertanda bintang (<span class="text-red-600 font-bold">*</span>) wajib dilengkapi.
+        </div>
+
+        <!-- SUCCESS CARD (Muncul setelah submit berhasil) -->
+        <div id="submission-success-card" class="hidden border-2 border-emerald-600 bg-emerald-50/40 rounded p-6 space-y-5 transition-all">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
-              <span>1. Pengajuan via WhatsApp Redaksi</span>
-            </h2>
-            <p class="text-base text-slate-700 leading-relaxed">
-              Kirimkan berkas naskah (.docx) ke nomor WhatsApp resmi sekretariat redaksi untuk konfirmasi penerimaan dan pengecekan kelengkapan awal.
-            </p>
-            <div class="text-sm text-slate-800 bg-slate-50 p-3 rounded border border-slate-200">
-              <span class="block text-slate-500 text-xs font-semibold mb-0.5">Narahubung Redaksi:</span>
-              <span class="font-bold font-mono text-base text-academic-navy">{journalConfig.submission.whatsappDisplay}</span>
             </div>
+            <div>
+              <h2 class="text-xl font-serif font-bold text-emerald-950">
+                Naskah Berhasil Terdaftar
+              </h2>
+              <p class="text-xs text-emerald-800 mt-0.5">
+                Nomor registrasi naskah telah diterbitkan dan tercatat dalam sistem basis data redaksi.
+              </p>
+            </div>
+          </div>
+
+          <!-- Lencana Nomor Registrasi -->
+          <div class="p-4 bg-white border border-emerald-300 rounded text-center space-y-1.5 shadow-2xs">
+            <span class="text-xs text-slate-500 uppercase tracking-wider font-semibold block">
+              Nomor Registrasi Naskah Resmi:
+            </span>
+            <div class="text-2xl sm:text-3xl font-mono font-bold text-academic-navy tracking-wide select-all" id="res-reg-number">
+              JTEBA-SUB-2026-0000
+            </div>
+            <div class="pt-1">
+              <button
+                type="button"
+                id="btn-copy-reg"
+                class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded border border-slate-300 transition-colors"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                </svg>
+                <span id="copy-btn-text">Salin Nomor Registrasi</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Ringkasan Naskah Masuk -->
+          <div class="bg-white p-4 rounded border border-slate-200 space-y-2 text-xs sm:text-sm text-slate-700">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-1">
+              <span class="font-semibold text-slate-500">Judul Manuskrip:</span>
+              <span class="sm:col-span-2 font-bold text-slate-900" id="res-title">-</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-1">
+              <span class="font-semibold text-slate-500">Penulis Korespondensi:</span>
+              <span class="sm:col-span-2 text-slate-800" id="res-author">-</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-1">
+              <span class="font-semibold text-slate-500">Alamat Surel:</span>
+              <span class="sm:col-span-2 font-mono text-slate-800" id="res-email">-</span>
+            </div>
+          </div>
+
+          <!-- Alur Tindak Lanjut -->
+          <div class="space-y-2 text-xs text-slate-700 bg-slate-50 p-4 rounded border border-slate-200 leading-relaxed">
+            <strong class="text-slate-900 block font-semibold">Tahap Selanjutnya:</strong>
+            <ul class="list-disc list-inside space-y-1 text-slate-600">
+              <li>Pemberitahuan resmi dan berkas naskah Anda telah diteruskan ke dewan redaksi di <strong class="font-mono text-slate-800">{journalConfig.submission.email}</strong>.</li>
+              <li>Pemeriksaan awal format naskah dan ambang batas kemiripan (Turnitin) dilakukan dalam waktu 1–3 hari kerja.</li>
+              <li>Hasil telaah awal dan penugasan mitra bestari (reviewer) akan dikirimkan langsung ke surel korespondensi Anda.</li>
+            </ul>
+          </div>
+
+          <!-- Tombol Aksi Tambahan -->
+          <div class="flex flex-wrap items-center gap-3 pt-2">
             <a
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="block text-center py-3 px-4 bg-emerald-700 hover:bg-emerald-800 text-white text-base font-bold rounded shadow-xs transition-colors"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded shadow-xs transition-colors"
             >
-              Hubungi WhatsApp Redaksi
-            </a>
-          </div>
-
-          <!-- Email Sekretariat -->
-          <div class="p-6 border border-slate-300 bg-white rounded shadow-2xs space-y-4">
-            <h2 class="text-lg sm:text-xl font-bold text-academic-navy flex items-center gap-2">
-              <svg class="w-5 h-5 text-academic-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.861.174.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.086s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z" />
               </svg>
-              <span>2. Pengajuan via Surat Elektronik (Email)</span>
-            </h2>
-            <p class="text-base text-slate-700 leading-relaxed">
-              Kirimkan berkas naskah lengkap beserta identitas seluruh penulis dan surat pengantar ke alamat email resmi redaksi.
-            </p>
-            <div class="text-sm text-slate-800 bg-slate-50 p-3 rounded border border-slate-200">
-              <span class="block text-slate-500 text-xs font-semibold mb-0.5">Alamat Email Resmi:</span>
-              <span class="font-bold font-mono text-base text-academic-navy">{journalConfig.submission.email}</span>
-            </div>
-            <a
-              href={emailUrl}
-              class="block text-center py-3 px-4 bg-academic-navy hover:bg-academic-navy-light text-white text-base font-bold rounded shadow-xs transition-colors"
-            >
-              Kirim via Email Redaksi
+              <span>Konfirmasi via WhatsApp Redaksi</span>
             </a>
+            <button
+              type="button"
+              id="btn-submit-another"
+              class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold rounded transition-colors"
+            >
+              Kirim Naskah Baru Lainnya
+            </button>
           </div>
         </div>
 
-        <!-- Submission Preparation Checklist -->
-        <div class="p-6 border border-slate-200 bg-slate-50 rounded space-y-4">
-          <h2 class="text-xl sm:text-2xl font-bold text-slate-900 border-b-2 border-slate-200 pb-2">
-            Submission Preparation Checklist
-          </h2>
-          <p class="text-base sm:text-lg text-slate-800">
-            Sebelum mengirimkan naskah, pastikan poin-poin berikut telah terpenuhi oleh penulis:
-          </p>
-          <ul class="text-base sm:text-lg text-slate-800 space-y-3 leading-relaxed">
-            <li class="flex items-start gap-2.5">
-              <svg class="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>Naskah belum pernah dipublikasikan sebelumnya dan tidak sedang dalam pertimbangan di jurnal ilmiah lain.</span>
-            </li>
-            <li class="flex items-start gap-2.5">
-              <svg class="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>
-                Format berkas manuskrip wajib menggunakan format resmi Microsoft Word (.docx).
-                <a
-                  href="/api/template"
-                  download={`Template_Naskah_${journalConfig.shortName}.docx`}
-                  class="text-blue-700 hover:underline font-semibold inline-flex items-center gap-1 ml-1"
-                >
-                  (Unduh Template .docx)
-                </a>
-              </span>
-            </li>
-            <li class="flex items-start gap-2.5">
-              <svg class="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>Teks mematuhi pedoman format penulisan dan sitasi APA 7th Edition yang tercantum dalam Author Guidelines.</span>
-            </li>
-            <li class="flex items-start gap-2.5">
-              <svg class="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>Hasil pemeriksaan orisinalitas Turnitin tidak melebihi ambang batas toleransi {journalConfig.submission.turnitinMaxSimilarity}%.</span>
-            </li>
-          </ul>
-
-          <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
-            <span class="text-sm text-slate-600">Gunakan format resmi sebelum melakukan pengajuan manuskrip:</span>
-            <a
-              href="/api/template"
-              download={`Template_Naskah_${journalConfig.shortName}.docx`}
-              class="inline-flex items-center gap-2 px-4 py-2.5 bg-[#0f284e] hover:bg-[#183e6d] text-white text-sm font-bold rounded shadow-2xs transition-colors"
-            >
-              <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-              </svg>
-              <span>Unduh Berkas Template (.docx)</span>
-            </a>
+        <!-- FORMULIR PENYERAHAN NASKAH (GRID ALA SAMSUNG CEO) -->
+        <form id="submission-form" class="space-y-6 bg-white border border-slate-300 rounded p-6 sm:p-8 shadow-xs">
+          <!-- Honeypot anti-spam (tersembunyi untuk manusia) -->
+          <div class="hidden" aria-hidden="true">
+            <input type="text" name="hp_company_field" tabindex="-1" autocomplete="off" />
           </div>
+
+          <!-- Alert Error Validasi Global -->
+          <div id="form-error-alert" class="hidden p-3.5 bg-red-50 border border-red-300 rounded text-red-800 text-xs sm:text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4 text-red-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            <span id="form-error-text">Mohon lengkapi seluruh kolom yang diwajibkan.</span>
+          </div>
+
+          <!-- BAGIAN 1: IDENTITAS PENULIS KORESPONDENSI -->
+          <div class="space-y-4">
+            <div class="border-b border-slate-200 pb-2">
+              <h2 class="text-sm sm:text-base font-bold text-academic-navy uppercase tracking-wider">
+                1. Data Penulis Korespondensi
+              </h2>
+            </div>
+
+            <!-- Baris 1: First Name & Last Name -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="firstName" class="block text-xs font-semibold text-slate-800 mb-1">
+                  Nama Depan <span class="text-red-600 font-bold">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  required
+                  placeholder="Contoh: Budi"
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-[#0f284e] focus:ring-1 focus:ring-[#0f284e] outline-none transition-colors"
+                />
+              </div>
+              <div>
+                <label for="lastName" class="block text-xs font-semibold text-slate-800 mb-1">
+                  Nama Belakang / Marga
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  placeholder="Contoh: Santoso"
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-[#0f284e] focus:ring-1 focus:ring-[#0f284e] outline-none transition-colors"
+                />
+              </div>
+            </div>
+
+            <!-- Baris 2: Email Address & Confirm Email -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="email" class="block text-xs font-semibold text-slate-800 mb-1">
+                  Alamat Surel (Email) <span class="text-red-600 font-bold">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  placeholder="nama@institusi.ac.id"
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-[#0f284e] focus:ring-1 focus:ring-[#0f284e] outline-none transition-colors font-mono"
+                />
+              </div>
+              <div>
+                <label for="confirmEmail" class="block text-xs font-semibold text-slate-800 mb-1">
+                  Konfirmasi Alamat Surel <span class="text-red-600 font-bold">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="confirmEmail"
+                  name="confirmEmail"
+                  required
+                  placeholder="Ulangi alamat surel"
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-[#0f284e] focus:ring-1 focus:ring-[#0f284e] outline-none transition-colors font-mono"
+                />
+                <span id="email-match-err" class="hidden text-xs text-red-600 mt-1 block">
+                  Alamat surel tidak cocok.
+                </span>
+              </div>
+            </div>
+
+            <!-- Baris 3: Phone No (WhatsApp) -->
+            <div>
+              <label for="phone" class="block text-xs font-semibold text-slate-800 mb-1">
+                Nomor WhatsApp / Telepon Aktif <span class="text-red-600 font-bold">*</span>
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                required
+                placeholder="+62 812-xxxx-xxxx"
+                class="w-full sm:w-1/2 px-3 py-2 text-sm border border-slate-300 rounded focus:border-[#0f284e] focus:ring-1 focus:ring-[#0f284e] outline-none transition-colors font-mono"
+              />
+              <span class="text-xs text-slate-500 mt-1 block">
+                Digunakan untuk konfirmasi darurat atau notifikasi percepatan editorial.
+              </span>
+            </div>
+
+            <!-- Baris 4: Institution / Affiliation -->
+            <div>
+              <label for="affiliation" class="block text-xs font-semibold text-slate-800 mb-1">
+                Institusi / Afiliasi Akademik <span class="text-red-600 font-bold">*</span>
+              </label>
+              <input
+                type="text"
+                id="affiliation"
+                name="affiliation"
+                required
+                placeholder="Contoh: Universitas Diponegoro, Semarang"
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-[#0f284e] focus:ring-1 focus:ring-[#0f284e] outline-none transition-colors"
+              />
+            </div>
+
+            <!-- Baris 5: City & Country -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="city" class="block text-xs font-semibold text-slate-800 mb-1">
+                  Kota <span class="text-red-600 font-bold">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  required
+                  placeholder="Contoh: Semarang"
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-[#0f284e] focus:ring-1 focus:ring-[#0f284e] outline-none transition-colors"
+                />
+              </div>
+              <div>
+                <label for="country" class="block text-xs font-semibold text-slate-800 mb-1">
+                  Negara <span class="text-red-600 font-bold">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="country"
+                  name="country"
+                  required
+                  value="Indonesia"
+                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-[#0f284e] focus:ring-1 focus:ring-[#0f284e] outline-none transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- BAGIAN 2: METADATA & BERKAS MANUSKRIP -->
+          <div class="space-y-4 pt-4 border-t border-slate-200">
+            <div class="border-b border-slate-200 pb-2">
+              <h2 class="text-sm sm:text-base font-bold text-academic-navy uppercase tracking-wider">
+                2. Informasi & Berkas Manuskrip
+              </h2>
+            </div>
+
+            <!-- Rumpun Fokus & Ruang Lingkup -->
+            <div>
+              <label for="scopeCluster" class="block text-xs font-semibold text-slate-800 mb-1">
+                Rumpun Fokus dan Ruang Lingkup (Focus & Scope) <span class="text-red-600 font-bold">*</span>
+              </label>
+              <select
+                id="scopeCluster"
+                name="scopeCluster"
+                required
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-[#0f284e] focus:ring-1 focus:ring-[#0f284e] outline-none transition-colors bg-white text-slate-800"
+              >
+                <option value="" disabled selected>Pilih salah satu rumpun fokus publikasi...</option>
+                <option value="A. Akuntansi Keberlanjutan & ESG">A. Akuntansi Keberlanjutan & ESG (Sustainability Reporting, GRI, IFRS S1/S2)</option>
+                <option value="B. Perpajakan & Kebijakan Fiskal">B. Perpajakan & Kebijakan Fiskal (Tax Compliance, Pajak Karbon, Digital Tax)</option>
+                <option value="C. Auditing, Forensik & Tata Kelola">C. Auditing, Forensik & Tata Kelola (Audit Quality, Fraud, Whistleblowing, GCG)</option>
+                <option value="D. Dinamika Ekonomi & Bisnis Terapan">D. Dinamika Ekonomi & Bisnis Terapan (Kinerja Korporasi, Keuangan Digital, UMKM)</option>
+              </select>
+            </div>
+
+            <!-- Judul Manuskrip -->
+            <div>
+              <label for="title" class="block text-xs font-semibold text-slate-800 mb-1">
+                Judul Lengkap Manuskrip <span class="text-red-600 font-bold">*</span>
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                required
+                placeholder="Tuliskan judul lengkap naskah artikel ilmiah tanpa singkatan tidak baku"
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-[#0f284e] focus:ring-1 focus:ring-[#0f284e] outline-none transition-colors"
+              />
+            </div>
+
+            <!-- Abstrak Naskah -->
+            <div>
+              <label for="abstract" class="block text-xs font-semibold text-slate-800 mb-1">
+                Abstrak Naskah & Surat Pengantar Redaksi <span class="text-red-600 font-bold">*</span>
+              </label>
+              <textarea
+                id="abstract"
+                name="abstract"
+                rows="5"
+                required
+                placeholder="Tempelkan abstrak lengkap naskah (latar belakang, tujuan, metodologi riset, temuan utama, dan implikasi) atau surat pengantar (cover letter) untuk dewan redaksi..."
+                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:border-[#0f284e] focus:ring-1 focus:ring-[#0f284e] outline-none transition-colors leading-relaxed"
+              ></textarea>
+            </div>
+
+            <!-- Unggah Berkas Naskah Utama -->
+            <div class="p-4 bg-slate-50 border border-slate-300 rounded space-y-2">
+              <label for="manuscriptFile" class="block text-xs font-semibold text-slate-900">
+                Berkas Manuskrip Utama (.docx / .doc / .pdf) <span class="text-red-600 font-bold">*</span>
+              </label>
+              <input
+                type="file"
+                id="manuscriptFile"
+                name="manuscriptFile"
+                required
+                accept=".docx,.doc,.pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,application/pdf"
+                class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#0f284e] file:text-white hover:file:bg-[#183e6d] file:cursor-pointer cursor-pointer border border-slate-200 bg-white p-1 rounded"
+              />
+              <div class="flex flex-wrap items-center justify-between text-xs text-slate-500 pt-1">
+                <span>Format yang didukung: Microsoft Word (.docx, .doc) dan PDF. Ukuran maks: <strong>15 MB</strong>.</span>
+                <a href={templateUrl} download class="text-blue-700 hover:underline font-semibold inline-flex items-center gap-1">
+                  <span>Unduh Template .docx</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Unggah Berkas Pelengkap (Opsional) -->
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded space-y-2">
+              <label for="supplementaryFile" class="block text-xs font-semibold text-slate-800">
+                Berkas Pelengkap / Surat Pernyataan Orisinalitas (Opsional)
+              </label>
+              <input
+                type="file"
+                id="supplementaryFile"
+                name="supplementaryFile"
+                accept=".docx,.doc,.pdf,.zip"
+                class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-slate-800 hover:file:bg-slate-300 file:cursor-pointer cursor-pointer border border-slate-200 bg-white p-1 rounded"
+              />
+              <span class="text-xs text-slate-500 block">
+                Dapat berupa surat pernyataan orisinalitas bermaterai, instrumen kuesioner, atau data riset tambahan.
+              </span>
+            </div>
+          </div>
+
+          <!-- BAGIAN 3: CHECKLIST DEKLARASI PENULIS & KEPATUHAN ETIKA -->
+          <div class="space-y-3 pt-4 border-t border-slate-200">
+            <div class="border-b border-slate-200 pb-2">
+              <h2 class="text-sm sm:text-base font-bold text-academic-navy uppercase tracking-wider">
+                3. Deklarasi Etika & Pernyataan Penulis
+              </h2>
+            </div>
+
+            <div class="space-y-2.5 text-xs sm:text-sm text-slate-700">
+              <label class="flex items-start gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="chkOrisinalitas"
+                  required
+                  class="mt-1 h-4 w-4 rounded border-slate-300 text-[#0f284e] focus:ring-[#0f284e]"
+                />
+                <span>
+                  <strong>Orisinalitas Naskah:</strong> Naskah ini adalah karya orisinal, belum pernah dipublikasikan di media ilmiah mana pun, dan saat ini tidak sedang dalam proses telaah atau pertimbangan di jurnal berkala lain.
+                </span>
+              </label>
+
+              <label class="flex items-start gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="chkPersetujuan"
+                  required
+                  class="mt-1 h-4 w-4 rounded border-slate-300 text-[#0f284e] focus:ring-[#0f284e]"
+                />
+                <span>
+                  <strong>Persetujuan Kepengarangan:</strong> Seluruh penulis yang tercantum telah meninjau, menyetujui versi final naskah, dan menyepakati urutan kepengarangan (authorship order).
+                </span>
+              </label>
+
+              <label class="flex items-start gap-2.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="chkPedoman"
+                  required
+                  class="mt-1 h-4 w-4 rounded border-slate-300 text-[#0f284e] focus:ring-[#0f284e]"
+                />
+                <span>
+                  <strong>Kepatuhan Pedoman Format:</strong> Naskah telah disesuaikan dengan Pedoman Penulis (Author Guidelines), gaya sitasi APA 7th Edition, dan bersedia mengikuti prosedur telaah sejawat ganda (double-blind peer review).
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- TOMBOL AKSI SUBMIT -->
+          <div class="pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <button
+              type="reset"
+              class="w-full sm:w-auto px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded border border-slate-300 transition-colors"
+            >
+              Bersihkan Formulir (Reset)
+            </button>
+
+            <button
+              type="submit"
+              id="btn-submit"
+              class="w-full sm:w-auto px-6 py-3 bg-[#0f284e] hover:bg-[#183e6d] text-white text-sm font-bold rounded shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              <svg id="submit-spinner" class="hidden animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span id="btn-submit-text">Kirimkan Naskah (Submit Manuscript)</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- PEMBERITAHUAN BANTUAN DARURAT (FALLBACK CONTACT) -->
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded text-xs text-slate-600 space-y-1">
+          <strong class="text-slate-800 block">Mengalami kendala teknis saat mengunggah berkas?</strong>
+          <p>
+            Calon penulis dapat mengonfirmasi pengajuan secara langsung kepada narahubung redaksi melalui WhatsApp resmi di{' '}
+            <a href={waUrl} target="_blank" rel="noopener noreferrer" class="text-emerald-700 font-semibold hover:underline">
+              {journalConfig.submission.whatsappDisplay}
+            </a>{' '}
+            atau surel sekretariat di{' '}
+            <!--email_off-->
+            <a href={`mailto:${journalConfig.submission.email}`} class="text-blue-700 font-mono hover:underline">
+              {journalConfig.submission.email}
+            </a>
+            <!--/email_off-->.
+          </p>
         </div>
       </main>
 
@@ -156,3 +481,128 @@ const emailUrl = getEmailSubmissionUrl(undefined, journalConfig.submission?.emai
     </div>
   </div>
 </Layout>
+
+<script>
+  const form = document.getElementById('submission-form') as HTMLFormElement | null;
+  const errorAlert = document.getElementById('form-error-alert');
+  const errorText = document.getElementById('form-error-text');
+  const emailInput = document.getElementById('email') as HTMLInputElement | null;
+  const confirmEmailInput = document.getElementById('confirmEmail') as HTMLInputElement | null;
+  const emailMatchErr = document.getElementById('email-match-err');
+  const btnSubmit = document.getElementById('btn-submit') as HTMLButtonElement | null;
+  const submitSpinner = document.getElementById('submit-spinner');
+  const btnSubmitText = document.getElementById('btn-submit-text');
+
+  const successCard = document.getElementById('submission-success-card');
+  const resRegNumber = document.getElementById('res-reg-number');
+  const resTitle = document.getElementById('res-title');
+  const resAuthor = document.getElementById('res-author');
+  const resEmail = document.getElementById('res-email');
+  const btnCopyReg = document.getElementById('btn-copy-reg');
+  const copyBtnText = document.getElementById('copy-btn-text');
+  const btnSubmitAnother = document.getElementById('btn-submit-another');
+
+  function validateEmailMatch() {
+    if (!emailInput || !confirmEmailInput || !emailMatchErr) return true;
+    if (confirmEmailInput.value && emailInput.value.toLowerCase() !== confirmEmailInput.value.toLowerCase()) {
+      emailMatchErr.classList.remove('hidden');
+      confirmEmailInput.classList.add('border-red-500');
+      return false;
+    } else {
+      emailMatchErr.classList.add('hidden');
+      confirmEmailInput.classList.remove('border-red-500');
+      return true;
+    }
+  }
+
+  confirmEmailInput?.addEventListener('input', validateEmailMatch);
+  emailInput?.addEventListener('input', validateEmailMatch);
+
+  btnCopyReg?.addEventListener('click', () => {
+    if (resRegNumber && resRegNumber.textContent) {
+      navigator.clipboard.writeText(resRegNumber.textContent.trim()).then(() => {
+        if (copyBtnText) copyBtnText.textContent = 'Nomor Tersalin!';
+        setTimeout(() => {
+          if (copyBtnText) copyBtnText.textContent = 'Salin Nomor Registrasi';
+        }, 2500);
+      });
+    }
+  });
+
+  btnSubmitAnother?.addEventListener('click', () => {
+    if (successCard) successCard.classList.add('hidden');
+    if (form) {
+      form.reset();
+      form.classList.remove('hidden');
+      form.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (errorAlert) errorAlert.classList.add('hidden');
+
+    if (!validateEmailMatch()) {
+      if (errorAlert && errorText) {
+        errorText.textContent = 'Alamat surel dan konfirmasi surel tidak cocok. Mohon periksa kembali.';
+        errorAlert.classList.remove('hidden');
+      }
+      confirmEmailInput?.focus();
+      return;
+    }
+
+    const fileInput = document.getElementById('manuscriptFile') as HTMLInputElement | null;
+    if (fileInput?.files && fileInput.files[0]) {
+      const file = fileInput.files[0];
+      const maxBytes = 15 * 1024 * 1024;
+      if (file.size > maxBytes) {
+        if (errorAlert && errorText) {
+          errorText.textContent = 'Ukuran berkas naskah melebihi batas maksimal 15 MB. Silakan perkecil ukuran file.';
+          errorAlert.classList.remove('hidden');
+        }
+        fileInput.focus();
+        return;
+      }
+    }
+
+    // Set loading state
+    if (btnSubmit) btnSubmit.disabled = true;
+    if (submitSpinner) submitSpinner.classList.remove('hidden');
+    if (btnSubmitText) btnSubmitText.textContent = 'Mengunggah & Mendaftarkan Naskah...';
+
+    try {
+      const formData = new FormData(form);
+      const res = await fetch('/api/submissions', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Terjadi gangguan saat memproses pendaftaran naskah.');
+      }
+
+      // Display success view
+      if (resRegNumber) resRegNumber.textContent = data.regNumber;
+      if (resTitle) resTitle.textContent = data.title;
+      if (resAuthor) resAuthor.textContent = data.authorName;
+      if (resEmail) resEmail.textContent = data.email;
+
+      form.classList.add('hidden');
+      if (successCard) {
+        successCard.classList.remove('hidden');
+        successCard.scrollIntoView({ behavior: 'smooth' });
+      }
+    } catch (err: any) {
+      if (errorAlert && errorText) {
+        errorText.textContent = err.message || 'Terjadi kendala saat mengirimkan naskah. Silakan coba kembali atau gunakan narahubung redaksi.';
+        errorAlert.classList.remove('hidden');
+      }
+    } finally {
+      if (btnSubmit) btnSubmit.disabled = false;
+      if (submitSpinner) submitSpinner.classList.add('hidden');
+      if (btnSubmitText) btnSubmitText.textContent = 'Kirimkan Naskah (Submit Manuscript)';
+    }
+  });
+</script>

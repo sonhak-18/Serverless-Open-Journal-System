@@ -2,7 +2,7 @@
 export const prerender = false;
 
 import Layout from '../../../layouts/Layout.astro';
-import { getDbSettings, getDbArticles, getDbEditorial, getDbIndexing, getDbIssues } from '../../../lib/db';
+import { getDbSettings, getDbArticles, getDbEditorial, getDbIndexing, getDbIssues, getDbSubmissions } from '../../../lib/db';
 import { verifySession } from '../../../lib/auth';
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
@@ -16,6 +16,7 @@ const articles = isAuthenticated ? await getDbArticles(d1) : [];
 const editorial = isAuthenticated ? await getDbEditorial(d1) : { editorInChief: { name: '', affiliation: '', email: '' }, editors: [], reviewers: [] };
 const indexing = isAuthenticated ? await getDbIndexing(d1) : [];
 const issues = isAuthenticated ? await getDbIssues(d1) : [];
+const submissions = isAuthenticated ? await getDbSubmissions(d1) : [];
 
 const { editorInChief, editors, reviewers } = editorial;
 
@@ -154,6 +155,14 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
           <span>Terbitkan Naskah</span>
+        </button>
+                <button
+          type="button"
+          class="admin-tab py-2.5 px-3.5 border-b-2 border-transparent text-slate-600 hover:text-academic-navy shrink-0 min-h-[44px] flex items-center gap-1.5"
+          data-tab="tab-submissions-list"
+        >
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Naskah Masuk ({submissions.length})</span>
         </button>
         <button
           type="button"
@@ -1816,7 +1825,8 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
               Pengaturan Narahubung Redaksi & Komunitas
             </h2>
             <p class="text-xs text-academic-ink-muted mt-1">
-              Data ini langsung tersimpan ke database dan mengupdate tombol WhatsApp, email, dan footer.
+              Data ini langsung tersimpan ke database dan mengupdate tombol WhatsApp, email,
+        resendApiKey: cfgResendKey, dan footer.
             </p>
           </div>
 
@@ -1874,6 +1884,23 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                 />
               </div>
             </div>
+
+            
+              <div class="sm:col-span-2 pt-2 border-t border-slate-200">
+                <label for="cfg-resend-key" class="block font-semibold text-slate-800 mb-1">
+                  Resend API Key (Otomatisasi Kirim Berkas & Notifikasi Surel ke Gmail)
+                </label>
+                <input
+                  type="password"
+                  id="cfg-resend-key"
+                  value={(journalConfig.submission as any).resendApiKey || ''}
+                  placeholder="re_xxxxxxxxxxxxxx"
+                  class="w-full px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
+                />
+                <span class="text-slate-500 text-[11px] mt-1 block">
+                  Dapatkan kunci gratis di <a href="https://resend.com" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline font-semibold">resend.com</a> (kuota 3.000 surel/bulan). Jika belum diisi, nomor registrasi tetap diterbitkan dan dicatat di database.
+                </span>
+              </div>
 
             <!-- Fitur Sidebar Toggles -->
             <div class="p-4 bg-white border border-slate-200 rounded space-y-2">

@@ -1,6 +1,27 @@
 import { journalConfig, type JournalConfig, type IndexingPlatform } from '../config/journal';
 import { articles as initialArticles, type Article } from '../data/articles';
 
+
+export interface JournalSubmission {
+  id?: number;
+  regNumber: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  affiliation: string;
+  city?: string;
+  country?: string;
+  scopeCluster: string;
+  title: string;
+  abstract: string;
+  fileName: string;
+  fileSize: number;
+  supplementaryFileName?: string;
+  status: 'submitted' | 'under_review' | 'revision' | 'accepted' | 'declined';
+  createdAt: string;
+}
+
 export interface JtebaDatabase {
   settings: JournalConfig;
   articles: Article[];
@@ -35,6 +56,30 @@ export async function ensureDbSchemaInitialized(db: any): Promise<void> {
     try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN logo_url TEXT DEFAULT "/images/logo.png"').run(); } catch (_) {}
     try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN favicon_url TEXT DEFAULT "/favicon.png"').run(); } catch (_) {}
     try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN template_url TEXT DEFAULT "/template-jteba.docx"').run(); } catch (_) {}
+    try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN resend_api_key TEXT DEFAULT ""').run(); } catch (_) {}
+    try {
+      await db.prepare(`
+        CREATE TABLE IF NOT EXISTS journal_submissions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          reg_number TEXT UNIQUE NOT NULL,
+          first_name TEXT NOT NULL,
+          last_name TEXT NOT NULL,
+          email TEXT NOT NULL,
+          phone TEXT NOT NULL,
+          affiliation TEXT NOT NULL,
+          city TEXT DEFAULT '',
+          country TEXT DEFAULT 'Indonesia',
+          scope_cluster TEXT NOT NULL,
+          title TEXT NOT NULL,
+          abstract TEXT NOT NULL,
+          file_name TEXT NOT NULL,
+          file_size INTEGER DEFAULT 0,
+          supplementary_file_name TEXT DEFAULT '',
+          status TEXT DEFAULT 'submitted',
+          created_at TEXT NOT NULL
+        )
+      `).run();
+    } catch (_) {}
     try {
       await db.prepare(`
         CREATE TABLE IF NOT EXISTS journal_issues (
@@ -181,6 +226,7 @@ export async function getDbSettings(d1?: any): Promise<JournalConfig> {
             whatsappDefaultMessage: row.whatsapp_message || memoryStore.settings.submission.whatsappDefaultMessage,
             turnitinMaxSimilarity: row.turnitin_max_similarity !== undefined ? Number(row.turnitin_max_similarity) : memoryStore.settings.submission.turnitinMaxSimilarity,
             reviewTimeEstimate: row.review_time_estimate || memoryStore.settings.submission.reviewTimeEstimate,
+            resendApiKey: row.resend_api_key || "",
           },
           storage: {
             ...memoryStore.settings.storage,
@@ -273,6 +319,7 @@ export async function updateDbSettings(data: {
   if (data.whatsappMessage !== undefined) s.submission.whatsappDefaultMessage = data.whatsappMessage;
   if (data.turnitinMaxSimilarity !== undefined) s.submission.turnitinMaxSimilarity = Number(data.turnitinMaxSimilarity);
   if (data.reviewTimeEstimate !== undefined) s.submission.reviewTimeEstimate = data.reviewTimeEstimate;
+  if (data.resendApiKey !== undefined) (s.submission as any).resendApiKey = data.resendApiKey;
   if (data.eIssn !== undefined) s.eIssn = data.eIssn;
   if (data.pIssn !== undefined) s.pIssn = data.pIssn;
   if (data.showIndexingBlock !== undefined) s.features.showIndexingBlock = Boolean(data.showIndexingBlock);
@@ -366,6 +413,7 @@ export async function updateDbSettings(data: {
       if (data.templateUrl !== undefined) updates.push({ col: 'template_url', val: data.templateUrl });
       if (data.turnitinMaxSimilarity !== undefined) updates.push({ col: 'turnitin_max_similarity', val: Number(data.turnitinMaxSimilarity) });
       if (data.reviewTimeEstimate !== undefined) updates.push({ col: 'review_time_estimate', val: data.reviewTimeEstimate });
+      if (data.resendApiKey !== undefined) updates.push({ col: 'resend_api_key', val: data.resendApiKey });
       if (data.email !== undefined) updates.push({ col: 'email', val: data.email });
       if (data.whatsappNumber !== undefined) updates.push({ col: 'whatsapp_number', val: data.whatsappNumber });
       if (data.whatsappDisplay !== undefined) updates.push({ col: 'whatsapp_display', val: data.whatsappDisplay });
@@ -1176,3 +1224,170 @@ export async function setDbPortalAdminCredentials(username: string, pin: string,
   }
 }
 
+
+
+let memorySubmissions: JournalSubmission[] = [];
+
+export async function createDbSubmission(
+  submission: Omit<JournalSubmission, 'id' | 'regNumber' | 'createdAt'>,
+  d1?: any
+): Promise<JournalSubmission> {
+  const db = d1 || globalD1Instance;
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const periodKey = `${year}${month}`;
+
+  let nextSeq = 1;
+
+  if (db) {
+    await ensureDbSchemaInitialized(db);
+    try {
+      const countRes: any = await db.prepare(
+        "SELECT COUNT(*) as cnt FROM journal_submissions WHERE reg_number LIKE ?"
+      ).bind(`JTEBA-SUB-${periodKey}-%`).first();
+      if (countRes && typeof countRes.cnt === 'number') {
+        nextSeq = countRes.cnt + 1;
+      }
+    } catch (_) {}
+  } else {
+    const memoryCount = memorySubmissions.filter(s => s.regNumber.startsWith(`JTEBA-SUB-${periodKey}-`)).length;
+    nextSeq = memoryCount + 1;
+  }
+
+  const seqFormatted = String(nextSeq).padStart(4, '0');
+  const regNumber = `JTEBA-SUB-${periodKey}-${seqFormatted}`;
+  const createdAt = now.toISOString();
+
+  const newEntry: JournalSubmission = {
+    ...submission,
+    regNumber,
+    status: 'submitted',
+    createdAt,
+  };
+
+  if (db) {
+    try {
+      const res = await db.prepare(`
+        INSERT INTO journal_submissions (
+          reg_number, first_name, last_name, email, phone, affiliation,
+          city, country, scope_cluster, title, abstract,
+          file_name, file_size, supplementary_file_name, status, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        regNumber,
+        submission.firstName,
+        submission.lastName,
+        submission.email,
+        submission.phone,
+        submission.affiliation,
+        submission.city || '',
+        submission.country || 'Indonesia',
+        submission.scopeCluster,
+        submission.title,
+        submission.abstract,
+        submission.fileName,
+        submission.fileSize || 0,
+        submission.supplementaryFileName || '',
+        'submitted',
+        createdAt
+      ).run();
+
+      newEntry.id = res?.meta?.last_row_id || nextSeq;
+    } catch (e) {
+      console.error('Failed to insert submission into D1:', e);
+    }
+  } else {
+    newEntry.id = memorySubmissions.length + 1;
+    memorySubmissions.unshift(newEntry);
+  }
+
+  return newEntry;
+}
+
+export async function getDbSubmissions(d1?: any): Promise<JournalSubmission[]> {
+  const db = d1 || globalD1Instance;
+  if (db) {
+    await ensureDbSchemaInitialized(db);
+    try {
+      const { results } = await db.prepare(
+        "SELECT * FROM journal_submissions ORDER BY id DESC"
+      ).all();
+      if (results && Array.isArray(results)) {
+        return results.map((r: any) => ({
+          id: r.id,
+          regNumber: r.reg_number,
+          firstName: r.first_name,
+          lastName: r.last_name,
+          email: r.email,
+          phone: r.phone,
+          affiliation: r.affiliation,
+          city: r.city,
+          country: r.country,
+          scopeCluster: r.scope_cluster,
+          title: r.title,
+          abstract: r.abstract,
+          fileName: r.file_name,
+          fileSize: r.file_size,
+          supplementaryFileName: r.supplementary_file_name,
+          status: r.status,
+          createdAt: r.created_at,
+        }));
+      }
+    } catch (e) {
+      console.warn('Failed to fetch submissions from D1:', e);
+    }
+  }
+  return memorySubmissions;
+}
+
+export async function getDbSubmissionByRegNumber(regNumber: string, d1?: any): Promise<JournalSubmission | null> {
+  const db = d1 || globalD1Instance;
+  if (db) {
+    await ensureDbSchemaInitialized(db);
+    try {
+      const r: any = await db.prepare(
+        "SELECT * FROM journal_submissions WHERE reg_number = ?"
+      ).bind(regNumber).first();
+      if (r) {
+        return {
+          id: r.id,
+          regNumber: r.reg_number,
+          firstName: r.first_name,
+          lastName: r.last_name,
+          email: r.email,
+          phone: r.phone,
+          affiliation: r.affiliation,
+          city: r.city,
+          country: r.country,
+          scopeCluster: r.scope_cluster,
+          title: r.title,
+          abstract: r.abstract,
+          fileName: r.file_name,
+          fileSize: r.file_size,
+          supplementaryFileName: r.supplementary_file_name,
+          status: r.status,
+          createdAt: r.created_at,
+        };
+      }
+    } catch (_) {}
+  }
+  return memorySubmissions.find(s => s.regNumber === regNumber) || null;
+}
+
+export async function updateDbSubmissionStatus(regNumber: string, status: string, d1?: any): Promise<boolean> {
+  const db = d1 || globalD1Instance;
+  if (db) {
+    await ensureDbSchemaInitialized(db);
+    try {
+      await db.prepare("UPDATE journal_submissions SET status = ? WHERE reg_number = ?").bind(status, regNumber).run();
+      return true;
+    } catch (_) {}
+  }
+  const entry = memorySubmissions.find(s => s.regNumber === regNumber);
+  if (entry) {
+    entry.status = status as any;
+    return true;
+  }
+  return false;
+}
