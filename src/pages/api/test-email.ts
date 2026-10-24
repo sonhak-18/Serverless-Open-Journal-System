@@ -33,8 +33,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     const testPayload = {
-      from: 'JTEBA Submission Test <onboarding@resend.dev>',
+      from: 'JTEBA Submission Test <noreply@praniti.or.id>',
       to: [targetEmail],
+      reply_to: targetEmail,
       subject: `[JTEBA Test] Uji Coba Pengiriman Resend API (${new Date().toLocaleTimeString('id-ID')})`,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; max-width: 560px; margin: 0 auto; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden;">

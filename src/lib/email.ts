@@ -48,8 +48,8 @@ export async function sendSubmissionEmails(
     return { success: false, error: 'Resend API key tidak ditemukan.' };
   }
 
-  // Sender address: default to onboarding@resend.dev unless verified custom domain provided
-  const senderAddress = fromEmail || 'JTEBA Submission <onboarding@resend.dev>';
+  // Sender address: verified domain praniti.or.id
+  const senderAddress = fromEmail || 'JTEBA Submission <noreply@praniti.or.id>';
 
   // Editorial notification email HTML
   const editorialHtml = `
@@ -258,6 +258,7 @@ export async function sendSubmissionEmails(
         body: JSON.stringify({
           from: senderAddress,
           to: [authorEmail],
+          reply_to: destinationEmail,
           subject: `[${regNumber}] Konfirmasi Penerimaan Naskah - ${journalShortName}`,
           html: authorHtml,
         }),
