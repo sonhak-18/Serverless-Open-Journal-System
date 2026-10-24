@@ -1891,13 +1891,26 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
                   Resend API Key (Otomatisasi Kirim Berkas & Notifikasi Surel ke Gmail)
                 </label>
                 <div class="flex flex-col sm:flex-row gap-2">
-                  <input
-                    type="password"
-                    id="cfg-resend-key"
-                    value={(journalConfig.submission as any).resendApiKey || ''}
-                    placeholder="re_xxxxxxxxxxxxxx"
-                    class="flex-1 px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
-                  />
+                  <div class="relative flex-1">
+                    <input
+                      type="password"
+                      id="cfg-resend-key"
+                      value={(journalConfig.submission as any).resendApiKey || ''}
+                      placeholder="re_xxxxxxxxxxxxxx"
+                      autocomplete="off"
+                      class="w-full pr-10 px-3 py-2 border border-slate-300 rounded font-mono text-sm bg-white"
+                    />
+                    <button
+                      type="button"
+                      id="btn-toggle-resend-key"
+                      class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1.5 text-xs focus:outline-none cursor-pointer"
+                      title="Lihat / Sembunyikan API Key"
+                      aria-label="Lihat / Sembunyikan API Key"
+                    >
+                      <svg id="eye-icon-open" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                      <svg id="eye-icon-closed" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                    </button>
+                  </div>
                   <button
                     type="button"
                     id="btn-test-email"
@@ -3640,6 +3653,26 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
       }
     } catch (err: any) {
       showToast('Gagal menyimpan kontak: ' + err.message, true);
+    }
+  });
+
+  // Toggle lihat/sembunyikan Resend API Key
+  const btnToggleKey = document.getElementById('btn-toggle-resend-key');
+  const keyInput = document.getElementById('cfg-resend-key') as HTMLInputElement | null;
+  const eyeOpen = document.getElementById('eye-icon-open');
+  const eyeClosed = document.getElementById('eye-icon-closed');
+  btnToggleKey?.addEventListener('click', () => {
+    if (!keyInput) return;
+    const isPass = keyInput.type === 'password';
+    keyInput.type = isPass ? 'text' : 'password';
+    if (eyeOpen && eyeClosed) {
+      if (isPass) {
+        eyeOpen.classList.remove('hidden');
+        eyeClosed.classList.add('hidden');
+      } else {
+        eyeOpen.classList.add('hidden');
+        eyeClosed.classList.remove('hidden');
+      }
     }
   });
 
