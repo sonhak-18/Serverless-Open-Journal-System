@@ -7,7 +7,7 @@ import { getDbSettings } from '../../../lib/db';
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const journalConfig = await getDbSettings(d1);
-const templateUrl = journalConfig.branding?.templateUrl || '/template-jteba.docx';
+const templateUrl = journalConfig.branding?.templateUrl || '/template-manuskrip.docx';
 const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.startsWith('https://');
 ---
 
@@ -17,7 +17,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
       <!-- Kolom Kiri: Pedoman Lengkap (~68%) -->
       <main class="lg:col-span-8 space-y-10">
         <div class="text-xs text-slate-500 mb-2">
-          <a href="/index/JTEBA" class="hover:underline">Home</a> &gt; <span>Author Guidelines & Ethics</span>
+          <a href="/index/journal" class="hover:underline">Home</a> &gt; <span>Author Guidelines & Ethics</span>
         </div>
 
         <!-- Header Judul & Identitas Jurnal -->
@@ -28,7 +28,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
           <div class="mt-2 text-base text-slate-700">
             <strong class="text-slate-900">{journalConfig.name} ({journalConfig.shortName})</strong>
             <div class="text-sm text-slate-500 mt-0.5">
-              Penerbit: Organisasi Riset dan Publikasi Ilmiah Praniti, Mojokerto, Jawa Timur · <a href="/index/JTEBA" class="text-academic-teal hover:underline font-mono">Beranda Portal</a>
+              Penerbit: {journalConfig.publisher} · <a href="/index/journal" class="text-academic-teal hover:underline font-mono">Beranda Portal</a>
             </div>
           </div>
         </div>
@@ -374,7 +374,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
           <div class="border border-slate-200 rounded-md p-6 bg-white space-y-6 text-base text-slate-800 leading-relaxed shadow-2xs">
             <div class="border-b border-slate-200 pb-3">
               <h3 class="text-lg sm:text-xl font-bold text-academic-navy">
-                Struktur & Format Standar Template Naskah JTEBA
+                Struktur & Format Standar Template Naskah
               </h3>
               <p class="text-sm text-slate-600 mt-1">
                 Standar tipografi dokumen: Times New Roman, Spasi 1.15, Margin 2.54 cm (1 inci) di seluruh sisi.
@@ -853,13 +853,13 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
             <div class="font-bold text-slate-900">
               Redaksi {journalConfig.name} ({journalConfig.shortName})
             </div>
-            <div>Organisasi Riset dan Publikasi Ilmiah Praniti, Mojokerto, Jawa Timur · {journalConfig.address}</div>
+            <div>{journalConfig.publisher} · {journalConfig.address}</div>
             <div class="pt-2 flex flex-wrap gap-4 text-sm text-slate-600">
               <span>Email: <!--email_off--><a href={`mailto:${journalConfig.submission.email}`} class="text-academic-teal hover:underline font-mono font-semibold">{journalConfig.submission.email}</a><!--/email_off--></span>
               <span>•</span>
               <span>WhatsApp: <span class="font-mono font-semibold text-slate-800">{journalConfig.submission.whatsappDisplay}</span></span>
               <span>•</span>
-              <span>Portal: <a href="/index/JTEBA" class="text-academic-teal hover:underline font-mono">Beranda Jurnal</a></span>
+              <span>Portal: <a href="/index/journal" class="text-academic-teal hover:underline font-mono">Beranda Jurnal</a></span>
             </div>
           </div>
         </section>

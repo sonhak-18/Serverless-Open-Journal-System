@@ -1,5 +1,5 @@
 /**
- * Modul Keamanan & Autentikasi Terpadu (JTEBA & Praniti Portal)
+ * Modul Keamanan & Autentikasi Terpadu
  * Menggunakan Web Crypto API standar untuk hashing PBKDF2 dan verifikasi sesi.
  */
 
@@ -208,7 +208,7 @@ export async function destroySession(request: Request, kv?: any): Promise<void> 
 /**
  * Header helper untuk Set-Cookie Sesi
  */
-export function getSessionCookieHeaders(sessionId: string, cookieNames: string[] = ['jteba_session', 'sektansia_session', 'praniti_portal_session']): [string, string][] {
+export function getSessionCookieHeaders(sessionId: string, cookieNames: string[] = ['journal_session', 'portal_session', 'jteba_session']): [string, string][] {
   const headers: [string, string][] = [];
   for (const name of cookieNames) {
     headers.push([

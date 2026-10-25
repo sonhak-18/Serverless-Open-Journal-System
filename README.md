@@ -1,97 +1,159 @@
-# JTEBA: Serverless Open Journal System (OJS)
+# Serverless Open Journal System (OJS)
 
-Platform web publikasi jurnal ilmiah modern **JTEBA (Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas)** berbasis **Astro + Tailwind CSS** yang dirancang untuk di-host 100% tanpa biaya di **Cloudflare Pages**, terintegrasi dengan **Cloudflare D1** (SQLite Relasional di Edge), **Cloudflare Workers KV** (Global Edge Cache & Real-Time Metrics), dan repositori penyimpanan PDF terdistribusi via **Cloudflare Repository Worker** dengan rotasi Google Service Accounts. Presisi mengikuti estetika klasik Open Journal Systems (OJS) dengan performa edge ultra-cepat.
+Platform web publikasi jurnal ilmiah modern berbasis **Astro + Tailwind CSS** yang dirancang untuk di-host **100% tanpa biaya operasional (Rp 0)** di atas infrastruktur serverless **Cloudflare Pages**, **Cloudflare D1** (SQLite Relasional di Edge), dan **Cloudflare Workers KV** (Global Edge Cache & Real-Time Metrics). Mempertahankan presisi estetika klasik Open Journal Systems (OJS) dengan kecepatan pemuatan halaman edge ultra-cepat dan keandalan tinggi.
 
 ---
 
-## 1. Diagram Arsitektur Sistem (System Architecture)
+## 1. Latar Belakang: Mengapa Project Ini Dibangun?
+
+Di Indonesia dan banyak negara berkembang, ribuan jurnal ilmiah yang dikelola oleh program studi, fakultas, asosiasi profesi, maupun lembaga riset nirlaba menggunakan perangkat lunak **PKP OJS (Public Knowledge Project OJS 3.x)**. 
+
+Meskipun PKP OJS adalah standar bersejarah publikasi akademik, dalam realitas operasional di lapangan untuk jurnal skala menengah ke bawah sering kali muncul berbagai kendala kritis:
+
+1. **Krisis Hosting & Sering Down (Downtime saat Akreditasi):**  
+   OJS monolitik berbasis PHP dan MySQL membutuhkan alokasi memori besar (*PHP-FPM* + *connection pool*). Pada *shared hosting* berbiaya hemat (Rp 30.000 – Rp 100.000/bulan), website jurnal sering mengalami `500 Internal Server Error` atau `504 Gateway Timeout` ketika asesor akreditasi (SINTA/Arjuna) atau penulis membuka puluhan tab naskah secara bersamaan.
+2. **Beban Biaya Infrastruktur Bulanan/Tahunan:**  
+   Untuk menjaga OJS tetap stabil, pengelola terpaksa menyewa Virtual Private Server (VPS) dan lisensi cPanel (Rp 300.000 – Rp 800.000/bulan)—biaya berulang yang memberatkan pengelola jurnal nirlaba atau jurnal prodi dengan anggaran terbatas.
+3. **Ketiadaan Staf Teknis / DevOps Khusus:**  
+   Pengelola jurnal umumnya adalah dosen atau peneliti, bukan *system administrator*. Ketika versi PHP kedaluwarsa, sertifikat SSL habis masa berlakunya, atau proses *upgrade* versi OJS merusak skema database, pengelola sering kali mengalami kebuntuan teknis hingga jurnal terhenti beroperasi berminggu-minggu.
+4. **Wabah Akun Spam Bot & Celah Keamanan (CVE):**  
+   Ribuan instalasi OJS di berbagai kampus menjadi sasaran otomatisasi bot spam (iklan judi online dan backlink liar) akibat sistem registrasi terbuka OJS standar yang rentan. Hal ini mencemari database hingga bergiga-giga dan membuat alamat IP server kampus masuk daftar hitam (*blacklist*) penyedia surel global.
+5. **Birokrasi UX Penyerahan Naskah yang Menyiksa Penulis:**  
+   Alur pengiriman naskah OJS asli terdiri dari 5 tahapan berbelit-belit dengan puluhan isian formulir kaku. Banyak penulis pemula atau peneliti senior kesulitan mengunggah naskah dan akhirnya menyerah atau beralih mengirim naskah lewat surel/WhatsApp manual tanpa penomoran baku.
+
+**Serverless Open Journal System** dibangun dari nol untuk memecahkan seluruh kendala tersebut dengan memanfaatkan arsitektur serverless modern: **biaya operasional Rp 0, bebas pemeliharaan server, kebal serangan spam akun, dan menghantarkan halaman artikel dalam hitungan milidetik**.
+
+---
+
+## 2. Perbandingan: PKP OJS Konvensional vs Serverless OJS
+
+| Parameter Evaluasi | PKP OJS Konvensional (PHP / MySQL) | Serverless Open Journal System (Astro + Cloudflare) |
+| :--- | :--- | :--- |
+| **Biaya Server / Hosting** | Rp 300.000 – Rp 800.000 / bulan (VPS + cPanel) | **Rp 0 / Gratis** (Menggunakan tier gratis Cloudflare Pages, Workers, D1, & KV) |
+| **Beban Pemeliharaan (Maintenance)** | Sangat tinggi (Update OS Linux, tuning PHP-FPM, dump database, perpanjangan SSL) | **Nol / Zero-Maintenance** (Arsitektur serverless dikelola penuh oleh infrastruktur Cloudflare) |
+| **Kecepatan Respons (TTFB)** | 800 ms – 3.000 ms pada server hosting standar | **10 ms – 50 ms** langsung dari data center Cloudflare POP terdekat (Jakarta/Singapura) |
+| **Ketahanan Beban Trafik** | Rentan *crash* atau terkena limit CPU hosting jika diakses puluhan pengunjung serentak | **Menampung ribuan pengunjung bersamaan** berkat Anycast CDN Edge & Workers KV Cache |
+| **Keamanan & Spam Akun** | Rentan terhadap ribuan bot registrasi spam, SQL Injection, dan celah unggah PHP shell | **Kebal secara arsitektur** (Tidak ada interpreter PHP, isolasi V8 sandbox, honeypot anti-spam) |
+| **Penyimpanan Berkas Naskah PDF** | Memenuhi disk server lokal hingga kuota habis | Terdistribusi ke Google Drive CDN / Cloudflare R2 dengan bandwidth keluar tak terbatas |
+| **Pengalaman Pengguna (UX Penulis)** | Alur 5 tahap berbelit-belit dan lambat diakses via ponsel | **1 layar formulir ringkas**, ramah ponsel, tanda terima instan, dan nomor registrasi otomatis |
+| **Kepatuhan Indeksasi Akademik** | Standar OJS (Google Scholar, Dublin Core) | **100% Terintegrasi** (Tag Google Scholar otomatis, SINTA, Garuda, Dimensions, Crossref DOI) |
+
+---
+
+## 3. Diagram Arsitektur Sistem (System Architecture)
+
+Sistem menerapkan arsitektur *Multi-Tier Filtration* di mana 90%–95% permintaan data diselesaikan langsung di tepi jaringan (*edge*) sebelum menyentuh komputasi atau database:
 
 ```mermaid
 flowchart TD
     subgraph Client["Pengguna & Peramban"]
-        Visitor["Pembaca Naskah"]
+        Visitor["Pembaca / Peneliti"]
+        Author["Penulis Naskah"]
         Admin["Dewan Redaksi / Editor"]
     end
 
-    subgraph CloudflarePages["Cloudflare Pages: Portal Jurnal (jurnal.example.com)"]
-        AstroApp["Astro SSR Application"]
-        D1DB["Cloudflare D1 (SQLite Edge)"]
-        KVStore["Workers KV (Cache & Metrik)"]
-        AdminGUI["Panel Redaksi GUI (/admin)"]
+    subgraph Layer0["Layer 0: Cloudflare Anycast CDN (330+ Kota Global)"]
+        EdgeCDN["Edge Cache (Aset Statis /_astro/*, CSS, JS, Gambar)"]
+        DDoSShield["Mitigasi DDoS Layer 3/4/7 & HTTP/3 Termination"]
     end
 
-    subgraph RepositoryCDN["Cloudflare Worker: Repositori Dokumen (cdn.example.com)"]
-        WorkerRouter["Worker Router & Streamer"]
-        AdminAPI["Private Admin API (/api/admin/files)"]
-        SARotation["Rotasi 100 Google Service Accounts (RS256 JWT)"]
+    subgraph Layer1["Layer 1: Workers KV (Edge Cache & Real-Time Metrics)"]
+        KVCache["Cache Metadata Jurnal & In-Memory Micro-Memoization"]
+        KVStats["Counter Views & Downloads Real-Time"]
     end
 
-    subgraph GoogleDrive["Google Cloud Storage"]
-        DriveFolder["Google Drive Storage<br/>(Folder Naskah Publikasi)"]
+    subgraph Layer2["Layer 2: Cloudflare Workers (Astro SSR Compute)"]
+        SSRApp["Astro SSR Engine (HTML Rendering)"]
+        SubmissionsAPI["API Naskah Masuk (/api/submissions)"]
+        AdminAPI["API Manajemen Redaksi (/api/*)"]
     end
 
-    Visitor -->|"1. Akses Halaman Artikel"| AstroApp
-    AstroApp <-->|"2. Query Data Artikel & Pengaturan"| D1DB
-    AstroApp <-->|"3. Counter Baca & Unduh Real-Time"| KVStore
-    Visitor -->|"4. Buka /one/[file].pdf"| WorkerRouter
-    WorkerRouter -->|"5. Alirkan PDF (inline stream HTTP 206)"| Visitor
+    subgraph Layer3["Layer 3: Cloudflare D1 (Serverless SQLite Relasional)"]
+        D1DB[("Database SQLite Edge (D1)<br/>- journal_settings<br/>- journal_submissions<br/>- articles<br/>- editorial_members<br/>- journal_issues")]
+    end
 
-    Admin -->|"A. Kelola Artikel & Metadata"| AdminGUI
-    AdminGUI -->|"B. Simpan Perubahan"| D1DB
-    AdminGUI -->|"C. Muat Berkas Drive (Live Sync)"| AdminAPI
-    AdminAPI -->|"D. Minta Token via Service Account"| SARotation
-    SARotation -->|"E. Query Berkas Drive"| DriveFolder
-    DriveFolder -->|"F. Kembalikan Berkas ke Admin"| AdminGUI
+    subgraph ExternalServices["Layanan Eksternal Terhubung"]
+        DriveStorage["Penyimpanan PDF (Google Drive CDN / R2)"]
+        ResendEmail["Mesin Notifikasi Surel (Resend API)"]
+    end
+
+    Visitor -->|"1. Request Halaman"| EdgeCDN
+    EdgeCDN -->|"2. Cache Hit Aset (0ms Compute)"| Visitor
+    EdgeCDN -->|"3. Cache Miss (HTML Dokumen)"| KVCache
+    KVCache -->|"4. Metadata Ter-cache"| SSRApp
+    SSRApp <-->|"5. Query Data Relasional (Bila Perlu)"| D1DB
+    SSRApp <-->|"6. Catat Metrik Baca/Unduh"| KVStats
+    Visitor -->|"7. Unduh Naskah PDF"| DriveStorage
+
+    Author -->|"A. Kirim Naskah Online"| SubmissionsAPI
+    SubmissionsAPI -->|"B. Validasi & Catat Metadata"| D1DB
+    SubmissionsAPI -->|"C. Kirim Berkas & Notifikasi"| ResendEmail
+
+    Admin -->|"D. Kelola Terbitan & Naskah"| AdminAPI
+    AdminAPI -->|"E. Simpan Pembaruan"| D1DB
+    AdminAPI -->|"F. Flush Edge Cache"| KVCache
 ```
 
 ---
 
-## 2. Diagram Alur Baca & Unduh Dokumen (PDF Reader Flow)
+## 4. Diagram Alur Siklus Naskah & Pembaca
 
+### A. Alur Baca & Unduh Dokumen (PDF Streaming Flow)
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Reader as Pembaca
-    participant Portal as Portal Jurnal (jurnal.example.com)
-    participant CDN as Repository Worker (cdn.example.com)
-    participant Drive as Google Drive Storage
-
+    actor Reader as Pembaca / Peneliti
+    participant Portal as Portal Jurnal (/index/journal)
+    participant KV as Workers KV (Counter)
+    participant CDN as Google Drive CDN / Storage
+    
+    Reader->>Portal: Buka halaman artikel (/article/[slug])
+    Portal->>KV: Increment Abstract Views (+1)
+    Portal-->>Reader: Sajikan halaman lengkap + Tag Google Scholar
     Reader->>Portal: Klik tombol "UNDUH / BACA PDF"
-    Portal->>CDN: GET /one/JTEBA_V1N1_01_artikel.pdf
-    alt Akses Direktori / Beranda CDN
-        CDN-->>Portal: HTTP 302 Redirect ke https://jurnal.example.com
-    else Tautan Menggunakan Parameter Lama (?a=view)
-        CDN-->>Portal: HTTP 302 Redirect (Membuang parameter ?a=view)
-    else Unduh Langsung (?download=true)
-        CDN->>Drive: Ambil Naskah
-        Drive-->>CDN: Aliran Data PDF
-        CDN-->>Reader: HTTP 200 (Content-Disposition: attachment)
-    else Tampilan Standar (Baca PDF)
-        CDN->>Drive: Ambil Naskah (Range Request HTTP 206)
-        Drive-->>CDN: Aliran Data PDF
-        CDN-->>Reader: HTTP 200/206 (Content-Disposition: inline, Type: application/pdf)
-        Note over Reader: Browser Otomatis Mengaktifkan Native PDF Viewer
-    end
+    Portal->>KV: Increment PDF Downloads (+1)
+    Portal->>CDN: Redirect ke URL Berkas Resmi
+    CDN-->>Reader: Alirkan dokumen PDF (Native Browser PDF Viewer)
+```
 
----
+### B. Alur Penyerahan Naskah Online & Penomoran Registrasi Otomatis
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Author as Calon Penulis (Web Form)
+    participant Web as Formulir Penyerahan (/index/journal/submit)
+    participant API as Endpoint Serverless (/api/submissions)
+    participant D1 as Database D1 (journal_submissions)
+    participant Resend as Outbound Email Engine (Resend API)
+    actor Editor as Dewan Redaksi (Kotak Masuk Surel)
 
-## 3. Diagram Alur Siklus Hidup Edisi & Terbitan JTEBA (Issue Lifecycle)
+    Author->>Web: Lengkapi formulir & lampirkan naskah (.docx/.pdf s.d. 15 MB)
+    Web->>API: POST multipart/form-data (Validasi RFC email & honeypot anti-spam)
+    API->>D1: Terbitkan Nomor Registrasi Terurut (SUB-YYYYMM-XXXX) & simpan metadata
+    D1-->>API: Konfirmasi penyimpanan berhasil
+    API->>Resend: Kirim surel notifikasi (Attachment naskah + Header Reply-To penulis)
+    Resend-->>Editor: Surel masuk dengan lampiran berkas naskah lengkap
+    API-->>Web: Respons berhasil + Nomor Registrasi
+    Web-->>Author: Tampilkan kartu tanda terima & nomor registrasi resmi
+    Editor->>Editor: Buka surel & tekan tombol "Reply" (Langsung terhubung ke penulis)
+```
 
+### C. Alur Siklus Edisi & Mode Call for Papers Dinamis
 ```mermaid
 flowchart TD
-    Start([Dewan Redaksi Buka /index/JTEBA/admin]) --> CheckStatus{Status Edisi Aktif?}
+    Start([Dewan Redaksi Buka /index/journal/admin]) --> CheckStatus{Status Edisi Aktif?}
 
     CheckStatus -->|Naskah Belum Terbit / Volume Baru| ModeCFP["Mode Call for Papers Aktif (hasActiveIssue = false)"]
-    ModeCFP --> RenderCFP["Halaman Beranda JTEBA & /current:<br/>Tampilkan Banner Call for Papers Resmi (Menuju Edisi Perdana)"]
+    ModeCFP --> RenderCFP["Halaman Beranda & /current:<br/>Tampilkan Banner Call for Papers Resmi"]
     RenderCFP --> NoEmptyIssue["Sembunyikan Volume/Nomor Kosong dari Pengunjung Publik"]
 
     CheckStatus -->|Naskah Siap Rilis / Volume Aktif| ModeActive["Mode Edisi Aktif Terpublikasi (hasActiveIssue = true)"]
     ModeActive --> SelectIssue["Pilih Terbitan Terkini (Current Issue)"]
-    SelectIssue --> RenderActive["Halaman Beranda JTEBA & /current:<br/>Tampilkan Volume & Daftar Artikel Ilmiah Lengkap"]
+    SelectIssue --> RenderActive["Halaman Beranda & /current:<br/>Tampilkan Volume & Daftar Artikel Ilmiah Lengkap"]
 
-    subgraph IssueManager["Manajer Edisi & Terbitan JTEBA (/api/issues)"]
+    subgraph IssueManager["Manajer Edisi & Terbitan (/api/issues)"]
         AddIssue["1. Tambah Edisi Baru (Vol, Issue, Tahun, Tema)"]
-        SetCurrent["2. Set sebagai Terbitan Terkini"]
+        SetCurrent["2. Tetapkan sebagai Terbitan Terkini"]
         DeleteIssue["3. Hapus Edisi Kosong / Arsip"]
     end
 
@@ -101,392 +163,232 @@ flowchart TD
 
 ---
 
-## 4. Diagram Validasi ISSN ISO 3297 & Generator Barcode GS1 EAN-13
+## 5. Fitur Utama Platform
 
-```mermaid
-flowchart LR
-    subgraph Input["Input ISSN Redaksi"]
-        RawISSN["8 Digit ISSN (cth: 2999-7119 / 2999-7127)"]
-    end
-
-    subgraph Engine["Mesin Validasi (src/lib/issn.ts)"]
-        Modulo11["Algoritma Modulo 11 Berbobot<br/>Sum = d1*8 + d2*7 + ... + d7*2<br/>Check Digit = 11 - (Sum mod 11)"]
-        BadgeStatus["Badge Real-Time di Admin GUI<br/>(Valid ISO 3297 / Peringatan)"]
-    end
-
-    subgraph BarcodeGenerator["Generator Barcode GS1 EAN-13"]
-        EANConv["Konversi Prefix 977 + 7 Digit ISSN + 00 Varian"]
-        EANCheck["Hitung Check Digit EAN-13 (Modulo 10 Berbobot 1 & 3)"]
-        SVGRender["Render Barcode Vektor SVG Presisi Standar OJS"]
-    end
-
-    RawISSN --> Modulo11
-    Modulo11 --> BadgeStatus
-    Modulo11 -->|ISSN Valid| EANConv
-    EANConv --> EANCheck
-    EANCheck --> SVGRender
-    SVGRender --> Sidebar["Tampil di Sidebar OJS Publik JTEBA"]
-```
-
----
-
----
-
-## 5. Diagram Alur Penyerahan Naskah Online & Penomoran Registrasi Otomatis
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Author as Calon Penulis (Web Form)
-    participant Web as Sistem JTEBA (/index/JTEBA/submit)
-    participant API as Endpoint Serverless (/api/submissions)
-    participant D1 as Database D1 (journal_submissions)
-    participant Resend as Outbound Email Engine (Resend API)
-    participant CFRouting as Cloudflare Email Routing
-    actor Editor as Dewan Redaksi (Kotak Masuk Gmail)
-
-    Author->>Web: Isi formulir 2-kolom & unggah manuskrip (.docx/.pdf)
-    Web->>API: POST FormData (Validasi ekstensi, ukuran & honeypot)
-    API->>D1: Catat naskah & terbitkan Nomor Registrasi Terurut
-    D1-->>API: Nomor Registrasi (JTEBA-SUB-YYYYMM-XXXX)
-    API->>Resend: Kirim surel notifikasi (Attachment .docx + Reply-To Penulis)
-    Resend->>CFRouting: Kirim ke redaksi@praniti.or.id
-    CFRouting->>Editor: Teruskan otomatis ke Gmail Redaksi
-    API-->>Web: Respons Berhasil + Nomor Registrasi
-    Web-->>Author: Tampilkan Lencana Tanda Terima & Nomor Registrasi Resmi
-    Editor->>Editor: Buka Gmail & tekan tombol "Reply"
-    Editor-->>Author: Korespondensi telaah, revisi & LoA langsung ke surel penulis
-```
-
-## 6. Fitur Utama
-
-1. **Classic OJS 2-Column Layout:** Struktur visual 100% presisi mengikuti standar Open Journal Systems (proporsi 68% naskah, 32% sidebar standarisasi, tombol PDF khas, dan nomor halaman rata kanan).
-2. **Native Browser PDF Viewer:** Naskah dibuka menggunakan engine PDF bawaan browser (Chrome, Edge, Firefox, Safari) yang dilengkapi *thumbnail page*, seleksi teks, *smooth scroll*, tombol cetak, dan unduh tanpa beban script pihak ketiga yang lambat.
-3. **Sequential Multi-Drive Routing:** Alamat naskah mencerminkan urutan drive penyimpanan yang elegan (`/one/`, `/two/`, `/three/`), dengan tetap mendukung kompatibilitas format lama (`/0:/`).
-4. **Validasi Numerasi ISSN ISO 3297 Modulo 11 & Barcode GS1 EAN-13 SVG:**
-   * Pemeriksaan algoritma Modulo 11 berbobot otomatis (check digit 0–9 atau X) dengan umpan balik visual langsung (*badge* status) pada formulir admin JTEBA.
-   * Pembuatan kode batang GS1 EAN-13 berbasis grafik vektor SVG presisi tanpa dependensi library eksternal, yang tampil di Sidebar OJS publik.
-5. **Formulir Penyerahan Naskah Online Terpadu (Direct Web Submission):**
-   * Antarmuka formal 2-kolom yang mengadopsi model kontak eksekutif Samsung CEO (*clean, readable, and accessible*).
-   * Menghilangkan ketergantungan pada sekadar tautan email `mailto:` mentah atau chat instan tanpa jejak audit.
-   * Dilengkapi proteksi anti-spam *honeypot* tanpa *captcha* visual yang membebani penulis.
-6. **Penomoran Registrasi Naskah Otomatis di Edge D1 (`JTEBA-SUB-YYYYMM-XXXX`):**
-   * Setiap naskah yang dikirimkan langsung memperoleh nomor registrasi unik berbasis urutan tahun-bulan dari tabel `journal_submissions` SQLite D1.
-   * Lencana nomor registrasi dapat langsung disalin oleh penulis di layar tanda terima web.
-7. **Notifikasi Surel Berkas Otomatis via Resend API dengan Dukungan `Reply-To`:**
-   * Berkas manuskrip (.docx/.doc/.pdf s.d. 15 MB) dilampirkan otomatis ke surel pemberitahuan ke `redaksi@praniti.or.id`.
-   * Integrasi header `Reply-To` memastikan ketika editor menekan tombol **"Reply" (Balas)** di Gmail, surel otomatis ditujukan ke calon penulis tanpa perlu menyalin alamat secara manual.
-   * Utas percakapan (*thread*) di Gmail otomatis terkelompok rapi berkat nomor registrasi baku pada subjek surel.
-8. **Modul Manajemen Naskah Masuk (*Submissions Studio*) di Panel Admin GUI:**
-   * Tab khusus di `/index/JTEBA/admin` yang menyajikan tabel seluruh naskah masuk, tanggal penyerahan, profil penulis, berkas, status naskah, dan tombol kontak instan (Balas Surel & Chat WhatsApp).
-   * Konfigurasi kunci API Resend langsung dari tab *Kontak & Narahubung* tanpa perlu deploy ulang.
-9. **Siklus Hidup Terbitan & Mode Call for Papers Dinamis:**
-   * Mendukung saklar mode *Call for Papers (Menuju Edisi Perdana)* jika JTEBA belum memiliki naskah rilis, sehingga halaman Beranda dan `/current` menyajikan informasi call for papers resmi tanpa menampilkan volume kosong.
-   * Transisi instan ke *Mode Edisi Aktif Terpublikasi* saat terbitan resmi dirilis.
-10. **Mesin Pencarian Naskah Multi-Parameter (`/search`):**
-   * Pencarian terindeks dengan filter judul, abstrak, nama penulis, afiliasi organisasi, bidang kajian ilmiah (*Audit, Akuntansi, Pajak*), dan rentang tahun publikasi.
-11. **Arsitektur Panel Administrasi 2-Tingkat (Two-Tier Admin Studio):**
-   * **Level 1 - Admin Portal Open Gate (`/admin`):** Mengelola identitas organisasi penerbit (Praniti), kartu-kartu jurnal binaan, dan aset portal.
-   * **Level 2 - Editorial Studio JTEBA (`/index/JTEBA/admin`):** Pengelolaan naskah terbit, dewan redaksi, legalitas ISSN, 4 panel edisi & terbitan, pengumuman, narahubung WhatsApp, Google Drive index, indeksasi, dan kredensial PIN redaksi.
-   * Tab persisten berbasis `sessionStorage` dengan dukungan hash navigasi (`#form-add-new-issue`).
-12. **Arsitektur Database SQLite D1 dengan Dynamic Partial Updates:**
-   * Menggunakan query builder dinamis yang mencegah penimpaan kolom database yang tidak disentuh (misal: pengisian pengumuman tidak akan mereset data volume atau kontak).
-   * Migrasi skema otomatis saat runtime untuk tabel `journal_issues` dan kolom pendukung.
-13. **Rotasi 100 Service Accounts (GCP):** Repositori dokumen bebas dari batasan kuota unduhan akun tunggal karena ditenagai oleh 100 service accounts Google Cloud Platform yang berotasi otomatis.
-14. **Google Scholar Metadata Ready:** Meta tag sitasi akademik otomatis (`citation_title`, `citation_author`, `citation_pdf_url`, `citation_volume`, `citation_issue`, dll.) terisi otomatis untuk pengindeksan mesin pencari ilmiah.
-15. **Privasi Data Penuh:** Halaman direktori CDN tertutup total untuk publik. Pengunjung hanya dapat membaca berkas naskah resmi yang tautannya tersedia di portal.
+1. **Tata Letak Klasik OJS 2-Kolom yang Responsif:**  
+   Proporsi visual mengikuti standar baku OJS (area konten naskah, sidebar standarisasi, tombol PDF orisinal, serta nomor halaman rata kanan) dengan performa responsif modern di layar ponsel maupun desktop.
+2. **Penampil PDF Native Browser:**  
+   Naskah dibuka menggunakan engine PDF bawaan peramban (*Chrome, Edge, Safari, Firefox*) yang mendukung *thumbnail*, pemilihan teks, pencarian kata kunci, serta tombol unduh dan cetak tanpa beban skrip pihak ketiga yang lambat.
+3. **Formulir Pengajuan Naskah Ringkas 1 Layar:**  
+   Menghilangkan alur 5-langkah OJS konvensional. Penulis cukup mengisi data penulis, judul, abstrak, dan mengunggah berkas naskah (.docx/.pdf) dalam satu formulir bersih dengan proteksi *honeypot* anti-spam.
+4. **Penomoran Registrasi Naskah Otomatis di Edge (`SUB-YYYYMM-XXXX`):**  
+   Setiap pendaftaran naskah langsung mendapatkan nomor registrasi berurutan yang tersimpan di tabel `journal_submissions` SQLite D1.
+5. **Notifikasi Surel Otomatis via Resend API dengan Dukungan `Reply-To`:**  
+   Naskah terlampir otomatis ke surel notifikasi redaksi. Ketika editor menekan tombol **"Reply"** di aplikasi surel, surel langsung tertuju ke calon penulis tanpa perlu menyalin alamat secara manual.
+6. **Panel Redaksi Admin GUI Lengkap:**  
+   - **Naskah Masuk (*Submissions Studio*):** Menampilkan daftar naskah masuk, filter status (*Submitted, Under Review, Revision, Accepted, Declined*), pratinjau detail abstrak, aksi perubahan status, dan tombol kontak instan (Surel & WhatsApp).
+   - **Penerbitan Artikel:** Publikasi naskah baru dengan generator slug URL otomatis, isian multi-penulis, abstrak dwibahasa, kata kunci, dan penomoran DOI.
+   - **Manajemen Edisi:** Pembuatan volume, nomor terbitan, saklar mode *Call for Papers*, dan pemilihan terbitan terkini (*Current Issue*).
+   - **Profil & Legalitas Jurnal:** Pengaturan nama jurnal, inisial akronim, frekuensi terbit, batas Turnitin, nomor e-ISSN/p-ISSN, serta pengunggah berkas logo, favicon, dan templat Word (.docx).
+   - **Dewan Redaksi & Reviewer:** Pengelolaan susunan Pemimpin Redaksi (*Editor-in-Chief*), dewan editor, dan mitra bestari beserta afiliasi instansinya.
+   - **Pengindeksan Ilmiah:** Pengaturan tautan pangkalan data pengindeks (Google Scholar, Garuda, Crossref, Dimensions, SINTA) beserta status keterlihatan di sidebar.
+7. **Validasi Numerasi ISSN ISO 3297 Modulo 11 & Barcode GS1 EAN-13 SVG:**  
+   Pemeriksaan algoritma *check digit* Modulo 11 otomatis pada formulir admin dan pembuatan barcode vektor GS1 EAN-13 SVG presisi yang tampil di sidebar publik tanpa dependensi eksternal.
+8. **100% Kepatuhan Metadata Google Scholar & Mesin Perayap Akademik:**  
+   Tag sitasi akademik standar internasional (`citation_title`, `citation_author`, `citation_pdf_url`, `citation_journal_title`, `citation_volume`, `citation_issue`, `citation_doi`) disematkan otomatis pada setiap halaman artikel.
+9. **Penghitung Metrik Kunjungan & Unduhan Real-Time:**  
+   Setiap pembacaan abstrak (*Abstract Views*) dan pengunduhan PDF (*PDF Downloads*) dicatat secara atomik di Cloudflare Workers KV tanpa membebani database utama.
+10. **Mesin Pencarian Naskah Terpadu (`/search`):**  
+    Pencarian artikel ilmiah multi-parameter berdasarkan judul, abstrak, nama penulis, afiliasi instansi, dan tahun publikasi.
 
 ---
 
-## 7. Struktur Proyek
+## 6. Struktur Direktori Proyek
 
 ```text
-JTEBA-Open-Journal-System/
-├── repository-worker/          # Script Cloudflare Worker Repositori Dokumen
-│   ├── worker.js              # Core Worker: Service Accounts, Router /one/, & Admin API
-│   ├── wrangler.toml          # Konfigurasi deployment worker CDN jteba
-│   └── README.md              # Dokumentasi teknis repositori worker
+serverless-open-journal-system/
+├── public/
+│   ├── _headers               # Konfigurasi HSTS, CSP, Cache-Control Edge CDN
+│   ├── favicon.png            # Favicon situs jurnal
+│   ├── template-manuskrip.docx# Berkas templat penulisan naskah Word aktif
+│   └── images/                # Aset logo, favicon, dan banner resmi
 ├── src/
-│   ├── components/            # Komponen UI OJS (Header, SidebarOJS, ArticleItem, dll.)
-│   ├── config/                # Konfigurasi utama jurnal & generator URL
-│   ├── data/                  # Data in-memory fallback
-│   ├── layouts/               # Layout dasar Astro dengan metadata akademik
-│   ├── lib/                   # Integrasi Cloudflare D1, KV, dan modul ISSN
-│   │   ├── db.ts              # Driver relasional SQLite D1 & pembaruan parsial
-│   │   ├── cache.ts           # Global Edge KV Cache & metrik pembaca
-│   │   ├── email.ts           # Mesin pengiriman surel & lampiran naskah via Resend
-│   │   └── issn.ts            # Validasi ISO 3297 Modulo 11 & barcode GS1 EAN-13 SVG
-│   └── pages/                 # Routing halaman Astro
+│   ├── components/            # Komponen antarmuka (Header, Footer, SidebarOJS, ArticleCard, dll.)
+│   ├── config/                # Konfigurasi bawaan jurnal & pembentuk tautan dokumen
+│   │   └── journal.ts         # Konfigurasi identitas default jurnal & storage
+│   ├── layouts/               # Layout utama Astro dengan injeksi metadata Google Scholar
+│   ├── lib/                   # Integrasi driver database, cache, surel, & validasi
+│   │   ├── auth.ts            # Modul verifikasi sesi admin berbasis KV
+│   │   ├── db.ts              # Driver relasional SQLite Cloudflare D1
+│   │   ├── email.ts           # Integrasi pengiriman surel & sanitasi HTML via Resend
+│   │   ├── issn.ts            # Validasi ISO 3297 Modulo 11 & barcode GS1 EAN-13 SVG
+│   │   └── kv.ts              # Cache-aside & micro-memoization Workers KV
+│   ├── middleware.ts          # Normalisasi rute URL OJS, redirect case-insensitive, & security headers
+│   └── pages/                 # Rute halaman Astro SSR
+│       ├── 404.astro          # Halaman penanganan kesalahan 404
+│       ├── admin.astro        # Panel Admin Portal Institusi (Open Gate)
+│       ├── index.astro        # Laman depan gerbang portal institusi
 │       ├── api/               # Endpoint REST API Serverless
 │       │   ├── articles.ts    # API publikasi & kelola artikel
-│       │   ├── auth.ts        # Verifikasi kredensial login & ganti PIN
+│       │   ├── auth.ts        # Verifikasi kredensial login admin jurnal
 │       │   ├── editorial.ts   # Kelola anggota dewan redaksi & reviewer
 │       │   ├── indexing.ts    # Kelola pangkalan pengindeksan ilmiah
 │       │   ├── issues.ts      # Manajemen volume, nomor edisi, & status rilis
-│       │   ├── portal-*.ts    # API portal Open Gate Praniti
+│       │   ├── portal-*.ts    # API administrasi portal institusi
 │       │   ├── settings.ts    # Pembaruan profil, identitas, & kontak jurnal
-│       │   ├── submissions.ts # API penyerahan naskah online & registrasi D1
-│       │   └── template.ts    # Endpoint penyaji berkas template manuskrip Word
-│       ├── admin.astro        # Level 1: Panel Admin Portal Open Gate
-│       ├── index/             # Portal Multi-Jurnal
-│       │   └── JTEBA/         # Jurnal JTEBA
-│       │       ├── admin.astro # Level 2: Editorial Studio GUI JTEBA
-│       │       ├── archives.astro
-│       │       ├── current.astro
-│       │       ├── editorial-team.astro
-│       │       ├── guidelines.astro
-│       │       ├── index.astro
-│       │       └── submit.astro
-│       ├── article/           # Halaman detail naskah artikel ilmiah
-│       └── search.astro       # Mesin pencarian artikel ilmiah multi-filter
-├── schema.sql                 # Skema tabel relasional database D1
-├── seed.sql                   # Data awal inisialisasi instalasi jurnal
-└── wrangler.toml              # Konfigurasi Cloudflare Pages & D1/KV bindings
+│       │   ├── stats.ts       # Pencatatan counter view & download real-time
+│       │   ├── submissions.ts # API pendaftaran naskah online & registrasi D1
+│       │   ├── template.ts    # Endpoint penyaji berkas template manuskrip Word
+│       │   └── test-email.ts  # Endpoint uji coba integrasi pengiriman surel Resend
+│       └── index/
+│           └── journal/       # Rute publik jurnal ilmiah
+│               ├── admin.astro        # Panel Redaksi Admin GUI (/index/journal/admin)
+│               ├── archives.astro     # Halaman arsip volume & terbitan
+│               ├── current.astro      # Halaman terbitan terkini (Current Issue)
+│               ├── editorial-team.astro# Halaman profil dewan redaksi & reviewer
+│               ├── guidelines.astro   # Pedoman penulisan & etika publikasi
+│               ├── index.astro        # Beranda resmi jurnal ilmiah
+│               ├── indexing.astro     # Halaman pangkalan pengindeksan
+│               ├── search.astro       # Mesin pencarian artikel ilmiah
+│               ├── submit.astro       # Formulir penyerahan naskah daring
+│               └── article/
+│                   └── [slug].astro   # Halaman detail & baca artikel ilmiah
+├── schema.sql                 # Skema tabel database SQLite Cloudflare D1
+├── seed.sql                   # Data inisialisasi awal instalasi sistem
+└── wrangler.toml              # Konfigurasi Cloudflare Pages, D1, & KV bindings
 ```
 
 ---
 
-## 8. Cara Menjalankan Secara Lokal
-
-```bash
-# 1. Masuk ke direktori
-cd JTEBA-Open-Journal-System
-
-# 2. Instal dependensi
-npm install
-
-# 3. Jalankan server pengembangan
-npm run dev
-```
-Buka browser di `http://localhost:4321`.
-
----
-
-## 9. Cara Deploy
-
-### Sekali Deploy Semua (Portal + CDN Worker):
-```bash
-npm run deploy
-```
-*Perintah ini otomatis men-deploy CDN Worker terlebih dahulu, melakukan build Astro, lalu men-deploy Portal Jurnal ke Cloudflare Pages.*
-
----
-
-### Deploy Terpisah (Opsional):
-
-**A. Deploy Portal Jurnal Saja (Cloudflare Pages):**
-```bash
-npm run deploy:portal
-```
-
-**B. Deploy CDN Repositori Saja (Cloudflare Worker):**
-```bash
-npm run deploy:cdn
-```
-
----
-
-## 10. Panel Administrasi 2-Tingkat (Two-Tier Admin Studio)
-
-### A. Level 1: Admin Portal Open Gate (`/admin`)
-* **URL:** `http://localhost:4321/admin`
-* **Fungsi:** Mengelola identitas organisasi riset & penerbit (Praniti), kartu-kartu jurnal binaan, aset branding portal, dan autentikasi sesi portal.
-
-### B. Level 2: Editorial Studio GUI JTEBA (`/index/JTEBA/admin`)
-* **URL:** `http://localhost:4321/index/JTEBA/admin`
-* **Default Username:** `admin` | **Default PIN / Password:** `admin123`
-* **Navigasi Tab Terstruktur (Persisten via sessionStorage):**
-  1. **Terbitkan Naskah:** Tambah naskah artikel baru lengkap dengan generator slug URL, input multi-penulis dinamis, abstrak, kata kunci, dan penomoran DOI resmi JTEBA.
-  2. **Naskah Terbit:** Tabel daftar artikel yang telah rilis dengan penghitung unduhan, pratinjau PDF, dan dialog konfirmasi hapus aman.
-  3. **Tim Redaksi:** Kelola Pemimpin Redaksi (*Editor-in-Chief*), dewan editor bidang, dan mitra bestari (*reviewer*), dilengkapi saklar *Visibilitas Publik Menu & Halaman Tim Redaksi*.
-  4. **Profil Jurnal:** Pengaturan nama jurnal, inisial akronim, frekuensi, batas similarity Turnitin, organisasi penerbit (*publisher*), komunitas riset, alamat sekretariat, validasi real-time nomor e-ISSN/p-ISSN berstandar ISO 3297, serta pengunggah berkas logo, favicon, dan template Word (.docx).
-  5. **Edisi & Terbitan:**
-     * *Panel 1 (Status Publikasi):* Beralih antara *Mode Call for Papers (Menuju Edisi Perdana)* dan *Edisi Aktif Terpublikasi*.
-     * *Panel 2 (Daftar Edisi & Terbitan):* Inventaris seluruh volume dan nomor terbitan beserta tombol *Jadikan Terkini* dan *Hapus*.
-     * *Panel 3 (Tambah Edisi Baru):* Pendaftaran volume, nomor issue, tahun, periode bulan, tema edisi, dan cover.
-     * *Panel 4 (Rincian Edisi Aktif):* Pengaturan detail teks volume aktif dan preview formula penomoran DOI per volume.
-  6. **Pengumuman:** Formulir pembuatan kartu pengumuman redaksi atau *Call for Papers* di beranda JTEBA.
-  7. **Kontak & Narahubung:** Pengaturan tombol WhatsApp cepat, email redaksi, serta saklar tampilan widget sidebar (Pengindeks, Tools, ISSN Barcode).
-  8. **Google Drive Index:** Sinkronisasi live berkas PDF di Google Drive dan integrasi pemilihan berkas instan ke form penerbitan.
-  9. **Indeksasi & Akreditasi:** Kelola pangkalan data pengindeks (Google Scholar, Garuda, Crossref, Dimensions, SINTA) beserta tautan dan ikon.
-  10. **Keamanan:** Perbarui username login dan PIN rahasia dewan redaksi.
-
----
-
-## 10. Daftar Serverless API Endpoints
-
-| Endpoint | Method | Fungsi & Deskripsi |
-|---|---|---|
-| `/api/issues` | `POST` | Mengelola volume dan edisi terbitan (`add`, `delete`, `set_current`, `toggle_active`). |
-| `/api/articles` | `POST` | Menerbitkan naskah baru, memperbarui metadata, atau menghapus artikel. |
-| `/api/settings` | `POST` | Memperbarui profil, identitas legalitas penerbit, ISSN, dan narahubung jurnal via partial update. |
-| `/api/editorial` | `POST` | Menambah, menyunting, atau menghapus anggota dewan redaksi dan mitra bestari. |
-| `/api/indexing` | `POST` | Mengelola platform pengindeksan ilmiah dan status keterlihatan di sidebar. |
-| `/api/auth` | `POST` | Otentikasi sesi admin GUI dan pembaruan kredensial PIN / username. |
-| `/api/portal-*` | `POST` | Endpoint administrasi aset & kartu Open Gate Portal Praniti. |
-| `/api/template` | `GET` | Menyajikan unduhan berkas template manuskrip Word (`.docx`) aktif. |
-
----
-
-## 11. Panduan Setup CDN Repositori Dokumen & Service Accounts
-
-Repositori dokumen naskah didukung oleh Cloudflare Worker yang menghubungkan penyimpanan Google Drive dengan pembaca jurnal menggunakan rotasi Service Account otomatis dan Native Browser PDF Viewer.
+## 7. Panduan Instalasi & Deploy Mandiri (< 10 Menit)
 
 ### A. Prasyarat yang Dibutuhkan
-1. **Google Drive Storage**:
-   * Sebuah folder Google Drive biasa atau Google Shared Drive tempat menyimpan file PDF artikel jurnal.
-   * Ambil **ID Folder** dari tautan peramban: `https://drive.google.com/drive/folders/[FOLDER_ID]`.
-2. **Kredensial Service Account (GCP)**:
-   * 1 akun (atau hingga 100 akun untuk rotasi kuota tinggi) file JSON Service Account dari Google Cloud Console dengan API Google Drive aktif.
-3. **Akun Cloudflare & Domain Aktif**:
-   * Domain publik aktif di Cloudflare (contoh: `example.com`).
-   * DNS atau Custom Domain untuk CDN dokumen (contoh: `cdn.example.com`).
+1. **Node.js**: Versi `18.x` atau lebih baru terpasang di komputer Anda.
+2. **Akun Cloudflare**: Akun gratis di [cloudflare.com](https://cloudflare.com).
+3. **Akun Resend (Opsional tapi Direkomendasikan)**: Akun gratis di [resend.com](https://resend.com) untuk pengiriman notifikasi surel otomatis (kuota gratis 3.000 surel/bulan).
 
 ---
 
-### B. Langkah 1: Generate Service Account GCP
-
-#### Metode 1: Membuat 1 Akun Service Account (Manual / Standar)
-1. Buka [Google Cloud Console](https://console.cloud.google.com/) dan buat project baru.
-2. Masuk ke **APIs & Services** > **Library**, cari **Google Drive API** lalu klik **Enable**.
-3. Masuk ke **IAM & Admin** > **Service Accounts**, klik **Create Service Account** (beri nama bebas, misal `jurnal-repo`).
-4. Klik akun yang dibuat > tab **Keys** > **Add Key** > **Create new key** > pilih format **JSON**.
-5. Simpan file `.json` yang terunduh, lalu buka untuk melihat alamat `client_email`.
-6. **Beri Akses Folder:** Buka Google Drive > klik kanan folder naskah > **Bagikan (Share)** > undang `client_email` sebagai **Pelihat (Viewer)**.
-
-#### Metode 2: Membuat 100 Akun Service Account (Batch / Kuota Tinggi)
-Untuk rotasi kuota otomatis dan pencegahan limit unduhan (750 GB/hari per akun), buat 100 Service Accounts via **Google Cloud Shell**:
-1. Buka Cloud Shell di kanan atas console Google Cloud.
-2. Jalankan perintah otomatisasi:
-   ```bash
-   PROJECT_ID=$(gcloud config get-value project)
-   gcloud services enable drive.googleapis.com
-   mkdir -p sa_keys && cd sa_keys
-
-   for i in $(seq -w 1 100); do
-     SA_NAME="sa-$i"
-     gcloud iam service-accounts create "$SA_NAME" --display-name="SA $i"
-     gcloud iam service-accounts keys create "$SA_NAME.json" \
-       --iam-account="$SA_NAME@$PROJECT_ID.iam.gserviceaccount.com"
-   done
-
-   jq -s '.' sa-*.json > all_service_accounts.json
-   ```
-3. Unduh file `all_service_accounts.json` dari menu Cloud Shell.
-4. **Trik Berbagi Folder ke 100 Akun via Google Groups:**
-   * Buka [Google Groups](https://groups.google.com/), buat grup (misal: `jurnal-repo-team@googlegroups.com`).
-   * Masukkan 100 email Service Account ke anggota grup.
-   * Di Google Drive, cukup bagikan folder naskah ke **satu email grup** tersebut sebagai **Pelihat (Viewer)**.
-
----
-
-### C. Langkah 2: Pasang Kredensial ke Worker
-1. Salin file array JSON Service Account ke:
-   ```text
-   repository-worker/serviceaccounts.json
-   ```
-   *(File ini sudah otomatis diabaikan oleh `.gitignore` sehingga tidak akan bocor ke GitHub).*
-2. Buka [`repository-worker/worker.js`](file:///d:/Gits/Private/JTEBA-Open-Journal-System/repository-worker/worker.js) dan sesuaikan:
-   * `id`: Ganti `YOUR_GOOGLE_DRIVE_FOLDER_ID` dengan ID Folder Drive Anda.
-   * `admin_token`: Ganti `your-secret-admin-token` dengan token rahasia pilihan Anda.
-   * `PORTAL_URL`: Ganti dengan URL domain portal jurnal Anda (misal `https://jurnal.example.com`).
-
----
-
-### D. Langkah 3: Deploy & Pasang Custom Domain
-1. Deploy worker CDN dari komputer lokal:
-   ```bash
-   npm run deploy:cdn
-   ```
-2. Di dashboard Cloudflare:
-   * Masuk ke **Workers & Pages** > pilih worker `jurnal-repository-worker`.
-   * Buka **Settings** > **Domains & Routes** > klik **Add Custom Domain**.
-   * Masukkan domain CDN (misal: `cdn.example.com`).
-3. Di panel redaksi `/admin` portal jurnal (Tab Google Drive Index):
-   * Masukkan URL CDN: `https://cdn.example.com/one`.
-   * Klik tombol **Muat Berkas Drive** untuk memeriksa berkas secara langsung.
-
----
-
-### E. Konfigurasi Lanjutan CDN (Direct Link, Pengalihan, Unduh & Hotlink)
-
-1. **Pengalihan Otomatis ke Web Utama (Direct Link Redirection):**
-   * Setiap akses langsung ke root CDN (`/`, `/one`, `/two/`, atau path yang berakhiran slash `/`) otomatis dialihkan (HTTP 302 Redirect) ke portal web utama (`PORTAL_URL`).
-   * Halaman 404 menampilkan tautan langsung kembali ke web portal utama.
-   * Konfigurasikan URL portal utama di `repository-worker/wrangler.toml`:
-     ```toml
-     [vars]
-     MAIN_PORTAL_URL = "https://jurnal.example.com"
-     ```
-2. **Mode Penampil PDF vs Paksa Unduh Berkas:**
-   * **Inline Stream (Standar):** `https://cdn.example.com/one/artikel.pdf` (Browser otomatis membuka Native PDF Viewer bawaan).
-   * **Paksa Unduh (Download):** Tambahkan `?download=true` (contoh: `https://cdn.example.com/one/template-jurnal.docx?download=true`) agar browser langsung memunculkan dialog unduh.
-   * Tautan lawas dengan parameter `?a=view` otomatis dibersihkan dengan HTTP 302 Redirect.
-3. **Proteksi Akses & Anti-Hotlink (CORS):**
-   * Di `repository-worker/worker.js`, ganti `cors_domain: "*"` menjadi domain web jurnal Anda (contoh: `cors_domain: "https://jurnal.example.com"`) untuk membatasi pemanggilan berkas hanya dari website resmi Anda.
-4. **Hosting Template Manuskrip, Logo & Favicon Langsung di Google Drive CDN:**
-   * Anda dapat meletakkan file template Word (`template-jurnal.docx`), file logo (`logo.png`), dan favicon (`favicon.png`) di folder Google Drive yang sama dengan PDF naskah.
-   * Pasang tautan CDN-nya di Panel Admin (`/admin` > Profil Jurnal) untuk mengubah logo, favicon, atau template naskah secara instan tanpa menyentuh kode.
-
----
-
-## 12. Setup Database Cloudflare D1 & Workers KV
-
-Platform ini menggunakan SQLite relasional di edge (**Cloudflare D1**) untuk persistensi data artikel dan pengaturan redaksi, serta **Cloudflare Workers KV** untuk penghitung metrik (*views* & *downloads*) real-time dan cache performa tinggi.
-
-> **Catatan:** Platform ini memiliki *fallback in-memory* otomatis. Saat dijalankan secara lokal (`npm run dev`), aplikasi tetap dapat berjalan langsung tanpa setup database terlebih dahulu.
-
-### A. Langkah 1: Buat Database D1
-Jalankan perintah berikut di terminal:
+### B. Langkah 1: Kloning Repositori & Instal Dependensi
 ```bash
+# 1. Kloning repositori
+git clone https://github.com/username/serverless-open-journal-system.git
+cd serverless-open-journal-system
+
+# 2. Instal seluruh paket dependensi
+npm install
+```
+
+---
+
+### C. Langkah 2: Buat Database D1 & Namespace KV di Cloudflare
+Jalankan perintah Wrangler CLI berikut di terminal:
+
+```bash
+# Login ke akun Cloudflare Anda
+npx wrangler login
+
+# Buat database Cloudflare D1 baru
 npx wrangler d1 create jurnal-db
 ```
-Wrangler akan mengembalikan informasi database Anda. Salin `database_id` yang didapat ke file `wrangler.toml`:
+Wrangler akan menampilkan output berisi konfigurasi binding. Salin nilai `database_id` yang didapat.
+
+Selanjutnya, buat namespace KV:
+```bash
+# Buat namespace Workers KV untuk cache dan metrik
+npx wrangler kv:namespace create CACHE
+```
+Salin nilai `id` namespace KV yang didapat.
+
+---
+
+### D. Langkah 3: Pasang ID Database & KV di `wrangler.toml`
+Buka file `wrangler.toml` di direktori utama proyek, lalu ganti nilai placeholder dengan ID yang Anda dapatkan pada Langkah 2:
+
 ```toml
+name = "serverless-open-journal-system"
+pages_build_output_dir = "dist"
+compatibility_date = "2024-09-23"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "jurnal-db"
-database_id = "MASUKKAN_DATABASE_ID_ANDA"
-```
+database_id = "MASUKKAN_DATABASE_ID_ANDA_DI_SINI"
 
----
-
-### B. Langkah 2: Eksekusi Skema Tabel (schema.sql & seed.sql)
-Jalankan migrasi skema tabel dan data awal naskah ke database D1 produksi Anda:
-```bash
-# 1. Eksekusi struktur tabel relasional (artikel, redaksi, pengaturan)
-npx wrangler d1 execute jurnal-db --remote --file=./schema.sql
-
-# 2. Eksekusi data awal contoh naskah publikasi
-npx wrangler d1 execute jurnal-db --remote --file=./seed.sql
-```
-*(Untuk pengujian database lokal, Anda dapat mengganti flag `--remote` menjadi `--local`).*
-
----
-
-### C. Langkah 3: Buat Workers KV Namespace
-Jalankan perintah berikut untuk membuat penyimpanan cache dan counter metrik:
-```bash
-npx wrangler kv:namespace create CACHE
-```
-Salin nilai `id` yang didapat ke file `wrangler.toml`:
-```toml
 [[kv_namespaces]]
 binding = "KV"
-id = "MASUKKAN_KV_NAMESPACE_ID_ANDA"
+id = "MASUKKAN_KV_NAMESPACE_ID_ANDA_DI_SINI"
 ```
 
 ---
 
-### D. Langkah 4: Sambungkan Bindings di Cloudflare Pages Dashboard
-Agar website di Cloudflare Pages dapat terhubung ke D1 dan KV di lingkungan produksi:
-1. Masuk ke [Cloudflare Dashboard](https://dash.cloudflare.com/) > **Workers & Pages**.
-2. Pilih proyek Pages Anda.
-3. Buka menu **Settings** > **Functions**.
+### E. Langkah 4: Inisialisasi Skema Tabel & Data Awal
+Eksekusi file skema dan data awal ke database D1 produksi Anda:
+
+```bash
+# 1. Buat struktur tabel relasional (artikel, redaksi, naskah masuk, dsb.)
+npx wrangler d1 execute jurnal-db --remote --file=./schema.sql
+
+# 2. Masukkan data konfigurasi awal
+npx wrangler d1 execute jurnal-db --remote --file=./seed.sql
+```
+
+*(Untuk pengujian lokal di komputer Anda tanpa koneksi internet, Anda dapat mengganti flag `--remote` menjadi `--local`).*
+
+---
+
+### F. Langkah 5: Uji Coba di Komputer Lokal
+Jalankan server pengembangan lokal:
+```bash
+npm run dev
+```
+Buka peramban Anda di:
+* **Beranda Portal Institusi:** `http://localhost:4321`
+* **Beranda Jurnal:** `http://localhost:4321/index/journal`
+* **Panel Redaksi Jurnal:** `http://localhost:4321/index/journal/admin` (Kredensial default: Username: `admin` | PIN: `admin123`)
+
+---
+
+### G. Langkah 6: Deploy ke Cloudflare Pages
+Lakukan kompilasi dan deploy ke Cloudflare Pages secara langsung:
+
+```bash
+npm run deploy
+```
+
+#### Menghubungkan Bindings di Cloudflare Dashboard:
+Agar aplikasi Pages produksi dapat mengakses D1 dan KV:
+1. Masuk ke [Cloudflare Dashboard](https://dash.cloudflare.com/) > pilih **Workers & Pages**.
+2. Klik proyek Pages Anda (`serverless-open-journal-system`).
+3. Masuk ke menu **Settings** > **Functions**.
 4. Di bagian **D1 Database Bindings**, klik **Add binding**:
-   * **Variable name:** `DB`
-   * **D1 database:** Pilih `jurnal-db`
+   - Variable name: `DB`
+   - D1 database: Pilih `jurnal-db`
 5. Di bagian **KV Namespace Bindings**, klik **Add binding**:
-   * **Variable name:** `KV`
-   * **KV namespace:** Pilih `CACHE`
-6. Simpan pengaturan dan lakukan deploy ulang (`npm run deploy:portal`). Seluruh naskah, konfigurasi jurnal, dan counter metrik kini 100% aktif dan persisten di edge Cloudflare.
+   - Variable name: `KV`
+   - KV namespace: Pilih `CACHE`
+6. Lakukan deploy ulang dari terminal (`npm run deploy`) atau lakukan push git ke repositori Anda. Website jurnal Anda kini telah resmi aktif secara global di edge Cloudflare.
+
+---
+
+## 8. Panduan Konfigurasi Awal di Panel Admin
+
+Setelah situs berhasil di-deploy:
+1. Kunjungi tautan `/index/journal/admin` (atau `/admin` langsung dari URL Anda).
+2. Masukkan username `admin` dan PIN `admin123`.
+3. Lakukan pengaturan pada tab-tab berikut:
+   * **Profil Jurnal:** Ubah nama jurnal, inisial akronim, nama penerbit, alamat kampus/fakultas, nomor e-ISSN/p-ISSN, serta unggah logo resmi jurnal, favicon, dan templat Word (.docx).
+   * **Kontak & Narahubung:** Masukkan nomor WhatsApp resmi redaksi, surel redaksi, dan **Resend API Key** agar notifikasi pengiriman naskah dari penulis dapat terkirim secara otomatis.
+   * **Keamanan:** Ubah username dan PIN rahasia default Anda demi keamanan.
+   * **Edisi & Terbitan:** Daftarkan volume dan nomor edisi pertama Anda, atau aktifkan mode *Call for Papers* jika edisi perdana masih dalam tahap penerimaan naskah.
+
+---
+
+## 9. Manfaat Nyata bagi Komunitas Akademisi
+
+1. **Demokratisasi Publikasi Ilmiah Bebas Hambatan Biaya:**  
+   Program studi baru, fakultas kecil, asosiasi profesi dosen, dan lembaga riset independen kini dapat memiliki portal jurnal ilmiah berstandar internasional tanpa harus terbebani alokasi anggaran server bulanan atau tahunan.
+2. **Kenyamanan bagi Penulis dan Peneliti:**  
+   Penulis naskah tidak lagi menghadapi kegagalan koneksi di tengah pengisian formulir atau alur registrasi yang rumit. Penyerahan naskah dapat diselesaikan dalam 1–2 menit dari peramban ponsel maupun laptop.
+3. **Ketenangan bagi Pengelola Jurnal (Peace of Mind):**  
+   Dewan redaksi tidak perlu lagi khawatir website mendadak tidak dapat diakses saat masa penilaian akreditasi nasional (SINTA) atau peninjauan indeksasi internasional (Google Scholar, Garuda, Crossref).
+4. **Peningkatan Visibilitas & Peluang Sitasi Karya Ilmiah:**  
+   Dengan kecepatan muat halaman under-50ms dan penataan metadata Google Scholar yang taat asas, karya riset para peneliti akan lebih cepat terindeks oleh mesin pencari akademik dan lebih mudah diakses oleh pembaca di seluruh dunia.
+
+---
+
+## 10. Lisensi & Kontribusi
+
+Proyek ini dirilis secara terbuka di bawah lisensi **MIT License**. Anda bebas menggunakan, memodifikasi, dan mengembangkannya untuk keperluan publikasi ilmiah kampus, lembaga penelitian, maupun publikasi mandiri Anda.
+
+Kontribusi berupa *pull request*, pelaporan kendala (*issue*), atau masukan fitur baru sangat disambut untuk bersama-sama memajukan ekosistem sains terbuka (*Open Science*).

@@ -36,7 +36,7 @@ const issueDoiUrl = cleanPrefix.includes(`/${journalConfig.shortName.toLowerCase
       <!-- Kolom Kiri: Edisi Terkini (~68%) -->
       <main class="lg:col-span-8 space-y-6">
         <div class="text-xs text-slate-500 mb-2">
-          <a href="/index/JTEBA" class="hover:underline">Home</a> &gt; <span>Current Issue</span>
+          <a href="/index/journal" class="hover:underline">Home</a> &gt; <span>Current Issue</span>
         </div>
 
         {journalConfig.features?.hasActiveIssue ? (
@@ -189,7 +189,7 @@ const issueDoiUrl = cleanPrefix.includes(`/${journalConfig.shortName.toLowerCase
 
                   <div class="pt-2 flex flex-wrap items-center gap-3">
                     <a
-                      href="/index/JTEBA/submit"
+                      href="/index/journal/submit"
                       class="px-5 py-2.5 bg-academic-navy hover:bg-academic-navy-light text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center gap-1.5"
                     >
                       <span>Ajukan Naskah (Submit Manuscript)</span>
@@ -198,7 +198,7 @@ const issueDoiUrl = cleanPrefix.includes(`/${journalConfig.shortName.toLowerCase
                       </svg>
                     </a>
                     <a
-                      href={journalConfig.branding?.templateUrl || '/template-jteba.docx'}
+                      href={journalConfig.branding?.templateUrl || '/template-manuskrip.docx'}
                       download
                       class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded border border-slate-300 transition-colors flex items-center gap-1.5"
                     >

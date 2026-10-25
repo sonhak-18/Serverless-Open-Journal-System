@@ -22,7 +22,10 @@ export interface JournalSubmission {
   createdAt: string;
 }
 
-export interface JtebaDatabase {
+export interface AppDatabase {
+}
+export type JtebaDatabase = AppDatabase;
+export interface AppDatabase {
   settings: JournalConfig;
   articles: Article[];
   editorial: {
@@ -55,7 +58,7 @@ export async function ensureDbSchemaInitialized(db: any): Promise<void> {
     try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN publication_frequency TEXT DEFAULT "4 Kali/Tahun (Maret, Juni, September, Desember)"').run(); } catch (_) {}
     try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN logo_url TEXT DEFAULT "/images/logo.png"').run(); } catch (_) {}
     try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN favicon_url TEXT DEFAULT "/favicon.png"').run(); } catch (_) {}
-    try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN template_url TEXT DEFAULT "/template-jteba.docx"').run(); } catch (_) {}
+    try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN template_url TEXT DEFAULT "/template-manuskrip.docx"').run(); } catch (_) {}
     try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN resend_api_key TEXT DEFAULT ""').run(); } catch (_) {}
     try {
       await db.prepare(`
@@ -135,7 +138,7 @@ export async function ensurePortalSchemaInitialized(db: any): Promise<void> {
 }
 
 // Global in-memory cache for local dev / fallback
-let memoryStore: JtebaDatabase = {
+let memoryStore: AppDatabase = {
   settings: JSON.parse(JSON.stringify(journalConfig)),
   articles: JSON.parse(JSON.stringify(initialArticles)),
   editorial: {
@@ -169,13 +172,13 @@ export async function getDbSettings(d1?: any): Promise<JournalConfig> {
     try {
       const row = await db.prepare('SELECT * FROM journal_settings WHERE id = "default"').first();
       if (row) {
-        // Auto-migrasi data URL uncropped lama atau logo generik ke aset resmi JTEBA
+        // Migrasi logo default bila diperlukan
         if (
           (row.logo_url && (row.logo_url.startsWith('data:') || row.logo_url === '/images/logo.png')) ||
           (row.favicon_url && (row.favicon_url.startsWith('data:') || row.favicon_url === '/favicon.png'))
         ) {
-          const cleanLogo = (row.logo_url && !row.logo_url.startsWith('data:') && row.logo_url !== '/images/logo.png') ? row.logo_url : '/images/logo-jteba.png';
-          const cleanFav = (row.favicon_url && !row.favicon_url.startsWith('data:') && row.favicon_url !== '/favicon.png') ? row.favicon_url : '/favicon-jteba.png';
+          const cleanLogo = (row.logo_url && !row.logo_url.startsWith('data:') && row.logo_url !== '/images/logo.png') ? row.logo_url : '/images/logo.png';
+          const cleanFav = (row.favicon_url && !row.favicon_url.startsWith('data:') && row.favicon_url !== '/favicon.png') ? row.favicon_url : '/favicon.png';
           await db.prepare('UPDATE journal_settings SET logo_url = ?, favicon_url = ? WHERE id = "default"')
             .bind(cleanLogo, cleanFav)
             .run()
@@ -210,9 +213,9 @@ export async function getDbSettings(d1?: any): Promise<JournalConfig> {
           license: row.license || memoryStore.settings.license,
           licenseUrl: row.license_url || memoryStore.settings.licenseUrl,
           branding: {
-            logoUrl: (row.logo_url && row.logo_url !== '/images/logo.png') ? row.logo_url : (memoryStore.settings.branding?.logoUrl || '/images/logo-jteba.png'),
-            faviconUrl: (row.favicon_url && row.favicon_url !== '/favicon.png') ? row.favicon_url : (memoryStore.settings.branding?.faviconUrl || '/favicon-jteba.png'),
-            templateUrl: row.template_url || memoryStore.settings.branding?.templateUrl || '/template-jteba.docx',
+            logoUrl: (row.logo_url && row.logo_url !== '/images/logo.png') ? row.logo_url : (memoryStore.settings.branding?.logoUrl || '/images/logo.png'),
+            faviconUrl: (row.favicon_url && row.favicon_url !== '/favicon.png') ? row.favicon_url : (memoryStore.settings.branding?.faviconUrl || '/favicon.png'),
+            templateUrl: row.template_url || memoryStore.settings.branding?.templateUrl || '/template-manuskrip.docx',
           },
           features: {
             showIndexingBlock: row.show_indexing_block !== undefined ? Boolean(row.show_indexing_block) : memoryStore.settings.features.showIndexingBlock,
@@ -238,7 +241,7 @@ export async function getDbSettings(d1?: any): Promise<JournalConfig> {
           },
           announcement: {
             title: row.announcement_title || 'Call for Papers: Volume 1 Nomor 1 (2026)',
-            content: row.announcement_content || 'Redaksi JTEBA mengundang akademisi, peneliti, praktisi, dan profesional untuk mengirimkan naskah orisinal.',
+            content: row.announcement_content || 'Dewan Redaksi mengundang akademisi, peneliti, praktisi, dan profesional untuk mengirimkan naskah orisinal.',
             active: row.announcement_active !== undefined ? Boolean(row.announcement_active) : true,
             date: row.announcement_date || '2026-03-01',
           },
@@ -376,7 +379,7 @@ export async function updateDbSettings(data: {
     s.branding = {
       logoUrl: '/images/logo.png',
       faviconUrl: '/favicon.png',
-      templateUrl: '/template-jteba.docx',
+      templateUrl: '/template-manuskrip.docx',
     };
   }
   if (data.logoUrl !== undefined) s.branding.logoUrl = data.logoUrl;
@@ -389,7 +392,7 @@ export async function updateDbSettings(data: {
       // Auto-migrate schema columns if not already present
       try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN logo_url TEXT DEFAULT "/images/logo.png"').run(); } catch (_) {}
       try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN favicon_url TEXT DEFAULT "/favicon.png"').run(); } catch (_) {}
-      try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN template_url TEXT DEFAULT "/template-jteba.docx"').run(); } catch (_) {}
+      try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN template_url TEXT DEFAULT "/template-manuskrip.docx"').run(); } catch (_) {}
       try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN show_editorial_team INTEGER DEFAULT 1').run(); } catch (_) {}
       try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN has_active_issue INTEGER DEFAULT 0').run(); } catch (_) {}
       try { await db.prepare('ALTER TABLE journal_settings ADD COLUMN publication_frequency TEXT DEFAULT "4 Kali/Tahun (Maret, Juni, September, Desember)"').run(); } catch (_) {}
@@ -1051,22 +1054,22 @@ export interface PortalSettings {
 
 export const defaultPortalSettings: PortalSettings = {
   id: 'default',
-  orgName: 'Organisasi Riset dan Publikasi Ilmiah Praniti',
-  orgNameEn: 'Praniti Institute for Research and Scientific Publication',
+  orgName: 'Portal Publikasi Ilmiah Terbuka',
+  orgNameEn: 'Open Science Publication Portal',
   sloganId: 'Menuntun Nalar, Mengabdi pada Kebenaran Ilmiah',
   sloganEn: 'Guiding Knowledge, Fostering Accountability and Human Literacy',
   description: 'Organisasi riset dan penerbitan ilmiah independen yang menjunjung tinggi keterbukaan ilmu (open science), integritas akademik, serta tata kelola publikasi taat asas berbasis telaah sejawat (peer-review) sesuai pedoman etika internasional COPE.',
-  domainDisplay: 'ejournal.praniti.or.id',
-  email: 'secretariat@praniti.or.id',
+  domainDisplay: 'jurnal.institusi-anda.ac.id',
+  email: 'redaksi@jurnal-anda.ac.id',
   whatsapp: '+62 812-3456-7890',
-  address: 'Organisasi Riset dan Publikasi Ilmiah Praniti, Indonesia',
-  logoUrl: '/images/logo-praniti.png',
+  address: 'Kampus / Lembaga Riset dan Publikasi Ilmiah, Indonesia',
+  logoUrl: '/images/logo.png',
   faviconUrl: '/favicon.png',
   callForPapersActive: true,
-  flagshipJournalName: 'JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas',
-  flagshipJournalEn: 'Open Journal of Economics, Business, and Accountability',
-  flagshipJournalUrl: '/index/JTEBA',
-  flagshipJournalEmblemUrl: '/favicon-jteba.png',
+  flagshipJournalName: 'Jurnal Sains dan Teknologi Terbuka',
+  flagshipJournalEn: 'Open Journal of Science and Technology',
+  flagshipJournalUrl: '/index/journal',
+  flagshipJournalEmblemUrl: '/favicon.png',
   missions: [
     'Menyelenggarakan Publikasi Berkala Berkualitas: Berbasis penelaahan sejawat (peer-review) yang taat asas terhadap standar tata kelola dan pedoman komite etika publikasi internasional (COPE Guidelines).',
     'Menegakkan Keterbukaan Pengetahuan (Open Access): Mendistribusikan karya ilmiah secara bebas tanpa hambatan biaya akses bagi pembaca guna mendorong pemerataan literasi global.',
@@ -1109,7 +1112,7 @@ export async function getDbPortalSettings(d1?: any): Promise<PortalSettings> {
           flagshipJournalName: row.flagship_journal_name || memoryPortalSettings.flagshipJournalName,
           flagshipJournalEn: row.flagship_journal_en || memoryPortalSettings.flagshipJournalEn,
           flagshipJournalUrl: row.flagship_journal_url || memoryPortalSettings.flagshipJournalUrl,
-          flagshipJournalEmblemUrl: row.flagship_journal_emblem_url || memoryPortalSettings.flagshipJournalEmblemUrl || '/favicon-jteba.png',
+          flagshipJournalEmblemUrl: row.flagship_journal_emblem_url || memoryPortalSettings.flagshipJournalEmblemUrl || '/favicon.png',
           missions,
         };
       } else {
@@ -1186,7 +1189,7 @@ export async function updateDbPortalSettings(data: Partial<PortalSettings>, d1?:
         merged.flagshipJournalName,
         merged.flagshipJournalEn,
         merged.flagshipJournalUrl,
-        merged.flagshipJournalEmblemUrl || '/favicon-jteba.png',
+        merged.flagshipJournalEmblemUrl || '/favicon.png',
         JSON.stringify(merged.missions)
       ).run();
 
@@ -1248,18 +1251,18 @@ export async function createDbSubmission(
     try {
       const countRes: any = await db.prepare(
         "SELECT COUNT(*) as cnt FROM journal_submissions WHERE reg_number LIKE ?"
-      ).bind(`JTEBA-SUB-${periodKey}-%`).first();
+      ).bind(`SUB-${periodKey}-%`).first();
       if (countRes && typeof countRes.cnt === 'number') {
         nextSeq = countRes.cnt + 1;
       }
     } catch (_) {}
   } else {
-    const memoryCount = memorySubmissions.filter(s => s.regNumber.startsWith(`JTEBA-SUB-${periodKey}-`)).length;
+    const memoryCount = memorySubmissions.filter(s => s.regNumber.startsWith(`SUB-${periodKey}-`)).length;
     nextSeq = memoryCount + 1;
   }
 
   const seqFormatted = String(nextSeq).padStart(4, '0');
-  const regNumber = `JTEBA-SUB-${periodKey}-${seqFormatted}`;
+  const regNumber = `SUB-${periodKey}-${seqFormatted}`;
   const createdAt = now.toISOString();
 
   const newEntry: JournalSubmission = {

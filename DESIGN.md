@@ -1,9 +1,9 @@
-# JTEBA Design Direction
+# Serverless Open Journal System Design Guidelines
 
 ## Identity
-- **Publisher**: Organisasi Riset dan Publikasi Ilmiah Praniti
-- **Journal**: JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas (Open Journal of Economics, Business, and Accountability)
-- **Scope**: Akuntansi Keberlanjutan & Pelaporan ESG, Perpajakan & Kebijakan Fiskal, Auditing, Forensik & Tata Kelola, serta Dinamika Ekonomi & Bisnis Terapan.
+- **Publisher**: Lembaga Riset / Universitas / Asosiasi Ilmiah
+- **Journal**: Jurnal Ilmiah Akses Terbuka (Open Access Scientific Journal)
+- **Scope**: Multidisiplin / Sains & Teknologi Terapan / Sosial Humaniora.
 - **Model**: Open Access (Bebas biaya submit & review, APC terjangkau setelah LoA).
 
 ## Personality & Tone
@@ -36,7 +36,7 @@
   - Tipografi: Serif headline dengan tombol aksi ganda (*Petunjuk Penulisan* & *Kirim Naskah*).
 - **Active Issue Card**:
   - Border: `border-academic-border` berlatar putih bersih `bg-white` dengan bayangan lembut `shadow-xs`.
-  - Metadata: Segel terbitan monospaced `Vol. X No. Y (Tahun)` dan tautan DOI resmi JTEBA.
+  - Metadata: Segel terbitan monospaced `Vol. X No. Y (Tahun)` dan tautan DOI resmi artikel.
 
 ### 2. Barcode GS1 EAN-13 & Validasi Status ISSN
 - **Rendering Vektor SVG**:

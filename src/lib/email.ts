@@ -72,7 +72,7 @@ export async function sendSubmissionEmails(
   const safeJournalShortName = escapeHtml(journalShortName);
 
   // Sender address: verified domain praniti.or.id
-  const senderAddress = fromEmail || 'JTEBA Submission <noreply@praniti.or.id>';
+  const senderAddress = fromEmail || `${journalShortName || 'Editorial'} Submission <noreply@jurnal-anda.ac.id>`;
 
   // 1. Editorial notification email HTML (Design System Resmi JTEBA)
   const editorialHtml = `
@@ -82,7 +82,7 @@ export async function sendSubmissionEmails(
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
-    <title>[JTEBA] Penyerahan Naskah Baru &mdash; ${safeRegNumber}</title>
+    <title>[${journalShortName || 'JURNAL'}] Penyerahan Naskah Baru &mdash; ${safeRegNumber}</title>
     <style>
       body { margin: 0; padding: 24px 0; background-color: #f4f6f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b; -webkit-font-smoothing: antialiased; }
       @media only screen and (max-width: 480px) {
@@ -105,7 +105,7 @@ export async function sendSubmissionEmails(
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                   <tr>
                     <td style="background-color: #ffffff; padding: 8px 16px; border-radius: 6px; display: inline-block;">
-                      <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="145" style="display: block; border: 0; max-width: 100%; height: auto;" />
+                      <img src="/images/logo.png" alt="${journalShortName || 'Jurnal'}" width="145" style="display: block; border: 0; max-width: 100%; height: auto;" />
                     </td>
                   </tr>
                 </table>
@@ -209,14 +209,14 @@ export async function sendSubmissionEmails(
             <tr>
               <td class="fluid-pad" style="background-color: #0a1a33; padding: 24px 32px; border-top: 1px solid #1e293b; color: #94a3b8; font-size: 11px; line-height: 1.6; text-align: center;">
                 <div style="font-weight: 700; color: #e2e8f0; margin-bottom: 4px;">
-                  Dewan Redaksi JTEBA &mdash; Organisasi Riset dan Publikasi Ilmiah Praniti
+                  Dewan Redaksi &mdash; Organisasi Riset dan Publikasi Ilmiah Praniti
                 </div>
                 <div style="color: #cbd5e1;">
                   Sekretariat: Mojokerto, Jawa Timur, Indonesia
                 </div>
                 <div style="margin-top: 8px;">
                   Surel: <a href="mailto:redaksi@praniti.or.id" style="color: #c89b3c; text-decoration: none; font-weight: 600;">redaksi@praniti.or.id</a> &nbsp;|&nbsp; 
-                  Portal: <a href="https://ejournal.praniti.or.id/index/JTEBA" target="_blank" style="color: #c89b3c; text-decoration: none; font-weight: 600;">ejournal.praniti.or.id</a>
+                  Portal: <a href="https://jurnal.institusi-anda.ac.id/index/journal" target="_blank" style="color: #c89b3c; text-decoration: none; font-weight: 600;">ejournal.praniti.or.id</a>
                 </div>
               </td>
             </tr>
@@ -236,7 +236,7 @@ export async function sendSubmissionEmails(
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
-    <title>[JTEBA] Tanda terima pengajuan naskah &mdash; ${safeRegNumber}</title>
+    <title>[${journalShortName || 'JURNAL'}] Tanda terima pengajuan naskah &mdash; ${safeRegNumber}</title>
     <style>
       body { margin: 0; padding: 24px 0; background-color: #f4f6f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b; -webkit-font-smoothing: antialiased; }
       @media only screen and (max-width: 480px) {
@@ -259,7 +259,7 @@ export async function sendSubmissionEmails(
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                   <tr>
                     <td style="background-color: #ffffff; padding: 8px 16px; border-radius: 6px; display: inline-block;">
-                      <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="145" style="display: block; border: 0; max-width: 100%; height: auto;" />
+                      <img src="/images/logo.png" alt="${journalShortName || 'Jurnal'}" width="145" style="display: block; border: 0; max-width: 100%; height: auto;" />
                     </td>
                   </tr>
                 </table>
@@ -360,7 +360,7 @@ export async function sendSubmissionEmails(
                 <!-- Callout 2: Transparansi Biaya -->
                 <div style="background-color: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #059669; padding: 12px 16px; border-radius: 0 6px 6px 0; margin-bottom: 24px; font-size: 12px; color: #065f46; line-height: 1.6;">
                   <strong style="display: block; margin-bottom: 4px;">Kebijakan Transparansi Biaya:</strong>
-                  JTEBA tidak memungut biaya pengajuan (Rp0) maupun biaya penelaahan (Rp0). Biaya pemrosesan artikel (APC Rp100.000) hanya dikenakan apabila naskah Anda dinyatakan resmi Diterima (<em>Accepted</em>).
+                  Dewan Redaksi mengedepankan transparansi biaya dan akuntabilitas penelaahan naskah ilmiah sesuai standar etika COPE.
                 </div>
 
                 <!-- CTA -->
@@ -370,8 +370,8 @@ export async function sendSubmissionEmails(
                       <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                         <tr>
                           <td align="center" style="background-color: #0f284e; border-radius: 6px;">
-                            <a href="https://ejournal.praniti.or.id/index/JTEBA" target="_blank" style="display: inline-block; background-color: #0f284e; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 700; padding: 12px 28px; border-radius: 6px; border: 1px solid #0f284e;">
-                              Buka Portal JTEBA &#8599;
+                            <a href="https://jurnal.institusi-anda.ac.id/index/journal" target="_blank" style="display: inline-block; background-color: #0f284e; color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 700; padding: 12px 28px; border-radius: 6px; border: 1px solid #0f284e;">
+                              Buka Portal Jurnal &#8599;
                             </a>
                           </td>
                         </tr>
@@ -415,10 +415,10 @@ export async function sendSubmissionEmails(
                 </div>
                 <div style="margin-top: 8px;">
                   Surel: <a href="mailto:${destinationEmail}" style="color: #c89b3c; text-decoration: none; font-weight: 600;">${destinationEmail}</a> &nbsp;|&nbsp; 
-                  Portal: <a href="https://ejournal.praniti.or.id/index/JTEBA" target="_blank" style="color: #c89b3c; text-decoration: none; font-weight: 600;">ejournal.praniti.or.id</a>
+                  Portal: <a href="https://jurnal.institusi-anda.ac.id/index/journal" target="_blank" style="color: #c89b3c; text-decoration: none; font-weight: 600;">ejournal.praniti.or.id</a>
                 </div>
                 <div style="margin-top: 14px; color: #64748b; font-size: 10px;">
-                  Email resmi ini dikirim otomatis dan tercatat dalam sistem penerbitan JTEBA.
+                  Email resmi ini dikirim otomatis dan tercatat dalam sistem penerbitan jurnal.
                 </div>
               </td>
             </tr>

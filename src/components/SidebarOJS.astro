@@ -13,29 +13,29 @@ const journalConfig = Astro.props.journalConfig || await getCachedSettings(kv, d
 const indexingList = await getCachedIndexing(kv, d1);
 const rawWaNum = journalConfig.submission?.whatsappNumber || journalConfig.submission?.whatsappDisplay || '628981822777';
 const cleanWaPhone = rawWaNum.replace(/\D/g, '');
-const waMsg = journalConfig.submission?.whatsappDefaultMessage || 'Halo Redaksi JTEBA, saya ingin berkonsultasi mengenai publikasi naskah.';
+const waMsg = journalConfig.submission?.whatsappDefaultMessage || 'Halo Dewan Redaksi, saya ingin berkonsultasi mengenai publikasi naskah.';
 const waUrl = `https://wa.me/${cleanWaPhone}?text=${encodeURIComponent(waMsg)}`;
 
 const showEditorial = journalConfig.features?.showEditorialTeam !== false;
 
 const sidebarLinks = [
-  { label: 'Focus and Scope', href: '/index/JTEBA/guidelines#focus-scope' },
+  { label: 'Focus and Scope', href: '/index/journal/guidelines#focus-scope' },
   ...(showEditorial ? [
-    { label: 'Editorial Team', href: '/index/JTEBA/editorial-team' },
-    { label: 'Peer Reviewers', href: '/index/JTEBA/editorial-team#reviewers' },
+    { label: 'Editorial Team', href: '/index/journal/editorial-team' },
+    { label: 'Peer Reviewers', href: '/index/journal/editorial-team#reviewers' },
   ] : []),
-  { label: 'Author Guidelines', href: '/index/JTEBA/guidelines#author-guidelines' },
-  { label: 'Peer Review Process', href: '/index/JTEBA/guidelines#review-process' },
-  { label: 'Publication Ethics', href: '/index/JTEBA/guidelines#ethics' },
-  { label: 'Plagiarism Policy', href: '/index/JTEBA/guidelines#plagiarism' },
-  { label: 'Journal Template', href: '/index/JTEBA/guidelines#template' },
-  { label: 'Abstracting and Indexing', href: '/index/JTEBA/indexing' },
-  { label: 'Online Submission', href: '/index/JTEBA/submit' },
-  { label: 'Search / Cari Artikel', href: '/index/JTEBA/search' },
+  { label: 'Author Guidelines', href: '/index/journal/guidelines#author-guidelines' },
+  { label: 'Peer Review Process', href: '/index/journal/guidelines#review-process' },
+  { label: 'Publication Ethics', href: '/index/journal/guidelines#ethics' },
+  { label: 'Plagiarism Policy', href: '/index/journal/guidelines#plagiarism' },
+  { label: 'Journal Template', href: '/index/journal/guidelines#template' },
+  { label: 'Abstracting and Indexing', href: '/index/journal/indexing' },
+  { label: 'Online Submission', href: '/index/journal/submit' },
+  { label: 'Search / Cari Artikel', href: '/index/journal/search' },
 ];
 
 const sidebarIndexers = indexingList.filter((idx) => idx.showInSidebar);
-const templateUrl = journalConfig.branding?.templateUrl || '/template-jteba.docx';
+const templateUrl = journalConfig.branding?.templateUrl || '/template-manuskrip.docx';
 const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.startsWith('https://');
 ---
 
@@ -58,7 +58,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
     <div class="text-xs font-bold text-slate-800 mb-2">
       Pencarian Artikel:
     </div>
-    <form action="/index/JTEBA/search" method="GET" class="flex gap-1.5">
+    <form action="/index/journal/search" method="GET" class="flex gap-1.5">
       <input
         type="search"
         name="query"
@@ -279,7 +279,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
         )}
 
         <div class="pt-1 text-center">
-          <a href="/index/JTEBA/indexing" class="inline-flex items-center justify-center gap-1 text-xs text-blue-700 hover:underline font-semibold min-h-[32px]">
+          <a href="/index/journal/indexing" class="inline-flex items-center justify-center gap-1 text-xs text-blue-700 hover:underline font-semibold min-h-[32px]">
             <span>Lihat Seluruh Pengindeks ({sidebarIndexers.length})</span>
             <svg class="w-3.5 h-3.5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />

@@ -1,15 +1,15 @@
 # Author Guidelines and Publication Ethics
 
-**JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas**  
-**JTEBA: Open Journal of Economics, Business, and Accountability**  
-Penerbit: Organisasi Riset dan Publikasi Ilmiah Praniti, Mojokerto, Jawa Timur  
-e-ISSN: 2999-7127 · p-ISSN: 2999-7119 · https://ejournal.praniti.or.id/index/JTEBA · redaksi@praniti.or.id  
+**[NAMA JURNAL LENGKAP]**  
+**[ENGLISH JOURNAL NAME]**  
+Penerbit: [NAMA LEMBAGA / PENERBIT / UNIVERSITAS]  
+e-ISSN: [E-ISSN] · p-ISSN: [P-ISSN] · https://[DOMAIN-JURNAL-ANDA]/index/journal · [EMAIL-REDAKSI]  
 
 ---
 
 ## Focus and Scope (Fokus dan Ruang Lingkup)
 
-JTEBA mempublikasikan artikel orisinal hasil penelitian empiris (kuantitatif, kualitatif, maupun *mixed methods*) serta telaah literatur kritis (*critical literature review*) yang berfokus pada empat pilar utama berikut:
+[SINGKATAN JURNAL] mempublikasikan artikel orisinal hasil penelitian empiris (kuantitatif, kualitatif, maupun *mixed methods*) serta telaah literatur kritis (*critical literature review*) yang berfokus pada empat pilar utama berikut:
 
 **A. Akuntansi Keberlanjutan dan Pelaporan ESG (*Sustainability Accounting and ESG*)**
 - Pelaporan keberlanjutan (*sustainability reporting* berdasarkan standar GRI, IFRS S1 dan S2, dan sebagainya)
@@ -50,7 +50,7 @@ JTEBA mempublikasikan artikel orisinal hasil penelitian empiris (kuantitatif, ku
 
 - **Frekuensi terbit:** 4 kali setahun, yaitu **Maret, Juni, September, dan Desember**; terbit perdana Maret 2026.
 - **Model terbit:** Akses terbuka penuh (*open access*), terbit **hanya secara daring** (*online only*).
-- **Identifier:** DOI Prefix 10.64417/jteba (Crossref); e-ISSN: 2999-7127 (edisi daring); p-ISSN: 2999-7119 (diterbitkan bersamaan, tanpa edisi cetak).
+- **Identifier:** DOI Prefix 10.00000/[singkatan] (Crossref); e-ISSN: [E-ISSN] (edisi daring); p-ISSN: [P-ISSN] (diterbitkan bersamaan, tanpa edisi cetak).
 - **Pengindeksan:** Google Scholar, GARUDA (Kemdikbudristek), Crossref, Dimensions, SINTA (tahap evaluasi akreditasi), BASE, dan Scilit.
 
 ---
@@ -60,7 +60,7 @@ JTEBA mempublikasikan artikel orisinal hasil penelitian empiris (kuantitatif, ku
 ### 1. Kelayakan Naskah
 
 - Naskah orisinal, belum pernah dipublikasikan di media ilmiah mana pun, dan tidak sedang dalam proses penelaahan di jurnal lain (pengiriman ganda tidak diperkenankan).
-- Naskah sesuai dengan fokus dan ruang lingkup JTEBA.
+- Naskah sesuai dengan fokus dan ruang lingkup [SINGKATAN JURNAL].
 - Bahasa naskah adalah bahasa Indonesia atau bahasa Inggris.
 
 ### 2. Sistematika Manuskrip
@@ -85,7 +85,7 @@ JTEBA mempublikasikan artikel orisinal hasil penelitian empiris (kuantitatif, ku
 
 ### 3. Panjang Naskah
 
-Naskah memiliki panjang **maksimal 20 halaman** (A4, mengikuti templat JTEBA), tidak termasuk bagian *cover* (judul, penulis, *Article Info*, dan abstrak) serta Daftar Pustaka. Tabel, gambar, dan lampiran dihitung dalam batas 20 halaman.
+Naskah memiliki panjang **maksimal 20 halaman** (A4, mengikuti templat [SINGKATAN JURNAL]), tidak termasuk bagian *cover* (judul, penulis, *Article Info*, dan abstrak) serta Daftar Pustaka. Tabel, gambar, dan lampiran dihitung dalam batas 20 halaman.
 
 ### 4. Format Penulisan
 
@@ -99,7 +99,7 @@ Naskah memiliki panjang **maksimal 20 halaman** (A4, mengikuti templat JTEBA), t
 | **Nama penulis** | Times New Roman 11 pt, tebal, rata tengah |
 | **Tabel dan gambar** | Diberi nomor dan judul, dirujuk dalam teks, dan mencantumkan sumber |
 
-Penulis wajib menggunakan **templat naskah JTEBA** yang tersedia di situs jurnal.
+Penulis wajib menggunakan **templat naskah [SINGKATAN JURNAL]** yang tersedia di situs jurnal.
 
 ### 5. Format Sitasi
 
@@ -107,7 +107,7 @@ Sitasi dan daftar pustaka wajib disusun dengan **APA Style 7th Edition**. Penuli
 
 ### 6. Berkas yang Dikirim
 
-Penulis mengirim **satu berkas** naskah dalam format Microsoft Word (`.docx`) sesuai templat JTEBA. Naskah memuat identitas penulis (nama, afiliasi, email korespondensi, dan ORCID) karena penelaahan dilakukan secara **single blind**: reviewer mengetahui identitas penulis, sedangkan identitas reviewer dirahasiakan dari penulis. Nomor WhatsApp pada templat hanya untuk korespondensi dan tidak ditampilkan saat terbit.
+Penulis mengirim **satu berkas** naskah dalam format Microsoft Word (`.docx`) sesuai templat [SINGKATAN JURNAL]. Naskah memuat identitas penulis (nama, afiliasi, email korespondensi, dan ORCID) karena penelaahan dilakukan secara **single blind**: reviewer mengetahui identitas penulis, sedangkan identitas reviewer dirahasiakan dari penulis. Nomor WhatsApp pada templat hanya untuk korespondensi dan tidak ditampilkan saat terbit.
 
 Seluruh teks petunjuk pada templat harus dihapus sebelum naskah dikirim.
 
@@ -119,7 +119,7 @@ Seluruh teks petunjuk pada templat harus dihapus sebelum naskah dikirim.
 
 ### 8. Daftar Periksa Sebelum Mengirim (*Submission Checklist*)
 
-- [ ] Naskah memakai templat JTEBA dan seluruh teks petunjuk sudah dihapus.
+- [ ] Naskah memakai templat [SINGKATAN JURNAL] dan seluruh teks petunjuk sudah dihapus.
 - [ ] Identitas penulis (nama, afiliasi, email korespondensi, ORCID) dicantumkan lengkap pada naskah sesuai templat.
 - [ ] Abstract berbahasa Inggris, 150–250 kata, dan kata kunci 3–5.
 - [ ] Panjang naskah maksimal 20 halaman, tidak termasuk cover dan Daftar Pustaka.
@@ -133,7 +133,7 @@ Seluruh teks petunjuk pada templat harus dihapus sebelum naskah dikirim.
 
 ## Peer Review Process (Proses Penelaahan Sejawat)
 
-JTEBA menerapkan penelaahan sejawat **single blind**: reviewer mengetahui identitas penulis, sedangkan identitas reviewer dirahasiakan dari penulis. Prosesnya dirancang singkat dan terukur: **keputusan pertama diupayakan paling lambat 30 hari kalender sejak naskah masuk.**
+[SINGKATAN JURNAL] menerapkan penelaahan sejawat **single blind**: reviewer mengetahui identitas penulis, sedangkan identitas reviewer dirahasiakan dari penulis. Prosesnya dirancang singkat dan terukur: **keputusan pertama diupayakan paling lambat 30 hari kalender sejak naskah masuk.**
 
 ### Tahapan dan target waktu
 
@@ -174,7 +174,7 @@ Artikel dipublikasikan secara **berkelanjutan** (*continuous publication*): begi
 
 Untuk penulis dengan tenggat mendesak, misalnya persyaratan kelulusan, kenaikan jabatan, atau pelaporan hibah.
 
-- **Gratis.** JTEBA tidak menjual kecepatan dan tidak menjanjikan penerimaan. Standar penelaahan sama dengan jalur reguler.
+- **Gratis.** [SINGKATAN JURNAL] tidak menjual kecepatan dan tidak menjanjikan penerimaan. Standar penelaahan sama dengan jalur reguler.
 - **Syarat:** naskah lengkap dan sesuai templat, indeks kemiripan di bawah 20%, serta permohonan disertai dokumen pendukung tenggat yang disampaikan saat pengiriman naskah.
 - **Manfaat:** *desk review* dalam 1 hari kerja, reviewer diberi tenggat 7 hari kalender, dan keputusan maksimal 3 hari kerja, sehingga **keputusan pertama diupayakan dalam 14 hari kalender**.
 - **Kuota:** 10 naskah per bulan, diberikan menurut urutan pengajuan (*first-come, first-served*) yang memenuhi syarat.
@@ -185,7 +185,7 @@ Untuk penulis dengan tenggat mendesak, misalnya persyaratan kelulusan, kenaikan 
 - Redaksi menyiapkan reviewer cadangan sejak penugasan, sehingga reviewer yang terlambat dapat segera diganti.
 - Reviewer wajib menyatakan konflik kepentingan dan menolak penugasan bila memiliki hubungan dengan penulis.
 - Naskah yang ditulis oleh editor atau anggota dewan redaksi ditangani oleh editor lain, dan penulis tersebut tidak terlibat dalam pengambilan keputusannya.
-- Penulis dapat menanyakan status naskah kapan saja dengan menyebutkan ID naskah ke redaksi@praniti.or.id. Redaksi menjawab dalam 2 hari kerja.
+- Penulis dapat menanyakan status naskah kapan saja dengan menyebutkan ID naskah ke [EMAIL-REDAKSI]. Redaksi menjawab dalam 2 hari kerja.
 
 ---
 
@@ -207,7 +207,7 @@ Untuk penulis dengan tenggat mendesak, misalnya persyaratan kelulusan, kenaikan 
 
 ## Publication Ethics (Etika Publikasi)
 
-JTEBA mengacu pada pedoman *Committee on Publication Ethics* (COPE). Penulis, editor, dan reviewer wajib menjunjung integritas akademik dan bebas dari fabrikasi data, falsifikasi, dan plagiarisme.
+[SINGKATAN JURNAL] mengacu pada pedoman *Committee on Publication Ethics* (COPE). Penulis, editor, dan reviewer wajib menjunjung integritas akademik dan bebas dari fabrikasi data, falsifikasi, dan plagiarisme.
 
 **Penulis** bertanggung jawab atas keaslian data dan karya, mencantumkan seluruh pihak yang berkontribusi secara layak, menyatakan konflik kepentingan dan sumber pendanaan, serta segera memberi tahu redaksi apabila menemukan kesalahan pada naskah yang telah dikirim atau diterbitkan.
 
@@ -225,7 +225,7 @@ Penelitian ekonomi, bisnis, akuntansi, dan perpajakan sering memakai data organi
 
 ### Corrections and Complaints (Koreksi dan Keluhan)
 
-Dugaan pelanggaran etika, kesalahan pada artikel terbit, atau keberatan atas keputusan redaksi dapat disampaikan secara tertulis ke redaksi@praniti.or.id. Redaksi menindaklanjuti sesuai alur COPE, menjaga kerahasiaan pelapor, dan menerbitkan koreksi (*corrigendum*) atau penarikan (*retraction*) bila diperlukan.
+Dugaan pelanggaran etika, kesalahan pada artikel terbit, atau keberatan atas keputusan redaksi dapat disampaikan secara tertulis ke [EMAIL-REDAKSI]. Redaksi menindaklanjuti sesuai alur COPE, menjaga kerahasiaan pelapor, dan menerbitkan koreksi (*corrigendum*) atau penarikan (*retraction*) bila diperlukan.
 
 ---
 
@@ -237,7 +237,7 @@ Penulis didorong menyimpan data dan instrumen penelitian di repositori terbuka (
 
 ## Copyright and License (Hak Cipta dan Lisensi)
 
-Seluruh artikel JTEBA dapat diakses secara terbuka dan diterbitkan di bawah lisensi [Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/).
+Seluruh artikel [SINGKATAN JURNAL] dapat diakses secara terbuka dan diterbitkan di bawah lisensi [Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/).
 
 - Hak cipta artikel tetap dipegang penulis (*Author retains copyright*). Artikel dilisensikan di bawah CC BY-SA 4.0 sehingga pihak mana pun dapat membagikan dan mengadaptasinya sesuai ketentuan lisensi tersebut.
 - Pihak mana pun boleh membagikan dan mengadaptasi artikel dengan mencantumkan atribusi yang layak. Karya turunan wajib dibagikan dengan lisensi yang sama (*ShareAlike*).
@@ -247,7 +247,7 @@ Seluruh artikel JTEBA dapat diakses secara terbuka dan diterbitkan di bawah lise
 
 ## Article Processing Charges (APC) (Biaya Pemrosesan Artikel)
 
-- JTEBA **tidak memungut biaya** untuk pengiriman naskah (*submission*) maupun penelaahan (*peer review*).
+- [SINGKATAN JURNAL] **tidak memungut biaya** untuk pengiriman naskah (*submission*) maupun penelaahan (*peer review*).
 - Biaya pemrosesan artikel (APC) sebesar **Rp100.000** per artikel hanya dikenakan **setelah naskah dinyatakan diterima** untuk terbit.
 - Keputusan penerimaan naskah sepenuhnya didasarkan pada kualitas ilmiah dan tidak dipengaruhi kemampuan penulis membayar.
 - Biaya digunakan untuk operasional jurnal, server dan hosting, serta apresiasi bagi reviewer dan editor.
@@ -257,6 +257,6 @@ Seluruh artikel JTEBA dapat diakses secara terbuka dan diterbitkan di bawah lise
 
 ## Contact (Kontak)
 
-**Dewan Redaksi JTEBA**  
+**Dewan Redaksi [SINGKATAN JURNAL]**  
 Organisasi Riset dan Publikasi Ilmiah Praniti, Mojokerto, Jawa Timur  
-Surel: [redaksi@praniti.or.id](mailto:redaksi@praniti.or.id) · Portal: [https://ejournal.praniti.or.id/index/JTEBA](https://ejournal.praniti.or.id/index/JTEBA)
+Surel: [[EMAIL-REDAKSI]](mailto:[EMAIL-REDAKSI]) · Portal: [https://ejournal.praniti.or.id/index/[SINGKATAN JURNAL]](https://ejournal.praniti.or.id/index/[SINGKATAN JURNAL])

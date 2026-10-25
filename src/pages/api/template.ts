@@ -7,7 +7,7 @@ export const GET: APIRoute = async ({ locals }) => {
   try {
     const d1 = (locals as any)?.runtime?.env?.DB;
     const config = await getDbSettings(d1);
-    const templateUrl = config.branding?.templateUrl || '/template-jteba.docx';
+    const templateUrl = config.branding?.templateUrl || '/template-manuskrip.docx';
 
     if (templateUrl.startsWith('data:')) {
       const parts = templateUrl.split(';base64,');
@@ -51,7 +51,7 @@ export const GET: APIRoute = async ({ locals }) => {
     }
 
     // Default template internal yang aman
-    return Response.redirect('/template-jteba.docx', 302);
+    return Response.redirect('/template-manuskrip.docx', 302);
   } catch (error: any) {
     return new Response('Gagal memuat template: ' + error.message, { status: 500 });
   }

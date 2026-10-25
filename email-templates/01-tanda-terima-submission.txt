@@ -1,6 +1,6 @@
 ======================================================================
-JTEBA: JURNAL TERBUKA EKONOMI, BISNIS, DAN AKUNTABILITAS
-Organisasi Riset dan Publikasi Ilmiah Praniti
+[SINGKATAN JURNAL]: JURNAL TERBUKA EKONOMI, BISNIS, DAN AKUNTABILITAS
+[Nama Institusi / Penerbit]
 e-ISSN: 2999-7127 | p-ISSN: 2999-7119 | Peer-Reviewed & Open Access
 ======================================================================
 
@@ -13,7 +13,7 @@ dan Rekan Penulis: [NAMA REKAN PENULIS]
 [INSTITUSI PENULIS]
 
 Dengan hormat,
-Terima kasih telah mengajukan manuskrip artikel ilmiah Anda ke JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas.
+Terima kasih telah mengajukan manuskrip artikel ilmiah Anda ke [NAMA JURNAL LENGKAP].
 
 Melalui surat elektronik resmi ini, kami mengonfirmasi bahwa berkas manuskrip Anda telah berhasil diterima oleh sistem redaksi kami dan telah masuk ke dalam antrean penelaahan awal (initial desk review).
 
@@ -32,23 +32,23 @@ TAHAPAN SELANJUTNYA:
 2. Penelaahan Mitra Bestari (Single-Blind Review / 14 hari kalender): Naskah yang lolos tahap awal ditelaah oleh minimal 2 (dua) mitra bestari independen (reviewer mengetahui identitas penulis, identitas reviewer dirahasiakan). Keputusan pertama diupayakan paling lambat 30 hari kalender.
 3. Keputusan Redaksi: Hasil evaluasi resmi (diterima, perlu revisi, atau ditolak) akan disampaikan melalui email ini.
 
-KEBIJAKAN TRANSPARANSI BIAYA JTEBA:
-JTEBA tidak memungut biaya pengajuan (Rp0) maupun biaya penelaahan (Rp0). Biaya pemrosesan artikel (APC Rp100.000) hanya dikenakan apabila naskah Anda dinyatakan resmi Diterima (Accepted) untuk diterbitkan.
+KEBIJAKAN TRANSPARANSI BIAYA [SINGKATAN JURNAL]:
+[SINGKATAN JURNAL] tidak memungut biaya pengajuan (Rp0) maupun biaya penelaahan (Rp0). Biaya pemrosesan artikel (APC Rp100.000) hanya dikenakan apabila naskah Anda dinyatakan resmi Diterima (Accepted) untuk diterbitkan.
 
-PORTAL RESMI JTEBA:
-https://ejournal.praniti.or.id/index/JTEBA
+PORTAL RESMI [SINGKATAN JURNAL]:
+https://[DOMAIN-JURNAL]/index/journal
 
 Apabila Anda memiliki pertanyaan terkait status pengajuan naskah, silakan membalas langsung ke email ini dengan menyertakan Nomor Registrasi naskah Anda ([ID NASKAH]).
 
 Hormat kami,
-Dewan Redaksi JTEBA
+Dewan Redaksi [SINGKATAN JURNAL]
 Editorial Board
-Organisasi Riset dan Publikasi Ilmiah Praniti
+[Nama Institusi / Penerbit]
 
 ----------------------------------------------------------------------
 Sekretariat: Mojokerto, Jawa Timur, Indonesia
-Surel: redaksi@praniti.or.id | WhatsApp: [NOMOR WHATSAPP REDAKSI]
-Portal: https://ejournal.praniti.or.id/index/JTEBA
-Email resmi ini dikirim otomatis dan tercatat dalam sistem penerbitan JTEBA.
+Surel: [EMAIL-REDAKSI] | WhatsApp: [NOMOR WHATSAPP REDAKSI]
+Portal: https://[DOMAIN-JURNAL]/index/journal
+Email resmi ini dikirim otomatis dan tercatat dalam sistem penerbitan [SINGKATAN JURNAL].
 Penerima: [EMAIL PENERIMA]
 ======================================================================

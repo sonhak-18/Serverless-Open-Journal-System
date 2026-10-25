@@ -24,7 +24,7 @@ const withVersion = (url?: string) => {
   title={portal.orgName}
   exactTitle={true}
   description={portal.description}
-  faviconUrl={withVersion(portal.faviconUrl || '/favicon-jteba.png')}
+  faviconUrl={withVersion(portal.faviconUrl || '/favicon.png')}
   showHeader={false}
   showFooter={false}
 >
@@ -32,7 +32,7 @@ const withVersion = (url?: string) => {
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
       <div class="flex items-center gap-2 font-medium">
         <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-        <span class="text-slate-200 tracking-wide font-semibold">PRANITI INSTITUTE</span>
+        <span class="text-slate-200 tracking-wide font-semibold">{portal.orgName.toUpperCase()}</span>
         <span class="text-slate-500">•</span>
         <span class="text-slate-400 italic">{portal.orgName}</span>
       </div>
@@ -48,7 +48,7 @@ const withVersion = (url?: string) => {
     <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-4">
       <a href="/" class="flex items-center gap-3 group py-1" title={`Beranda ${portal.orgName}`}>
         <img
-          src={withVersion(portal.logoUrl || '/images/logo-praniti.png')}
+          src={withVersion(portal.logoUrl || '/images/logo.png')}
           alt={`Logo Resmi ${portal.orgName}`}
           class="h-12 sm:h-14 md:h-16 w-auto object-contain transition-transform group-hover:scale-[1.02]"
         />
@@ -57,16 +57,16 @@ const withVersion = (url?: string) => {
       <div class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
         <a href="#journals" class="hover:text-[#0f2c59] transition-colors">Jurnal Ilmiah</a>
         <a href="#about" class="hover:text-[#0f2c59] transition-colors">Profil Organisasi</a>
-        <a href="#values" class="hover:text-[#0f2c59] transition-colors">Nilai PRANITI</a>
+        <a href="#values" class="hover:text-[#0f2c59] transition-colors">Nilai & Prinsip</a>
         <a href="#programs" class="hover:text-[#0f2c59] transition-colors">Klaster Riset</a>
       </div>
 
       <div class="flex items-center gap-2.5">
         <a
-          href={portal.flagshipJournalUrl || '/index/JTEBA'}
+          href={portal.flagshipJournalUrl || '/index/journal'}
           class="px-4 py-2 bg-[#0f2c59] hover:bg-[#183e6d] text-white text-xs font-bold rounded shadow-xs transition-all flex items-center gap-1.5"
         >
-          <span>Kunjungi JTEBA</span>
+          <span>Kunjungi Jurnal</span>
           <svg class="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
           </svg>
@@ -116,10 +116,10 @@ const withVersion = (url?: string) => {
             </svg>
           </a>
           <a
-            href="/index/JTEBA"
+            href="/index/journal"
             class="px-5 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-xs uppercase tracking-wider rounded transition-all flex items-center gap-2"
           >
-            <span>Buka Jurnal JTEBA</span>
+            <span>Buka Jurnal Terbitan</span>
             <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
@@ -168,7 +168,7 @@ const withVersion = (url?: string) => {
             </svg>
             <span>Domain Resmi</span>
           </div>
-          <div class="text-sm font-semibold text-white font-mono">ejournal.praniti.or.id</div>
+          <div class="text-sm font-semibold text-white font-mono">{portal.domainDisplay}</div>
           <p class="text-xs text-slate-300">Infrastruktur penerbitan OJS 3 terpusat dan berkecepatan tinggi.</p>
         </div>
       </div>
@@ -215,20 +215,20 @@ const withVersion = (url?: string) => {
                 </span>
               </div>
               <span class="text-xs font-mono font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
-                Singkatan: JTEBA
+                Singkatan: {journalConfig.shortName}
               </span>
             </div>
 
             <div class="flex items-start gap-4">
               <img
-                src={withVersion(portal.flagshipJournalEmblemUrl || '/favicon-jteba.png')}
+                src={withVersion(portal.flagshipJournalEmblemUrl || '/favicon.png')}
                 alt={`Emblem Resmi ${portal.flagshipJournalName}`}
                 class="w-14 h-14 rounded-xl border border-slate-200 shadow-xs object-contain shrink-0 hidden sm:block bg-white p-1.5"
               />
               <div class="space-y-1">
                 <h3 class="text-2xl sm:text-3xl font-bold text-[#0f2c59] leading-snug">
-                  <a href={portal.flagshipJournalUrl || '/index/JTEBA'} class="hover:text-emerald-700 transition-colors">
-                    {portal.flagshipJournalName || 'JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas'}
+                  <a href={portal.flagshipJournalUrl || '/index/journal'} class="hover:text-emerald-700 transition-colors">
+                    {portal.flagshipJournalName || 'Jurnal Sains dan Teknologi Terbuka'}
                   </a>
                 </h3>
                 <p class="text-sm sm:text-base text-slate-500 italic font-medium">
@@ -288,7 +288,7 @@ const withVersion = (url?: string) => {
           <div class="bg-slate-50 border-t border-slate-200 p-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <a
-                href="/index/JTEBA"
+                href="/index/journal"
                 class="px-4 py-2.5 bg-[#0f2c59] hover:bg-[#183e6d] text-white text-xs font-bold rounded-lg shadow-xs transition-colors flex items-center gap-1.5"
               >
                 <span>Lihat Jurnal (View Journal)</span>
@@ -297,25 +297,25 @@ const withVersion = (url?: string) => {
                 </svg>
               </a>
               <a
-                href="/index/JTEBA/current"
+                href="/index/journal/current"
                 class="px-3.5 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs rounded-lg transition-colors"
               >
                 Terbitan Terkini
               </a>
               <a
-                href="/index/JTEBA/archives"
+                href="/index/journal/archives"
                 class="px-3.5 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs rounded-lg transition-colors"
               >
                 Arsip
               </a>
               <a
-                href="/index/JTEBA/guidelines"
+                href="/index/journal/guidelines"
                 class="px-3.5 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs rounded-lg transition-colors"
               >
                 Pedoman Penulis
               </a>
               <a
-                href="/index/JTEBA/search"
+                href="/index/journal/search"
                 class="px-3.5 py-2.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-semibold text-xs rounded-lg transition-colors flex items-center gap-1.5"
               >
                 <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -326,7 +326,7 @@ const withVersion = (url?: string) => {
             </div>
 
             <a
-              href="/index/JTEBA/submit"
+              href="/index/journal/submit"
               class="w-full sm:w-auto text-center px-4 py-2.5 bg-[#c89b3c] hover:bg-[#b0842b] text-slate-900 font-bold text-xs uppercase tracking-wider rounded-lg shadow-xs transition-colors flex items-center justify-center gap-1.5"
             >
               <svg class="w-3.5 h-3.5 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -357,7 +357,7 @@ const withVersion = (url?: string) => {
             </div>
 
             <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Praniti tengah menyiapkan wadah publikasi berkala mandiri untuk mengkaji kritik sastra (Literary Criticism), analisis wacana kritis (Critical Discourse Analysis), studi penerjemahan, serta komunikasi bisnis internasional.
+              Lembaga tengah mempersiapkan wadah publikasi berkala multidisiplin untuk memfasilitasi riset unggulan di bidang sains, sosial humaniora, serta teknologi dan bisnis terapan.
             </p>
 
             <div class="bg-white p-4 rounded-xl border border-slate-200 text-xs text-slate-700 space-y-1.5">
@@ -386,7 +386,7 @@ const withVersion = (url?: string) => {
           Etymology & Philosophical Foundation
         </span>
         <h2 class="text-2xl sm:text-3xl font-bold text-[#0f2c59] mt-1">
-          Filosofi & Arti Nama Praniti (प्रणीति)
+          Filosofi Keterbukaan Ilmu (Open Science)
         </h2>
       </div>
 
@@ -396,7 +396,7 @@ const withVersion = (url?: string) => {
             प्रणीति
           </div>
           <h3 class="text-lg font-bold text-white">
-            Praniti (Sanskerta / Khazanah Klasik)
+            Prinsip Integritas Ilmiah & Akses Terbuka
           </h3>
           <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-light">
             Mengandung makna tindakan menuntun, kepemimpinan yang arif (<em class="text-amber-200 font-normal">guided conduct</em>), kebijaksanaan terarah, serta penyusunan karya secara saksama dan beraturan.
@@ -405,7 +405,7 @@ const withVersion = (url?: string) => {
 
         <div class="md:col-span-7 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
           <p>
-            Dalam konteks akademik, <strong>Organisasi Riset dan Publikasi Ilmiah Praniti</strong> berfokus mendukung para peneliti, akademisi, dan praktisi dalam menyusun serta mempublikasikan karya ilmiah yang teruji secara metodologis, mandiri, dan akuntabel.
+            Dalam konteks akademik, <strong>{portal.orgName}</strong> berfokus mendukung para peneliti, akademisi, dan praktisi dalam menyusun serta mempublikasikan karya ilmiah yang teruji secara metodologis, mandiri, dan akuntabel.
           </p>
           <div class="p-4 bg-slate-50 border-l-4 border-l-[#0f2c59] rounded-r-xl text-xs sm:text-sm text-slate-800 space-y-1.5">
             <strong class="text-[#0f2c59] block font-bold text-sm">Visi Organisasi:</strong>
@@ -567,8 +567,8 @@ const withVersion = (url?: string) => {
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         <div class="md:col-span-6 space-y-4">
           <img
-            src={withVersion('/images/logo-praniti.png')}
-            alt="Logo Resmi Praniti"
+            src={withVersion('/images/logo.png')}
+            alt={`Logo Resmi ${portal.orgName}`}
             class="h-12 w-auto object-contain brightness-0 invert opacity-95"
           />
           <p class="text-xs text-slate-300 leading-relaxed max-w-lg">
@@ -585,32 +585,32 @@ const withVersion = (url?: string) => {
           </h5>
           <ul class="space-y-2 text-xs text-slate-300">
             <li>
-              <a href="/index/JTEBA" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
-                JTEBA (Ekonomi, Bisnis & Akuntabilitas)
+              <a href="/index/journal" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
+                {journalConfig.shortName} ({journalConfig.name})
               </a>
             </li>
             <li>
-              <a href="/index/JTEBA/current" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
-                Terbitan Terkini JTEBA
+              <a href="/index/journal/current" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
+                Terbitan Terkini Jurnal
               </a>
             </li>
             <li>
-              <a href="/index/JTEBA/archives" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
-                Arsip Terbitan JTEBA
+              <a href="/index/journal/archives" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
+                Arsip Terbitan Jurnal
               </a>
             </li>
             <li>
-              <a href="/index/JTEBA/guidelines" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
+              <a href="/index/journal/guidelines" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
                 Pedoman Penulis & Etika
               </a>
             </li>
             <li>
-              <a href="/index/JTEBA/submit" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
+              <a href="/index/journal/submit" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
                 Pengiriman Naskah Online
               </a>
             </li>
             <li>
-              <a href="/index/JTEBA/search" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
+              <a href="/index/journal/search" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">
                 Pencarian Naskah (Search)
               </a>
             </li>
@@ -622,21 +622,21 @@ const withVersion = (url?: string) => {
             Navigasi Portal
           </h5>
           <ul class="space-y-1.5 text-xs text-slate-300">
-            <li><a href="#about" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">Filosofi Praniti (प्रणीति)</a></li>
+            <li><a href="#about" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">Tentang Institusi</a></li>
             <li><a href="#values" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">Tujuh Nilai Dasar P-R-A-N-I-T-I</a></li>
-            <li><a href="/index/JTEBA/indexing" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">Indeksasi & Repositori</a></li>
+            <li><a href="/index/journal/indexing" class="py-1.5 inline-block min-h-[28px] hover:text-amber-300 transition-colors">Indeksasi & Repositori</a></li>
           </ul>
         </div>
       </div>
 
       <div class="border-t border-slate-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-300 gap-3">
         <div>
-          Copyright © 2026 Organisasi Riset dan Publikasi Ilmiah Praniti. Hak Cipta Dilindungi Undang-Undang.
+          Copyright © 2026 {portal.orgName}. Hak Cipta Dilindungi Undang-Undang.
         </div>
         <div class="flex items-center gap-3">
           <span>Creative Commons CC BY-SA 4.0</span>
           <span>•</span>
-          <span class="font-mono text-emerald-400 font-semibold">ejournal.praniti.or.id</span>
+          <span class="font-mono text-emerald-400 font-semibold">{portal.domainDisplay}</span>
         </div>
       </div>
     </div>

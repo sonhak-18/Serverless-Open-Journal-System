@@ -12,16 +12,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // Normalisasi rute OJS dan case-insensitivity tanpa cache permanen
   if (pathname.startsWith('/index.php/JTEBA') || pathname.startsWith('/index.php/jteba')) {
     const sub = pathname.replace(/^\/index\.php\/(JTEBA|jteba)/i, '');
-    return context.redirect(`/index/JTEBA${sub}`, 302);
+    return context.redirect(`/index/journal${sub}`, 302);
   }
 
-  if (pathname.startsWith('/index/jteba/')) {
+  if (pathname.startsWith('/index/journal/')) {
     const sub = pathname.replace(/^\/index\/jteba/i, '');
-    return context.redirect(`/index/JTEBA${sub}`, 302);
+    return context.redirect(`/index/journal${sub}`, 302);
   }
 
-  if (pathname === '/index/jteba') {
-    return context.redirect('/index/JTEBA', 302);
+  if (pathname === '/index/journal') {
+    return context.redirect('/index/journal', 302);
   }
 
   if (pathname === '/index' || pathname === '/index/') {
@@ -30,34 +30,34 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   // Normalisasi rute Home / Index di dalam jurnal JTEBA
   if (
-    pathname === '/index/JTEBA/home' ||
-    pathname === '/index/JTEBA/home/' ||
-    pathname === '/index/JTEBA/index' ||
-    pathname === '/index/JTEBA/index/'
+    pathname === '/index/journal/home' ||
+    pathname === '/index/journal/home/' ||
+    pathname === '/index/journal/index' ||
+    pathname === '/index/journal/index/'
   ) {
-    return context.redirect('/index/JTEBA', 302);
+    return context.redirect('/index/journal', 302);
   }
 
   // Normalisasi sub-rute OJS 3 standar ke rute modern
-  if (pathname.startsWith('/index/JTEBA/issue/current')) {
-    return context.redirect('/index/JTEBA/current', 302);
+  if (pathname.startsWith('/index/journal/issue/current')) {
+    return context.redirect('/index/journal/current', 302);
   }
-  if (pathname.startsWith('/index/JTEBA/issue/archive')) {
-    return context.redirect('/index/JTEBA/archives', 302);
+  if (pathname.startsWith('/index/journal/issue/archive')) {
+    return context.redirect('/index/journal/archives', 302);
   }
-  if (pathname.startsWith('/index/JTEBA/about/submissions') || pathname.startsWith('/index/JTEBA/information/authors')) {
-    return context.redirect('/index/JTEBA/guidelines', 302);
+  if (pathname.startsWith('/index/journal/about/submissions') || pathname.startsWith('/index/journal/information/authors')) {
+    return context.redirect('/index/journal/guidelines', 302);
   }
-  if (pathname.startsWith('/index/JTEBA/about/editorialTeam')) {
-    return context.redirect('/index/JTEBA/editorial-team', 302);
+  if (pathname.startsWith('/index/journal/about/editorialTeam')) {
+    return context.redirect('/index/journal/editorial-team', 302);
   }
-  if (pathname.startsWith('/index/JTEBA/article/view/')) {
-    const rawSlug = pathname.replace('/index/JTEBA/article/view/', '');
+  if (pathname.startsWith('/index/journal/article/view/')) {
+    const rawSlug = pathname.replace('/index/journal/article/view/', '');
     const cleanSlug = encodeURIComponent(rawSlug.replace(/[^a-zA-Z0-9_-]/g, ''));
     if (!cleanSlug) {
-      return context.redirect('/index/JTEBA', 302);
+      return context.redirect('/index/journal', 302);
     }
-    return context.redirect(`/index/JTEBA/article/${cleanSlug}`, 302);
+    return context.redirect(`/index/journal/article/${cleanSlug}`, 302);
   }
 
   const response = await next();

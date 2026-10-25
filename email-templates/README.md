@@ -1,6 +1,6 @@
-# JTEBA — Panduan & Dokumentasi Template Email Resmi
+# [SINGKATAN JURNAL] — Panduan & Dokumentasi Template Email Resmi
 
-Repositori ini memuat berkas template email resmi **JTEBA (Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas)** yang diterbitkan oleh **Organisasi Riset dan Publikasi Ilmiah Praniti**.
+Repositori ini memuat berkas template email resmi **[SINGKATAN JURNAL] (Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas)** yang diterbitkan oleh **[Nama Institusi / Penerbit]**.
 
 ---
 
@@ -23,7 +23,7 @@ Repositori ini memuat berkas template email resmi **JTEBA (Jurnal Terbuka Ekonom
 ├── 04-artikel-terbit.html             # Pengumuman publikasi resmi & DOI
 ├── 04-artikel-terbit.txt              # Versi teks polos (plain text)
 ├── /assets
-│   └── logo-jteba.png                 # Berkas logo resmi JTEBA (resolusi tinggi)
+│   └── logo-jteba.png                 # Berkas logo resmi [SINGKATAN JURNAL] (resolusi tinggi)
 └── README.md                          # Panduan pemakaian & pemetaan placeholder
 ```
 
@@ -35,10 +35,10 @@ Redaksi menyediakan berkas spesifik siap pakai untuk setiap jenis keputusan edit
 
 | Kode Varian | Kapan Digunakan | Berkas Siap Pakai | Warna Status & Badge | Tombol CTA |
 |---|---|---|---|---|
-| **D1 (Desk Reject)** | Penolakan awal sebelum ke mitra bestari (karena luar cakupan / format salah / Turnitin > 20%) | [`03-d1-desk-reject.html`](03-d1-desk-reject.html) | Abu-abu (`#f1f5f9`), Badge: `DITOLAK (DESK REVIEW)` | `Buka Portal JTEBA` |
-| **D2 (Tolak Review)** | Penolakan setelah proses penelaahan reviewer ganda selesai | [`03-d2-tolak-review.html`](03-d2-tolak-review.html) | Abu-abu (`#f1f5f9`), Badge: `DITOLAK` | `Buka Portal JTEBA` |
-| **D3 (Revisi Minor)** | Naskah diterima dengan catatan perbaikan kecil (ejaan, referensi, grafik) | [`03-d3-revisi-minor.html`](03-d3-revisi-minor.html) | Kuning (`#fffbeb`), Badge: `REVISI MINOR` | `Unggah Revisi di Portal JTEBA` |
-| **D4 (Revisi Mayor)** | Naskah butuh perbaikan mendasar (metodologi, analisis data, literatur) | [`03-d4-revisi-mayor.html`](03-d4-revisi-mayor.html) | Kuning (`#fffbeb`), Badge: `REVISI MAYOR` | `Unggah Revisi di Portal JTEBA` |
+| **D1 (Desk Reject)** | Penolakan awal sebelum ke mitra bestari (karena luar cakupan / format salah / Turnitin > 20%) | [`03-d1-desk-reject.html`](03-d1-desk-reject.html) | Abu-abu (`#f1f5f9`), Badge: `DITOLAK (DESK REVIEW)` | `Buka Portal Jurnal` |
+| **D2 (Tolak Review)** | Penolakan setelah proses penelaahan reviewer ganda selesai | [`03-d2-tolak-review.html`](03-d2-tolak-review.html) | Abu-abu (`#f1f5f9`), Badge: `DITOLAK` | `Buka Portal Jurnal` |
+| **D3 (Revisi Minor)** | Naskah diterima dengan catatan perbaikan kecil (ejaan, referensi, grafik) | [`03-d3-revisi-minor.html`](03-d3-revisi-minor.html) | Kuning (`#fffbeb`), Badge: `REVISI MINOR` | `Unggah Revisi di Portal [SINGKATAN JURNAL]` |
+| **D4 (Revisi Mayor)** | Naskah butuh perbaikan mendasar (metodologi, analisis data, literatur) | [`03-d4-revisi-mayor.html`](03-d4-revisi-mayor.html) | Kuning (`#fffbeb`), Badge: `REVISI MAYOR` | `Unggah Revisi di Portal [SINGKATAN JURNAL]` |
 
 ---
 
@@ -51,12 +51,12 @@ Setiap placeholder ditulis menggunakan huruf kapital di dalam kurung siku `[NAMA
 | `[NAMA PENULIS KORESPONDENSI]` | Nama lengkap penulis utama / pengirim naskah |
 | `[NAMA REKAN PENULIS]` | Nama penulis pendamping (co-authors) |
 | `[INSTITUSI PENULIS]` | Afiliasi akademik, universitas, atau lembaga riset penulis |
-| `[ID NASKAH]` | Kode unik registrasi naskah (contoh: `JTEBA-SUB-202610-0001`) |
+| `[ID NASKAH]` | Kode unik registrasi naskah (contoh: `[SINGKATAN JURNAL]-SUB-202610-0001`) |
 | `[JUDUL NASKAH]` / `[JUDUL SINGKAT]` | Judul lengkap artikel ilmiah yang diajukan |
-| `[BIDANG KAJIAN]` | Salah satu dari empat rumpun fokus JTEBA |
+| `[BIDANG KAJIAN]` | Salah satu dari empat rumpun fokus [SINGKATAN JURNAL] |
 | `[TANGGAL MASUK]` | Tanggal berkas diunggah (format Indonesia: DD MMMM YYYY) |
 | `[TANGGAL KEPUTUSAN]` | Tanggal surat keputusan diterbitkan |
-| `[NAMA BERKAS NASKAH]` | Nama berkas manuskrip asli (contoh: `Manuskrip_JTEBA.docx`) |
+| `[NAMA BERKAS NASKAH]` | Nama berkas manuskrip asli (contoh: `Manuskrip_[SINGKATAN JURNAL].docx`) |
 | `[VOLUME]`, `[NOMOR]`, `[BULAN TAHUN]` | Volume, nomor issue, dan periode terbitan target |
 | `[HALAMAN]` | Rentang halaman artikel pada terbitan (contoh: `1–15`) |
 | `[TENGGAT REVISI]` | Batas akhir pengunggahan revisi (contoh: `14 November 2026`) |
@@ -66,7 +66,7 @@ Setiap placeholder ditulis menggunakan huruf kapital di dalam kurung siku `[NAMA
 | `[NAMA BANK]`, `[NOMOR REKENING]` | Rekening resmi perbankan penerima APC |
 | `[NAMA PEMILIK REKENING]` | Nama atas nama pemilik rekening |
 | `[DOI]` | Kode akhiran DOI resmi (contoh: `10.xxxx/jteba.v1i1.01`) |
-| `[URL ARTIKEL]` | Tautan laman landing page artikel di portal JTEBA |
+| `[URL ARTIKEL]` | Tautan laman landing page artikel di portal jurnal |
 | `[SITASI APA 7]` | Format sitasi resmi mengikuti pedoman APA 7th Edition |
 | `[EMAIL PENERIMA]` | Alamat email tujuan pengiriman surat |
 | `[NOMOR WHATSAPP REDAKSI]` | Nomor WhatsApp resmi sekretariat redaksi |

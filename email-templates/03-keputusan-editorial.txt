@@ -1,6 +1,6 @@
 ======================================================================
-JTEBA: JURNAL TERBUKA EKONOMI, BISNIS, DAN AKUNTABILITAS
-Organisasi Riset dan Publikasi Ilmiah Praniti
+[SINGKATAN JURNAL]: JURNAL TERBUKA EKONOMI, BISNIS, DAN AKUNTABILITAS
+[Nama Institusi / Penerbit]
 e-ISSN: 2999-7127 | p-ISSN: 2999-7119 | Peer-Reviewed & Open Access
 ======================================================================
 
@@ -16,7 +16,7 @@ dan Rekan Penulis: [NAMA REKAN PENULIS]
 [OPSI A: PERMINTAAN REVISI (REVISIONS REQUIRED)]
 ----------------------------------------------------------------------
 Dengan hormat,
-Terima kasih atas kesabaran Anda dalam proses penelaahan sejawat naskah di JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas.
+Terima kasih atas kesabaran Anda dalam proses penelaahan sejawat naskah di [NAMA JURNAL LENGKAP].
 
 Berdasarkan hasil penelaahan sejawat ganda (single-blind peer review) dan pertimbangan Dewan Redaksi, naskah Anda berpotensi untuk diterbitkan setelah melakukan perbaikan sesuai catatan mitra bestari.
 
@@ -36,18 +36,18 @@ PETUNJUK PENYIAPAN & PENGUNGGAHAN REVISI:
 1. Perbaikan Naskah: Sempurnakan naskah dan tandai setiap perubahan menggunakan Track Changes atau teks berwarna.
 2. Surat Tanggapan (Response Letter): Siapkan dokumen terpisah yang menjawab setiap poin masukan reviewer secara sistematis (point-by-point response).
 3. Anonimitas Naskah: Pastikan berkas naskah revisi tetap anonim (tanpa nama penulis dan afiliasi) guna menjaga kepatuhan double-blind review.
-4. Batas Waktu: Unggah berkas revisi dan dokumen tanggapan melalui portal JTEBA sebelum [TENGGAT REVISI].
+4. Batas Waktu: Unggah berkas revisi dan dokumen tanggapan melalui portal jurnal sebelum [TENGGAT REVISI].
 
 TAUTAN PENGUNGGAHAN REVISI:
-https://ejournal.praniti.or.id/index/JTEBA
+https://[DOMAIN-JURNAL]/index/journal
 
 ----------------------------------------------------------------------
 [OPSI B: PENOLAKAN NASKAH (DECLINED)]
 ----------------------------------------------------------------------
 Dengan hormat,
-Kami mengucapkan terima kasih yang sebesar-besarnya atas minat dan kontribusi ilmiah Anda dalam mengirimkan naskah manuskrip ke JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas.
+Kami mengucapkan terima kasih yang sebesar-besarnya atas minat dan kontribusi ilmiah Anda dalam mengirimkan naskah manuskrip ke [NAMA JURNAL LENGKAP].
 
-Setelah melalui proses evaluasi yang cermat oleh Dewan Redaksi dan Mitra Bestari, dengan berat hati kami menyampaikan bahwa naskah Anda saat ini belum dapat kami terima untuk dipublikasikan pada terbitan JTEBA.
+Setelah melalui proses evaluasi yang cermat oleh Dewan Redaksi dan Mitra Bestari, dengan berat hati kami menyampaikan bahwa naskah Anda saat ini belum dapat kami terima untuk dipublikasikan pada terbitan [SINGKATAN JURNAL].
 
 PERTIMBANGAN EDITORIAL:
 [ALASAN: di luar ruang lingkup / ketidaksesuaian templat / kemiripan Turnitin melebihi batas 20% / catatan substantif mitra bestari]
@@ -56,23 +56,23 @@ Saran Penyempurnaan:
 [SARAN]
 
 PENEGASAN BIAYA:
-Sesuai kebijakan tata kelola JTEBA, proses pengajuan dan penelaahan naskah ini sepenuhnya bebas biaya (Rp0). Tidak ada biaya apa pun yang ditagihkan kepada penulis.
+Sesuai kebijakan tata kelola [SINGKATAN JURNAL], proses pengajuan dan penelaahan naskah ini sepenuhnya bebas biaya (Rp0). Tidak ada biaya apa pun yang ditagihkan kepada penulis.
 
 Kami sangat mengapresiasi upaya riset yang telah Anda curahkan dan mendoakan kesuksesan publikasi karya Anda pada media ilmiah berikutnya.
 
-TAUTAN PORTAL JTEBA:
-https://ejournal.praniti.or.id/index/JTEBA
+TAUTAN PORTAL [SINGKATAN JURNAL]:
+https://[DOMAIN-JURNAL]/index/journal
 ----------------------------------------------------------------------
 
 Hormat kami,
-Dewan Redaksi JTEBA
+Dewan Redaksi [SINGKATAN JURNAL]
 Editorial Board
-Organisasi Riset dan Publikasi Ilmiah Praniti
+[Nama Institusi / Penerbit]
 
 ----------------------------------------------------------------------
 Sekretariat: Mojokerto, Jawa Timur, Indonesia
-Surel: redaksi@praniti.or.id | WhatsApp: [NOMOR WHATSAPP REDAKSI]
-Portal: https://ejournal.praniti.or.id/index/JTEBA
-Email resmi ini dikirim otomatis dan tercatat dalam sistem penerbitan JTEBA.
+Surel: [EMAIL-REDAKSI] | WhatsApp: [NOMOR WHATSAPP REDAKSI]
+Portal: https://[DOMAIN-JURNAL]/index/journal
+Email resmi ini dikirim otomatis dan tercatat dalam sistem penerbitan [SINGKATAN JURNAL].
 Penerima: [EMAIL PENERIMA]
 ======================================================================

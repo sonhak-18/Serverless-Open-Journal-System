@@ -26,7 +26,7 @@ function isOriginAllowed(origin: string | null): boolean {
 }
 
 function getCorsHeaders(origin: string | null): Record<string, string> {
-  const allowed = (origin && isOriginAllowed(origin)) ? origin : 'https://ejournal.praniti.or.id';
+  const allowed = (origin && isOriginAllowed(origin)) ? origin : 'https://jurnal.institusi-anda.ac.id';
   return {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': allowed,

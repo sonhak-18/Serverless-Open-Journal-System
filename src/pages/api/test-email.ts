@@ -33,21 +33,21 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     const testPayload = {
-      from: 'JTEBA Submission Test <noreply@praniti.or.id>',
+      from: 'Editorial Submission Test <noreply@jurnal-anda.ac.id>',
       to: [targetEmail],
       reply_to: targetEmail,
-      subject: `[JTEBA Test] Uji Coba Pengiriman Resend API (${new Date().toLocaleTimeString('id-ID')})`,
+      subject: `[Email Test] Uji Coba Pengiriman Resend API (${new Date().toLocaleTimeString('id-ID')})`,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; max-width: 640px; margin: 24px auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 40, 78, 0.08);">
           <div style="background-color: #0f284e; padding: 26px 28px; border-bottom: 4px solid #c89b3c;">
             <div style="background-color: #ffffff; padding: 8px 16px; border-radius: 6px; display: inline-block; margin-bottom: 12px;">
-              <img src="https://ejournal.praniti.or.id/images/logo-jteba.png" alt="JTEBA" width="140" style="display: block; border: 0;" />
+              <img src="/images/logo.png" alt="Logo Jurnal" width="140" style="display: block; border: 0;" />
             </div>
             <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #c89b3c; margin-bottom: 4px;">
               ORGANISASI RISET DAN PUBLIKASI ILMIAH PRANITI
             </div>
             <h2 style="margin: 0; font-size: 18px; font-weight: 800; color: #ffffff; font-family: Georgia, serif;">
-              JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas
+              Sistem Penerbitan Jurnal Terbuka
             </h2>
             <div style="font-size: 11px; color: #94a3b8; margin-top: 6px; font-family: 'Courier New', Courier, monospace;">
               e-ISSN: 2999-7127 | p-ISSN: 2999-7119 | Peer-Reviewed &amp; Open Access
@@ -58,17 +58,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
           </div>
           <div style="padding: 28px; font-size: 14px; color: #334155;">
             <p style="margin-top: 0;">Halo Dewan Redaksi,</p>
-            <p>Surel uji coba ini mengonfirmasi bahwa <strong>Resend API Key</strong> dan pengirim resmi terverifikasi (<code>noreply@praniti.or.id</code>) telah terhubung dengan sempurna ke portal penerimaan naskah JTEBA.</p>
+            <p>Surel uji coba ini mengonfirmasi bahwa <strong>Resend API Key</strong> dan pengirim resmi terverifikasi (<code>noreply@jurnal-anda.ac.id</code>) telah terhubung dengan sempurna ke portal penerimaan naskah jurnal.</p>
             <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px 18px; margin: 18px 0; font-size: 13px;">
               <div style="margin-bottom: 4px;"><strong>Alamat Penerima:</strong> ${targetEmail}</div>
-              <div style="margin-bottom: 4px;"><strong>Identitas Pengirim:</strong> noreply@praniti.or.id (Domain Terverifikasi)</div>
+              <div style="margin-bottom: 4px;"><strong>Identitas Pengirim:</strong> noreply@jurnal-anda.ac.id (Domain Terverifikasi)</div>
               <div style="margin-bottom: 4px;"><strong>Waktu Pengujian:</strong> ${new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB</div>
               <div><strong>Status Integrasi:</strong> <span style="color: #059669; font-weight: 700;">Aktif &amp; Siap Produksi</span></div>
             </div>
             <p style="font-size: 12px; color: #64748b; margin-bottom: 0;">Setiap kali calon penulis mengirimkan naskah online, berkas dokumen (.docx/.pdf) akan terlampir otomatis ke email ini dengan tombol Balas (Reply) langsung tertuju ke surel penulis.</p>
           </div>
           <div style="background-color: #0a1a33; padding: 18px 28px; border-top: 1px solid #1e293b; color: #94a3b8; font-size: 11px; text-align: center;">
-            Dewan Redaksi JTEBA &mdash; Organisasi Riset dan Publikasi Ilmiah Praniti<br>
+            Dewan Redaksi &mdash; Organisasi Riset dan Publikasi Ilmiah Praniti<br>
             Sekretariat: Mojokerto, Jawa Timur, Indonesia
           </div>
         </div>

@@ -30,7 +30,7 @@ const issueDoiUrl = cleanPrefix.includes(`/${journalConfig.shortName.toLowerCase
   : `https://doi.org/${cleanPrefix}/${journalConfig.shortName.toLowerCase()}.v${curVolume}i${curIssue}`;
 ---
 
-<Layout title="Beranda JTEBA" exactTitle={false} description={`Beranda resmi ${journalConfig.name} (${journalConfig.shortName}). Jurnal ilmiah akses terbuka telaah sejawat bidang Akuntansi Keberlanjutan & ESG, Perpajakan, Auditing, dan Dinamika Bisnis.`}>
+<Layout title={`Beranda ${journalConfig.shortName}`} exactTitle={false} description={`Beranda resmi ${journalConfig.name} (${journalConfig.shortName}). Jurnal ilmiah akses terbuka telaah sejawat (peer-reviewed open access journal).`}>
   <div class="max-w-7xl mx-auto px-4 py-8">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <!-- Kolom Kiri: Konten Utama Jurnal (~68%) -->
@@ -68,7 +68,7 @@ const issueDoiUrl = cleanPrefix.includes(`/${journalConfig.shortName.toLowerCase
                   Vol. {curVolume} No. {curIssue} ({curYear}): {curPeriod}
                 </h2>
               </div>
-              <a href="/index/JTEBA/current" class="inline-flex items-center gap-1 text-xs text-blue-700 hover:underline font-semibold hidden sm:inline-flex min-h-[32px]">
+              <a href="/index/journal/current" class="inline-flex items-center gap-1 text-xs text-blue-700 hover:underline font-semibold hidden sm:inline-flex min-h-[32px]">
                 <span>Halaman Terbitan Terkini</span>
                 <svg class="w-3.5 h-3.5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -237,7 +237,7 @@ const issueDoiUrl = cleanPrefix.includes(`/${journalConfig.shortName.toLowerCase
 
                 <div class="pt-2 flex flex-wrap items-center gap-3">
                   <a
-                    href="/index/JTEBA/submit"
+                    href="/index/journal/submit"
                     class="px-4 py-2 bg-academic-navy hover:bg-academic-navy-light text-white text-xs font-bold rounded shadow-xs transition-colors flex items-center gap-1.5"
                   >
                     <span>Kirim Naskah (Submit Paper)</span>
@@ -246,7 +246,7 @@ const issueDoiUrl = cleanPrefix.includes(`/${journalConfig.shortName.toLowerCase
                     </svg>
                   </a>
                   <a
-                    href={journalConfig.branding?.templateUrl || '/template-jteba.docx'}
+                    href={journalConfig.branding?.templateUrl || '/template-manuskrip.docx'}
                     download
                     class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded border border-slate-300 transition-colors flex items-center gap-1.5"
                   >

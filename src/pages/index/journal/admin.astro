@@ -60,7 +60,7 @@ function formatFileSize(bytes: number): string {
           <span class="text-xs text-academic-ink-subtle">Sistem Pengelolaan Publikasi Mandiri Terintegrasi Database</span>
         </div>
         <h1 class="text-2xl md:text-3xl font-serif font-bold text-academic-navy mt-1">
-          Panel Administrasi & Redaksi JTEBA
+          Panel Administrasi & Dewan Redaksi
         </h1>
         <p class="text-xs text-academic-ink-muted mt-1">
           Semua pengaturan, penambahan artikel, kontak narahubung, dan dewan redaksi dapat dikelola langsung lewat antarmuka grafis (GUI) di bawah ini.
@@ -502,7 +502,7 @@ function formatFileSize(bytes: number): string {
                   type="text"
                   id="art-pdffile"
                   required
-                  placeholder="Contoh: jteba-v1n1-01-penulis.pdf"
+                  placeholder="Contoh: naskah-v1n1-01-penulis.pdf"
                   class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono"
                 />
                 <span class="text-xs text-slate-500 mt-1 block">Nama file PDF naskah yang disimpan di Google Drive / Cloudflare R2.</span>
@@ -520,7 +520,7 @@ function formatFileSize(bytes: number): string {
                     <span>Metadata Edisi & Generator DOI Resmi</span>
                   </h3>
                   <p class="text-xs text-slate-600 mt-0.5">
-                    Format DOI: <code class="font-mono text-amber-900 bg-white px-1.5 py-0.5 rounded border border-amber-200">https://doi.org/10.00000/jteba.v(vol)i(issue).(nomor urut terbit di web)</code>
+                    Format DOI: <code class="font-mono text-amber-900 bg-white px-1.5 py-0.5 rounded border border-amber-200">https://doi.org/10.00000/jurnal.v(vol)i(issue).(nomor urut terbit di web)</code>
                   </p>
                 </div>
                 <button
@@ -633,7 +633,7 @@ function formatFileSize(bytes: number): string {
                     type="text"
                     id="art-doi"
                     required
-                    value={`https://doi.org/${defaultDoiPrefix}/jteba.v${journalConfig.currentIssue?.volume ?? 1}i${journalConfig.currentIssue?.issue ?? 1}.${nextArticleOrder}`}
+                    value={`https://doi.org/${defaultDoiPrefix}/jurnal.v${journalConfig.currentIssue?.volume ?? 1}i${journalConfig.currentIssue?.issue ?? 1}.${nextArticleOrder}`}
                     class="w-full px-3 py-2 text-sm border border-amber-300 bg-white rounded focus:border-academic-navy outline-none font-mono font-semibold text-blue-900"
                   />
                 </div>
@@ -644,12 +644,12 @@ function formatFileSize(bytes: number): string {
                 <span class="font-semibold">Pratinjau Tautan DOI:</span>
                 <a
                   id="preview-art-doi"
-                  href={`https://doi.org/${defaultDoiPrefix}/jteba.v${journalConfig.currentIssue?.volume ?? 1}i${journalConfig.currentIssue?.issue ?? 1}.${nextArticleOrder}`}
+                  href={`https://doi.org/${defaultDoiPrefix}/jurnal.v${journalConfig.currentIssue?.volume ?? 1}i${journalConfig.currentIssue?.issue ?? 1}.${nextArticleOrder}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="font-mono text-blue-700 hover:underline bg-white px-2 py-0.5 rounded border border-amber-300 break-all"
                 >
-                  https://doi.org/{defaultDoiPrefix}/jteba.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.{nextArticleOrder}
+                  https://doi.org/{defaultDoiPrefix}/jurnal.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.{nextArticleOrder}
                 </a>
               </div>
             </div>
@@ -682,7 +682,7 @@ function formatFileSize(bytes: number): string {
                 </h2>
               </div>
               <p class="text-xs text-slate-500 mt-1">
-                Kelola naskah manuskrip yang dikirimkan oleh penulis melalui formulir pendaftaran daring portal JTEBA.
+                Kelola naskah manuskrip yang dikirimkan oleh penulis melalui formulir pendaftaran daring portal jurnal.
               </p>
             </div>
 
@@ -783,9 +783,9 @@ function formatFileSize(bytes: number): string {
                     const authorFullName = `${sub.firstName} ${sub.lastName}`.trim();
                     const waClean = sub.phone ? sub.phone.replace(/[^0-9]/g, '') : '';
                     const waUrl = waClean
-                      ? `https://wa.me/${waClean.startsWith('0') ? '62' + waClean.substring(1) : waClean}?text=${encodeURIComponent(`Halo Bapak/Ibu ${authorFullName},\n\nKami dari Dewan Redaksi JTEBA (Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas) mengonfirmasi perihal manuskrip naskah Anda:\n\nNo. Registrasi: ${sub.regNumber}\nJudul: "${sub.title}"\n\n`)}`
+                      ? `https://wa.me/${waClean.startsWith('0') ? '62' + waClean.substring(1) : waClean}?text=${encodeURIComponent(`Halo Bapak/Ibu ${authorFullName},\n\nKami dari Dewan Redaksi (Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas) mengonfirmasi perihal manuskrip naskah Anda:\n\nNo. Registrasi: ${sub.regNumber}\nJudul: "${sub.title}"\n\n`)}`
                       : '#';
-                    const mailtoUrl = `mailto:${sub.email}?subject=${encodeURIComponent(`[JTEBA] Konfirmasi Naskah ${sub.regNumber}: ${sub.title}`)}&body=${encodeURIComponent(`Yth. ${authorFullName},\n${sub.affiliation}\n\nTerima kasih telah mengirimkan artikel ilmiah Anda ke JTEBA dengan nomor registrasi ${sub.regNumber}.\n\nJudul: ${sub.title}\nStatus: ${sub.status}\n\nSalam hormat,\nDewan Redaksi JTEBA\nhttps://ejournal.praniti.or.id/index/JTEBA`)}`;
+                    const mailtoUrl = `mailto:${sub.email}?subject=${encodeURIComponent(`[${journalShortName || 'JURNAL'}] Konfirmasi Naskah ${sub.regNumber}: ${sub.title}`)}&body=${encodeURIComponent(`Yth. ${authorFullName},\n${sub.affiliation}\n\nTerima kasih telah mengirimkan artikel ilmiah Anda ke jurnal dengan nomor registrasi ${sub.regNumber}.\n\nJudul: ${sub.title}\nStatus: ${sub.status}\n\nSalam hormat,\nDewan Redaksi\nhttps://jurnal.institusi-anda.ac.id/index/journal`)}`;
 
                     return (
                       <tr
@@ -1000,7 +1000,7 @@ function formatFileSize(bytes: number): string {
                       </td>
                       <td class="p-3 text-right space-x-2">
                         <a
-                          href={`/index/JTEBA/article/${item.slug}`}
+                          href={`/index/journal/article/${item.slug}`}
                           target="_blank"
                           class="text-blue-700 hover:underline font-semibold"
                         >
@@ -1035,7 +1035,7 @@ function formatFileSize(bytes: number): string {
                 Semua perubahan yang disimpan di sini langsung memperbarui halaman <code>/editorial-team</code> dan metadata publikasi.
               </p>
             </div>
-            <a href="/index/JTEBA/editorial-team" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:underline min-h-[36px] py-1">
+            <a href="/index/journal/editorial-team" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:underline min-h-[36px] py-1">
               <span>Lihat Halaman Publik</span>
               <svg class="w-3.5 h-3.5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
@@ -1048,7 +1048,7 @@ function formatFileSize(bytes: number): string {
             <div>
               <span class="font-bold text-academic-navy text-sm block">Visibilitas Publik Menu & Halaman Tim Redaksi:</span>
               <p class="text-slate-600 mt-0.5">
-                Aktifkan opsi ini untuk menampilkan tab menu "Editorial Team" di bar navigasi utama, sidebar kanan OJS, serta kartu tautan publik JTEBA. Jika dinonaktifkan (misalnya struktur tim masih dalam tahap penataan), menu ini akan disembunyikan dari pengunjung publik.
+                Aktifkan opsi ini untuk menampilkan tab menu "Editorial Team" di bar navigasi utama, sidebar kanan OJS, serta kartu tautan publik jurnal. Jika dinonaktifkan (misalnya struktur tim masih dalam tahap penataan), menu ini akan disembunyikan dari pengunjung publik.
               </p>
             </div>
             <label class="flex items-center gap-2 cursor-pointer shrink-0 bg-white px-3.5 py-2 rounded border border-blue-300 font-semibold text-slate-800 shadow-2xs hover:bg-slate-50 transition-colors">
@@ -1455,10 +1455,10 @@ function formatFileSize(bytes: number): string {
                       <div class="h-20 bg-white border border-slate-200 rounded flex items-center justify-center p-2 mb-3 overflow-hidden">
                         <img
                           id="preview-logo-img"
-                          src={journalConfig.branding?.logoUrl || '/images/logo-jteba.png'}
+                          src={journalConfig.branding?.logoUrl || '/images/logo.png'}
                           alt="Pratinjau Logo"
                           class="max-h-full max-w-full object-contain"
-                          onerror="this.src='/images/logo-jteba.png'"
+                          onerror="this.src='/images/logo.png'"
                         />
                       </div>
                     </div>
@@ -1496,7 +1496,7 @@ function formatFileSize(bytes: number): string {
                         <input
                           type="text"
                           id="cfg-logo-url"
-                          value={journalConfig.branding?.logoUrl || '/images/logo-jteba.png'}
+                          value={journalConfig.branding?.logoUrl || '/images/logo.png'}
                           class="w-full mt-1 px-2 py-1 border border-slate-300 rounded font-mono text-xs bg-white"
                         />
                       </details>
@@ -1518,10 +1518,10 @@ function formatFileSize(bytes: number): string {
                         <div class="w-12 h-12 bg-slate-100 rounded border border-slate-200 flex items-center justify-center overflow-hidden shadow-2xs">
                           <img
                             id="preview-favicon-img"
-                            src={journalConfig.branding?.faviconUrl || '/favicon-jteba.png'}
+                            src={journalConfig.branding?.faviconUrl || '/favicon.png'}
                             alt="Pratinjau Favicon"
                             class="w-8 h-8 object-contain"
-                            onerror="this.src='/favicon-jteba.png'"
+                            onerror="this.src='/favicon.png'"
                           />
                         </div>
                       </div>
@@ -1582,7 +1582,7 @@ function formatFileSize(bytes: number): string {
                           Berkas Template Manuskrip Word (.docx)
                         </span>
                         <span id="status-template-file" class="text-xs text-slate-600 block mt-0.5">
-                          {journalConfig.branding?.templateUrl?.startsWith('data:') ? 'Tersimpan di database' : 'Berkas bawaan sistem (/template-jteba.docx)'}
+                          {journalConfig.branding?.templateUrl?.startsWith('data:') ? 'Tersimpan di database' : 'Berkas bawaan sistem (/template-manuskrip.docx)'}
                         </span>
                       </div>
                     </div>
@@ -1627,7 +1627,7 @@ function formatFileSize(bytes: number): string {
                       <input
                         type="text"
                         id="cfg-template-url"
-                        value={journalConfig.branding?.templateUrl || '/template-jteba.docx'}
+                        value={journalConfig.branding?.templateUrl || '/template-manuskrip.docx'}
                         class="mt-1 px-2 py-1 border border-slate-300 rounded font-mono text-xs bg-white w-64"
                       />
                     </details>
@@ -1687,7 +1687,7 @@ function formatFileSize(bytes: number): string {
           <div class={`p-4 rounded border text-xs leading-relaxed ${journalConfig.features?.hasActiveIssue ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-amber-50 border-amber-200 text-amber-900'}`} id="active-issue-notice">
             {journalConfig.features?.hasActiveIssue ? (
               <p>
-                <strong>Status Terbitan Aktif:</strong> Halaman Beranda JTEBA dan menu <em>Current Issue</em> saat ini menampilkan edisi resmi (Vol. {journalConfig.currentIssue?.volume ?? 1} No. {journalConfig.currentIssue?.issue ?? 1}) beserta daftar artikel naskah yang telah terbit.
+                <strong>Status Terbitan Aktif:</strong> Halaman Beranda Jurnal dan menu <em>Current Issue</em> saat ini menampilkan edisi resmi (Vol. {journalConfig.currentIssue?.volume ?? 1} No. {journalConfig.currentIssue?.issue ?? 1}) beserta daftar artikel naskah yang telah terbit.
               </p>
             ) : (
               <p>
@@ -1949,8 +1949,8 @@ function formatFileSize(bytes: number): string {
               Setiap naskah yang diterbitkan pada volume dan issue ini secara otomatis terhubung dengan formula DOI resmi jurnal:
             </p>
             <div class="font-mono text-amber-900 bg-white p-2.5 rounded border border-amber-300 font-semibold flex items-center justify-between flex-wrap gap-2">
-              <span id="vol-doi-formula-preview">https://doi.org/{defaultDoiPrefix}/jteba.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.[nomor_urut_artikel]</span>
-              <span class="text-xs font-sans font-normal text-slate-500">Contoh Naskah #1: https://doi.org/{defaultDoiPrefix}/jteba.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.1</span>
+              <span id="vol-doi-formula-preview">https://doi.org/{defaultDoiPrefix}/jurnal.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.[nomor_urut_artikel]</span>
+              <span class="text-xs font-sans font-normal text-slate-500">Contoh Naskah #1: https://doi.org/{defaultDoiPrefix}/jurnal.v{journalConfig.currentIssue?.volume ?? 1}i{journalConfig.currentIssue?.issue ?? 1}.1</span>
             </div>
           </div>
 
@@ -2243,7 +2243,7 @@ function formatFileSize(bytes: number): string {
                 <div id="test-email-feedback" class="hidden mt-2 text-xs p-2.5 rounded border"></div>
                 <span class="text-slate-500 text-[11px] mt-1.5 block">
                   Dapatkan kunci di <a href="https://resend.com" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline font-semibold">resend.com</a> (kuota 3.000 surel/bulan).
-                  Pengirim resmi aktif: <strong class="text-emerald-700 font-mono">noreply@praniti.or.id</strong> (domain terverifikasi).
+                  Pengirim resmi aktif: <strong class="text-emerald-700 font-mono">noreply@jurnal-anda.ac.id</strong> (domain terverifikasi).
                 </span>
               </div>
 
@@ -2294,7 +2294,7 @@ function formatFileSize(bytes: number): string {
               </p>
             </div>
             <a
-              href="/index/JTEBA/indexing"
+              href="/index/journal/indexing"
               target="_blank"
               class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 hover:underline min-h-[36px] py-1"
             >
@@ -2561,7 +2561,7 @@ function formatFileSize(bytes: number): string {
                 type="text"
                 id="cfg-gdrive-path"
                 value={journalConfig.storage.pdfDirectoryPath || ''}
-                placeholder="Kosongkan jika file di root index (0:/) atau contoh: JTEBA/PDFs"
+                placeholder="Kosongkan jika file di root index (0:/) atau contoh: PDFs"
                 class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded focus:border-academic-navy focus:ring-1 focus:ring-academic-navy outline-none font-mono"
               />
               <span class="text-xs text-slate-500 mt-1 block">
@@ -2572,7 +2572,7 @@ function formatFileSize(bytes: number): string {
             <div class="p-3.5 bg-slate-50 border border-slate-200 rounded text-xs space-y-1.5">
               <span class="font-bold text-slate-700 block">Simulasi Format Tautan PDF Tombol Unduh / Baca:</span>
               <p id="preview-pdf-link" class="font-mono text-academic-navy break-all bg-white p-2 border border-slate-200 rounded text-xs">
-                {journalConfig.storage.gdriveIndexBaseUrl}/{journalConfig.storage.pdfDirectoryPath ? `${journalConfig.storage.pdfDirectoryPath}/` : ''}JTEBA_V1N1_01_artikel-penelitian.pdf
+                {journalConfig.storage.gdriveIndexBaseUrl}/{journalConfig.storage.pdfDirectoryPath ? `${journalConfig.storage.pdfDirectoryPath}/` : ''}OSJ_V1N1_01_artikel-penelitian.pdf
               </p>
             </div>
 
@@ -2728,7 +2728,7 @@ function formatFileSize(bytes: number): string {
       <div class="flex items-start justify-between border-b border-slate-200 pb-3 gap-3">
         <div>
           <span class="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-50 text-academic-navy border border-blue-200" id="sub-detail-reg">
-            JTEBA-SUB-...
+            SUB-...
           </span>
           <h3 id="sub-detail-title" class="text-base font-serif font-bold text-academic-navy mt-1.5 leading-snug">
             Judul Naskah
@@ -2948,7 +2948,7 @@ function formatFileSize(bytes: number): string {
   logoutBtn?.addEventListener('click', async () => {
     try {
       localStorage.removeItem('repo_admin_token');
-      sessionStorage.removeItem('jteba_admin_auth');
+      sessionStorage.removeItem('journal_admin_auth');
       memoryWorkerAdminToken = null;
       await fetch('/api/auth', {
         method: 'POST',
@@ -3048,7 +3048,7 @@ function formatFileSize(bytes: number): string {
   const panels = document.querySelectorAll<HTMLElement>('.tab-panel');
 
   function switchTab(targetId: string) {
-    sessionStorage.setItem('jteba_active_tab', targetId);
+    sessionStorage.setItem('journal_active_tab', targetId);
     tabs.forEach((t) => {
       if (t.getAttribute('data-tab') === targetId) {
         t.classList.remove('border-transparent', 'text-slate-600');
@@ -3079,7 +3079,7 @@ function formatFileSize(bytes: number): string {
   if (window.location.hash === '#form-add-new-issue' || window.location.hash === '#tab-volume-settings') {
     switchTab('tab-volume-settings');
   } else {
-    const savedTab = sessionStorage.getItem('jteba_active_tab') || sessionStorage.getItem('sektansia_active_tab');
+    const savedTab = sessionStorage.getItem('journal_active_tab') || sessionStorage.getItem('sektansia_active_tab');
     if (savedTab && document.getElementById(savedTab)) {
       switchTab(savedTab);
     }
@@ -3272,13 +3272,13 @@ function formatFileSize(bytes: number): string {
   });
 
   // Generator DOI Sesuai Format Pengguna:
-  // "https://doi.org/10.00000/jteba.v(volume)i(issue).(numerasi artikel keberapa yang terbit di web)"
+  // "https://doi.org/10.00000/jurnal.v(volume)i(issue).(numerasi artikel keberapa yang terbit di web)"
   function computeDoi(): string {
     const prefix = (artDoiPrefixInput?.value || '10.00000').trim().replace(/^https?:\/\/doi\.org\//i, '').replace(/\/$/, '');
     const vol = Number(artVolumeInput?.value) || 1;
     const iss = Number(artIssueInput?.value) || 1;
     const order = Number(artOrderInput?.value) || 1;
-    return `https://doi.org/${prefix}/jteba.v${vol}i${iss}.${order}`;
+    return `https://doi.org/${prefix}/jurnal.v${vol}i${iss}.${order}`;
   }
 
   function updateDoiPreview() {
@@ -3334,7 +3334,7 @@ function formatFileSize(bytes: number): string {
     const prefix = (artDoiPrefixInput?.value || '10.00000').trim().replace(/^https?:\/\/doi\.org\//i, '').replace(/\/$/, '');
     const vol = cfgVolNum ? Number(cfgVolNum.value) || 1 : 1;
     const iss = cfgIssueNum ? Number(cfgIssueNum.value) || 1 : 1;
-    volDoiFormulaPreview.textContent = `https://doi.org/${prefix}/jteba.v${vol}i${iss}.[nomor_urut_artikel]`;
+    volDoiFormulaPreview.textContent = `https://doi.org/${prefix}/jurnal.v${vol}i${iss}.[nomor_urut_artikel]`;
   }
 
   cfgVolNum?.addEventListener('input', updateVolDoiFormulaPreview);
@@ -3550,7 +3550,7 @@ function formatFileSize(bytes: number): string {
       const waClean = sub.phone ? sub.phone.replace(/[^0-9]/g, '') : '';
       if (waClean) {
         const fullWa = waClean.startsWith('0') ? '62' + waClean.substring(1) : waClean;
-        subDetailWaBtn.href = `https://wa.me/${fullWa}?text=${encodeURIComponent(`Halo Bapak/Ibu ${authorName},\n\nKami dari Dewan Redaksi JTEBA (Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas) mengonfirmasi perihal manuskrip naskah Anda:\n\nNo. Registrasi: ${sub.regNumber}\nJudul: "${sub.title}"\n\n`)}`;
+        subDetailWaBtn.href = `https://wa.me/${fullWa}?text=${encodeURIComponent(`Halo Bapak/Ibu ${authorName},\n\nKami dari Dewan Redaksi (Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas) mengonfirmasi perihal manuskrip naskah Anda:\n\nNo. Registrasi: ${sub.regNumber}\nJudul: "${sub.title}"\n\n`)}`;
         subDetailWaBtn.style.display = '';
       } else {
         subDetailWaBtn.style.display = 'none';
@@ -3558,7 +3558,7 @@ function formatFileSize(bytes: number): string {
     }
 
     if (subDetailMailBtn) {
-      subDetailMailBtn.href = `mailto:${sub.email}?subject=${encodeURIComponent(`[JTEBA] Konfirmasi Naskah ${sub.regNumber}: ${sub.title}`)}`;
+      subDetailMailBtn.href = `mailto:${sub.email}?subject=${encodeURIComponent(`[${journalShortName || 'JURNAL'}] Konfirmasi Naskah ${sub.regNumber}: ${sub.title}`)}`;
     }
 
     subModal?.classList.remove('hidden');
@@ -3839,7 +3839,7 @@ function formatFileSize(bytes: number): string {
   // Hapus Naskah Masuk (Modal Kustom & Hapus Baris)
   document.querySelectorAll<HTMLButtonElement>('.btn-delete-submission').forEach((btn) => {
     btn.addEventListener('click', () => {
-      sessionStorage.setItem('jteba_active_tab', 'tab-submissions-list');
+      sessionStorage.setItem('journal_active_tab', 'tab-submissions-list');
       const reg = btn.getAttribute('data-reg');
       const title = btn.getAttribute('data-title') || reg;
       if (!reg) return;
@@ -3885,7 +3885,7 @@ function formatFileSize(bytes: number): string {
   const formEic = document.getElementById('form-eic');
   formEic?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    sessionStorage.setItem('jteba_active_tab', 'tab-editorial-settings');
+    sessionStorage.setItem('journal_active_tab', 'tab-editorial-settings');
     const name = (document.getElementById('eic-name') as HTMLInputElement).value;
     const affiliation = (document.getElementById('eic-affil') as HTMLInputElement).value;
     const email = (document.getElementById('eic-email') as HTMLInputElement).value;
@@ -3909,7 +3909,7 @@ function formatFileSize(bytes: number): string {
   const formAddEd = document.getElementById('form-add-editor');
   formAddEd?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    sessionStorage.setItem('jteba_active_tab', 'tab-editorial-settings');
+    sessionStorage.setItem('journal_active_tab', 'tab-editorial-settings');
     const name = (document.getElementById('new-ed-name') as HTMLInputElement).value;
     const role = (document.getElementById('new-ed-role') as HTMLInputElement).value;
     const affiliation = (document.getElementById('new-ed-affil') as HTMLInputElement).value;
@@ -3934,7 +3934,7 @@ function formatFileSize(bytes: number): string {
   const formAddRev = document.getElementById('form-add-reviewer');
   formAddRev?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    sessionStorage.setItem('jteba_active_tab', 'tab-editorial-settings');
+    sessionStorage.setItem('journal_active_tab', 'tab-editorial-settings');
     const name = (document.getElementById('new-rev-name') as HTMLInputElement).value;
     const affiliation = (document.getElementById('new-rev-affil') as HTMLInputElement).value;
 
@@ -3957,7 +3957,7 @@ function formatFileSize(bytes: number): string {
   // Hapus Anggota Tim Redaksi (Modal Kustom & Hapus Baris Tanpa Reload)
   document.querySelectorAll<HTMLButtonElement>('.btn-delete-member').forEach((btn) => {
     btn.addEventListener('click', () => {
-      sessionStorage.setItem('jteba_active_tab', 'tab-editorial-settings');
+      sessionStorage.setItem('journal_active_tab', 'tab-editorial-settings');
       const id = btn.getAttribute('data-id');
       if (!id) return;
       const row = btn.closest('tr');
@@ -4087,8 +4087,8 @@ function formatFileSize(bytes: number): string {
   });
 
   btnResetLogo?.addEventListener('click', () => {
-    if (inputLogo) inputLogo.value = '/images/logo-jteba.png';
-    if (imgLogo) imgLogo.src = '/images/logo-jteba.png';
+    if (inputLogo) inputLogo.value = '/images/logo.png';
+    if (imgLogo) imgLogo.src = '/images/logo.png';
     if (fileLogo) fileLogo.value = '';
     if (statusLogo) {
       statusLogo.textContent = 'Kembali ke default sistem';
@@ -4097,7 +4097,7 @@ function formatFileSize(bytes: number): string {
   });
 
   inputLogo?.addEventListener('input', () => {
-    if (imgLogo) imgLogo.src = inputLogo.value.trim() || '/images/logo-jteba.png';
+    if (imgLogo) imgLogo.src = inputLogo.value.trim() || '/images/logo.png';
   });
 
   const inputFav = document.getElementById('cfg-favicon-url') as HTMLInputElement;
@@ -4129,8 +4129,8 @@ function formatFileSize(bytes: number): string {
   });
 
   btnResetFav?.addEventListener('click', () => {
-    if (inputFav) inputFav.value = '/favicon-jteba.png';
-    if (imgFav) imgFav.src = '/favicon-jteba.png';
+    if (inputFav) inputFav.value = '/favicon.png';
+    if (imgFav) imgFav.src = '/favicon.png';
     if (fileFav) fileFav.value = '';
     if (statusFav) {
       statusFav.textContent = 'Kembali ke default sistem';
@@ -4139,7 +4139,7 @@ function formatFileSize(bytes: number): string {
   });
 
   inputFav?.addEventListener('input', () => {
-    if (imgFav) imgFav.src = inputFav.value.trim() || '/favicon-jteba.png';
+    if (imgFav) imgFav.src = inputFav.value.trim() || '/favicon.png';
   });
 
   const inputTpl = document.getElementById('cfg-template-url') as HTMLInputElement;
@@ -4233,9 +4233,9 @@ function formatFileSize(bytes: number): string {
       doiPrefix: (document.getElementById('cfg-doi-prefix') as HTMLInputElement).value,
       license: (document.getElementById('cfg-license') as HTMLInputElement).value,
       licenseUrl: (document.getElementById('cfg-license-url') as HTMLInputElement).value,
-      logoUrl: (document.getElementById('cfg-logo-url') as HTMLInputElement)?.value.trim() || '/images/logo-jteba.png',
-      faviconUrl: (document.getElementById('cfg-favicon-url') as HTMLInputElement)?.value.trim() || '/favicon-jteba.png',
-      templateUrl: (document.getElementById('cfg-template-url') as HTMLInputElement)?.value.trim() || '/template-jteba.docx',
+      logoUrl: (document.getElementById('cfg-logo-url') as HTMLInputElement)?.value.trim() || '/images/logo.png',
+      faviconUrl: (document.getElementById('cfg-favicon-url') as HTMLInputElement)?.value.trim() || '/favicon.png',
+      templateUrl: (document.getElementById('cfg-template-url') as HTMLInputElement)?.value.trim() || '/template-manuskrip.docx',
       turnitinMaxSimilarity: Number((document.getElementById('cfg-similarity') as HTMLInputElement).value) || 20,
       reviewTimeEstimate: (document.getElementById('cfg-review-time') as HTMLInputElement).value,
       institution: (document.getElementById('cfg-org-name') as HTMLInputElement)?.value,
@@ -4265,7 +4265,7 @@ function formatFileSize(bytes: number): string {
   // Toggle Visibilitas Tim Redaksi di Publik (Addon 1)
   const toggleEditorialTeam = document.getElementById('toggle-editorial-team') as HTMLInputElement | null;
   toggleEditorialTeam?.addEventListener('change', async () => {
-    sessionStorage.setItem('jteba_active_tab', 'tab-editorial-settings');
+    sessionStorage.setItem('journal_active_tab', 'tab-editorial-settings');
     try {
       const res = await fetch('/api/settings', {
         method: 'POST',
@@ -4291,7 +4291,7 @@ function formatFileSize(bytes: number): string {
   const activeIssueNotice = document.getElementById('active-issue-notice');
 
   toggleActiveIssue?.addEventListener('change', async () => {
-    sessionStorage.setItem('jteba_active_tab', 'tab-volume-settings');
+    sessionStorage.setItem('journal_active_tab', 'tab-volume-settings');
     const isChecked = toggleActiveIssue.checked;
     try {
       const res = await fetch('/api/issues', {
@@ -4311,7 +4311,7 @@ function formatFileSize(bytes: number): string {
             isChecked ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-amber-50 border-amber-200 text-amber-900'
           }`;
           activeIssueNotice.innerHTML = isChecked
-            ? '<p><strong>Status Terbitan Aktif:</strong> Halaman Beranda JTEBA dan menu <em>Current Issue</em> saat ini menampilkan edisi resmi beserta daftar artikel naskah yang telah terbit.</p>'
+            ? '<p><strong>Status Terbitan Aktif:</strong> Halaman Beranda Jurnal dan menu <em>Current Issue</em> saat ini menampilkan edisi resmi beserta daftar artikel naskah yang telah terbit.</p>'
             : '<p><strong>Status Call for Papers:</strong> Karena belum ada naskah yang diterbitkan, sistem menyajikan tampilan profesional <em>"Menuju Edisi Perdana / Call for Papers"</em> di seluruh halaman publik tanpa menampilkan volume rilis yang kosong.</p>';
         }
         showToast(
@@ -4333,7 +4333,7 @@ function formatFileSize(bytes: number): string {
   const formAddIssue = document.getElementById('form-add-issue');
   formAddIssue?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    sessionStorage.setItem('jteba_active_tab', 'tab-volume-settings');
+    sessionStorage.setItem('journal_active_tab', 'tab-volume-settings');
     const vol = Number((document.getElementById('new-issue-vol') as HTMLInputElement).value) || 1;
     const iss = Number((document.getElementById('new-issue-num') as HTMLInputElement).value) || 1;
     const year = Number((document.getElementById('new-issue-year') as HTMLInputElement).value) || new Date().getFullYear();
@@ -4372,7 +4372,7 @@ function formatFileSize(bytes: number): string {
   // Hapus Edisi (Addon 2)
   document.querySelectorAll<HTMLButtonElement>('.btn-delete-issue').forEach((btn) => {
     btn.addEventListener('click', async () => {
-      sessionStorage.setItem('jteba_active_tab', 'tab-volume-settings');
+      sessionStorage.setItem('journal_active_tab', 'tab-volume-settings');
       const id = btn.getAttribute('data-id');
       const label = btn.getAttribute('data-label') || 'Edisi ini';
       if (!id) return;
@@ -4402,7 +4402,7 @@ function formatFileSize(bytes: number): string {
   // Jadikan Terbitan Terkini (Addon 2)
   document.querySelectorAll<HTMLButtonElement>('.btn-set-current-issue').forEach((btn) => {
     btn.addEventListener('click', async () => {
-      sessionStorage.setItem('jteba_active_tab', 'tab-volume-settings');
+      sessionStorage.setItem('journal_active_tab', 'tab-volume-settings');
       const id = btn.getAttribute('data-id');
       const volume = Number(btn.getAttribute('data-volume'));
       const issue = Number(btn.getAttribute('data-issue'));
@@ -4431,7 +4431,7 @@ function formatFileSize(bytes: number): string {
   const formVolume = document.getElementById('form-volume-settings');
   formVolume?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    sessionStorage.setItem('jteba_active_tab', 'tab-volume-settings');
+    sessionStorage.setItem('journal_active_tab', 'tab-volume-settings');
     const data = {
       currentVolume: Number((document.getElementById('cfg-vol-num') as HTMLInputElement).value) || 1,
       currentIssue: Number((document.getElementById('cfg-issue-num') as HTMLInputElement).value) || 1,
@@ -4462,7 +4462,7 @@ function formatFileSize(bytes: number): string {
   const formAnnouncement = document.getElementById('form-announcement-settings');
   formAnnouncement?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    sessionStorage.setItem('jteba_active_tab', 'tab-announcement-settings');
+    sessionStorage.setItem('journal_active_tab', 'tab-announcement-settings');
     const data = {
       announcementActive: (document.getElementById('cfg-ann-active') as HTMLInputElement).checked,
       announcementTitle: (document.getElementById('cfg-ann-title') as HTMLInputElement).value,
@@ -4627,8 +4627,8 @@ function formatFileSize(bytes: number): string {
     const base = (gdriveUrlInput?.value || '').replace(/\/$/, '');
     const path = (gdrivePathInput?.value || '').replace(/^\//, '').replace(/\/$/, '');
     const full = path
-      ? `${base}/${path}/JTEBA_V1N1_01_artikel-penelitian.pdf`
-      : `${base}/JTEBA_V1N1_01_artikel-penelitian.pdf`;
+      ? `${base}/${path}/OSJ_V1N1_01_artikel-penelitian.pdf`
+      : `${base}/OSJ_V1N1_01_artikel-penelitian.pdf`;
     previewPdfLink.textContent = full;
   }
 

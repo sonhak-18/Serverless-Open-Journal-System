@@ -30,7 +30,7 @@ const d1 = (Astro.locals as any)?.runtime?.env?.DB;
 const kv = (Astro.locals as any)?.runtime?.env?.KV;
 const journalConfig = await getCachedSettings(kv, d1);
 
-const effectiveFavicon = faviconUrl || journalConfig.branding?.faviconUrl || '/favicon-jteba.png';
+const effectiveFavicon = faviconUrl || journalConfig.branding?.faviconUrl || '/favicon.png';
 const cacheBuster = '20261017v2';
 const faviconWithVersion = effectiveFavicon.startsWith('data:') ? effectiveFavicon : `${effectiveFavicon}?v=${cacheBuster}`;
 
