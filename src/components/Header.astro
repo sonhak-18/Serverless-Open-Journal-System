@@ -1,8 +1,14 @@
 ---
-import { getDbSettings } from '../lib/db';
+import { getCachedSettings } from '../lib/kv';
+import type { JournalConfig } from '../config/journal';
+
+interface Props {
+  journalConfig?: JournalConfig;
+}
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
-const journalConfig = await getDbSettings(d1);
+const kv = (Astro.locals as any)?.runtime?.env?.KV;
+const journalConfig = Astro.props.journalConfig || await getCachedSettings(kv, d1);
 
 const pathname = Astro.url.pathname;
 const rawLogo = journalConfig.branding?.logoUrl || '/images/logo-jteba.png';

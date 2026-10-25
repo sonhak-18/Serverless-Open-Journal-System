@@ -1,4 +1,4 @@
-import { getDbSettings, getDbArticles, getDbEditorial, type SektansiaDatabase } from './db';
+import { getDbSettings, getDbArticles, getDbEditorial, getDbIndexing, type SektansiaDatabase, type IndexingPlatform } from './db';
 import type { JournalConfig } from '../config/journal';
 import type { Article } from '../data/articles';
 
@@ -96,37 +96,78 @@ export async function kvGetCounter(key: string, defaultValue = 0, kv?: any): Pro
   return localCounters.get(key) ?? defaultValue;
 }
 
-// ==========================================
-// CACHE-ASIDE PATTERN UNTUK DATA UTAMA
-// ==========================================
+// Cache-aside pattern untuk data utama & micro-memoization per worker isolate
+let memoSettings: { data: JournalConfig; exp: number } | null = null;
+let memoArticles: { data: Article[]; exp: number } | null = null;
+let memoEditorial: { data: any; exp: number } | null = null;
+let memoIndexing: { data: IndexingPlatform[]; exp: number } | null = null;
+const MEMO_TTL = 3000; // 3 detik per isolate untuk eliminasi query redundan antar komponen SSR
 
 export async function getCachedSettings(kv?: any, d1?: any): Promise<JournalConfig> {
+  const now = Date.now();
+  if (memoSettings && now < memoSettings.exp) return memoSettings.data;
+
   const cacheKey = 'cache:journal:settings';
   const cached = await kvGet<JournalConfig>(cacheKey, kv);
-  if (cached) return cached;
+  if (cached) {
+    memoSettings = { data: cached, exp: now + MEMO_TTL };
+    return cached;
+  }
 
   const fresh = await getDbSettings(d1);
   await kvSet(cacheKey, fresh, 86400, kv); // Cache 24 jam
+  memoSettings = { data: fresh, exp: now + MEMO_TTL };
   return fresh;
 }
 
 export async function getCachedArticles(kv?: any, d1?: any): Promise<Article[]> {
+  const now = Date.now();
+  if (memoArticles && now < memoArticles.exp) return memoArticles.data;
+
   const cacheKey = 'cache:articles:all';
   const cached = await kvGet<Article[]>(cacheKey, kv);
-  if (cached) return cached;
+  if (cached) {
+    memoArticles = { data: cached, exp: now + MEMO_TTL };
+    return cached;
+  }
 
   const fresh = await getDbArticles(d1);
   await kvSet(cacheKey, fresh, 86400, kv);
+  memoArticles = { data: fresh, exp: now + MEMO_TTL };
   return fresh;
 }
 
 export async function getCachedEditorial(kv?: any, d1?: any) {
+  const now = Date.now();
+  if (memoEditorial && now < memoEditorial.exp) return memoEditorial.data;
+
   const cacheKey = 'cache:editorial:all';
   const cached = await kvGet(cacheKey, kv);
-  if (cached) return cached;
+  if (cached) {
+    memoEditorial = { data: cached, exp: now + MEMO_TTL };
+    return cached;
+  }
 
   const fresh = await getDbEditorial(d1);
   await kvSet(cacheKey, fresh, 86400, kv);
+  memoEditorial = { data: fresh, exp: now + MEMO_TTL };
+  return fresh;
+}
+
+export async function getCachedIndexing(kv?: any, d1?: any): Promise<IndexingPlatform[]> {
+  const now = Date.now();
+  if (memoIndexing && now < memoIndexing.exp) return memoIndexing.data;
+
+  const cacheKey = 'cache:indexing:all';
+  const cached = await kvGet<IndexingPlatform[]>(cacheKey, kv);
+  if (cached) {
+    memoIndexing = { data: cached, exp: now + MEMO_TTL };
+    return cached;
+  }
+
+  const fresh = await getDbIndexing(d1);
+  await kvSet(cacheKey, fresh, 86400, kv);
+  memoIndexing = { data: fresh, exp: now + MEMO_TTL };
   return fresh;
 }
 
@@ -134,10 +175,15 @@ export async function getCachedEditorial(kv?: any, d1?: any) {
  * Otomatis menghapus seluruh cache saat admin melakukan perubahan di GUI
  */
 export async function invalidateJournalCache(kv?: any): Promise<void> {
+  memoSettings = null;
+  memoArticles = null;
+  memoEditorial = null;
+  memoIndexing = null;
   await Promise.all([
     kvDelete('cache:journal:settings', kv),
     kvDelete('cache:articles:all', kv),
     kvDelete('cache:editorial:all', kv),
+    kvDelete('cache:indexing:all', kv),
   ]);
   console.log('[KV] Seluruh cache edge berhasil di-flush.');
 }

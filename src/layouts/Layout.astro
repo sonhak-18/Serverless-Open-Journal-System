@@ -2,7 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { getPdfDownloadUrl } from '../config/journal';
-import { getDbSettings } from '../lib/db';
+import { getCachedSettings } from '../lib/kv';
 import type { Article } from '../data/articles';
 import '../styles/global.css';
 
@@ -27,7 +27,8 @@ const {
 } = Astro.props;
 
 const d1 = (Astro.locals as any)?.runtime?.env?.DB;
-const journalConfig = await getDbSettings(d1);
+const kv = (Astro.locals as any)?.runtime?.env?.KV;
+const journalConfig = await getCachedSettings(kv, d1);
 
 const effectiveFavicon = faviconUrl || journalConfig.branding?.faviconUrl || '/favicon-jteba.png';
 const cacheBuster = '20261017v2';
@@ -116,11 +117,11 @@ if (article) {
     )}
   </head>
   <body data-article-slug={article?.slug} class="min-h-screen flex flex-col bg-academic-paper text-academic-ink selection:bg-red-100 selection:text-academic-navy">
-    {showHeader && <Header />}
+    {showHeader && <Header journalConfig={journalConfig} />}
     <main class="flex-grow">
       <slot />
     </main>
-    {showFooter && <Footer />}
+    {showFooter && <Footer journalConfig={journalConfig} />}
 
     <script>
       // 1. Client-Side Security Hygiene: Bersihkan token sensitif dari client storage jika pernah tersimpan

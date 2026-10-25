@@ -157,6 +157,18 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
+    // Validasi format alamat email RFC 5322 standar
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+    if (!emailRegex.test(email)) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Format alamat surel tidak valid. Pastikan penulisan email sudah benar.',
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     // Manuscript file validation
     const file = formData.get('manuscriptFile') as File | null;
     if (!file || !(file instanceof File) || file.size === 0) {
@@ -180,7 +192,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    const fileName = file.name;
+    const rawFileName = file.name;
+    const fileName = rawFileName.replace(/[^a-zA-Z0-9._\-\s\(\)]/g, '_').trim();
     const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
     const allowedExtensions = ['.docx', '.doc', '.pdf'];
     if (!allowedExtensions.includes(fileExtension)) {
@@ -193,11 +206,31 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    // Supplementary file (optional)
+    // Supplementary file validation (ekstensi aman & batas ukuran 15 MB)
     const suppFile = formData.get('supplementaryFile') as File | null;
     let suppFileName = '';
+    const allowedSuppExtensions = ['.docx', '.doc', '.pdf', '.xlsx', '.xls', '.csv', '.zip', '.rar', '.txt', '.png', '.jpg', '.jpeg'];
     if (suppFile && suppFile instanceof File && suppFile.size > 0) {
-      suppFileName = suppFile.name;
+      if (suppFile.size > MAX_SIZE) {
+        return new Response(JSON.stringify({
+          success: false,
+          error: 'Ukuran berkas lampiran tambahan melebihi batas maksimal 15 MB.',
+        }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      const suppExt = suppFile.name.substring(suppFile.name.lastIndexOf('.')).toLowerCase();
+      if (!allowedSuppExtensions.includes(suppExt)) {
+        return new Response(JSON.stringify({
+          success: false,
+          error: 'Format berkas lampiran tambahan tidak diizinkan. Gunakan berkas dokumen, spreadsheet, arsip data, atau gambar pendukung.',
+        }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      suppFileName = suppFile.name.replace(/[^a-zA-Z0-9._\-\s\(\)]/g, '_').trim();
     }
 
     // Convert file to Base64 for outbound email attachment

@@ -74,6 +74,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     if (action === 'change_credentials') {
+      const session = await verifySession(request, kv);
+      if (!session) {
+        return new Response(JSON.stringify({ success: false, error: 'Akses ditolak: Anda harus login untuk mengubah kredensial portal.' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
       if (!currentPin) {
         return new Response(JSON.stringify({ success: false, error: 'Password / PIN saat ini wajib diisi.' }), {
           status: 400,

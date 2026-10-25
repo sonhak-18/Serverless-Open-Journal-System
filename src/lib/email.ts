@@ -1,3 +1,13 @@
+function escapeHtml(str: string): string {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 export interface SubmissionEmailPayload {
   apiKey: string;
   regNumber: string;
@@ -48,6 +58,19 @@ export async function sendSubmissionEmails(
     return { success: false, error: 'Resend API key tidak ditemukan.' };
   }
 
+  // Sanitasi data masukan penulis terhadap HTML Injection / XSS
+  const safeRegNumber = escapeHtml(regNumber);
+  const safeAuthorName = escapeHtml(authorName);
+  const safeAuthorEmail = escapeHtml(authorEmail);
+  const safeAuthorPhone = escapeHtml(authorPhone);
+  const safeAffiliation = escapeHtml(affiliation);
+  const safeScopeCluster = escapeHtml(scopeCluster);
+  const safeTitle = escapeHtml(title);
+  const safeAbstract = escapeHtml(abstract);
+  const safeFileName = escapeHtml(fileName);
+  const safeJournalName = escapeHtml(journalName);
+  const safeJournalShortName = escapeHtml(journalShortName);
+
   // Sender address: verified domain praniti.or.id
   const senderAddress = fromEmail || 'JTEBA Submission <noreply@praniti.or.id>';
 
@@ -59,7 +82,7 @@ export async function sendSubmissionEmails(
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
-    <title>[JTEBA] Penyerahan Naskah Baru &mdash; ${regNumber}</title>
+    <title>[JTEBA] Penyerahan Naskah Baru &mdash; ${safeRegNumber}</title>
     <style>
       body { margin: 0; padding: 24px 0; background-color: #f4f6f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b; -webkit-font-smoothing: antialiased; }
       @media only screen and (max-width: 480px) {
@@ -90,7 +113,7 @@ export async function sendSubmissionEmails(
                   ORGANISASI RISET DAN PUBLIKASI ILMIAH PRANITI
                 </div>
                 <h1 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; line-height: 1.35; font-family: Georgia, 'Times New Roman', serif;">
-                  ${journalName} (${journalShortName})
+                  ${safeJournalName} (${safeJournalShortName})
                 </h1>
                 <div style="font-size: 11px; color: #94a3b8; margin-top: 6px; font-family: 'Courier New', Courier, monospace;">
                   e-ISSN: 2999-7127 | p-ISSN: 2999-7119 | Peer-Reviewed &amp; Open Access
@@ -116,7 +139,7 @@ export async function sendSubmissionEmails(
                         <tr>
                           <td style="background-color: #ffffff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 4px 10px; text-align: center; box-shadow: 0 1px 2px rgba(15, 40, 78, 0.05); white-space: nowrap;">
                             <span style="font-size: 10px; font-weight: 700; color: #64748b; letter-spacing: 0.5px; text-transform: uppercase; margin-right: 4px;">ID:</span>
-                            <span style="font-family: 'Courier New', Courier, monospace; font-size: 12px; font-weight: 700; color: #0f284e; letter-spacing: 0.3px;">${regNumber}</span>
+                            <span style="font-family: 'Courier New', Courier, monospace; font-size: 12px; font-weight: 700; color: #0f284e; letter-spacing: 0.3px;">${safeRegNumber}</span>
                           </td>
                         </tr>
                       </table>
@@ -130,7 +153,7 @@ export async function sendSubmissionEmails(
             <tr>
               <td class="fluid-pad" style="padding: 28px 32px; font-size: 14px; line-height: 1.6; color: #334155;">
                 <div style="background-color: #eff6ff; border: 1px solid #bfdbfe; border-left: 4px solid #3b82f6; border-radius: 0 6px 6px 0; padding: 12px 16px; margin-bottom: 22px; font-size: 13px; color: #1e40af;">
-                  <strong>Petunjuk Balasan Redaksi:</strong> Anda dapat langsung menekan tombol <strong>&ldquo;Reply&rdquo; (Balas)</strong> di Gmail untuk merespons calon penulis. Alamat balasan otomatis diarahkan ke <code>${authorEmail}</code>.
+                  <strong>Petunjuk Balasan Redaksi:</strong> Anda dapat langsung menekan tombol <strong>&ldquo;Reply&rdquo; (Balas)</strong> di Gmail untuk merespons calon penulis. Alamat balasan otomatis diarahkan ke <code>${safeAuthorEmail}</code>.
                 </div>
 
                 <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 8px;">
@@ -139,19 +162,19 @@ export async function sendSubmissionEmails(
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 22px; font-size: 13px;">
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; width: 32%; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Nama Lengkap</td>
-                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; border-bottom: 1px solid #e2e8f0;">${authorName}</td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; border-bottom: 1px solid #e2e8f0;">${safeAuthorName}</td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Alamat Surel</td>
-                    <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0;"><a href="mailto:${authorEmail}" style="color: #0369a1; text-decoration: underline;">${authorEmail}</a></td>
+                    <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0;"><a href="mailto:${safeAuthorEmail}" style="color: #0369a1; text-decoration: underline;">${safeAuthorEmail}</a></td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">WhatsApp / Telepon</td>
-                    <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0;"><a href="https://wa.me/${authorPhone.replace(/[^0-9]/g, '')}" style="color: #047857; text-decoration: none; font-weight: 600;">${authorPhone}</a></td>
+                    <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0;"><a href="https://wa.me/${authorPhone.replace(/[^0-9]/g, '')}" style="color: #047857; text-decoration: none; font-weight: 600;">${safeAuthorPhone}</a></td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9;">Afiliasi / Institusi</td>
-                    <td style="padding: 10px 14px; color: #1e293b;">${affiliation}</td>
+                    <td style="padding: 10px 14px; color: #1e293b;">${safeAffiliation}</td>
                   </tr>
                 </table>
 
@@ -161,15 +184,15 @@ export async function sendSubmissionEmails(
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 22px; font-size: 13px;">
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; width: 32%; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Rumpun Fokus</td>
-                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; border-bottom: 1px solid #e2e8f0;">${scopeCluster}</td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; border-bottom: 1px solid #e2e8f0;">${safeScopeCluster}</td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Judul Manuskrip</td>
-                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; line-height: 1.4; border-bottom: 1px solid #e2e8f0;">${title}</td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; line-height: 1.4; border-bottom: 1px solid #e2e8f0;">${safeTitle}</td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9;">Nama Berkas</td>
-                    <td style="padding: 10px 14px; font-family: 'Courier New', Courier, monospace; color: #334155;">${fileName}</td>
+                    <td style="padding: 10px 14px; font-family: 'Courier New', Courier, monospace; color: #334155;">${safeFileName}</td>
                   </tr>
                 </table>
 
@@ -213,7 +236,7 @@ export async function sendSubmissionEmails(
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
-    <title>[JTEBA] Tanda terima pengajuan naskah &mdash; ${regNumber}</title>
+    <title>[JTEBA] Tanda terima pengajuan naskah &mdash; ${safeRegNumber}</title>
     <style>
       body { margin: 0; padding: 24px 0; background-color: #f4f6f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b; -webkit-font-smoothing: antialiased; }
       @media only screen and (max-width: 480px) {
@@ -244,7 +267,7 @@ export async function sendSubmissionEmails(
                   ORGANISASI RISET DAN PUBLIKASI ILMIAH PRANITI
                 </div>
                 <h1 style="margin: 0; font-size: 20px; font-weight: 800; color: #ffffff; line-height: 1.35; font-family: Georgia, 'Times New Roman', serif;">
-                  ${journalName} (${journalShortName})
+                  ${safeJournalName} (${safeJournalShortName})
                 </h1>
                 <div style="font-size: 11px; color: #94a3b8; margin-top: 6px; font-family: 'Courier New', Courier, monospace;">
                   e-ISSN: 2999-7127 | p-ISSN: 2999-7119 | Peer-Reviewed &amp; Open Access
@@ -270,7 +293,7 @@ export async function sendSubmissionEmails(
                         <tr>
                           <td style="background-color: #ffffff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 4px 10px; text-align: center; box-shadow: 0 1px 2px rgba(15, 40, 78, 0.05); white-space: nowrap;">
                             <span style="font-size: 10px; font-weight: 700; color: #64748b; letter-spacing: 0.5px; text-transform: uppercase; margin-right: 4px;">ID:</span>
-                            <span style="font-family: 'Courier New', Courier, monospace; font-size: 12px; font-weight: 700; color: #0f284e; letter-spacing: 0.3px;">${regNumber}</span>
+                            <span style="font-family: 'Courier New', Courier, monospace; font-size: 12px; font-weight: 700; color: #0f284e; letter-spacing: 0.3px;">${safeRegNumber}</span>
                           </td>
                         </tr>
                       </table>
@@ -285,32 +308,32 @@ export async function sendSubmissionEmails(
               <td class="fluid-pad" style="padding: 28px 32px; font-size: 14px; line-height: 1.6; color: #334155;">
                 <p style="margin: 0 0 16px 0; color: #1e293b;">
                   Kepada Yth.<br>
-                  <strong style="color: #0f284e; font-size: 15px;">${authorName}</strong><br>
-                  <span style="color: #64748b; font-size: 13px;">${affiliation}</span>
+                  <strong style="color: #0f284e; font-size: 15px;">${safeAuthorName}</strong><br>
+                  <span style="color: #64748b; font-size: 13px;">${safeAffiliation}</span>
                 </p>
 
                 <p style="margin: 0 0 18px 0;">
                   Dengan hormat,<br>
-                  Terima kasih telah mengajukan manuskrip artikel ilmiah Anda ke <strong>${journalName} (${journalShortName})</strong>. Berkas manuskrip Anda telah <strong>berhasil diterima</strong> oleh sistem redaksi kami dan telah masuk ke dalam antrean penelaahan awal (<em>initial desk review</em>).
+                  Terima kasih telah mengajukan manuskrip artikel ilmiah Anda ke <strong>${safeJournalName} (${safeJournalShortName})</strong>. Berkas manuskrip Anda telah <strong>berhasil diterima</strong> oleh sistem redaksi kami dan telah masuk ke dalam antrean penelaahan awal (<em>initial desk review</em>).
                 </p>
 
                 <!-- Detail Table -->
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 24px; font-size: 13px;">
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; width: 32%; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">ID Registrasi</td>
-                    <td style="padding: 10px 14px; font-family: 'Courier New', Courier, monospace; font-weight: 700; color: #0f284e; border-bottom: 1px solid #e2e8f0;">${regNumber}</td>
+                    <td style="padding: 10px 14px; font-family: 'Courier New', Courier, monospace; font-weight: 700; color: #0f284e; border-bottom: 1px solid #e2e8f0;">${safeRegNumber}</td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Judul Manuskrip</td>
-                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; line-height: 1.4; border-bottom: 1px solid #e2e8f0;">${title}</td>
+                    <td style="padding: 10px 14px; font-weight: 700; color: #0f284e; line-height: 1.4; border-bottom: 1px solid #e2e8f0;">${safeTitle}</td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Rumpun Fokus</td>
-                    <td style="padding: 10px 14px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">${scopeCluster}</td>
+                    <td style="padding: 10px 14px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">${safeScopeCluster}</td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9; border-bottom: 1px solid #e2e8f0;">Nama Berkas</td>
-                    <td style="padding: 10px 14px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #334155; border-bottom: 1px solid #e2e8f0;">${fileName}</td>
+                    <td style="padding: 10px 14px; font-family: 'Courier New', Courier, monospace; font-size: 12px; color: #334155; border-bottom: 1px solid #e2e8f0;">${safeFileName}</td>
                   </tr>
                   <tr>
                     <td style="padding: 10px 14px; font-weight: 700; color: #475569; background-color: #f1f5f9;">Status Tahapan</td>
@@ -358,7 +381,7 @@ export async function sendSubmissionEmails(
                 </table>
 
                 <p style="margin: 0 0 24px 0; font-size: 13px; color: #475569;">
-                  Apabila Anda memiliki pertanyaan, silakan membalas surel ini dengan menyertakan Nomor Registrasi naskah (<code>${regNumber}</code>).
+                  Apabila Anda memiliki pertanyaan, silakan membalas surel ini dengan menyertakan Nomor Registrasi naskah (<code>${safeRegNumber}</code>).
                 </p>
 
                 <!-- Tanda Tangan -->
@@ -367,7 +390,7 @@ export async function sendSubmissionEmails(
                     <td>
                       <div style="font-size: 13px; color: #64748b; margin-bottom: 4px;">Hormat kami,</div>
                       <div style="font-size: 15px; font-weight: 800; color: #0f284e; font-family: Georgia, serif;">
-                        Dewan Redaksi ${journalShortName}
+                        Dewan Redaksi ${safeJournalShortName}
                       </div>
                       <div style="font-size: 12px; font-weight: 600; color: #c89b3c; margin-top: 1px;">
                         Editorial Board
@@ -385,7 +408,7 @@ export async function sendSubmissionEmails(
             <tr>
               <td class="fluid-pad" style="background-color: #0a1a33; padding: 24px 32px; border-top: 1px solid #1e293b; color: #94a3b8; font-size: 11px; line-height: 1.6; text-align: center;">
                 <div style="font-weight: 700; color: #e2e8f0; margin-bottom: 4px;">
-                  Dewan Redaksi ${journalShortName} &mdash; Organisasi Riset dan Publikasi Ilmiah Praniti
+                  Dewan Redaksi ${safeJournalShortName} &mdash; Organisasi Riset dan Publikasi Ilmiah Praniti
                 </div>
                 <div style="color: #cbd5e1;">
                   Sekretariat: Mojokerto, Jawa Timur, Indonesia
@@ -413,7 +436,7 @@ export async function sendSubmissionEmails(
       from: senderAddress,
       to: [destinationEmail],
       reply_to: authorEmail,
-      subject: `[${regNumber}] Penyerahan Naskah: ${title.slice(0, 60)}${title.length > 60 ? '...' : ''} - ${authorName}`,
+      subject: `[${safeRegNumber}] Penyerahan Naskah: ${title.slice(0, 60)}${title.length > 60 ? '...' : ''} - ${safeAuthorName}`,
       html: editorialHtml,
     };
 
@@ -457,7 +480,7 @@ export async function sendSubmissionEmails(
           from: senderAddress,
           to: [authorEmail],
           reply_to: destinationEmail,
-          subject: `[${regNumber}] Konfirmasi Penerimaan Naskah - ${journalShortName}`,
+          subject: `[${safeRegNumber}] Konfirmasi Penerimaan Naskah - ${safeJournalShortName}`,
           html: authorHtml,
         }),
       });
