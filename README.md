@@ -1,6 +1,23 @@
 # Serverless Open Journal System (OJS)
 
-Platform web publikasi jurnal ilmiah modern berbasis **Astro + Tailwind CSS** yang dirancang untuk di-host **100% tanpa biaya operasional (Rp 0)** di atas infrastruktur serverless **Cloudflare Pages**, **Cloudflare D1** (SQLite Relasional di Edge), dan **Cloudflare Workers KV** (Global Edge Cache & Real-Time Metrics). Mempertahankan presisi estetika klasik Open Journal Systems (OJS) dengan kecepatan pemuatan halaman edge ultra-cepat dan keandalan tinggi.
+<p align="center">
+  <a href="https://astro.build"><img src="https://img.shields.io/badge/Astro-5.x-BC52EE?style=for-the-badge&logo=astro&logoColor=white" alt="Astro"></a>
+  <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"></a>
+  <a href="https://pages.cloudflare.com"><img src="https://img.shields.io/badge/Cloudflare_Pages-Serverless-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare Pages"></a>
+  <a href="https://developers.cloudflare.com/d1/"><img src="https://img.shields.io/badge/Cloudflare_D1-SQLite_Edge-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare D1"></a>
+  <a href="https://developers.cloudflare.com/kv/"><img src="https://img.shields.io/badge/Workers_KV-Edge_Cache-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Workers KV"></a>
+  <a href="https://resend.com"><img src="https://img.shields.io/badge/Resend-Transactional_Email-000000?style=for-the-badge&logo=resend&logoColor=white" alt="Resend"></a>
+  <a href="https://scholar.google.com"><img src="https://img.shields.io/badge/Google_Scholar-Metadata_Ready-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white" alt="Google Scholar"></a>
+  <a href="https://crossref.org"><img src="https://img.shields.io/badge/Crossref-DOI_Compliant-F68212?style=for-the-badge&logoColor=white" alt="Crossref"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License MIT"></a>
+  <a href="https://cloudflare.com"><img src="https://img.shields.io/badge/Hosting_Cost-Rp0_%2F_%240-success?style=for-the-badge" alt="Free Hosting"></a>
+  <a href="https://pages.cloudflare.com"><img src="https://img.shields.io/badge/TTFB-%3C50ms-brightgreen?style=for-the-badge" alt="Fast TTFB"></a>
+  <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://img.shields.io/badge/Open_Access-CC_BY--SA_4.0-orange?style=for-the-badge" alt="Open Access"></a>
+</p>
+
+Platform web publikasi jurnal ilmiah modern berbasis **Astro + Tailwind CSS** yang dirancang untuk di-host **100% tanpa biaya operasional (Rp 0)** di atas infrastruktur serverless **Cloudflare Pages**, **Cloudflare D1** (SQLite Relasional di Edge), dan **Cloudflare Workers KV** (Global Edge Cache & Real-Time Metrics). 
+
+Mempertahankan presisi estetika klasik Open Journal Systems (OJS) dengan kecepatan pemuatan halaman edge ultra-cepat, kepatuhan sitasi Google Scholar otomatis, dan keandalan tinggi tanpa beban pemeliharaan server fisik.
 
 ---
 
@@ -163,33 +180,119 @@ flowchart TD
 
 ---
 
-## 5. Fitur Utama Platform
+## 5. Rincian Konfigurasi Teknis (Setup Presisi Standar Produksi)
 
-1. **Tata Letak Klasik OJS 2-Kolom yang Responsif:**  
-   Proporsi visual mengikuti standar baku OJS (area konten naskah, sidebar standarisasi, tombol PDF orisinal, serta nomor halaman rata kanan) dengan performa responsif modern di layar ponsel maupun desktop.
-2. **Penampil PDF Native Browser:**  
-   Naskah dibuka menggunakan engine PDF bawaan peramban (*Chrome, Edge, Safari, Firefox*) yang mendukung *thumbnail*, pemilihan teks, pencarian kata kunci, serta tombol unduh dan cetak tanpa beban skrip pihak ketiga yang lambat.
-3. **Formulir Pengajuan Naskah Ringkas 1 Layar:**  
-   Menghilangkan alur 5-langkah OJS konvensional. Penulis cukup mengisi data penulis, judul, abstrak, dan mengunggah berkas naskah (.docx/.pdf) dalam satu formulir bersih dengan proteksi *honeypot* anti-spam.
-4. **Penomoran Registrasi Naskah Otomatis di Edge (`SUB-YYYYMM-XXXX`):**  
-   Setiap pendaftaran naskah langsung mendapatkan nomor registrasi berurutan yang tersimpan di tabel `journal_submissions` SQLite D1.
-5. **Notifikasi Surel Otomatis via Resend API dengan Dukungan `Reply-To`:**  
-   Naskah terlampir otomatis ke surel notifikasi redaksi. Ketika editor menekan tombol **"Reply"** di aplikasi surel, surel langsung tertuju ke calon penulis tanpa perlu menyalin alamat secara manual.
-6. **Panel Redaksi Admin GUI Lengkap:**  
-   - **Naskah Masuk (*Submissions Studio*):** Menampilkan daftar naskah masuk, filter status (*Submitted, Under Review, Revision, Accepted, Declined*), pratinjau detail abstrak, aksi perubahan status, dan tombol kontak instan (Surel & WhatsApp).
-   - **Penerbitan Artikel:** Publikasi naskah baru dengan generator slug URL otomatis, isian multi-penulis, abstrak dwibahasa, kata kunci, dan penomoran DOI.
-   - **Manajemen Edisi:** Pembuatan volume, nomor terbitan, saklar mode *Call for Papers*, dan pemilihan terbitan terkini (*Current Issue*).
-   - **Profil & Legalitas Jurnal:** Pengaturan nama jurnal, inisial akronim, frekuensi terbit, batas Turnitin, nomor e-ISSN/p-ISSN, serta pengunggah berkas logo, favicon, dan templat Word (.docx).
-   - **Dewan Redaksi & Reviewer:** Pengelolaan susunan Pemimpin Redaksi (*Editor-in-Chief*), dewan editor, dan mitra bestari beserta afiliasi instansinya.
-   - **Pengindeksan Ilmiah:** Pengaturan tautan pangkalan data pengindeks (Google Scholar, Garuda, Crossref, Dimensions, SINTA) beserta status keterlihatan di sidebar.
-7. **Validasi Numerasi ISSN ISO 3297 Modulo 11 & Barcode GS1 EAN-13 SVG:**  
-   Pemeriksaan algoritma *check digit* Modulo 11 otomatis pada formulir admin dan pembuatan barcode vektor GS1 EAN-13 SVG presisi yang tampil di sidebar publik tanpa dependensi eksternal.
-8. **100% Kepatuhan Metadata Google Scholar & Mesin Perayap Akademik:**  
-   Tag sitasi akademik standar internasional (`citation_title`, `citation_author`, `citation_pdf_url`, `citation_journal_title`, `citation_volume`, `citation_issue`, `citation_doi`) disematkan otomatis pada setiap halaman artikel.
-9. **Penghitung Metrik Kunjungan & Unduhan Real-Time:**  
-   Setiap pembacaan abstrak (*Abstract Views*) dan pengunduhan PDF (*PDF Downloads*) dicatat secara atomik di Cloudflare Workers KV tanpa membebani database utama.
-10. **Mesin Pencarian Naskah Terpadu (`/search`):**  
-    Pencarian artikel ilmiah multi-parameter berdasarkan judul, abstrak, nama penulis, afiliasi instansi, dan tahun publikasi.
+Bagian ini menguraikan secara rinci seluruh detail konfigurasi teknis yang membuat sistem ini beroperasi dengan standar mutu yang sama persis dengan jurnal akademik bereputasi.
+
+### A. Integrasi Surel Transaksional (Resend API & Cloudflare Email Routing)
+
+Sistem menggunakan [Resend](https://resend.com) untuk mengirimkan surel pemberitahuan penyerahan naskah dan surat penerimaan (*Letter of Acceptance* - LoA).
+
+#### 1. Format Header & Alur Surel Korespondensi:
+* **Pengirim Resmi (`From`):** `Dewan Redaksi [NAMA JURNAL] <noreply@domain-anda.ac.id>`
+* **Penerima Notifikasi (`To`):** Alamat surel redaksi yang diatur di database (misal: `redaksi@domain-anda.ac.id`).
+* **Kunci Korespondensi (`Reply-To`):** Header `Reply-To` diisi dengan **alamat surel penulis korespondensi**.
+  > **Manfaat Praktis bagi Editor:** Ketika dewan redaksi membuka surel naskah baru di Gmail atau aplikasi surat lainnya dan menekan tombol **"Reply" (Balas)**, surat balasan akan otomatis tertuju langsung ke penulis tanpa perlu menyalin alamat surel secara manual.
+* **Format Subjek Surel Baku:**
+  `[[SINGKATAN JURNAL]] Penyerahan Naskah Baru — SUB-YYYYMM-XXXX: [Judul Artikel]`  
+  Subjek baku ini memastikan seluruh utas percakapan (*conversation threading*) di Gmail tersusun rapi per naskah.
+
+#### 2. Konfigurasi DNS Domain di Cloudflare untuk Resend:
+Agar surel tidak masuk ke folder *Spam*, tambahkan 3 rekaman DNS berikut di dashboard Cloudflare:
+| Tipe | Nama Record | Isi / Konten | Catatan |
+|---|---|---|---|
+| `TXT` | `resend._domainkey` | `k=rsa; p=[KUNCI_DKIM_DARI_RESEND]` | Tanda tangan digital DKIM |
+| `MX` | `feedback` | `feedback-smtp.us-east-1.amazonses.com` (Prioritas 10) | Penanganan bounce mail |
+| `TXT` | `_dmarc` | `v=DMARC1; p=none;` | Proteksi spoofing DMARC |
+
+#### 3. Setup Cloudflare Email Routing Gratis (Tanpa Sewa Google Workspace):
+Jika institusi Anda belum berlangganan Google Workspace berbayar:
+1. Aktifkan **Email Routing** di dashboard Cloudflare pada domain Anda.
+2. Buat aturan rute khusus: `redaksi@domain-anda.ac.id` diteruskan (*forward*) ke `email.pribadi.editor@gmail.com`.
+3. Seluruh naskah yang diajukan penulis akan masuk langsung ke Gmail pribadi editor secara gratis, resmi, dan tepercaya.
+
+---
+
+### B. Repositori Dokumen PDF & Integrasi Google Drive Index CDN
+
+Sistem memisahkan berkas dokumen naskah (5–20 MB) dari database teks agar performa database tetap instan.
+
+#### 1. Konvensi Penamaan Berkas PDF Resmi:
+Gunakan format penamaan terstruktur untuk seluruh naskah yang diterbitkan:
+`[SINGKATAN]_V[VOL]N[ISS]_[NO]_[SLUG_PENDEK].pdf`
+* *Contoh:* `JOST_V1N1_01_akuntansi-keberlanjutan.pdf`
+* *Contoh:* `JOST_V1N1_02_pengaruh-tata-kelola.pdf`
+
+#### 2. Alur Pengaturan Penyimpanan di Google Drive:
+1. Buat folder publik di Google Drive (atau Google Shared Drive) khusus naskah PDF terbitan.
+2. Atur izin berbagi folder menjadi **"Siapa saja yang memiliki tautan dapat melihat"** (*Anyone with link can view*).
+3. Jika menggunakan *Repository Worker* bawaan (`repository-worker/`), pasang URL basis CDN di tab **Google Drive Index** pada Panel Admin (`/index/journal/admin`):
+   * *URL Basis Index:* `https://cdn.domain-anda.ac.id/one`
+   * *Direktori Khusus (Opsional):* Kosongkan jika berkas diletakkan di root folder drive, atau isi `PDFs/Vol1` jika di dalam sub-folder.
+4. Di formulir penerbitan artikel, editor cukup memasukkan nama berkas (misal `JOST_V1N1_01_akuntansi-keberlanjutan.pdf`). Sistem akan otomatis menghasilkan tautan unduh resmi:
+   `https://cdn.domain-anda.ac.id/one/JOST_V1N1_01_akuntansi-keberlanjutan.pdf`
+5. **Mode Unduh vs Tampil:**
+   * Tautan standar otomatis membuka penampil PDF bawaan peramban (*inline*).
+   * Menambahkan parameter `?download=true` akan memaksa peramban memunculkan dialog unduh berkas secara langsung.
+
+---
+
+### C. Kepatuhan Metadata Sitasi Google Scholar & Mesin Perayap Akademik
+
+Setiap halaman naskah ([`src/pages/index/journal/article/[slug].astro`](file:///d:/Gits/Public/Serverless-Open-Journal-System/src/pages/index/journal/article/[slug].astro)) secara otomatis menginjeksi tag meta sitasi akademik standar *Highwire Press / Google Scholar* pada bagian `<head>`:
+
+```html
+<!-- Tag Meta Standar Google Scholar & Mesin Pengindeks Akademik Global -->
+<meta name="citation_journal_title" content="Jurnal Sains dan Teknologi Terbuka" />
+<meta name="citation_title" content="Analisis Pengaruh Akuntabilitas Lingkungan terhadap Kinerja Keuangan" />
+<meta name="citation_author" content="Pratama, Budi" />
+<meta name="citation_author_institution" content="Universitas Indonesia" />
+<meta name="citation_publication_date" content="2026/03/01" />
+<meta name="citation_volume" content="1" />
+<meta name="citation_issue" content="1" />
+<meta name="citation_firstpage" content="1" />
+<meta name="citation_lastpage" content="15" />
+<meta name="citation_doi" content="https://doi.org/10.00000/jost.v1i1.1" />
+<meta name="citation_pdf_url" content="https://cdn.domain-anda.ac.id/one/JOST_V1N1_01_akuntansi-keberlanjutan.pdf" />
+```
+
+#### Persyaratan Agar Google Scholar Merayap Situs Anda:
+1. **Domain Kustom Aktif:** Situs telah terhubung ke domain publik (bukan subdomain sementara).
+2. **Akses PDF Tanpa Autentikasi:** URL pada `citation_pdf_url` wajib dapat diakses langsung oleh bot perayap tanpa harus melewati halaman login, klik persetujuan, atau form captcha (sudah dipenuhi 100% oleh sistem ini).
+3. **Waktu Perayapan:** Google Scholar biasanya memerlukan waktu **1 hingga 3 minggu** sejak naskah pertama kali dipublikasikan untuk memasukkannya ke dalam basis data pencarian dan grafik sitasi penulis.
+
+---
+
+### D. Validasi Legalitas ISSN ISO 3297 Modulo 11 & Generator Barcode GS1 EAN-13
+
+Sistem dilengkapi generator barcode vektor mandiri di [`src/lib/issn.ts`](file:///d:/Gits/Public/Serverless-Open-Journal-System/src/lib/issn.ts) yang mengimplementasikan dua standar internasional:
+
+1. **Validasi ISO 3297 (Algoritma Modulo 11 Berbobot):**
+   Nomor ISSN terdiri dari 8 digit (format `XXXX-XXXX`). Digit ke-8 adalah *Check Digit* (angka 0–9 atau huruf `X`) yang dihitung dengan rumus:
+   $$\text{Sum} = (d_1 \times 8) + (d_2 \times 7) + (d_3 \times 6) + (d_4 \times 5) + (d_5 \times 4) + (d_6 \times 3) + (d_7 \times 2)$$
+   $$\text{Remainder} = \text{Sum} \pmod{11}$$
+   $$\text{Check Digit} = \begin{cases} 0 & \text{jika Remainder} = 0 \\ 11 - \text{Remainder} & \text{jika } 1 \le 11 - \text{Remainder} \le 9 \\ \text{"X"} & \text{jika } 11 - \text{Remainder} = 10 \end{cases}$$
+   Panel admin secara *real-time* menampilkan lencana validasi hijau jika nomor ISSN sah secara matematis, atau peringatan merah berdenyut jika digit salah.
+
+2. **Pembuatan Barcode GS1 EAN-13 SVG:**
+   Ketika ISSN valid, sistem secara otomatis mengonversinya menjadi kode batang EAN-13 resmi:
+   `977` + `7 digit pertama ISSN` + `00` (kode varian publikasi) + `1 check digit EAN Modulo 10`. Barcode dirender dalam format **grafik vektor SVG murni** pada sidebar jurnal tanpa memuat gambar raster atau dependensi pustaka JavaScript eksternal.
+
+---
+
+### E. Penomoran DOI Resmi & Prosedur Deposit Crossref
+
+Format penomoran Digital Object Identifier (DOI) dibentuk secara konsisten menggunakan formula:
+`https://doi.org/[DOI_PREFIX]/[SINGKATAN_JURNAL].v[VOLUME]i[ISSUE].[NOMOR_URUT_ARTIKEL]`
+
+* *Contoh:* `https://doi.org/10.64417/jost.v1i1.1`
+* *Contoh:* `https://doi.org/10.64417/jost.v1i1.2`
+
+#### Prosedur Mendaftarkan DOI ke Crossref:
+1. Dapatkan akun keanggotaan Crossref (atau melalui asosiasi pengelola jurnal/konsorsium kampus).
+2. Setelah artikel diterbitkan di web, buka [Crossref Web Deposit Form](https://www.crossref.org/webDeposit/).
+3. Masukkan judul artikel, nama penulis, URL halaman artikel (`https://domain-anda.ac.id/index/journal/article/[slug]`), dan URL PDF.
+4. Tekan tombol submit. DOI akan aktif dan terhubung secara global dalam waktu 15–30 menit.
 
 ---
 
