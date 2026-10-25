@@ -98,10 +98,10 @@ function formatFileSize(bytes: number): string {
     </div>
 
     <!-- Floating Toast Notification (Fluid Popup) -->
-    <div id="admin-toast-container" class="fixed bottom-6 right-6 z-50 pointer-events-none max-w-sm sm:max-w-md w-full px-4 sm:px-0">
+    <div id="admin-toast-container" class="fixed top-6 right-6 z-50 pointer-events-none max-w-sm sm:max-w-md w-full px-4 sm:px-0">
       <div
         id="admin-toast"
-        class="pointer-events-auto transform transition-all duration-300 ease-out translate-y-4 opacity-0 hidden bg-white rounded-lg border shadow-xl p-3.5 text-xs sm:text-sm font-medium flex items-start justify-between gap-3"
+        class="pointer-events-auto transform transition-all duration-300 ease-out -translate-y-4 opacity-0 hidden bg-white rounded-lg border shadow-xl p-3.5 text-xs sm:text-sm font-medium flex items-start justify-between gap-3"
       >
         <div class="flex items-start gap-2.5 min-w-0">
           <span id="admin-toast-icon" class="shrink-0 mt-0.5 flex items-center"></span>
@@ -2889,7 +2889,7 @@ function formatFileSize(bytes: number): string {
     const toast = document.getElementById('admin-toast');
     if (!toast) return;
     toast.classList.remove('translate-y-0', 'opacity-100');
-    toast.classList.add('translate-y-4', 'opacity-0');
+    toast.classList.add('-translate-y-4', 'opacity-0');
     setTimeout(() => {
       toast.classList.add('hidden');
     }, 300);
@@ -2925,7 +2925,7 @@ function formatFileSize(bytes: number): string {
 
     toast.classList.remove('hidden');
     requestAnimationFrame(() => {
-      toast.classList.remove('translate-y-4', 'opacity-0');
+      toast.classList.remove('-translate-y-4', 'opacity-0');
       toast.classList.add('translate-y-0', 'opacity-100');
     });
 
