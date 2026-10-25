@@ -8,7 +8,7 @@ if (hasLocalConfig) {
 }
 
 try {
-  execSync('astro build && wrangler pages deploy dist --project-name sektansia-press', { stdio: 'inherit' });
+  execSync('node ./node_modules/astro/astro.js build && node ./node_modules/wrangler/bin/wrangler.js pages deploy dist --project-name jteba-open-journal-system --commit-dirty=true', { stdio: 'inherit' });
 } finally {
   if (hasLocalConfig && existsSync('wrangler.tmp.toml')) {
     copyFileSync('wrangler.tmp.toml', 'wrangler.toml');
