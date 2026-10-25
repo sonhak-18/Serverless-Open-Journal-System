@@ -736,7 +736,7 @@ function formatFileSize(bytes: number): string {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <span class="text-[11px] text-slate-500">
+            <span id="submission-showing-counter" class="text-[11px] text-slate-500">
               Menampilkan {submissions.length} naskah di database D1
             </span>
           </div>
@@ -838,7 +838,7 @@ function formatFileSize(bytes: number): string {
 
                         <!-- Judul & Berkas -->
                         <td class="p-3 align-top max-w-xs md:max-w-md">
-                          <div class="font-medium text-academic-navy text-xs leading-snug line-clamp-2" title={sub.title}>
+                          <div class="font-medium text-academic-navy text-xs leading-snug" title={sub.title}>
                             {sub.title}
                           </div>
                           <div class="flex items-center gap-2 mt-1.5 flex-wrap">
@@ -846,28 +846,36 @@ function formatFileSize(bytes: number): string {
                               {sub.scopeCluster}
                             </span>
                           </div>
-                          <div class="mt-2 flex items-center gap-2 text-[11px] text-slate-600 bg-slate-50 p-1.5 rounded border border-slate-200">
-                            <svg class="w-3.5 h-3.5 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div class="mt-2 flex items-start gap-2 text-[11px] text-slate-600 bg-slate-50 p-2 rounded border border-slate-200">
+                            <svg class="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                             </svg>
-                            <span class="font-mono text-slate-800 truncate" title={sub.fileName}>
-                              {sub.fileName}
-                            </span>
-                            <span class="text-slate-400 text-[10px] shrink-0">
-                              ({formatFileSize(sub.fileSize)})
-                            </span>
-                            {sub.supplementaryFileName && (
-                              <span class="text-[10px] text-purple-700 bg-purple-50 px-1 rounded ml-auto shrink-0" title={`Lampiran tambahan: ${sub.supplementaryFileName}`}>
-                                +Lampiran
-                              </span>
-                            )}
+                            <div class="flex-1 min-w-0">
+                              <div class="font-mono text-slate-800 break-all select-all text-xs" title={sub.fileName}>
+                                {sub.fileName}
+                                <span class="text-slate-400 font-sans text-[10px] ml-1 shrink-0 whitespace-nowrap">
+                                  ({formatFileSize(sub.fileSize)})
+                                </span>
+                              </div>
+                              {sub.supplementaryFileName && (
+                                <div class="mt-1 text-[10px] text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-100 break-all inline-block select-all" title={`Lampiran tambahan: ${sub.supplementaryFileName}`}>
+                                  + Lampiran: {sub.supplementaryFileName}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </td>
 
                         <!-- Status Naskah Dropdown -->
                         <td class="p-3 align-top whitespace-nowrap">
                           <select
-                            class="submission-status-select text-xs font-semibold px-2.5 py-1.5 rounded border transition-colors cursor-pointer bg-white"
+                            class={`submission-status-select text-xs font-semibold px-2.5 py-1.5 rounded border transition-colors cursor-pointer ${
+                              sub.status === 'under_review' ? 'bg-amber-50 text-amber-800 border-amber-300' :
+                              sub.status === 'revision' ? 'bg-orange-50 text-orange-800 border-orange-300' :
+                              sub.status === 'accepted' ? 'bg-emerald-50 text-emerald-800 border-emerald-300' :
+                              sub.status === 'declined' ? 'bg-rose-50 text-rose-800 border-rose-300' :
+                              'bg-blue-50 text-blue-800 border-blue-300'
+                            }`}
                             data-reg={sub.regNumber}
                             data-current-status={sub.status}
                           >
@@ -2732,27 +2740,35 @@ function formatFileSize(bytes: number): string {
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-slate-50 rounded border border-slate-200 text-xs">
         <div>
           <span class="text-slate-500 font-semibold block text-[11px]">Penulis Utama:</span>
-          <span id="sub-detail-author" class="font-bold text-slate-800"></span>
+          <span id="sub-detail-author" class="font-bold text-slate-800 break-words block"></span>
         </div>
         <div>
           <span class="text-slate-500 font-semibold block text-[11px]">Afiliasi & Lokasi:</span>
-          <span id="sub-detail-affiliation" class="text-slate-700"></span>
+          <span id="sub-detail-affiliation" class="text-slate-700 break-words block"></span>
         </div>
         <div>
           <span class="text-slate-500 font-semibold block text-[11px]">Alamat Surel:</span>
-          <span id="sub-detail-email" class="text-blue-700 font-mono"></span>
+          <span id="sub-detail-email" class="text-blue-700 font-mono break-all block"></span>
         </div>
         <div>
           <span class="text-slate-500 font-semibold block text-[11px]">WhatsApp / Telepon:</span>
-          <span id="sub-detail-phone" class="text-slate-800 font-mono"></span>
+          <span id="sub-detail-phone" class="text-slate-800 font-mono break-all block"></span>
         </div>
-        <div>
+        <div class="sm:col-span-2">
           <span class="text-slate-500 font-semibold block text-[11px]">Rumpun Bidang Ilmu:</span>
-          <span id="sub-detail-scope" class="font-medium text-academic-navy"></span>
+          <span id="sub-detail-scope" class="font-medium text-academic-navy break-words block"></span>
         </div>
-        <div>
-          <span class="text-slate-500 font-semibold block text-[11px]">Berkas Manuskrip:</span>
-          <span id="sub-detail-file" class="font-mono text-slate-800 truncate block"></span>
+        <div class="sm:col-span-2">
+          <span class="text-slate-500 font-semibold block text-[11px] mb-1">Berkas Manuskrip:</span>
+          <div class="p-2.5 bg-white border border-slate-200 rounded flex items-start gap-2">
+            <svg class="w-4 h-4 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            <div class="flex-1 min-w-0">
+              <span id="sub-detail-file" class="font-mono text-slate-800 break-all select-all block text-xs font-medium"></span>
+              <span id="sub-detail-supp" class="font-mono text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200 text-[10px] break-all select-all inline-block mt-1 hidden"></span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -3475,7 +3491,16 @@ function formatFileSize(bytes: number): string {
     if (subDetailPhone) subDetailPhone.textContent = sub.phone || '-';
     if (subDetailScope) subDetailScope.textContent = sub.scopeCluster;
     if (subDetailFile) {
-      subDetailFile.textContent = `${sub.fileName} (${formatBytesClient(sub.fileSize)})${sub.supplementaryFileName ? ` + Lampiran: ${sub.supplementaryFileName}` : ''}`;
+      subDetailFile.textContent = `${sub.fileName} (${formatBytesClient(sub.fileSize)})`;
+    }
+    const subDetailSupp = document.getElementById('sub-detail-supp');
+    if (subDetailSupp) {
+      if (sub.supplementaryFileName) {
+        subDetailSupp.textContent = `Lampiran Tambahan: ${sub.supplementaryFileName}`;
+        subDetailSupp.classList.remove('hidden');
+      } else {
+        subDetailSupp.classList.add('hidden');
+      }
     }
     if (subDetailAbstract) subDetailAbstract.textContent = sub.abstract;
 
@@ -3573,6 +3598,122 @@ function formatFileSize(bytes: number): string {
     }
   });
 
+  // Helper pewarnaan status dropdown naskah
+  function applyStatusSelectStyle(sel: HTMLSelectElement) {
+    const st = sel.value;
+    sel.classList.remove(
+      'bg-blue-50', 'text-blue-800', 'border-blue-300',
+      'bg-amber-50', 'text-amber-800', 'border-amber-300',
+      'bg-orange-50', 'text-orange-800', 'border-orange-300',
+      'bg-emerald-50', 'text-emerald-800', 'border-emerald-300',
+      'bg-rose-50', 'text-rose-800', 'border-rose-300'
+    );
+    if (st === 'submitted') {
+      sel.classList.add('bg-blue-50', 'text-blue-800', 'border-blue-300');
+    } else if (st === 'under_review') {
+      sel.classList.add('bg-amber-50', 'text-amber-800', 'border-amber-300');
+    } else if (st === 'revision') {
+      sel.classList.add('bg-orange-50', 'text-orange-800', 'border-orange-300');
+    } else if (st === 'accepted') {
+      sel.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-300');
+    } else if (st === 'declined') {
+      sel.classList.add('bg-rose-50', 'text-rose-800', 'border-rose-300');
+    }
+  }
+
+  // Reactive state grouping & filter naskah
+  let currentSubmissionFilter = 'all';
+
+  function updateSubmissionFilterCounts() {
+    const rows = Array.from(document.querySelectorAll<HTMLElement>('.submission-row'));
+    const total = rows.length;
+    const counts: Record<string, number> = {
+      all: total,
+      submitted: 0,
+      under_review: 0,
+      revision: 0,
+      accepted: 0,
+      declined: 0,
+    };
+
+    rows.forEach((r) => {
+      const st = r.getAttribute('data-status') || 'submitted';
+      if (counts[st] !== undefined) {
+        counts[st]++;
+      }
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('.filter-submission-btn').forEach((btn) => {
+      const f = btn.getAttribute('data-filter') || 'all';
+      const labelMap: Record<string, string> = {
+        all: `Semua (${counts.all})`,
+        submitted: `Baru (${counts.submitted})`,
+        under_review: `Review (${counts.under_review})`,
+        revision: `Revisi (${counts.revision})`,
+        accepted: `Diterima (${counts.accepted})`,
+        declined: `Ditolak (${counts.declined})`,
+      };
+      if (labelMap[f]) {
+        btn.textContent = labelMap[f];
+      }
+    });
+
+    // Perbarui counter tab di sidebar / header admin jika tersedia
+    const tabSub = document.querySelector('[data-tab="tab-submissions-list"] span:last-child');
+    if (tabSub) {
+      tabSub.textContent = `Naskah Masuk (${total})`;
+    }
+  }
+
+  function applySubmissionFiltering() {
+    const q = (document.getElementById('search-submission-input') as HTMLInputElement)?.value.toLowerCase().trim() || '';
+    const rows = document.querySelectorAll<HTMLElement>('.submission-row');
+    let visibleCount = 0;
+
+    rows.forEach((r) => {
+      const rowStatus = r.getAttribute('data-status') || '';
+      const searchKey = r.getAttribute('data-search') || '';
+
+      const matchesFilter = currentSubmissionFilter === 'all' || rowStatus === currentSubmissionFilter;
+      const matchesSearch = !q || searchKey.includes(q);
+
+      if (matchesFilter && matchesSearch) {
+        r.style.display = '';
+        visibleCount++;
+      } else {
+        r.style.display = 'none';
+      }
+    });
+
+    const showingText = document.getElementById('submission-showing-counter');
+    if (showingText) {
+      showingText.textContent = `Menampilkan ${visibleCount} dari ${rows.length} naskah di database D1`;
+    }
+
+    const tableBody = document.getElementById('submission-table-body');
+    let noMatchRow = document.getElementById('submission-no-match-row');
+    if (visibleCount === 0 && rows.length > 0) {
+      if (!noMatchRow && tableBody) {
+        noMatchRow = document.createElement('tr');
+        noMatchRow.id = 'submission-no-match-row';
+        noMatchRow.innerHTML = `
+          <td colspan="5" class="p-8 text-center text-slate-500 italic bg-slate-50/50">
+            <p class="text-xs text-slate-600 font-medium">Tidak ada naskah yang cocok dengan filter atau kata kunci pencarian.</p>
+          </td>
+        `;
+        tableBody.appendChild(noMatchRow);
+      } else if (noMatchRow) {
+        noMatchRow.style.display = '';
+      }
+    } else if (noMatchRow) {
+      noMatchRow.style.display = 'none';
+    }
+  }
+
+  // Inisialisasi awal select styles & status counter
+  document.querySelectorAll<HTMLSelectElement>('.submission-status-select').forEach(applyStatusSelectStyle);
+  updateSubmissionFilterCounts();
+
   // Pembaruan Status Naskah Masuk
   document.querySelectorAll<HTMLSelectElement>('.submission-status-select').forEach((sel) => {
     sel.addEventListener('change', async () => {
@@ -3599,7 +3740,20 @@ function formatFileSize(bytes: number): string {
             syncLabel.className = 'text-[10px] text-emerald-600 font-semibold mt-1 status-sync-indicator';
           }
           const row = sel.closest('.submission-row') as HTMLElement | null;
-          if (row) row.setAttribute('data-status', status);
+          if (row) {
+            row.setAttribute('data-status', status);
+            const viewBtn = row.querySelector('.btn-view-submission');
+            if (viewBtn) {
+              try {
+                const currentSub = JSON.parse(viewBtn.getAttribute('data-submission') || '{}');
+                currentSub.status = status;
+                viewBtn.setAttribute('data-submission', JSON.stringify(currentSub));
+              } catch (_) {}
+            }
+          }
+          applyStatusSelectStyle(sel);
+          updateSubmissionFilterCounts();
+          applySubmissionFiltering();
           showToast(`Status naskah ${regNumber} berhasil diperbarui.`);
         } else {
           if (syncLabel) {
@@ -3622,6 +3776,7 @@ function formatFileSize(bytes: number): string {
   document.querySelectorAll<HTMLButtonElement>('.filter-submission-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       const filter = btn.getAttribute('data-filter') || 'all';
+      currentSubmissionFilter = filter;
       document.querySelectorAll('.filter-submission-btn').forEach((b) => {
         b.classList.remove('bg-academic-navy', 'text-white');
         b.classList.add('bg-slate-100', 'text-slate-700');
@@ -3629,31 +3784,14 @@ function formatFileSize(bytes: number): string {
       btn.classList.remove('bg-slate-100', 'text-slate-700');
       btn.classList.add('bg-academic-navy', 'text-white');
 
-      const rows = document.querySelectorAll<HTMLElement>('.submission-row');
-      rows.forEach((r) => {
-        const rowStatus = r.getAttribute('data-status');
-        if (filter === 'all' || rowStatus === filter) {
-          r.style.display = '';
-        } else {
-          r.style.display = 'none';
-        }
-      });
+      applySubmissionFiltering();
     });
   });
 
   // Live Search Naskah Masuk
   const searchSubInput = document.getElementById('search-submission-input') as HTMLInputElement | null;
   searchSubInput?.addEventListener('input', () => {
-    const q = searchSubInput.value.toLowerCase().trim();
-    const rows = document.querySelectorAll<HTMLElement>('.submission-row');
-    rows.forEach((r) => {
-      const searchKey = r.getAttribute('data-search') || '';
-      if (!q || searchKey.includes(q)) {
-        r.style.display = '';
-      } else {
-        r.style.display = 'none';
-      }
-    });
+    applySubmissionFiltering();
   });
 
   // Hapus Naskah Masuk (Modal Kustom & Hapus Baris)
@@ -3683,12 +3821,11 @@ function formatFileSize(bytes: number): string {
                 row.style.transition = 'all 0.3s ease';
                 row.style.opacity = '0';
                 row.style.transform = 'translateX(20px)';
-                setTimeout(() => row.remove(), 300);
-              }
-              const tabSub = document.querySelector('[data-tab="tab-submissions-list"] span:last-child');
-              if (tabSub) {
-                const currentRows = document.querySelectorAll('.submission-row').length - 1;
-                tabSub.textContent = `Naskah Masuk (${Math.max(0, currentRows)})`;
+                setTimeout(() => {
+                  row.remove();
+                  updateSubmissionFilterCounts();
+                  applySubmissionFiltering();
+                }, 300);
               }
               showToast(`Naskah registrasi "${reg}" berhasil dihapus dari database.`);
             } else {

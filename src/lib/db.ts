@@ -81,6 +81,9 @@ export async function ensureDbSchemaInitialized(db: any): Promise<void> {
       `).run();
     } catch (_) {}
     try {
+      await db.prepare("ALTER TABLE journal_submissions ADD COLUMN status TEXT DEFAULT 'submitted'").run();
+    } catch (_) {}
+    try {
       await db.prepare(`
         CREATE TABLE IF NOT EXISTS journal_issues (
           id TEXT PRIMARY KEY,
@@ -1330,7 +1333,7 @@ export async function getDbSubmissions(d1?: any): Promise<JournalSubmission[]> {
           fileName: r.file_name,
           fileSize: r.file_size,
           supplementaryFileName: r.supplementary_file_name,
-          status: r.status,
+          status: r.status || 'submitted',
           createdAt: r.created_at,
         }));
       }
@@ -1366,7 +1369,7 @@ export async function getDbSubmissionByRegNumber(regNumber: string, d1?: any): P
           fileName: r.file_name,
           fileSize: r.file_size,
           supplementaryFileName: r.supplementary_file_name,
-          status: r.status,
+          status: r.status || 'submitted',
           createdAt: r.created_at,
         };
       }
@@ -1382,7 +1385,9 @@ export async function updateDbSubmissionStatus(regNumber: string, status: string
     try {
       await db.prepare("UPDATE journal_submissions SET status = ? WHERE reg_number = ?").bind(status, regNumber).run();
       return true;
-    } catch (_) {}
+    } catch (err) {
+      console.error("Error updating submission status in D1:", err);
+    }
   }
   const entry = memorySubmissions.find(s => s.regNumber === regNumber);
   if (entry) {
