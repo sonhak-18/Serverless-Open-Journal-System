@@ -27,7 +27,7 @@ const indexing = await getDbIndexing(d1);
         </div>
 
         <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
-          {journalConfig.name} ({journalConfig.shortName}) berkomitmen untuk meningkatkan keterlihatan (*visibility*) dan keterjangkauan naskah ilmiah melalui pangkalan data akademik bereputasi nasional dan internasional. Seluruh artikel yang diterbitkan dipersiapkan dengan metadata sitasi standar untuk perayap mesin ilmiah.
+          {journalConfig.name} ({journalConfig.shortName}) berkomitmen untuk meningkatkan keterlihatan (<em>visibility</em>) dan keterjangkauan naskah ilmiah melalui pangkalan data akademik bereputasi nasional dan internasional. Seluruh artikel yang diterbitkan dipersiapkan dengan metadata sitasi standar untuk perayap mesin ilmiah.
         </p>
 
         <!-- Daftar Pengindeks Terstruktur -->
@@ -99,13 +99,13 @@ const indexing = await getDbIndexing(d1);
           </p>
           <ul class="text-base sm:text-lg text-slate-800 space-y-3.5 list-disc list-inside leading-relaxed">
             <li>
-              <strong>Google Scholar:</strong> Sistem sudah menyertakan tag sitasi lengkap (`citation_title`, `citation_pdf_url`, `citation_journal_title`). Google Scholar akan secara otomatis merayap situs ini dalam 1-2 minggu setelah domain terhubung.
+              <strong>Google Scholar:</strong> Sistem sudah menyertakan tag sitasi lengkap (<code class="text-academic-navy font-mono font-semibold">citation_title</code>, <code class="text-academic-navy font-mono font-semibold">citation_pdf_url</code>, <code class="text-academic-navy font-mono font-semibold">citation_journal_title</code>). Google Scholar akan secara otomatis merayap situs ini dalam 1-2 minggu setelah domain terhubung.
             </li>
             <li>
               <strong>Pendaftaran Garuda (Kemdikbud):</strong> Daftarkan OAI-PMH feed atau tautan halaman arsip jurnal ke portal Garuda setelah memiliki minimal 2 nomor terbitan reguler.
             </li>
             <li>
-              <strong>Crossref / DOI:</strong> Pastikan metadata artikel menyertakan prefix DOI valid. Penulis dan pembaca dapat memverifikasi tautan naskah melalui resolusi resmi `doi.org`.
+              <strong>Crossref / DOI:</strong> Pastikan metadata artikel menyertakan prefix DOI valid. Penulis dan pembaca dapat memverifikasi tautan naskah melalui resolusi resmi <code class="text-academic-navy font-mono font-semibold">doi.org</code>.
             </li>
           </ul>
         </div>

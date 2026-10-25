@@ -177,7 +177,7 @@ Untuk penulis dengan tenggat mendesak, misalnya persyaratan kelulusan, kenaikan 
 - **Gratis.** JTEBA tidak menjual kecepatan dan tidak menjanjikan penerimaan. Standar penelaahan sama dengan jalur reguler.
 - **Syarat:** naskah lengkap dan sesuai templat, indeks kemiripan di bawah 20%, serta permohonan disertai dokumen pendukung tenggat yang disampaikan saat pengiriman naskah.
 - **Manfaat:** *desk review* dalam 1 hari kerja, reviewer diberi tenggat 7 hari kalender, dan keputusan maksimal 3 hari kerja, sehingga **keputusan pertama diupayakan dalam 14 hari kalender**.
-- **Kuota:** 10 naskah per bulan, diberikan menurut urutan pengajuan yang memenuhi syarat.
+- **Kuota:** 10 naskah per bulan, diberikan menurut urutan pengajuan (*first-come, first-served*) yang memenuhi syarat.
 
 ### Prinsip pelaksanaan
 

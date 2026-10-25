@@ -773,7 +773,7 @@ function formatFileSize(bytes: number): string {
                     const authorFullName = `${sub.firstName} ${sub.lastName}`.trim();
                     const waClean = sub.phone ? sub.phone.replace(/[^0-9]/g, '') : '';
                     const waUrl = waClean
-                      ? `https://wa.me/${waClean.startsWith('0') ? '62' + waClean.substring(1) : waClean}?text=${encodeURIComponent(`Halo Bapak/Ibu ${authorFullName},\n\nKami dari Dewan Redaksi JTEBA (Jurnal Teknologi dan Bisnis Digital Berkelanjutan) mengonfirmasi perihal manuskrip naskah Anda:\n\nNo. Registrasi: ${sub.regNumber}\nJudul: "${sub.title}"\n\n`)}`
+                      ? `https://wa.me/${waClean.startsWith('0') ? '62' + waClean.substring(1) : waClean}?text=${encodeURIComponent(`Halo Bapak/Ibu ${authorFullName},\n\nKami dari Dewan Redaksi JTEBA (Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas) mengonfirmasi perihal manuskrip naskah Anda:\n\nNo. Registrasi: ${sub.regNumber}\nJudul: "${sub.title}"\n\n`)}`
                       : '#';
                     const mailtoUrl = `mailto:${sub.email}?subject=${encodeURIComponent(`[JTEBA] Konfirmasi Naskah ${sub.regNumber}: ${sub.title}`)}&body=${encodeURIComponent(`Yth. ${authorFullName},\n${sub.affiliation}\n\nTerima kasih telah mengirimkan artikel ilmiah Anda ke JTEBA dengan nomor registrasi ${sub.regNumber}.\n\nJudul: ${sub.title}\nStatus: ${sub.status}\n\nSalam hormat,\nDewan Redaksi JTEBA\nhttps://ejournal.praniti.or.id/index/JTEBA`)}`;
 
@@ -3483,7 +3483,7 @@ function formatFileSize(bytes: number): string {
       const waClean = sub.phone ? sub.phone.replace(/[^0-9]/g, '') : '';
       if (waClean) {
         const fullWa = waClean.startsWith('0') ? '62' + waClean.substring(1) : waClean;
-        subDetailWaBtn.href = `https://wa.me/${fullWa}?text=${encodeURIComponent(`Halo Bapak/Ibu ${authorName},\n\nKami dari Dewan Redaksi JTEBA (Jurnal Teknologi dan Bisnis Digital Berkelanjutan) mengonfirmasi perihal manuskrip naskah Anda:\n\nNo. Registrasi: ${sub.regNumber}\nJudul: "${sub.title}"\n\n`)}`;
+        subDetailWaBtn.href = `https://wa.me/${fullWa}?text=${encodeURIComponent(`Halo Bapak/Ibu ${authorName},\n\nKami dari Dewan Redaksi JTEBA (Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas) mengonfirmasi perihal manuskrip naskah Anda:\n\nNo. Registrasi: ${sub.regNumber}\nJudul: "${sub.title}"\n\n`)}`;
         subDetailWaBtn.style.display = '';
       } else {
         subDetailWaBtn.style.display = 'none';

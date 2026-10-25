@@ -682,7 +682,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
                 <strong>Komitmen Integritas:</strong> {journalConfig.shortName} <strong>tidak menjual kecepatan dan tidak menjanjikan penerimaan</strong>. Standar penelaahan ilmiah dan kriteria evaluasi substantif sepenuhnya sama ketatnya dengan jalur reguler.
               </p>
               <p class="text-slate-600">
-                <strong>Kuota:</strong> Dibatasi maksimal <strong>10 naskah per bulan</strong> menurut urutan pengajuan (*first-come, first-served*) yang memenuhi kelayakan syarat.
+                <strong>Kuota:</strong> Dibatasi maksimal <strong>10 naskah per bulan</strong> menurut urutan pengajuan (<em>first-come, first-served</em>) yang memenuhi kelayakan syarat.
               </p>
             </div>
           </div>
@@ -695,7 +695,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
               <li>Redaksi menyiapkan reviewer cadangan sejak penugasan awal, sehingga reviewer yang terlambat dapat segera diganti tanpa menunda proses.</li>
               <li>Reviewer wajib menyatakan ketiadaan konflik kepentingan dan wajib menolak penugasan bila memiliki hubungan dengan penulis.</li>
               <li>Naskah yang ditulis oleh editor atau anggota dewan redaksi ditangani oleh editor lain secara independen, dan penulis bersangkutan tidak terlibat dalam pengambilan keputusannya.</li>
-              <li>Penulis dapat menanyakan status naskah kapan saja dengan menyebutkan nomor ID registrasi naskah melalui surel ke <!--email_off--><a href={`mailto:${journalConfig.submission.email}`} class="text-blue-700 hover:underline font-mono font-semibold">${journalConfig.submission.email}</a><!--/email_off-->. Redaksi merespons dalam 2 hari kerja.</li>
+              <li>Penulis dapat menanyakan status naskah kapan saja dengan menyebutkan nomor ID registrasi naskah melalui surel ke <!--email_off--><a href={`mailto:${journalConfig.submission.email}`} class="text-blue-700 hover:underline font-mono font-semibold">{journalConfig.submission.email}</a><!--/email_off-->. Redaksi merespons dalam 2 hari kerja.</li>
             </ul>
           </div>
         </section>
