@@ -25,6 +25,29 @@ const nextArticleOrder = totalArticlesCount + 1;
 const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.startsWith('10.') && !journalConfig.doiPrefix.includes('zenodo')
   ? journalConfig.doiPrefix
   : '10.00000';
+
+function formatSubmissionDate(dateStr: string): string {
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr || '-';
+    return d.toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }) + ' WIB';
+  } catch (_) {
+    return dateStr || '-';
+  }
+}
+
+function formatFileSize(bytes: number): string {
+  if (!bytes || bytes <= 0) return '0 B';
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+}
 ---
 
 <Layout title="Panel Redaksi & Admin Jurnal" description={`Halaman pengelolaan dan publikasi naskah ${journalConfig.name}`}>
@@ -634,6 +657,285 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
               </button>
             </div>
           </form>
+        </div>
+      </div>
+
+      <!-- TAB: DAFTAR NASKAH MASUK (SUBMISSIONS) -->
+      <div id="tab-submissions-list" class="tab-panel hidden space-y-4">
+        <div class="academic-card p-6 rounded border border-academic-border bg-white shadow-xs">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-slate-200">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <h2 class="text-lg font-serif font-bold text-academic-navy">
+                  Daftar Naskah Masuk Melalui Portal ({submissions.length})
+                </h2>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">
+                Kelola naskah manuskrip yang dikirimkan oleh penulis melalui formulir pendaftaran daring portal JTEBA.
+              </p>
+            </div>
+
+            <!-- Status Filter Pills -->
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button
+                type="button"
+                class="filter-submission-btn px-2.5 py-1 text-xs font-semibold rounded bg-academic-navy text-white transition-colors min-h-[32px]"
+                data-filter="all"
+              >
+                Semua ({submissions.length})
+              </button>
+              <button
+                type="button"
+                class="filter-submission-btn px-2.5 py-1 text-xs font-semibold rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors min-h-[32px]"
+                data-filter="submitted"
+              >
+                Baru ({submissions.filter(s => s.status === 'submitted').length})
+              </button>
+              <button
+                type="button"
+                class="filter-submission-btn px-2.5 py-1 text-xs font-semibold rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors min-h-[32px]"
+                data-filter="under_review"
+              >
+                Review ({submissions.filter(s => s.status === 'under_review').length})
+              </button>
+              <button
+                type="button"
+                class="filter-submission-btn px-2.5 py-1 text-xs font-semibold rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors min-h-[32px]"
+                data-filter="revision"
+              >
+                Revisi ({submissions.filter(s => s.status === 'revision').length})
+              </button>
+              <button
+                type="button"
+                class="filter-submission-btn px-2.5 py-1 text-xs font-semibold rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors min-h-[32px]"
+                data-filter="accepted"
+              >
+                Diterima ({submissions.filter(s => s.status === 'accepted').length})
+              </button>
+              <button
+                type="button"
+                class="filter-submission-btn px-2.5 py-1 text-xs font-semibold rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors min-h-[32px]"
+                data-filter="declined"
+              >
+                Ditolak ({submissions.filter(s => s.status === 'declined').length})
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Search -->
+          <div class="mt-4 mb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="relative flex-1 max-w-sm">
+              <input
+                type="text"
+                id="search-submission-input"
+                placeholder="Cari berdasarkan No. Registrasi, Penulis, Judul..."
+                class="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-300 rounded bg-slate-50 focus:bg-white focus:border-academic-navy focus:outline-none transition-colors"
+              />
+              <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <span class="text-[11px] text-slate-500">
+              Menampilkan {submissions.length} naskah di database D1
+            </span>
+          </div>
+
+          <!-- Table Container -->
+          <div class="overflow-x-auto mt-3 border border-slate-200 rounded">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                  <th class="p-3 font-semibold whitespace-nowrap">No. Registrasi & Tanggal</th>
+                  <th class="p-3 font-semibold">Penulis & Kontak</th>
+                  <th class="p-3 font-semibold">Judul Manuskrip & Berkas</th>
+                  <th class="p-3 font-semibold whitespace-nowrap">Status Naskah</th>
+                  <th class="p-3 font-semibold text-right whitespace-nowrap">Aksi Redaksi</th>
+                </tr>
+              </thead>
+              <tbody id="submission-table-body" class="divide-y divide-slate-100">
+                {submissions.length === 0 ? (
+                  <tr id="empty-submission-row">
+                    <td colspan="5" class="p-12 text-center text-slate-500 italic bg-slate-50/50">
+                      <div class="max-w-md mx-auto space-y-2">
+                        <svg class="w-10 h-10 text-slate-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p class="font-medium text-slate-700">Belum ada naskah yang dikirimkan</p>
+                        <p class="text-[11px] text-slate-500 leading-relaxed">
+                          Naskah yang didaftarkan melalui form pengiriman publik (Online Submission) akan langsung tersimpan di database Cloudflare D1 dan muncul di halaman ini.
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  submissions.map((sub) => {
+                    const authorFullName = `${sub.firstName} ${sub.lastName}`.trim();
+                    const waClean = sub.phone ? sub.phone.replace(/[^0-9]/g, '') : '';
+                    const waUrl = waClean
+                      ? `https://wa.me/${waClean.startsWith('0') ? '62' + waClean.substring(1) : waClean}?text=${encodeURIComponent(`Halo Bapak/Ibu ${authorFullName},\n\nKami dari Dewan Redaksi JTEBA (Jurnal Teknologi dan Bisnis Digital Berkelanjutan) mengonfirmasi perihal manuskrip naskah Anda:\n\nNo. Registrasi: ${sub.regNumber}\nJudul: "${sub.title}"\n\n`)}`
+                      : '#';
+                    const mailtoUrl = `mailto:${sub.email}?subject=${encodeURIComponent(`[JTEBA] Konfirmasi Naskah ${sub.regNumber}: ${sub.title}`)}&body=${encodeURIComponent(`Yth. ${authorFullName},\n${sub.affiliation}\n\nTerima kasih telah mengirimkan artikel ilmiah Anda ke JTEBA dengan nomor registrasi ${sub.regNumber}.\n\nJudul: ${sub.title}\nStatus: ${sub.status}\n\nSalam hormat,\nDewan Redaksi JTEBA\nhttps://ejournal.praniti.or.id/index/JTEBA`)}`;
+
+                    return (
+                      <tr
+                        class="submission-row hover:bg-slate-50/80 transition-colors"
+                        data-reg={sub.regNumber}
+                        data-status={sub.status}
+                        data-search={`${sub.regNumber} ${sub.title} ${authorFullName} ${sub.affiliation}`.toLowerCase()}
+                      >
+                        <!-- No. Registrasi & Waktu -->
+                        <td class="p-3 align-top whitespace-nowrap">
+                          <div class="font-mono font-bold text-academic-navy text-xs flex items-center gap-1.5">
+                            <span class="inline-block w-1.5 h-1.5 rounded-full bg-academic-navy"></span>
+                            <span>{sub.regNumber}</span>
+                          </div>
+                          <div class="text-[11px] text-slate-500 mt-1">
+                            {formatSubmissionDate(sub.createdAt)}
+                          </div>
+                        </td>
+
+                        <!-- Penulis & Kontak -->
+                        <td class="p-3 align-top">
+                          <div class="font-semibold text-slate-800 text-xs">
+                            {authorFullName}
+                          </div>
+                          <div class="text-[11px] text-slate-600 mt-0.5 leading-snug">
+                            {sub.affiliation}
+                          </div>
+                          {(sub.city || sub.country) && (
+                            <div class="text-[10px] text-slate-400 mt-0.5">
+                              {[sub.city, sub.country].filter(Boolean).join(', ')}
+                            </div>
+                          )}
+                          <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                            <a
+                              href={mailtoUrl}
+                              class="inline-flex items-center gap-1 text-[11px] text-blue-700 hover:text-blue-900 hover:underline"
+                              title={`Kirim email ke ${sub.email}`}
+                            >
+                              <svg class="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                              </svg>
+                              <span>{sub.email}</span>
+                            </a>
+                            {sub.phone && (
+                              <a
+                                href={waUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center gap-1 text-[11px] text-emerald-700 hover:text-emerald-900 hover:underline"
+                                title={`Hubungi WhatsApp ${sub.phone}`}
+                              >
+                                <svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
+                                </svg>
+                                <span>{sub.phone}</span>
+                              </a>
+                            )}
+                          </div>
+                        </td>
+
+                        <!-- Judul & Berkas -->
+                        <td class="p-3 align-top max-w-xs md:max-w-md">
+                          <div class="font-medium text-academic-navy text-xs leading-snug line-clamp-2" title={sub.title}>
+                            {sub.title}
+                          </div>
+                          <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                              {sub.scopeCluster}
+                            </span>
+                          </div>
+                          <div class="mt-2 flex items-center gap-2 text-[11px] text-slate-600 bg-slate-50 p-1.5 rounded border border-slate-200">
+                            <svg class="w-3.5 h-3.5 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            <span class="font-mono text-slate-800 truncate" title={sub.fileName}>
+                              {sub.fileName}
+                            </span>
+                            <span class="text-slate-400 text-[10px] shrink-0">
+                              ({formatFileSize(sub.fileSize)})
+                            </span>
+                            {sub.supplementaryFileName && (
+                              <span class="text-[10px] text-purple-700 bg-purple-50 px-1 rounded ml-auto shrink-0" title={`Lampiran tambahan: ${sub.supplementaryFileName}`}>
+                                +Lampiran
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        <!-- Status Naskah Dropdown -->
+                        <td class="p-3 align-top whitespace-nowrap">
+                          <select
+                            class="submission-status-select text-xs font-semibold px-2.5 py-1.5 rounded border transition-colors cursor-pointer bg-white"
+                            data-reg={sub.regNumber}
+                            data-current-status={sub.status}
+                          >
+                            <option value="submitted" selected={sub.status === 'submitted'}>● Baru Masuk</option>
+                            <option value="under_review" selected={sub.status === 'under_review'}>● Dalam Review</option>
+                            <option value="revision" selected={sub.status === 'revision'}>● Perlu Revisi</option>
+                            <option value="accepted" selected={sub.status === 'accepted'}>● Diterima (Siap Terbit)</option>
+                            <option value="declined" selected={sub.status === 'declined'}>● Ditolak</option>
+                          </select>
+                          <div class="text-[10px] text-slate-400 mt-1 status-sync-indicator">
+                            Tersimpan di D1
+                          </div>
+                        </td>
+
+                        <!-- Aksi Redaksi -->
+                        <td class="p-3 align-top text-right whitespace-nowrap space-y-1.5">
+                          <div>
+                            <button
+                              type="button"
+                              class="btn-view-submission px-2.5 py-1 text-[11px] font-semibold text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 rounded transition-colors inline-flex items-center gap-1"
+                              data-submission={JSON.stringify(sub)}
+                            >
+                              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                              <span>Detail & Abstrak</span>
+                            </button>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              class="btn-publish-submission px-2.5 py-1 text-[11px] font-semibold text-emerald-700 hover:text-emerald-900 bg-emerald-50 hover:bg-emerald-100 rounded transition-colors inline-flex items-center gap-1"
+                              data-title={sub.title}
+                              data-author={authorFullName}
+                              data-affiliation={sub.affiliation}
+                              data-email={sub.email}
+                              data-subject={sub.scopeCluster}
+                              data-abstract={sub.abstract}
+                              title="Salin judul, penulis, dan abstrak ke form publikasi naskah"
+                            >
+                              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15" />
+                              </svg>
+                              <span>Terbitkan Naskah</span>
+                            </button>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              class="btn-delete-submission px-2.5 py-1 text-[11px] font-semibold text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded transition-colors inline-flex items-center gap-1"
+                              data-reg={sub.regNumber}
+                              data-title={sub.title}
+                            >
+                              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                              <span>Hapus</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -2402,6 +2704,107 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
     )}
   </div>
 
+  <!-- Modal Detail & Abstrak Naskah Masuk -->
+  <div id="submission-detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded border border-slate-200 shadow-2xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95">
+      <div class="flex items-start justify-between border-b border-slate-200 pb-3 gap-3">
+        <div>
+          <span class="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-50 text-academic-navy border border-blue-200" id="sub-detail-reg">
+            JTEBA-SUB-...
+          </span>
+          <h3 id="sub-detail-title" class="text-base font-serif font-bold text-academic-navy mt-1.5 leading-snug">
+            Judul Naskah
+          </h3>
+        </div>
+        <button
+          type="button"
+          id="btn-close-sub-modal"
+          class="text-slate-400 hover:text-slate-600 p-1.5 rounded hover:bg-slate-100 transition-colors shrink-0"
+          aria-label="Tutup modal"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Author and Meta Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-slate-50 rounded border border-slate-200 text-xs">
+        <div>
+          <span class="text-slate-500 font-semibold block text-[11px]">Penulis Utama:</span>
+          <span id="sub-detail-author" class="font-bold text-slate-800"></span>
+        </div>
+        <div>
+          <span class="text-slate-500 font-semibold block text-[11px]">Afiliasi & Lokasi:</span>
+          <span id="sub-detail-affiliation" class="text-slate-700"></span>
+        </div>
+        <div>
+          <span class="text-slate-500 font-semibold block text-[11px]">Alamat Surel:</span>
+          <span id="sub-detail-email" class="text-blue-700 font-mono"></span>
+        </div>
+        <div>
+          <span class="text-slate-500 font-semibold block text-[11px]">WhatsApp / Telepon:</span>
+          <span id="sub-detail-phone" class="text-slate-800 font-mono"></span>
+        </div>
+        <div>
+          <span class="text-slate-500 font-semibold block text-[11px]">Rumpun Bidang Ilmu:</span>
+          <span id="sub-detail-scope" class="font-medium text-academic-navy"></span>
+        </div>
+        <div>
+          <span class="text-slate-500 font-semibold block text-[11px]">Berkas Manuskrip:</span>
+          <span id="sub-detail-file" class="font-mono text-slate-800 truncate block"></span>
+        </div>
+      </div>
+
+      <!-- Abstract Section -->
+      <div>
+        <label class="block text-xs font-bold text-academic-navy mb-1 uppercase tracking-wider">
+          Abstrak Manuskrip
+        </label>
+        <div id="sub-detail-abstract" class="p-3.5 bg-white border border-slate-200 rounded text-xs text-slate-700 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap font-sans">
+        </div>
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-200">
+        <div class="flex items-center gap-2">
+          <a
+            id="sub-detail-wa-btn"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-3 py-1.5 text-xs font-semibold rounded bg-emerald-600 hover:bg-emerald-700 text-white transition-colors inline-flex items-center gap-1.5"
+          >
+            <span>Hubungi WhatsApp</span>
+          </a>
+          <a
+            id="sub-detail-mail-btn"
+            href="#"
+            class="px-3 py-1.5 text-xs font-semibold rounded bg-blue-600 hover:bg-blue-700 text-white transition-colors inline-flex items-center gap-1.5"
+          >
+            <span>Kirim Surel</span>
+          </a>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            id="sub-detail-publish-btn"
+            class="px-3.5 py-1.5 text-xs font-bold rounded bg-academic-navy hover:bg-academic-navy-light text-white transition-colors"
+          >
+            Salin ke Form Publikasi
+          </button>
+          <button
+            type="button"
+            id="btn-close-sub-modal-footer"
+            class="px-3 py-1.5 text-xs font-semibold rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+          >
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Konfirmasi Hapus Kustom (Indah, Bersih, Akademik) -->
   <div id="confirm-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-in fade-in zoom-in-95">
@@ -3013,6 +3416,286 @@ const defaultDoiPrefix = journalConfig.doiPrefix && journalConfig.doiPrefix.star
             }
           } catch (err: any) {
             showToast('Gagal menghapus: ' + err.message, true);
+          }
+        },
+      });
+    });
+  });
+
+  // Pengelolaan Naskah Masuk (Submissions)
+  const subModal = document.getElementById('submission-detail-modal');
+  const subDetailReg = document.getElementById('sub-detail-reg');
+  const subDetailTitle = document.getElementById('sub-detail-title');
+  const subDetailAuthor = document.getElementById('sub-detail-author');
+  const subDetailAffil = document.getElementById('sub-detail-affiliation');
+  const subDetailEmail = document.getElementById('sub-detail-email');
+  const subDetailPhone = document.getElementById('sub-detail-phone');
+  const subDetailScope = document.getElementById('sub-detail-scope');
+  const subDetailFile = document.getElementById('sub-detail-file');
+  const subDetailAbstract = document.getElementById('sub-detail-abstract');
+  const subDetailWaBtn = document.getElementById('sub-detail-wa-btn') as HTMLAnchorElement | null;
+  const subDetailMailBtn = document.getElementById('sub-detail-mail-btn') as HTMLAnchorElement | null;
+  const subDetailPublishBtn = document.getElementById('sub-detail-publish-btn') as HTMLButtonElement | null;
+  let currentActiveSubmission: any = null;
+
+  function closeSubDetailModal() {
+    subModal?.classList.add('hidden');
+    currentActiveSubmission = null;
+  }
+
+  document.getElementById('btn-close-sub-modal')?.addEventListener('click', closeSubDetailModal);
+  document.getElementById('btn-close-sub-modal-footer')?.addEventListener('click', closeSubDetailModal);
+  subModal?.addEventListener('click', (e) => {
+    if (e.target === subModal) closeSubDetailModal();
+  });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !subModal?.classList.contains('hidden')) {
+      closeSubDetailModal();
+    }
+  });
+
+  function formatBytesClient(bytes: number): string {
+    if (!bytes || bytes <= 0) return '0 B';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+
+  function openSubDetail(sub: any) {
+    currentActiveSubmission = sub;
+    const authorName = `${sub.firstName} ${sub.lastName}`.trim();
+    if (subDetailReg) subDetailReg.textContent = sub.regNumber;
+    if (subDetailTitle) subDetailTitle.textContent = sub.title;
+    if (subDetailAuthor) subDetailAuthor.textContent = authorName;
+    if (subDetailAffil) {
+      const loc = [sub.city, sub.country].filter(Boolean).join(', ');
+      subDetailAffil.textContent = sub.affiliation + (loc ? ` (${loc})` : '');
+    }
+    if (subDetailEmail) subDetailEmail.textContent = sub.email;
+    if (subDetailPhone) subDetailPhone.textContent = sub.phone || '-';
+    if (subDetailScope) subDetailScope.textContent = sub.scopeCluster;
+    if (subDetailFile) {
+      subDetailFile.textContent = `${sub.fileName} (${formatBytesClient(sub.fileSize)})${sub.supplementaryFileName ? ` + Lampiran: ${sub.supplementaryFileName}` : ''}`;
+    }
+    if (subDetailAbstract) subDetailAbstract.textContent = sub.abstract;
+
+    if (subDetailWaBtn) {
+      const waClean = sub.phone ? sub.phone.replace(/[^0-9]/g, '') : '';
+      if (waClean) {
+        const fullWa = waClean.startsWith('0') ? '62' + waClean.substring(1) : waClean;
+        subDetailWaBtn.href = `https://wa.me/${fullWa}?text=${encodeURIComponent(`Halo Bapak/Ibu ${authorName},\n\nKami dari Dewan Redaksi JTEBA (Jurnal Teknologi dan Bisnis Digital Berkelanjutan) mengonfirmasi perihal manuskrip naskah Anda:\n\nNo. Registrasi: ${sub.regNumber}\nJudul: "${sub.title}"\n\n`)}`;
+        subDetailWaBtn.style.display = '';
+      } else {
+        subDetailWaBtn.style.display = 'none';
+      }
+    }
+
+    if (subDetailMailBtn) {
+      subDetailMailBtn.href = `mailto:${sub.email}?subject=${encodeURIComponent(`[JTEBA] Konfirmasi Naskah ${sub.regNumber}: ${sub.title}`)}`;
+    }
+
+    subModal?.classList.remove('hidden');
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.btn-view-submission').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      try {
+        const raw = btn.getAttribute('data-submission');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          openSubDetail(parsed);
+        }
+      } catch (e) {
+        console.error('Failed to parse submission json', e);
+      }
+    });
+  });
+
+  function transferSubmissionToPublish(sub: { title: string; author: string; affiliation: string; email?: string; subject: string; abstract: string; regNumber?: string }) {
+    if (artTitleInput) {
+      artTitleInput.value = sub.title;
+      if (artSlugInput) {
+        artSlugInput.value = slugify(sub.title);
+        updateSlugPreview();
+      }
+    }
+    const abstractInput = document.getElementById('art-abstract') as HTMLTextAreaElement | null;
+    if (abstractInput) {
+      abstractInput.value = sub.abstract;
+    }
+    const authorNameInput = document.querySelector<HTMLInputElement>('.author-name-input');
+    const authorAffilInput = document.querySelector<HTMLInputElement>('.author-affiliation-input');
+    const authorEmailInput = document.querySelector<HTMLInputElement>('.author-email-input');
+    if (authorNameInput) authorNameInput.value = sub.author;
+    if (authorAffilInput) authorAffilInput.value = sub.affiliation;
+    if (authorEmailInput && sub.email) authorEmailInput.value = sub.email;
+
+    const subjectSelect = document.getElementById('art-subject') as HTMLSelectElement | null;
+    if (subjectSelect && sub.subject) {
+      for (let i = 0; i < subjectSelect.options.length; i++) {
+        if (subjectSelect.options[i].value === sub.subject || subjectSelect.options[i].text.includes(sub.subject)) {
+          subjectSelect.selectedIndex = i;
+          break;
+        }
+      }
+    }
+
+    closeSubDetailModal();
+    switchTab('tab-add-article');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast(`Data naskah ${sub.regNumber || ''} berhasil disalin ke formulir publikasi! Silakan lengkapi berkas dan terbitkan.`);
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.btn-publish-submission').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const title = btn.getAttribute('data-title') || '';
+      const author = btn.getAttribute('data-author') || '';
+      const affiliation = btn.getAttribute('data-affiliation') || '';
+      const email = btn.getAttribute('data-email') || '';
+      const subject = btn.getAttribute('data-subject') || '';
+      const abstract = btn.getAttribute('data-abstract') || '';
+      transferSubmissionToPublish({ title, author, affiliation, email, subject, abstract });
+    });
+  });
+
+  subDetailPublishBtn?.addEventListener('click', () => {
+    if (currentActiveSubmission) {
+      const author = `${currentActiveSubmission.firstName} ${currentActiveSubmission.lastName}`.trim();
+      transferSubmissionToPublish({
+        title: currentActiveSubmission.title,
+        author,
+        affiliation: currentActiveSubmission.affiliation,
+        email: currentActiveSubmission.email,
+        subject: currentActiveSubmission.scopeCluster,
+        abstract: currentActiveSubmission.abstract,
+        regNumber: currentActiveSubmission.regNumber,
+      });
+    }
+  });
+
+  // Pembaruan Status Naskah Masuk
+  document.querySelectorAll<HTMLSelectElement>('.submission-status-select').forEach((sel) => {
+    sel.addEventListener('change', async () => {
+      const regNumber = sel.getAttribute('data-reg');
+      const status = sel.value;
+      if (!regNumber) return;
+
+      const syncLabel = sel.parentElement?.querySelector('.status-sync-indicator');
+      if (syncLabel) {
+        syncLabel.textContent = 'Menyimpan...';
+        syncLabel.className = 'text-[10px] text-blue-600 mt-1 status-sync-indicator';
+      }
+
+      try {
+        const res = await fetch('/api/submissions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'update-status', regNumber, status }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          if (syncLabel) {
+            syncLabel.textContent = 'Tersimpan di D1';
+            syncLabel.className = 'text-[10px] text-emerald-600 font-semibold mt-1 status-sync-indicator';
+          }
+          const row = sel.closest('.submission-row') as HTMLElement | null;
+          if (row) row.setAttribute('data-status', status);
+          showToast(`Status naskah ${regNumber} berhasil diperbarui.`);
+        } else {
+          if (syncLabel) {
+            syncLabel.textContent = 'Gagal menyimpan';
+            syncLabel.className = 'text-[10px] text-rose-600 font-semibold mt-1 status-sync-indicator';
+          }
+          showToast(data.error || 'Gagal memperbarui status naskah.', true);
+        }
+      } catch (err: any) {
+        if (syncLabel) {
+          syncLabel.textContent = 'Gangguan koneksi';
+          syncLabel.className = 'text-[10px] text-rose-600 font-semibold mt-1 status-sync-indicator';
+        }
+        showToast('Gangguan koneksi saat memperbarui status: ' + err.message, true);
+      }
+    });
+  });
+
+  // Filter Status Naskah Masuk
+  document.querySelectorAll<HTMLButtonElement>('.filter-submission-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.getAttribute('data-filter') || 'all';
+      document.querySelectorAll('.filter-submission-btn').forEach((b) => {
+        b.classList.remove('bg-academic-navy', 'text-white');
+        b.classList.add('bg-slate-100', 'text-slate-700');
+      });
+      btn.classList.remove('bg-slate-100', 'text-slate-700');
+      btn.classList.add('bg-academic-navy', 'text-white');
+
+      const rows = document.querySelectorAll<HTMLElement>('.submission-row');
+      rows.forEach((r) => {
+        const rowStatus = r.getAttribute('data-status');
+        if (filter === 'all' || rowStatus === filter) {
+          r.style.display = '';
+        } else {
+          r.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Live Search Naskah Masuk
+  const searchSubInput = document.getElementById('search-submission-input') as HTMLInputElement | null;
+  searchSubInput?.addEventListener('input', () => {
+    const q = searchSubInput.value.toLowerCase().trim();
+    const rows = document.querySelectorAll<HTMLElement>('.submission-row');
+    rows.forEach((r) => {
+      const searchKey = r.getAttribute('data-search') || '';
+      if (!q || searchKey.includes(q)) {
+        r.style.display = '';
+      } else {
+        r.style.display = 'none';
+      }
+    });
+  });
+
+  // Hapus Naskah Masuk (Modal Kustom & Hapus Baris)
+  document.querySelectorAll<HTMLButtonElement>('.btn-delete-submission').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      sessionStorage.setItem('jteba_active_tab', 'tab-submissions-list');
+      const reg = btn.getAttribute('data-reg');
+      const title = btn.getAttribute('data-title') || reg;
+      if (!reg) return;
+
+      const row = btn.closest('tr');
+
+      openConfirmModal({
+        title: 'Hapus Naskah Masuk',
+        message: 'Data registrasi naskah ini akan dihapus secara permanen dari database Cloudflare D1. Tindakan ini tidak dapat dibatalkan.',
+        item: `No. Registrasi: ${reg} ("${title}")`,
+        onConfirm: async () => {
+          try {
+            const res = await fetch('/api/submissions', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'delete', regNumber: reg }),
+            });
+            const json = await res.json();
+            if (json.success) {
+              if (row) {
+                row.style.transition = 'all 0.3s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(20px)';
+                setTimeout(() => row.remove(), 300);
+              }
+              const tabSub = document.querySelector('[data-tab="tab-submissions-list"] span:last-child');
+              if (tabSub) {
+                const currentRows = document.querySelectorAll('.submission-row').length - 1;
+                tabSub.textContent = `Naskah Masuk (${Math.max(0, currentRows)})`;
+              }
+              showToast(`Naskah registrasi "${reg}" berhasil dihapus dari database.`);
+            } else {
+              showToast('Gagal menghapus naskah: ' + json.error, true);
+            }
+          } catch (err: any) {
+            showToast('Gagal menghapus naskah: ' + err.message, true);
           }
         },
       });

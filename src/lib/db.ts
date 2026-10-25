@@ -1391,3 +1391,20 @@ export async function updateDbSubmissionStatus(regNumber: string, status: string
   }
   return false;
 }
+
+export async function deleteDbSubmission(regNumber: string, d1?: any): Promise<boolean> {
+  const db = d1 || globalD1Instance;
+  if (db) {
+    await ensureDbSchemaInitialized(db);
+    try {
+      await db.prepare("DELETE FROM journal_submissions WHERE reg_number = ?").bind(regNumber).run();
+      return true;
+    } catch (_) {}
+  }
+  const idx = memorySubmissions.findIndex(s => s.regNumber === regNumber);
+  if (idx !== -1) {
+    memorySubmissions.splice(idx, 1);
+    return true;
+  }
+  return false;
+}

@@ -1,8 +1,9 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { createDbSubmission, getDbSettings, getDbSubmissionByRegNumber } from '../../lib/db';
+import { createDbSubmission, getDbSettings, getDbSubmissionByRegNumber, updateDbSubmissionStatus, deleteDbSubmission } from '../../lib/db';
 import { sendSubmissionEmails } from '../../lib/email';
+import { verifySession } from '../../lib/auth';
 
 function bufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
@@ -59,6 +60,53 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const envApiKey = (locals as any)?.runtime?.env?.RESEND_API_KEY;
 
     const contentType = request.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const kv = (locals as any)?.runtime?.env?.KV;
+      const session = await verifySession(request, kv);
+      if (!session) {
+        return new Response(JSON.stringify({ success: false, error: 'Akses ditolak: Anda harus login sebagai admin redaksi.' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
+      const body = await request.json();
+      const { action, regNumber } = body;
+      if (!regNumber) {
+        return new Response(JSON.stringify({ success: false, error: 'Nomor registrasi naskah wajib disertakan.' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
+      if (action === 'update-status') {
+        const { status } = body;
+        const validStatuses = ['submitted', 'under_review', 'revision', 'accepted', 'declined'];
+        if (!validStatuses.includes(status)) {
+          return new Response(JSON.stringify({ success: false, error: 'Status naskah tidak valid.' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+        const updated = await updateDbSubmissionStatus(regNumber, status, d1);
+        return new Response(JSON.stringify({ success: updated, status }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } else if (action === 'delete') {
+        const deleted = await deleteDbSubmission(regNumber, d1);
+        return new Response(JSON.stringify({ success: deleted }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } else {
+        return new Response(JSON.stringify({ success: false, error: 'Aksi tidak dikenal.' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
     if (!contentType.includes('multipart/form-data')) {
       return new Response(JSON.stringify({ success: false, error: 'Format data pengiriman naskah tidak valid.' }), {
         status: 400,
@@ -230,5 +278,45 @@ export const POST: APIRoute = async ({ request, locals }) => {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
+  }
+};
+
+export const PATCH: APIRoute = async ({ request, locals }) => {
+  try {
+    const d1 = (locals as any)?.runtime?.env?.DB;
+    const kv = (locals as any)?.runtime?.env?.KV;
+    const session = await verifySession(request, kv);
+    if (!session) {
+      return new Response(JSON.stringify({ success: false, error: 'Akses ditolak.' }), { status: 401 });
+    }
+    const body = await request.json();
+    const { regNumber, status } = body;
+    if (!regNumber || !status) {
+      return new Response(JSON.stringify({ success: false, error: 'Data tidak lengkap.' }), { status: 400 });
+    }
+    const updated = await updateDbSubmissionStatus(regNumber, status, d1);
+    return new Response(JSON.stringify({ success: updated, status }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  } catch (err: any) {
+    return new Response(JSON.stringify({ success: false, error: err.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+  }
+};
+
+export const DELETE: APIRoute = async ({ request, locals }) => {
+  try {
+    const d1 = (locals as any)?.runtime?.env?.DB;
+    const kv = (locals as any)?.runtime?.env?.KV;
+    const session = await verifySession(request, kv);
+    if (!session) {
+      return new Response(JSON.stringify({ success: false, error: 'Akses ditolak.' }), { status: 401 });
+    }
+    const body = await request.json();
+    const { regNumber } = body;
+    if (!regNumber) {
+      return new Response(JSON.stringify({ success: false, error: 'Nomor registrasi naskah diperlukan.' }), { status: 400 });
+    }
+    const deleted = await deleteDbSubmission(regNumber, d1);
+    return new Response(JSON.stringify({ success: deleted }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  } catch (err: any) {
+    return new Response(JSON.stringify({ success: false, error: err.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 };
