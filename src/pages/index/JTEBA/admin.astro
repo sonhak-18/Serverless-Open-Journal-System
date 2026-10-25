@@ -97,17 +97,27 @@ function formatFileSize(bytes: number): string {
       </div>
     </div>
 
-    <!-- Alert Notifikasi Global -->
-    <div id="admin-toast" class="hidden mb-6 p-4 rounded border text-xs sm:text-sm font-semibold flex items-center justify-between transition-all shadow-xs">
-      <div class="flex items-center gap-2.5">
-        <span id="admin-toast-icon" class="shrink-0 flex items-center"></span>
-        <span id="admin-toast-msg"></span>
+    <!-- Floating Toast Notification (Fluid Popup) -->
+    <div id="admin-toast-container" class="fixed bottom-6 right-6 z-50 pointer-events-none max-w-sm sm:max-w-md w-full px-4 sm:px-0">
+      <div
+        id="admin-toast"
+        class="pointer-events-auto transform transition-all duration-300 ease-out translate-y-4 opacity-0 hidden bg-white rounded-lg border shadow-xl p-3.5 text-xs sm:text-sm font-medium flex items-start justify-between gap-3"
+      >
+        <div class="flex items-start gap-2.5 min-w-0">
+          <span id="admin-toast-icon" class="shrink-0 mt-0.5 flex items-center"></span>
+          <span id="admin-toast-msg" class="leading-snug break-words"></span>
+        </div>
+        <button
+          type="button"
+          id="btn-close-toast"
+          aria-label="Tutup notifikasi"
+          class="text-slate-400 hover:text-slate-600 shrink-0 p-1 rounded hover:bg-slate-100 transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
-      <button type="button" aria-label="Tutup notifikasi" onclick="document.getElementById('admin-toast').classList.add('hidden')" class="text-slate-500 hover:text-slate-700 ml-4 p-1 min-w-[32px] min-h-[32px] flex items-center justify-center">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
     </div>
 
     {!isAuthenticated ? (
@@ -2873,13 +2883,32 @@ function formatFileSize(bytes: number): string {
   // Simpan token otorisasi repositori hanya di memori sesi aktif (tidak persisten di disk/localStorage)
   let memoryWorkerAdminToken: string | null = null;
 
+  let toastTimeout: any = null;
+
+  function hideToast() {
+    const toast = document.getElementById('admin-toast');
+    if (!toast) return;
+    toast.classList.remove('translate-y-0', 'opacity-100');
+    toast.classList.add('translate-y-4', 'opacity-0');
+    setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 300);
+  }
+
   function showToast(msg: string, isError = false) {
     const toast = document.getElementById('admin-toast');
     const toastMsg = document.getElementById('admin-toast-msg');
     const toastIcon = document.getElementById('admin-toast-icon');
     if (!toast || !toastMsg) return;
+
+    if (toastTimeout) {
+      clearTimeout(toastTimeout);
+      toastTimeout = null;
+    }
+
     const cleanMsg = msg.replace(/^[✓✕⚡⚠\s]+/, '').trim();
     toastMsg.innerText = cleanMsg;
+
     if (toastIcon) {
       if (isError) {
         toastIcon.innerHTML = '<svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>';
@@ -2887,12 +2916,25 @@ function formatFileSize(bytes: number): string {
         toastIcon.innerHTML = '<svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
       }
     }
-    toast.className = `mb-6 p-4 rounded-xs border text-xs sm:text-sm font-semibold flex items-center justify-between transition-all shadow-xs ${
-      isError ? 'bg-rose-50 text-rose-800 border-rose-300' : 'bg-emerald-50 text-emerald-800 border-emerald-300'
+
+    toast.className = `pointer-events-auto transform transition-all duration-300 ease-out bg-white rounded-lg border shadow-xl p-3.5 text-xs sm:text-sm font-medium flex items-start justify-between gap-3 ${
+      isError
+        ? 'border-rose-300 text-rose-900 bg-rose-50/95 shadow-rose-900/10'
+        : 'border-emerald-300 text-emerald-950 bg-emerald-50/95 shadow-emerald-900/10'
     }`;
+
     toast.classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    requestAnimationFrame(() => {
+      toast.classList.remove('translate-y-4', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+    });
+
+    toastTimeout = setTimeout(() => {
+      hideToast();
+    }, 4000);
   }
+
+  document.getElementById('btn-close-toast')?.addEventListener('click', hideToast);
 
   // Login & Logout Check
   const loginForm = document.getElementById('admin-login-form');
