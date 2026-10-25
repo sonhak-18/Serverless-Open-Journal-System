@@ -43,7 +43,7 @@ const waUrl = getWhatsAppSubmissionUrl(
             {journalConfig.name} ({journalConfig.shortName}) menerima naskah hasil penelitian empiris dan telaah literatur kritis pada rumpun akuntansi keberlanjutan & ESG, perpajakan, tata kelola, dan bisnis terapan.
           </p>
           <p class="text-xs sm:text-sm text-slate-600 bg-slate-50 p-3 rounded border border-slate-200">
-            Lengkapi formulir di bawah ini untuk menerbitkan <strong>Nomor Registrasi Naskah Resmi</strong> dan memulai alur penelaahan sejawat ganda (<em>double-blind peer review</em>). Seluruh komunikasi editorial berikutnya akan menggunakan nomor registrasi yang diterbitkan.
+            Lengkapi formulir di bawah ini untuk menerbitkan <strong>Nomor Registrasi Naskah Resmi</strong> dan memulai alur penelaahan sejawat (<em>single-blind peer review</em>). Seluruh komunikasi editorial berikutnya akan menggunakan nomor registrasi yang diterbitkan.
           </p>
         </div>
 
@@ -361,7 +361,7 @@ const waUrl = getWhatsAppSubmissionUrl(
                 class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-[#0f284e] file:text-white hover:file:bg-[#183e6d] file:cursor-pointer cursor-pointer border border-slate-200 bg-white p-1 rounded"
               />
               <div class="flex flex-wrap items-center justify-between text-xs text-slate-500 pt-1">
-                <span>Format yang didukung: Microsoft Word (.docx, .doc) dan PDF. Ukuran maks: <strong>15 MB</strong>.</span>
+                <span>Format yang didukung: Microsoft Word (.docx, .doc) dan PDF (maks 15 MB). Naskah memuat identitas penulis lengkap sesuai templat JTEBA (penelaahan single blind).</span>
                 <a href={templateUrl} download class="text-blue-700 hover:underline font-semibold inline-flex items-center gap-1">
                   <span>Unduh Template .docx</span>
                 </a>
@@ -371,7 +371,7 @@ const waUrl = getWhatsAppSubmissionUrl(
             <!-- Unggah Berkas Pelengkap (Opsional) -->
             <div class="p-4 bg-slate-50 border border-slate-200 rounded space-y-2">
               <label for="supplementaryFile" class="block text-xs font-semibold text-slate-800">
-                Berkas Pelengkap / Surat Pernyataan Orisinalitas (Opsional)
+                Berkas Pelengkap / Dokumen Pendukung Fast Track (Opsional)
               </label>
               <input
                 type="file"
@@ -381,7 +381,7 @@ const waUrl = getWhatsAppSubmissionUrl(
                 class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-slate-800 hover:file:bg-slate-300 file:cursor-pointer cursor-pointer border border-slate-200 bg-white p-1 rounded"
               />
               <span class="text-xs text-slate-500 block">
-                Dapat berupa surat pernyataan orisinalitas bermaterai, instrumen kuesioner, atau data riset tambahan.
+                Dapat berupa dokumen pendukung tenggat mendesak (untuk permohonan Jalur Prioritas / Fast Track gratis), instrumen kuesioner, atau data riset tambahan.
               </span>
             </div>
           </div>
@@ -427,7 +427,7 @@ const waUrl = getWhatsAppSubmissionUrl(
                   class="mt-1 h-4 w-4 rounded border-slate-300 text-[#0f284e] focus:ring-[#0f284e]"
                 />
                 <span>
-                  <strong>Kepatuhan Pedoman Format:</strong> Naskah telah disesuaikan dengan Pedoman Penulis (Author Guidelines), gaya sitasi APA 7th Edition, dan bersedia mengikuti prosedur telaah sejawat ganda (double-blind peer review).
+                  <strong>Kepatuhan Pedoman Format:</strong> Naskah telah disesuaikan dengan Pedoman Penulis (Author Guidelines), gaya sitasi APA 7th Edition, dan bersedia mengikuti prosedur telaah sejawat (single-blind peer review).
                 </span>
               </label>
             </div>

@@ -28,7 +28,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
           <div class="mt-2 text-base text-slate-700">
             <strong class="text-slate-900">{journalConfig.name} ({journalConfig.shortName})</strong>
             <div class="text-sm text-slate-500 mt-0.5">
-              Penerbit: {journalConfig.publisher} · <a href="/index/JTEBA" class="text-academic-teal hover:underline font-mono">Beranda Portal</a>
+              Penerbit: Organisasi Riset dan Publikasi Ilmiah Praniti, Mojokerto, Jawa Timur · <a href="/index/JTEBA" class="text-academic-teal hover:underline font-mono">Beranda Portal</a>
             </div>
           </div>
         </div>
@@ -122,23 +122,23 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
           </div>
         </section>
 
-        <!-- Section 3: Publication Information -->
+                <!-- Section 3: Publication Information -->
         <section id="publication-info" class="space-y-4">
           <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
             Publication Information (Informasi Terbitan)
           </h2>
           <div class="p-5 bg-slate-50 border border-slate-200 rounded space-y-2.5 text-base sm:text-lg text-slate-800 leading-relaxed shadow-2xs">
             <div>
-              <strong>Frekuensi Terbit:</strong> {journalConfig.publicationFrequency}; terbit perdana Maret 2026.
+              <strong>Frekuensi Terbit:</strong> 4 kali setahun, yaitu <strong>Maret, Juni, September, dan Desember</strong>; terbit perdana Maret 2026.
             </div>
             <div>
-              <strong>Model Terbit:</strong> Akses terbuka penuh (<em>Open Access</em>).
+              <strong>Model Terbit:</strong> Akses terbuka penuh (<em>open access</em>), terbit <strong>hanya secara daring</strong> (<em>online only</em>).
             </div>
             <div>
-              <strong>Identifier:</strong> DOI Prefix {journalConfig.doiPrefix} (Crossref) · e-ISSN: {journalConfig.eIssn} · p-ISSN: {journalConfig.pIssn}.
+              <strong>Identifier:</strong> DOI Prefix {journalConfig.doiPrefix} (Crossref) · e-ISSN: {journalConfig.eIssn} (edisi daring) · p-ISSN: {journalConfig.pIssn} (diterbitkan bersamaan, tanpa edisi cetak).
             </div>
             <div>
-              <strong>Pengindeksan:</strong> Google Scholar, GARUDA (Kemdikbud), Crossref, Dimensions, SINTA, BASE, Scilit.
+              <strong>Pengindeksan:</strong> Google Scholar, GARUDA (Kemdikbudristek), Crossref, Dimensions, SINTA (tahap evaluasi akreditasi), BASE, dan Scilit.
             </div>
           </div>
         </section>
@@ -256,24 +256,16 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
             </p>
           </div>
 
-          <!-- 6. Berkas yang Dikirim -->
+                    <!-- 6. Berkas yang Dikirim -->
           <div class="space-y-3">
             <h3 class="text-lg sm:text-xl font-bold text-slate-900">
               6. Berkas yang Dikirim
             </h3>
             <p class="text-base sm:text-lg text-slate-800 leading-relaxed">
-              Karena penelaahan dilakukan secara <em>double blind</em>, penulis mengirim dua berkas dalam format Microsoft Word (.docx):
+              Penulis mengirim <strong>satu berkas</strong> naskah dalam format Microsoft Word (<code class="bg-slate-100 text-[#0f284e] px-1.5 py-0.5 rounded font-mono text-sm">.docx</code>) sesuai templat {journalConfig.shortName}. Naskah memuat identitas penulis (nama, afiliasi, email korespondensi, dan ORCID) karena penelaahan dilakukan secara <strong>single blind</strong>: reviewer mengetahui identitas penulis, sedangkan identitas reviewer dirahasiakan dari penulis. Nomor WhatsApp pada templat hanya untuk keperluan korespondensi dan tidak ditampilkan saat artikel diterbitkan.
             </p>
-            <ol class="text-base sm:text-lg text-slate-800 space-y-2 list-decimal list-inside leading-relaxed pl-2">
-              <li>
-                <strong>Naskah anonim (<em>blinded manuscript</em>):</strong> tanpa nama penulis, afiliasi, email, ORCID, ucapan terima kasih, dan informasi pendanaan. Rujukan terhadap karya sendiri ditulis netral, misalnya "(Penulis, Tahun)".
-              </li>
-              <li>
-                <strong>Halaman identitas (<em>title page</em>):</strong> berisi judul, nama penulis, afiliasi, email korespondensi, ORCID, nomor WhatsApp untuk keperluan korespondensi, dan seluruh pernyataan.
-              </li>
-            </ol>
             <p class="text-base text-amber-900 bg-amber-50 p-3 rounded border border-amber-200">
-              Seluruh teks petunjuk pada templat harus dihapus sebelum naskah dikirim ke redaksi.
+              Seluruh teks petunjuk pada templat harus dihapus sebelum naskah dikirim.
             </p>
           </div>
 
@@ -305,7 +297,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
                 <svg class="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span>Naskah anonim dan halaman identitas dikirim sebagai dua berkas terpisah (.docx).</span>
+                <span>Identitas penulis (nama, afiliasi, email korespondensi, ORCID) dicantumkan lengkap pada naskah sesuai templat.</span>
               </li>
               <li class="flex items-start gap-2.5">
                 <svg class="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -497,31 +489,215 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
           </div>
         </section>
 
-        <!-- Section 6: Peer Review Process -->
-        <section id="review-process" class="space-y-4">
-          <h2 class="text-xl sm:text-2xl font-bold text-academic-navy border-b-2 border-slate-200 pb-2">
-            Peer Review Process (Proses Penelaahan Sejawat)
-          </h2>
-          <ol class="text-base sm:text-lg text-slate-800 space-y-3.5 list-decimal list-inside leading-relaxed">
-            <li>
-              <strong>Penelaahan awal:</strong> <em>Managing Editor</em> memeriksa kesesuaian ruang lingkup, kepatuhan terhadap templat, anonimitas naskah, dan orisinalitas (termasuk pemeriksaan kemiripan).
-            </li>
-            <li>
-              <strong>Penelaahan mitra bestari:</strong> Naskah yang memenuhi kualifikasi diteruskan kepada minimal dua mitra bestari (<em>peer reviewers</em>) independen melalui metode <strong><em>double blind</em></strong>: identitas penulis tidak diketahui reviewer, dan identitas reviewer tidak diketahui penulis.
-            </li>
-            <li>
-              <strong>Keputusan:</strong> Diterima, diterima dengan revisi, atau ditolak, berdasarkan sepenuhnya pada pertimbangan substantif dewan penelaah.
-            </li>
-            <li>
-              <strong>Revisi:</strong> Penulis menyampaikan naskah revisi beserta tanggapan atas setiap masukan reviewer dalam batas waktu 14 hari kalender. Jumlah putaran revisi maksimal 2 (dua) kali.
-            </li>
-            <li>
-              <strong>Target waktu:</strong> Keputusan pertama diupayakan dalam 4-8 minggu sejak naskah lolos penelaahan awal.
-            </li>
-            <li>
-              <strong>Naskah dari pihak internal:</strong> Naskah yang ditulis oleh editor atau anggota dewan redaksi ditangani oleh editor lain dan penulis tersebut tidak terlibat dalam pengambilan keputusannya.
-            </li>
-          </ol>
+                <!-- Section 6: Peer Review Process -->
+        <section id="review-process" class="space-y-6">
+          <div class="border-b-2 border-slate-200 pb-2">
+            <h2 class="text-xl sm:text-2xl font-bold text-academic-navy">
+              Peer Review Process (Proses Penelaahan Sejawat)
+            </h2>
+            <p class="text-base sm:text-lg text-slate-800 mt-2 leading-relaxed">
+              {journalConfig.shortName} menerapkan penelaahan sejawat <strong>single blind</strong>: reviewer mengetahui identitas penulis, sedangkan identitas reviewer dirahasiakan dari penulis. Prosesnya dirancang singkat, transparan, dan terukur: <strong>keputusan pertama diupayakan paling lambat 30 hari kalender sejak naskah masuk.</strong>
+            </p>
+          </div>
+
+          <!-- Tabel 1: Tahapan dan Target Waktu -->
+          <div class="space-y-3">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#0f284e]"></span>
+              <span>Tahapan dan Target Waktu Alur Penelaahan</span>
+            </h3>
+            <div class="overflow-x-auto border border-slate-300 rounded shadow-2xs">
+              <table class="w-full text-left border-collapse text-base text-slate-800">
+                <thead class="bg-[#0f284e] text-white">
+                  <tr>
+                    <th class="py-3 px-4 font-bold border-b border-slate-300 w-1/2 sm:w-2/5">Tahap</th>
+                    <th class="py-3 px-4 font-bold border-b border-slate-300 w-1/4">Pelaksana</th>
+                    <th class="py-3 px-4 font-bold border-b border-slate-300">Target Waktu</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 font-semibold text-slate-900">1. Konfirmasi penerimaan naskah</td>
+                    <td class="py-3 px-4 text-slate-700">Sistem</td>
+                    <td class="py-3 px-4 font-medium text-emerald-700">Otomatis, seketika</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 font-semibold text-slate-900">
+                      2. Penelaahan awal (<em>desk review</em>): ruang lingkup, templat, kelengkapan identitas, orisinalitas dan kemiripan
+                    </td>
+                    <td class="py-3 px-4 text-slate-700"><em>Managing Editor</em></td>
+                    <td class="py-3 px-4 font-medium text-slate-900">Maksimal 3 hari kerja</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 font-semibold text-slate-900">3. Penugasan reviewer</td>
+                    <td class="py-3 px-4 text-slate-700">Editor</td>
+                    <td class="py-3 px-4 text-slate-800">Maksimal 3 hari kerja. Reviewer menjawab undangan dalam 3 hari; bila tidak menjawab, langsung diganti.</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 font-semibold text-slate-900">4. Penelaahan oleh minimal 2 reviewer</td>
+                    <td class="py-3 px-4 text-slate-700">Mitra Bestari (Reviewer)</td>
+                    <td class="py-3 px-4 text-slate-800">14 hari kalender. Pengingat dikirim pada hari ke-7 dan ke-12.</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 font-semibold text-slate-900">5. Keputusan editorial</td>
+                    <td class="py-3 px-4 text-slate-700">Editor dan Dewan Redaksi</td>
+                    <td class="py-3 px-4 font-semibold text-academic-navy">Maksimal 3 hari kerja setelah seluruh review masuk</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="text-sm text-slate-600 italic">
+              Keputusan editorial berupa <strong>diterima</strong>, <strong>diterima dengan revisi</strong> (minor atau mayor), atau <strong>ditolak</strong>, berdasarkan pertimbangan substantif dewan penelaah.
+            </p>
+          </div>
+
+          <!-- Tabel 2: Ketentuan Revisi Naskah -->
+          <div class="space-y-3 pt-2">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+              <span>Ketentuan dan Batas Waktu Revisi</span>
+            </h3>
+            <div class="overflow-x-auto border border-slate-300 rounded shadow-2xs">
+              <table class="w-full text-left border-collapse text-base text-slate-800">
+                <thead class="bg-slate-100 text-slate-900 border-b border-slate-300">
+                  <tr>
+                    <th class="py-2.5 px-4 font-bold w-1/4">Jenis Revisi</th>
+                    <th class="py-2.5 px-4 font-bold w-1/4">Waktu bagi Penulis</th>
+                    <th class="py-2.5 px-4 font-bold">Pemeriksaan Revisi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 font-bold text-amber-900 bg-amber-50/50">Revisi minor</td>
+                    <td class="py-3 px-4 font-semibold text-slate-900">7 hari kalender</td>
+                    <td class="py-3 px-4">Diperiksa editor tanpa review ulang, maksimal 5 hari kerja.</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-3 px-4 font-bold text-amber-950 bg-amber-50/50">Revisi mayor</td>
+                    <td class="py-3 px-4 font-semibold text-slate-900">14 hari kalender</td>
+                    <td class="py-3 px-4">Ditelaah ulang oleh reviewer yang sama dalam 7 hari kalender, keputusan editorial maksimal 3 hari kerja.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ul class="text-sm sm:text-base text-slate-700 space-y-1.5 list-disc list-inside leading-relaxed pl-1">
+              <li>Penulis menyampaikan naskah revisi beserta tanggapan tertulis atas setiap masukan reviewer (<em>response letter</em>).</li>
+              <li>Revisi dibatasi maksimal <strong>dua putaran</strong>.</li>
+              <li>Penulis dapat meminta perpanjangan waktu <strong>satu kali</strong> (maksimal 7 hari) melalui surel sebelum tenggat berakhir.</li>
+            </ul>
+          </div>
+
+          <!-- Tabel 3: Alur Pasca-Penerimaan (Setelah Naskah Diterima) -->
+          <div class="space-y-3 pt-2">
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+              <span>Tahapan Pasca-Penerimaan (Setelah Naskah Diterima)</span>
+            </h3>
+            <div class="overflow-x-auto border border-slate-300 rounded shadow-2xs">
+              <table class="w-full text-left border-collapse text-base text-slate-800">
+                <thead class="bg-slate-100 text-slate-900 border-b border-slate-300">
+                  <tr>
+                    <th class="py-2.5 px-4 font-bold w-1/2">Tahap Pasca-Diterima</th>
+                    <th class="py-2.5 px-4 font-bold">Target Waktu</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-2.5 px-4 font-semibold text-slate-900">Pengiriman Letter of Acceptance (LOA)</td>
+                    <td class="py-2.5 px-4">Maksimal 2 hari kerja sejak keputusan diterima</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-2.5 px-4 font-semibold text-slate-900">Pembayaran APC (Rp100.000)</td>
+                    <td class="py-2.5 px-4">Dalam 7 hari kalender sejak LOA dikirim</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-2.5 px-4 font-semibold text-slate-900">Penyuntingan akhir dan tata letak (<em>copyediting & layout</em>)</td>
+                    <td class="py-2.5 px-4 font-medium text-slate-900">Maksimal 5 hari kerja, <strong>dimulai setelah pembayaran APC terkonfirmasi</strong></td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-2.5 px-4 font-semibold text-slate-900">Pemeriksaan draf bukti cetak (<em>galley proof</em>) oleh penulis</td>
+                    <td class="py-2.5 px-4">Maksimal 3 hari kerja</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="py-2.5 px-4 font-semibold text-emerald-800 bg-emerald-50/40">Publikasi daring (online publication)</td>
+                    <td class="py-2.5 px-4 font-bold text-emerald-700 bg-emerald-50/40">Maksimal 5 hari kerja setelah <em>proof</em> disetujui</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="text-sm text-slate-700 bg-slate-50 p-3 rounded border border-slate-200 leading-relaxed">
+              <strong>Model Publikasi Berkelanjutan (<em>Continuous Publication</em>):</strong> Begitu proses penyuntingan dan proofing selesai, artikel langsung diterbitkan secara daring (online) dan dimasukkan ke nomor terbitan yang sedang berjalan tanpa harus menunggu seluruh naskah satu nomor terbit lengkap.
+            </p>
+          </div>
+
+          <!-- KOTAK KHUSUS: JALUR PRIORITAS (FAST TRACK) -->
+          <div class="p-6 bg-gradient-to-br from-[#0f284e]/5 via-[#0f284e]/10 to-amber-50/40 border-2 border-[#0f284e]/30 rounded-lg space-y-4 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="px-3 py-1 bg-[#0f284e] text-white text-xs font-bold uppercase rounded tracking-wider shadow-xs">
+                  Layanan Resmi
+                </span>
+                <h3 class="text-xl font-bold text-[#0f284e]">
+                  Jalur Prioritas (<em>Fast Track Review</em>)
+                </h3>
+              </div>
+              <span class="px-3 py-1 bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold rounded-full w-fit">
+                Bebas Biaya Tambahan (Rp0)
+              </span>
+            </div>
+
+            <p class="text-base text-slate-800 leading-relaxed">
+              Disediakan bagi penulis dengan kebutuhan tenggat mendesak yang dapat dipertanggungjawabkan (misalnya persyaratan kelulusan studi, kenaikan jabatan fungsional akademik, atau pelaporan akhir hibah riset).
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-800">
+              <div class="p-4 bg-white rounded border border-slate-200 space-y-1.5 shadow-2xs">
+                <strong class="text-slate-900 block font-bold text-base flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                  Persyaratan Pengajuan:
+                </strong>
+                <ul class="space-y-1 list-disc list-inside text-slate-700 leading-relaxed pl-1">
+                  <li>Naskah lengkap dan patuh terhadap templat penulisan {journalConfig.shortName}.</li>
+                  <li>Indeks kemiripan (Turnitin) di bawah 20%.</li>
+                  <li>Permohonan disertai dokumen pendukung tenggat resmi yang diunggah pada saat pengiriman naskah.</li>
+                </ul>
+              </div>
+
+              <div class="p-4 bg-white rounded border border-slate-200 space-y-1.5 shadow-2xs">
+                <strong class="text-slate-900 block font-bold text-base flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  Manfaat &amp; Target Waktu:
+                </strong>
+                <ul class="space-y-1 list-disc list-inside text-slate-700 leading-relaxed pl-1">
+                  <li><em>Desk review</em> diselesaikan dalam <strong>1 hari kerja</strong>.</li>
+                  <li>Reviewer diberi tenggat telaah <strong>7 hari kalender</strong>.</li>
+                  <li>Keputusan editorial maksimal <strong>3 hari kerja</strong>.</li>
+                  <li><strong>Keputusan pertama diupayakan dalam 14 hari kalender</strong>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="p-3 bg-white/80 rounded border border-amber-300 text-xs sm:text-sm text-slate-700 space-y-1">
+              <p>
+                <strong>Komitmen Integritas:</strong> {journalConfig.shortName} <strong>tidak menjual kecepatan dan tidak menjanjikan penerimaan</strong>. Standar penelaahan ilmiah dan kriteria evaluasi substantif sepenuhnya sama ketatnya dengan jalur reguler.
+              </p>
+              <p class="text-slate-600">
+                <strong>Kuota:</strong> Dibatasi maksimal <strong>10 naskah per bulan</strong> menurut urutan pengajuan (*first-come, first-served*) yang memenuhi kelayakan syarat.
+              </p>
+            </div>
+          </div>
+
+          <!-- Prinsip Pelaksanaan Penelaahan -->
+          <div class="p-5 bg-slate-50 border border-slate-200 rounded space-y-2.5 text-base text-slate-800 leading-relaxed shadow-2xs">
+            <h4 class="font-bold text-slate-900 text-base sm:text-lg">Prinsip Pelaksanaan Penelaahan:</h4>
+            <ul class="space-y-2 list-disc list-inside pl-1 text-slate-700">
+              <li>Setiap naskah ditelaah oleh minimal <strong>dua reviewer independen</strong>. Bila rekomendasi keduanya berbeda, editor memutuskan tanpa menambah reviewer ketiga, kecuali kedua penilaian saling bertentangan secara substansial.</li>
+              <li>Redaksi menyiapkan reviewer cadangan sejak penugasan awal, sehingga reviewer yang terlambat dapat segera diganti tanpa menunda proses.</li>
+              <li>Reviewer wajib menyatakan ketiadaan konflik kepentingan dan wajib menolak penugasan bila memiliki hubungan dengan penulis.</li>
+              <li>Naskah yang ditulis oleh editor atau anggota dewan redaksi ditangani oleh editor lain secara independen, dan penulis bersangkutan tidak terlibat dalam pengambilan keputusannya.</li>
+              <li>Penulis dapat menanyakan status naskah kapan saja dengan menyebutkan nomor ID registrasi naskah melalui surel ke <!--email_off--><a href={`mailto:${journalConfig.submission.email}`} class="text-blue-700 hover:underline font-mono font-semibold">${journalConfig.submission.email}</a><!--/email_off-->. Redaksi merespons dalam 2 hari kerja.</li>
+            </ul>
+          </div>
         </section>
 
         <!-- Section 7: Plagiarism and AI Policy -->
@@ -677,7 +853,7 @@ const isExternalTemplate = templateUrl.startsWith('http://') || templateUrl.star
             <div class="font-bold text-slate-900">
               Redaksi {journalConfig.name} ({journalConfig.shortName})
             </div>
-            <div>{journalConfig.publisher} · {journalConfig.address}</div>
+            <div>Organisasi Riset dan Publikasi Ilmiah Praniti, Mojokerto, Jawa Timur · {journalConfig.address}</div>
             <div class="pt-2 flex flex-wrap gap-4 text-sm text-slate-600">
               <span>Email: <!--email_off--><a href={`mailto:${journalConfig.submission.email}`} class="text-academic-teal hover:underline font-mono font-semibold">{journalConfig.submission.email}</a><!--/email_off--></span>
               <span>•</span>

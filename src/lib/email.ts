@@ -328,8 +328,8 @@ export async function sendSubmissionEmails(
                     Tahapan Selanjutnya (Editorial &amp; Review Workflow):
                   </strong>
                   <ol style="margin: 0; padding-left: 18px; font-size: 12px; line-height: 1.6; color: #475569;">
-                    <li style="margin-bottom: 6px;"><strong>Penelaahan Awal (Desk Review / 1&ndash;3 hari kerja):</strong> Managing Editor memeriksa kesesuaian ruang lingkup, format templat, anonimitas naskah, dan ambang kemiripan Turnitin (maksimal 20%).</li>
-                    <li style="margin-bottom: 6px;"><strong>Penelaahan Mitra Bestari (Double-Blind Review / 2&ndash;4 minggu):</strong> Naskah yang lolos tahap awal diteruskan kepada minimal 2 reviewer independen secara anonim.</li>
+                    <li style="margin-bottom: 6px;"><strong>Penelaahan Awal (Desk Review / 1&ndash;3 hari kerja):</strong> Managing Editor memeriksa kesesuaian ruang lingkup, format templat, kelengkapan identitas penulis, dan ambang kemiripan Turnitin (maksimal 20%).</li>
+                    <li style="margin-bottom: 6px;"><strong>Penelaahan Mitra Bestari (Single-Blind Review / 14 hari kalender):</strong> Naskah yang lolos tahap awal ditelaah oleh minimal 2 reviewer independen (reviewer mengetahui identitas penulis, identitas reviewer dirahasiakan). Keputusan pertama diupayakan paling lambat 30 hari kalender.</li>
                     <li style="margin-bottom: 0;"><strong>Keputusan Redaksi:</strong> Hasil evaluasi (diterima, revisi, atau ditolak) akan dikirimkan langsung melalui surel ini.</li>
                   </ol>
                 </div>

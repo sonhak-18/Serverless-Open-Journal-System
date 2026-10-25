@@ -2,7 +2,7 @@
 
 **JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas**  
 **JTEBA: Open Journal of Economics, Business, and Accountability**  
-Penerbit: Organisasi Riset dan Publikasi Ilmiah Praniti, Jawa Timur, Indonesia  
+Penerbit: Organisasi Riset dan Publikasi Ilmiah Praniti, Mojokerto, Jawa Timur  
 e-ISSN: 2999-7127 · p-ISSN: 2999-7119 · https://ejournal.praniti.or.id/index/JTEBA · redaksi@praniti.or.id  
 
 ---
@@ -48,9 +48,9 @@ JTEBA mempublikasikan artikel orisinal hasil penelitian empiris (kuantitatif, ku
 
 ## Publication Information (Informasi Terbitan)
 
-- **Frekuensi terbit:** 4 kali setahun (Maret, Juni, September, Desember); terbit perdana: Maret 2026 (Volume 1 Nomor 1 2026).
-- **Model terbit:** Akses terbuka penuh (*Diamond Open Access* / CC BY-SA 4.0).
-- **Identifier:** DOI Prefix 10.64417/jteba (Crossref); e-ISSN: 2999-7127; p-ISSN: 2999-7119.
+- **Frekuensi terbit:** 4 kali setahun, yaitu **Maret, Juni, September, dan Desember**; terbit perdana Maret 2026.
+- **Model terbit:** Akses terbuka penuh (*open access*), terbit **hanya secara daring** (*online only*).
+- **Identifier:** DOI Prefix 10.64417/jteba (Crossref); e-ISSN: 2999-7127 (edisi daring); p-ISSN: 2999-7119 (diterbitkan bersamaan, tanpa edisi cetak).
 - **Pengindeksan:** Google Scholar, GARUDA (Kemdikbudristek), Crossref, Dimensions, SINTA (tahap evaluasi akreditasi), BASE, dan Scilit.
 
 ---
@@ -58,179 +58,205 @@ JTEBA mempublikasikan artikel orisinal hasil penelitian empiris (kuantitatif, ku
 ## Author Guidelines (Petunjuk Penulisan)
 
 ### 1. Kelayakan Naskah
-- Naskah orisinal, belum pernah dipublikasikan di media ilmiah mana pun, dan tidak sedang dalam proses penelaahan di jurnal lain (pengiriman ganda/*duplicate submission* dilarang keras).
-- Naskah wajib sesuai dengan fokus dan ruang lingkup JTEBA.
-- Bahasa naskah adalah bahasa Indonesia baku atau bahasa Inggris akademik standar.
+
+- Naskah orisinal, belum pernah dipublikasikan di media ilmiah mana pun, dan tidak sedang dalam proses penelaahan di jurnal lain (pengiriman ganda tidak diperkenankan).
+- Naskah sesuai dengan fokus dan ruang lingkup JTEBA.
+- Bahasa naskah adalah bahasa Indonesia atau bahasa Inggris.
 
 ### 2. Sistematika Manuskrip
+
 1. Judul (*Title*)
-2. Nama penulis, afiliasi, email korespondensi, dan ORCID iD
-3. Abstrak (*Abstract*) dan Kata Kunci (*Keywords*)
-4. Pendahuluan (*Introduction*)
-5. Tinjauan Pustaka dan Pengembangan Hipotesis (*Literature Review and Hypothesis Development*) — opsional untuk studi kualitatif
-6. Metode Penelitian (*Research Methods*)
-7. Hasil dan Pembahasan (*Results and Discussion*)
-8. Kesimpulan (*Conclusion*)
-9. Pernyataan (*Statements*): kontribusi penulis, pendanaan, bebas konflik kepentingan, ketersediaan data, deklarasi penggunaan AI, dan ucapan terima kasih
-10. Daftar Pustaka (*References*)
-11. Lampiran (*Appendices*) — opsional
+2. Nama penulis, afiliasi, email korespondensi, dan ORCID
+3. *Abstract* dan kata kunci (*Keywords*)
+4. Pendahuluan
+5. Tinjauan Pustaka dan Pengembangan Hipotesis (opsional untuk studi kualitatif)
+6. Metode Penelitian
+7. Hasil dan Pembahasan
+8. Kesimpulan
+9. Pernyataan (kontribusi penulis, pendanaan, konflik kepentingan, ketersediaan data, penggunaan alat AI, ucapan terima kasih)
+10. Daftar Pustaka
+11. Lampiran (opsional)
 
-**Judul.** Huruf kapital, singkat, informatif, dan menggambarkan substansi artikel, maksimal 10 kata (kata sambung tidak dihitung).
+**Judul.** Huruf kapital, singkat dan jelas, maksimal 10 kata (kata sambung tidak dihitung).
 
-**Abstract.** Disusun dalam bahasa Inggris formal, sekitar 200 kata (rentang 150–250 kata), 1 (satu) paragraf tunggal, tanpa sitasi. Memuat tujuan riset, metode & sampel data, temuan empiris utama, simpulan ringkas, dan implikasi/kebaruan (*novelty*).
+**Abstract.** Bahasa Inggris, sekitar 200 kata (rentang 150–250 kata), satu paragraf, tanpa sitasi. Memuat tujuan penelitian, metode, hasil utama, kesimpulan, dan kebaruan penelitian.
 
-**Kata Kunci.** 3–5 kata atau frasa spesifik dalam bahasa Inggris, dipisahkan tanda titik koma (;).
+**Kata kunci.** 3–5 kata atau frasa dalam bahasa Inggris.
 
 ### 3. Panjang Naskah
+
 Naskah memiliki panjang **maksimal 20 halaman** (A4, mengikuti templat JTEBA), tidak termasuk bagian *cover* (judul, penulis, *Article Info*, dan abstrak) serta Daftar Pustaka. Tabel, gambar, dan lampiran dihitung dalam batas 20 halaman.
 
 ### 4. Format Penulisan
 
-| Komponen | Ketentuan Standar |
+| Komponen | Ketentuan |
 |---|---|
-| **Ukuran kertas** | A4 (21 x 29,7 cm) |
-| **Margin** | 2,5 cm (1 inci) pada seluruh sisi (atas, bawah, kiri, kanan) |
-| **Kolom** | Satu kolom penuh (*single column*) |
-| **Tipografi** | Times New Roman, 11 pt (spasi 1.15) |
-| **Judul Artikel** | Times New Roman 12 pt, tebal (*bold*), rata tengah (*center*) |
-| **Nama Penulis** | Times New Roman 11 pt, tebal (*bold*), rata tengah (*center*) |
-| **Tabel dan Gambar** | Bernomor urut (Tabel 1, Gambar 1), memiliki judul jelas di atas tabel / di bawah gambar, dirujuk eksplisit dalam narasi teks, serta wajib mencantumkan sumber data. Gambar minimal 300 dpi. |
+| **Ukuran kertas** | A4 |
+| **Margin** | 2,5 cm pada seluruh sisi |
+| **Kolom** | Satu kolom |
+| **Font** | Times New Roman, 11 pt |
+| **Judul** | Times New Roman 12 pt, tebal, rata tengah |
+| **Nama penulis** | Times New Roman 11 pt, tebal, rata tengah |
+| **Tabel dan gambar** | Diberi nomor dan judul, dirujuk dalam teks, dan mencantumkan sumber |
 
-Penulis **wajib menggunakan templat naskah resmi JTEBA** dalam format Microsoft Word (`.docx`) yang tersedia di situs portal jurnal.
+Penulis wajib menggunakan **templat naskah JTEBA** yang tersedia di situs jurnal.
 
-### 5. Format Sitasi dan Referensi
-Sitasi dalam teks dan penyusunan daftar pustaka wajib mematuhi **APA Style 7th Edition** (*American Psychological Association*). Penulis diwajibkan menggunakan aplikasi manajemen referensi standar (seperti **Mendeley**, **Zotero**, atau **EndNote**).
-- Daftar pustaka wajib memuat **minimal 20 referensi**.
-- Minimal **80%** dari total pustaka merupakan sumber primer mutakhir berupa artikel jurnal ilmiah bereputasi yang terbit dalam **10 tahun terakhir**.
-- Setiap referensi wajib menyertakan tautan DOI aktif jika tersedia.
+### 5. Format Sitasi
 
-### 6. Berkas yang Dikirim (*Submission Files*)
-Guna memastikan proses telaah sejawat bebas bias (*double-blind peer review*), penulis wajib mengunggah **dua berkas terpisah** dalam format Microsoft Word (`.docx`):
-1. **Naskah Anonim (*Blinded Manuscript*):** Berkas naskah lengkap dari judul, abstrak, batang tubuh hingga daftar pustaka tanpa mencantumkan identitas nama penulis, afiliasi perguruan tinggi, alamat surel, ORCID, maupun ucapan terima kasih. Rujukan terhadap karya terdahulu penulis sendiri dianonimkan (misal ditulis: "Penulis, 2023").
-2. **Halaman Identitas (*Title Page*):** Berkas tersendiri yang memuat judul naskah lengkap, nama seluruh penulis, departemen/fakultas, nama institusi/afiliasi, alamat lengkap institusi, surel korespondensi, tautan ORCID, nomor WhatsApp aktif korespondensi, dan rincian seluruh pernyataan etik/pendanaan.
+Sitasi dan daftar pustaka wajib disusun dengan **APA Style 7th Edition**. Penulis disarankan memakai pengelola referensi seperti Mendeley, EndNote, atau Zotero. Daftar pustaka disarankan memuat minimal 20 referensi, terutama artikel jurnal ilmiah terbitan 10 tahun terakhir.
 
-> *Perhatian: Seluruh teks panduan/instruksi berlatar abu-abu atau petunjuk di dalam kurung pada templat wajib dihapus bersih sebelum berkas dikirim.*
+### 6. Berkas yang Dikirim
 
-### 7. Kriteria dan Perubahan Kepenulisan (*Authorship Criteria*)
-- Penulis adalah individu yang memberikan kontribusi intelektual substantif terhadap gagasan, desain riset, akuisisi data, analisis data, atau penyusunan naskah. Pembagian peran dinyatakan secara transparan menggunakan taksonomi **CRediT** (*Contributor Roles Taxonomy*).
-- Penulis Korespondensi (*Corresponding Author*) bertanggung jawab penuh atas komunikasi resmi dengan dewan redaksi, proses revisi, serta konfirmasi persetujuan dari seluruh rekan penulis (*co-authors*).
-- Permohonan perubahan urutan, penambahan, atau pengurangan nama penulis setelah naskah dikirim wajib diajukan secara tertulis kepada Editor-in-Chief dengan menyertakan formulir persetujuan bermeterai yang ditandatangani oleh seluruh penulis. Perubahan kepenulisan tidak dapat dilakukan setelah naskah resmi diterbitkan.
+Penulis mengirim **satu berkas** naskah dalam format Microsoft Word (`.docx`) sesuai templat JTEBA. Naskah memuat identitas penulis (nama, afiliasi, email korespondensi, dan ORCID) karena penelaahan dilakukan secara **single blind**: reviewer mengetahui identitas penulis, sedangkan identitas reviewer dirahasiakan dari penulis. Nomor WhatsApp pada templat hanya untuk korespondensi dan tidak ditampilkan saat terbit.
 
-### 8. Daftar Periksa Sebelum Pengiriman (*Submission Checklist*)
-Sebelum menekan tombol kirim atau menyerahkan naskah ke redaksi, pastikan seluruh butir berikut telah terpenuhi:
-- [ ] Naskah telah diformat menggunakan templat resmi Microsoft Word JTEBA dan seluruh teks petunjuk di dalamnya telah dihapus.
-- [ ] Berkas naskah anonim (*blinded manuscript*) dan halaman identitas (*title page*) telah dipisahkan menjadi dua berkas `.docx` yang berbeda.
-- [ ] Abstrak ditulis dalam bahasa Inggris (150–250 kata) disertai 3–5 kata kunci spesifik.
+Seluruh teks petunjuk pada templat harus dihapus sebelum naskah dikirim.
+
+### 7. Kriteria dan Perubahan Kepenulisan
+
+- Penulis adalah pihak yang memberi kontribusi intelektual yang substansial. Kontribusi dinyatakan menggunakan taksonomi CRediT.
+- Penulis korespondensi bertanggung jawab atas komunikasi dengan redaksi dan atas persetujuan seluruh penulis terhadap naskah.
+- Perubahan daftar atau urutan penulis setelah pengiriman harus diajukan tertulis ke redaksi disertai persetujuan seluruh penulis, dan tidak dapat dilakukan setelah naskah diterbitkan kecuali melalui prosedur koreksi.
+
+### 8. Daftar Periksa Sebelum Mengirim (*Submission Checklist*)
+
+- [ ] Naskah memakai templat JTEBA dan seluruh teks petunjuk sudah dihapus.
+- [ ] Identitas penulis (nama, afiliasi, email korespondensi, ORCID) dicantumkan lengkap pada naskah sesuai templat.
+- [ ] Abstract berbahasa Inggris, 150–250 kata, dan kata kunci 3–5.
 - [ ] Panjang naskah maksimal 20 halaman, tidak termasuk cover dan Daftar Pustaka.
-- [ ] Seluruh sitasi dan daftar pustaka disusun konsisten dengan format APA Style 7th Edition berbasis *reference manager*.
-- [ ] Skor indeks kemiripan (*similarity index*) pada uji Turnitin berada di bawah 20%.
-- [ ] Seluruh pernyataan wajib (kontribusi CRediT, sumber pendanaan, konflik kepentingan, ketersediaan data terbuka, dan pemanfaatan AI) telah diisi lengkap pada halaman identitas.
-- [ ] Pernyataan persetujuan responden (*informed consent*) atau izin komite etik dicantumkan apabila penelitian melibatkan subjek manusia atau data perseorangan.
-- [ ] Izin hak cipta resmi telah diperoleh secara tertulis untuk seluruh materi pihak ketiga (gambar, peta, kuesioner baku) yang dilampirkan.
-
-### 9. Prosedur Penyerahan Naskah Online (Online Submission Procedure)
-Pengiriman naskah ke JTEBA dilakukan secara terpadu melalui portal resmi pada laman:  
-👉 **[https://ejournal.praniti.or.id/index/JTEBA/submit](https://ejournal.praniti.or.id/index/JTEBA/submit)**
-
-Alur penyerahan naskah dirancang ringkas, transparan, dan mudah dipahami:
-1. **Pengisian Data Penulis Korespondensi:** Penulis mengisi nama lengkap, alamat surel aktif, konfirmasi surel, nomor WhatsApp aktif, institusi/afiliasi, serta kota dan negara.
-2. **Pemilihan Rumpun Fokus & Pengunggahan Berkas:** Penulis memilih rumpun bidang fokus yang sesuai, memasukkan judul lengkap dan abstrak/surat pengantar, serta mengunggah berkas manuskrip utama (`.docx` / `.doc` / `.pdf` maksimal 15 MB) yang telah disesuaikan dengan templat naskah.
-3. **Pernyataan Deklarasi Etika:** Penulis mencentang komitmen orisinalitas, persetujuan seluruh rekan penulis, dan kepatuhan terhadap pedoman penulisan.
-4. **Penerbitan Nomor Registrasi Otomatis:** Setelah tombol *Kirimkan Naskah* ditekan, sistem secara otomatis menerbitkan **Nomor Registrasi Naskah Resmi** (format: `JTEBA-SUB-YYYYMM-XXXX`). Nomor ini dicatat permanen dalam basis data jurnal dan ditampilkan langsung pada layar konfirmasi.
-5. **Surel Tanda Terima & Notifikasi Redaksi:** Salinan tanda terima resmi dikirimkan secara otomatis ke surel korespondensi penulis, dan berkas naskah diteruskan ke dewan redaksi.
-6. **Korespondensi Lanjutan:** Seluruh komunikasi telaah awal (*desk review*), perbaikan (*revisi*), hingga keputusan penerbitan (*LoA*) akan menggunakan nomor registrasi naskah tersebut melalui surel resmi `redaksi@praniti.or.id`.
+- [ ] Sitasi dan daftar pustaka sesuai APA 7; semua sitasi ada di daftar pustaka, dan sebaliknya.
+- [ ] Indeks kemiripan (*similarity*) di bawah 20%.
+- [ ] Pernyataan kontribusi, pendanaan, konflik kepentingan, ketersediaan data, dan penggunaan AI sudah diisi.
+- [ ] Persetujuan etik atau persetujuan responden dicantumkan bila melibatkan manusia atau data pribadi.
+- [ ] Izin penggunaan materi pihak ketiga (gambar, tabel, instrumen) sudah dimiliki.
 
 ---
 
 ## Peer Review Process (Proses Penelaahan Sejawat)
 
-1. **Penelaahan Awal (*Initial Desk Review*):** *Managing Editor* memeriksa kesesuaian naskah dengan fokus dan ruang lingkup jurnal, kepatuhan teknis terhadap templat penulisan, anonimitas berkas, serta orisinalitas naskah (uji kemiripan Turnitin). Naskah yang tidak memenuhi syarat akan langsung ditolak (*desk rejection*) atau dikembalikan untuk pra-perbaikan (*resubmit*).
-2. **Penelaahan Mitra Bestari (*Double-Blind Peer Review*):** Naskah yang lolos penelaahan awal akan ditugaskan kepada minimal 2 (dua) mitra bestari independen yang ahli di bidang terkait. Identitas penulis dan penelaah dirahasiakan sepenuhnya secara timbal balik (*double-blind*).
-3. **Keputusan Redaksi (*Editorial Decision*):** Berdasarkan rekomendasi substantif mitra bestari, Dewan Editor mengambil salah satu dari empat keputusan resmi:
-   - *Accept Submission* (Naskah diterima tanpa revisi);
-   - *Revisions Required / Minor Revision* (Naskah diterima bersyarat dengan perbaikan kecil);
-   - *Resubmit for Review / Major Revision* (Naskah memerlukan perbaikan mendasar dan akan ditelaah ulang pada putaran kedua);
-   - *Decline Submission* (Naskah ditolak).
-4. **Batas Waktu Revisi (*Revision Timeline*):** Penulis wajib menyampaikan naskah hasil revisi bersama lembar matriks tanggapan (*response letter/matrix*) butir per butir atas catatan reviewer dalam batas waktu maksimal **14 hari kalender**. Jumlah putaran penelaahan revisi dibatasi maksimal **2 (dua) kali putaran**.
-5. **Target Waktu (*Target Turnaround Time*):** Keputusan pertama (*First Decision*) diupayakan selesai dalam waktu **2 hingga 4 minggu** sejak naskah dinyatakan lolos penelaahan awal.
-6. **Penanganan Naskah Internal Redaksi:** Naskah yang diajukan oleh Editor atau anggota Dewan Editorial JTEBA akan dialihkan sepenuhnya kepada editor tamu (*guest editor*) atau editor independen lainnya. Penulis bersangkutan dibebastugaskan dari seluruh akses keputusan editorial naskah tersebut guna menghindari konflik kepentingan.
+JTEBA menerapkan penelaahan sejawat **single blind**: reviewer mengetahui identitas penulis, sedangkan identitas reviewer dirahasiakan dari penulis. Prosesnya dirancang singkat dan terukur: **keputusan pertama diupayakan paling lambat 30 hari kalender sejak naskah masuk.**
+
+### Tahapan dan target waktu
+
+| Tahap | Pelaksana | Target waktu |
+|---|---|---|
+| **1. Konfirmasi penerimaan naskah** | Sistem | Otomatis, seketika |
+| **2. Penelaahan awal (*desk review*)**: ruang lingkup, templat, kelengkapan identitas, orisinalitas dan kemiripan | *Managing Editor* | Maksimal 3 hari kerja |
+| **3. Penugasan reviewer** | Editor | Maksimal 3 hari kerja. Reviewer menjawab undangan dalam 3 hari; bila tidak menjawab, langsung diganti |
+| **4. Penelaahan oleh minimal 2 reviewer** | Reviewer | 14 hari kalender. Pengingat pada hari ke-7 dan ke-12 |
+| **5. Keputusan editorial** | Editor dan Dewan Redaksi | Maksimal 3 hari kerja setelah seluruh review masuk |
+
+Keputusan berupa **diterima**, **diterima dengan revisi** (minor atau mayor), atau **ditolak**, berdasarkan pertimbangan substantif dewan penelaah.
+
+### Revisi
+
+| Jenis revisi | Waktu bagi penulis | Pemeriksaan revisi |
+|---|---|---|
+| **Revisi minor** | 7 hari kalender | Diperiksa editor tanpa review ulang, maksimal 5 hari kerja |
+| **Revisi mayor** | 14 hari kalender | Ditelaah ulang reviewer yang sama dalam 7 hari kalender, keputusan maksimal 3 hari kerja |
+
+- Penulis menyampaikan naskah revisi beserta tanggapan atas setiap masukan reviewer (*response letter*).
+- Revisi dibatasi maksimal **dua putaran**.
+- Penulis dapat meminta perpanjangan **satu kali** (maksimal 7 hari) lewat email sebelum tenggat berakhir.
+
+### Setelah naskah diterima
+
+| Tahap | Target waktu |
+|---|---|
+| **Pengiriman LOA** | Maksimal 2 hari kerja sejak keputusan diterima |
+| **Pembayaran APC** | Dalam 7 hari kalender sejak LOA dikirim |
+| **Penyuntingan akhir dan tata letak** | Maksimal 5 hari kerja, **dimulai setelah pembayaran APC terkonfirmasi** |
+| **Pemeriksaan *proof* oleh penulis** | Maksimal 3 hari kerja |
+| **Publikasi online** | Maksimal 5 hari kerja setelah *proof* disetujui |
+
+Artikel dipublikasikan secara **berkelanjutan** (*continuous publication*): begitu siap, artikel langsung terbit online dan dimasukkan ke terbitan yang sedang berjalan, tanpa menunggu seluruh naskah satu nomor selesai.
+
+### Jalur Prioritas (*Fast Track*)
+
+Untuk penulis dengan tenggat mendesak, misalnya persyaratan kelulusan, kenaikan jabatan, atau pelaporan hibah.
+
+- **Gratis.** JTEBA tidak menjual kecepatan dan tidak menjanjikan penerimaan. Standar penelaahan sama dengan jalur reguler.
+- **Syarat:** naskah lengkap dan sesuai templat, indeks kemiripan di bawah 20%, serta permohonan disertai dokumen pendukung tenggat yang disampaikan saat pengiriman naskah.
+- **Manfaat:** *desk review* dalam 1 hari kerja, reviewer diberi tenggat 7 hari kalender, dan keputusan maksimal 3 hari kerja, sehingga **keputusan pertama diupayakan dalam 14 hari kalender**.
+- **Kuota:** 10 naskah per bulan, diberikan menurut urutan pengajuan yang memenuhi syarat.
+
+### Prinsip pelaksanaan
+
+- Setiap naskah ditelaah minimal **dua** reviewer. Bila rekomendasi keduanya berbeda, editor memutuskan tanpa menambah reviewer ketiga, kecuali kedua penilaian saling bertentangan secara substansial.
+- Redaksi menyiapkan reviewer cadangan sejak penugasan, sehingga reviewer yang terlambat dapat segera diganti.
+- Reviewer wajib menyatakan konflik kepentingan dan menolak penugasan bila memiliki hubungan dengan penulis.
+- Naskah yang ditulis oleh editor atau anggota dewan redaksi ditangani oleh editor lain, dan penulis tersebut tidak terlibat dalam pengambilan keputusannya.
+- Penulis dapat menanyakan status naskah kapan saja dengan menyebutkan ID naskah ke redaksi@praniti.or.id. Redaksi menjawab dalam 2 hari kerja.
 
 ---
 
 ## Plagiarism and AI Policy (Kebijakan Plagiarisme dan Penggunaan AI)
 
-### Plagiarisme dan Integritas
-- Seluruh naskah yang masuk diperiksa orisinalitasnya menggunakan perangkat lunak **Turnitin**.
-- Batas maksimal indeks kemiripan (*similarity index*) yang dapat ditoleransi adalah **20%**, dengan ketentuan daftar pustaka (*bibliography*) dan kutipan langsung yang bertanda petik resmi dikecualikan dari perhitungan.
-- Naskah dengan tingkat kemiripan di atas 20% akan dikembalikan kepada penulis untuk diparafrase ulang sebelum telaah dilanjutkan. Apabila terindikasi adanya plagiarisme substantif yang disengaja, naskah akan langsung ditolak secara permanen.
-- Praktik pengiriman ganda (*duplicate submission*), penerbitan berulang (*duplicate publication*), dan pemecahan hasil satu riset menjadi potongan artikel kecil yang tidak esensial (*salami slicing*) dilarang keras.
+**Plagiarisme.**
+- Redaksi memeriksa kemiripan seluruh naskah menggunakan Turnitin. Batas maksimal indeks kemiripan (*similarity index*) yang ditoleransi adalah **20%** (daftar pustaka dan kutipan langsung yang bertanda petik dikecualikan dari perhitungan).
+- Naskah dengan kemiripan di atas batas dikembalikan kepada penulis untuk diperbaiki, atau ditolak apabila ditemukan plagiarisme yang disengaja.
+- Pengiriman ganda (*duplicate submission*), penerbitan ganda (*duplicate publication*), dan pemecahan satu penelitian menjadi beberapa artikel tanpa alasan ilmiah (*salami slicing*) tidak diperkenankan.
 
-### Penggunaan Kecerdasan Buatan (Generative AI)
-- Pemanfaatan perangkat berbasis Generative AI (seperti ChatGPT, Claude, Gemini, Copilot) **hanya diperbolehkan terbatas sebagai alat bantu penyuntingan kebahasaan, peningkatan alur keterbacaan, dan pengecekan tata bahasa**.
-- Sintesis konseptual, perumusan hipotesis, metodologi penelitian, analisis data empiris, dan penarikan kesimpulan ilmiah **wajib murni merupakan hasil pemikiran orisinal penulis manusia**.
-- Penulis wajib mencantumkan secara transparan alat AI yang digunakan beserta tujuannya pada bagian Pernyataan (*AI-Assisted Technologies Statement*).
-- Alat AI tidak memiliki status hukum kepenulisan dan tidak dapat dicantumkan sebagai penulis (*co-author*). Tanggung jawab ilmiah atas seluruh isi manuskrip tetap berada sepenuhnya pada penulis manusia.
-- Editor dan Reviewer dilarang keras mengunggah naskah naskah yang sedang ditelaah ke dalam platform AI publik mana pun karena melanggar asas kerahasiaan (*confidentiality*).
+**Penggunaan AI.**
+- Kecerdasan buatan (AI) hanya diperkenankan sebagai alat bantu penyuntingan kebahasaan dan pemeriksaan tata bahasa.
+- Sintesis ilmiah, metodologi riset, dan analisis data wajib merupakan hasil pemikiran orisinal penulis.
+- Penulis wajib menyebutkan alat AI yang digunakan beserta tujuannya pada bagian Pernyataan.
+- AI tidak dapat dicantumkan sebagai penulis, dan penulis bertanggung jawab penuh atas seluruh isi naskah.
+- Reviewer dan editor tidak diperkenankan mengunggah naskah ke alat AI publik karena melanggar kerahasiaan naskah.
 
 ---
 
 ## Publication Ethics (Etika Publikasi)
 
-JTEBA menjunjung tinggi standar etika publikasi ilmiah tertinggi dengan mengadopsi pedoman dari **Committee on Publication Ethics (COPE)**. Penulis, Editor, dan Reviewer wajib membebaskan diri dari segala bentuk fabrikasi data, falsifikasi data, manipulasi visual, dan plagiarisme.
+JTEBA mengacu pada pedoman *Committee on Publication Ethics* (COPE). Penulis, editor, dan reviewer wajib menjunjung integritas akademik dan bebas dari fabrikasi data, falsifikasi, dan plagiarisme.
 
-- **Kewajiban Penulis:** Memastikan kemurnian data empiris, menyajikan interpretasi ilmiah secara jujur, mendokumentasikan atribusi sitasi secara benar, menyatakan ketiadaan konflik kepentingan (*conflict of interest*), serta segera melapor ke redaksi jika ditemukan kesalahan material pada naskah yang telah terbit.
-- **Kewajiban Editor:** Mengevaluasi naskah semata-mata berdasarkan kualitas substantif ilmiah tanpa membedakan ras, jenis kelamin, afiliasi, kewarganegaraan, atau preferensi politik penulis; menjamin kerahasiaan naskah dan identitas reviewer; serta menolak menangani naskah yang memiliki benturan kepentingan pribadi atau finansial.
-- **Kewajiban Reviewer:** Menjalankan penelaahan secara objektif, berkeadilan, konstruktif, dan tepat waktu; menjaga kerahasiaan dokumen yang ditelaah; tidak menyalahgunakan materi yang belum terbit untuk riset pribadi; serta segera menyatakan undur diri apabila mendapati konflik kepentingan dengan karya yang ditugaskan.
+**Penulis** bertanggung jawab atas keaslian data dan karya, mencantumkan seluruh pihak yang berkontribusi secara layak, menyatakan konflik kepentingan dan sumber pendanaan, serta segera memberi tahu redaksi apabila menemukan kesalahan pada naskah yang telah dikirim atau diterbitkan.
 
-### Etika Penelitian dan Perlindungan Kerahasiaan Data
-Riset di bidang ekonomi, bisnis, akuntansi, dan perpajakan kerap menggunakan data korporasi, entitas perbankan, maupun wajib pajak:
-- Penelitian yang melibatkan subjek manusia (survei persepsi, wawancara mendalam, studi eksperimental) wajib menyertakan persetujuan tertulis (*informed consent*) dari responden dan mencantumkan bukti klirens komite etik (*ethical approval*) bila disyaratkan oleh instansi tempat penelitian.
-- Kerahasiaan identitas informan, klien, dan nomor identitas perpajakan wajib dilindungi dengan menganonimkan data secara menyeluruh.
-- Penggunaan data internal entitas yang tidak bersifat publik wajib disertai surat izin formal dari pihak manajemen yang berwenang.
-- Pelanggaran etika berat akan ditindaklanjuti secara tegas melalui mekanisme penolakan naskah, koreksi resmi (*corrigendum*), maupun pencabutan artikel (*retraction*) sesuai kaidah COPE.
+**Editor** menilai naskah semata-mata berdasarkan kualitas ilmiah dan kesesuaian ruang lingkup, menjaga kerahasiaan naskah dan identitas reviewer, serta menghindari konflik kepentingan dalam pengambilan keputusan.
 
-### Koreksi dan Keluhan (*Corrections and Complaints*)
-Laporan mengenai dugaan pelanggaran integritas akademik atau keberatan terhadap keputusan editorial dapat disampaikan secara tertulis melalui surel resmi: **redaksi@praniti.or.id**. Seluruh pengaduan akan ditangani oleh Komite Etik Redaksi secara independen dan transparan sesuai alur penanganan COPE, dengan menjamin kerahasiaan identitas pihak pelapor.
+**Reviewer** menelaah secara objektif, tepat waktu, dan konstruktif, menjaga kerahasiaan naskah, serta memberi tahu editor apabila terdapat konflik kepentingan.
+
+### Etika Penelitian dan Perlindungan Data
+
+Penelitian ekonomi, bisnis, akuntansi, dan perpajakan sering memakai data organisasi, data klien, atau data wajib pajak. Karena itu:
+- Penelitian yang melibatkan manusia (survei, wawancara, eksperimen) harus mencantumkan bahwa responden memberikan persetujuan (*informed consent*) dan, bila disyaratkan institusi, persetujuan etik.
+- Identitas responden, informan, klien, dan wajib pajak dijaga kerahasiaannya. Data yang dipublikasikan harus dianonimkan.
+- Data internal organisasi hanya boleh digunakan dengan izin tertulis dari organisasi tersebut, dan izin itu dinyatakan dalam naskah.
+- Pelanggaran etika dapat berakibat naskah ditolak, dikoreksi, atau ditarik (*retracted*) sesuai prosedur COPE.
+
+### Corrections and Complaints (Koreksi dan Keluhan)
+
+Dugaan pelanggaran etika, kesalahan pada artikel terbit, atau keberatan atas keputusan redaksi dapat disampaikan secara tertulis ke redaksi@praniti.or.id. Redaksi menindaklanjuti sesuai alur COPE, menjaga kerahasiaan pelapor, dan menerbitkan koreksi (*corrigendum*) atau penarikan (*retraction*) bila diperlukan.
 
 ---
 
 ## Open Data Policy (Kebijakan Data Terbuka)
 
-JTEBA mendukung penuh transparansi dan keterulangan (*reproducibility*) penelitian ilmiah. Penulis sangat didorong untuk mengunggah berkas data mentah (*raw data*), matriks tabulasi, pedoman wawancara, dan kode analisis data ke dalam repositori publik bereputasi terbuka (seperti **Zenodo**, **OSF (Open Science Framework)**, atau **Mendeley Data**), serta mencantumkan tautan DOI data tersebut pada bagian *Data Availability Statement*.
-
-Apabila data bersifat rahasia secara hukum atau mengikat perjanjian kerahasiaan (*Non-Disclosure Agreement*), penulis wajib menyatakan alasan pembatasan akses data tersebut secara transparan di dalam manuskrip.
+Penulis didorong menyimpan data dan instrumen penelitian di repositori terbuka (misalnya Zenodo, OSF, atau Mendeley Data) dan mencantumkan tautannya pada pernyataan ketersediaan data. Data yang bersifat rahasia atau berisi data pribadi tidak wajib dibuka, tetapi alasan pembatasannya harus dinyatakan.
 
 ---
 
 ## Copyright and License (Hak Cipta dan Lisensi)
 
-Seluruh artikel yang diterbitkan oleh JTEBA berstatus akses terbuka penuh (*Diamond Open Access*) dan didistribusikan di bawah ketentuan lisensi internasional:  
-**[Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/)**
+Seluruh artikel JTEBA dapat diakses secara terbuka dan diterbitkan di bawah lisensi [Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/).
 
-- **Hak Cipta (*Copyright*):** Hak cipta artikel dipegang penuh oleh Penulis (*Authors retain copyright*). Penulis memberikan hak publikasi pertama tanpa eksklusivitas kepada JTEBA sebagai penerbit awal (*First publication rights granted to JTEBA*).
-- **Hak Distribusi:** Siapa pun diizinkan menyalin, mendistribusikan, dan memodifikasi materi artikel dalam media apa pun, dengan syarat mencantumkan atribusi penghargaan yang layak kepada penulis asli dan JTEBA. Setiap materi adaptasi atau karya turunan wajib disebarluaskan di bawah ketentuan lisensi yang sama (*ShareAlike*).
-- **Materi Pihak Ketiga:** Penulis bertanggung jawab penuh untuk memperoleh izin resmi tertulis atas penggunaan tabel, diagram, instrumen, atau materi berhak cipta pihak ketiga yang disematkan dalam artikel.
+- Hak cipta artikel tetap dipegang penulis (*Author retains copyright*). Artikel dilisensikan di bawah CC BY-SA 4.0 sehingga pihak mana pun dapat membagikan dan mengadaptasinya sesuai ketentuan lisensi tersebut.
+- Pihak mana pun boleh membagikan dan mengadaptasi artikel dengan mencantumkan atribusi yang layak. Karya turunan wajib dibagikan dengan lisensi yang sama (*ShareAlike*).
+- Penulis bertanggung jawab memperoleh izin untuk materi pihak ketiga (gambar, tabel, instrumen) yang tidak tercakup lisensi tersebut.
 
 ---
 
 ## Article Processing Charges (APC) (Biaya Pemrosesan Artikel)
 
-- **Biaya Pengiriman (*Article Submission Fee*):** **Rp0,- (Gratis)**. JTEBA tidak memungut biaya apa pun saat penulis mengirimkan manuskrip.
-- **Biaya Penelaahan (*Peer Review Fee*):** **Rp0,- (Gratis)**. Seluruh tahapan telaah sejawat oleh mitra bestari bebas biaya.
-- **Biaya Pemrosesan & Publikasi Pasca-Penerimaan (APC):** Dikenakan sebesar **Rp100.000,-** per artikel yang resmi dinyatakan **Diterima (*Accepted*)** melalui penerbitan *Letter of Acceptance* (LoA).
-- **Pengalokasian Dana:** Biaya pemrosesan ini sepenuhnya dimanfaatkan untuk menopang keberlanjutan publikasi:
-  1. Registrasi pengindeksan permanen nomor Digital Object Identifier (DOI) resmi melalui Crossref;
-  2. Tata letak pra-cetak profesional (*typesetting & galley proofing*);
-  3. Pemeriksaan akhir kebahasaan dan tata letak (*copyediting*);
-  4. Pemeliharaan sistem repositori data terbuka dan infrastruktur peladen cloud bebas henti (*serverless architecture*).
-- **Ketentuan Pembayaran:** Instruksi tagihan dan nomor rekening resmi hanya disampaikan melalui surat elektronik resmi redaksi (`redaksi@praniti.or.id`) bersamaan dengan pengiriman LoA resmi.
+- JTEBA **tidak memungut biaya** untuk pengiriman naskah (*submission*) maupun penelaahan (*peer review*).
+- Biaya pemrosesan artikel (APC) sebesar **Rp100.000** per artikel hanya dikenakan **setelah naskah dinyatakan diterima** untuk terbit.
+- Keputusan penerimaan naskah sepenuhnya didasarkan pada kualitas ilmiah dan tidak dipengaruhi kemampuan penulis membayar.
+- Biaya digunakan untuk operasional jurnal, server dan hosting, serta apresiasi bagi reviewer dan editor.
+- Rincian tagihan dan cara pembayaran disampaikan oleh sekretariat redaksi kepada penulis korespondensi melalui email resmi atau narahubung resmi WhatsApp.
 
 ---
 
-## Contact (Kontak Redaksi)
+## Contact (Kontak)
 
 **Dewan Redaksi JTEBA**  
-Organisasi Riset dan Publikasi Ilmiah Praniti  
-Jawa Timur, Indonesia  
-- Surel Resmi Redaksi: [redaksi@praniti.or.id](mailto:redaksi@praniti.or.id)  
-- Laman Portal Jurnal: [https://ejournal.praniti.or.id/index/JTEBA](https://ejournal.praniti.or.id/index/JTEBA)  
+Organisasi Riset dan Publikasi Ilmiah Praniti, Mojokerto, Jawa Timur  
+Surel: [redaksi@praniti.or.id](mailto:redaksi@praniti.or.id) · Portal: [https://ejournal.praniti.or.id/index/JTEBA](https://ejournal.praniti.or.id/index/JTEBA)

@@ -28,8 +28,8 @@ RINCIAN PENGAJUAN NASKAH:
 ----------------------------------------------------------------------
 
 TAHAPAN SELANJUTNYA:
-1. Penelaahan Awal (Desk Review / 1-3 hari kerja): Managing Editor memeriksa kesesuaian ruang lingkup, kepatuhan templat naskah, anonimitas berkas (blinded manuscript), dan kemiripan Turnitin (maksimal 20%).
-2. Penelaahan Mitra Bestari (Double-Blind Review / 2-4 minggu): Naskah yang lolos tahap awal diteruskan kepada minimal 2 (dua) mitra bestari independen secara anonim timbal balik.
+1. Penelaahan Awal (Desk Review / 1-3 hari kerja): Managing Editor memeriksa kesesuaian ruang lingkup, kepatuhan templat naskah, kelengkapan identitas penulis, dan kemiripan Turnitin (maksimal 20%).
+2. Penelaahan Mitra Bestari (Single-Blind Review / 14 hari kalender): Naskah yang lolos tahap awal ditelaah oleh minimal 2 (dua) mitra bestari independen (reviewer mengetahui identitas penulis, identitas reviewer dirahasiakan). Keputusan pertama diupayakan paling lambat 30 hari kalender.
 3. Keputusan Redaksi: Hasil evaluasi resmi (diterima, perlu revisi, atau ditolak) akan disampaikan melalui email ini.
 
 KEBIJAKAN TRANSPARANSI BIAYA JTEBA:

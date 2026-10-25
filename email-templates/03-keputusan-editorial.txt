@@ -18,12 +18,12 @@ dan Rekan Penulis: [NAMA REKAN PENULIS]
 Dengan hormat,
 Terima kasih atas kesabaran Anda dalam proses penelaahan sejawat naskah di JTEBA: Jurnal Terbuka Ekonomi, Bisnis, dan Akuntabilitas.
 
-Berdasarkan hasil penelaahan sejawat ganda (double-blind peer review) dan pertimbangan Dewan Redaksi, naskah Anda berpotensi untuk diterbitkan setelah melakukan perbaikan sesuai catatan mitra bestari.
+Berdasarkan hasil penelaahan sejawat ganda (single-blind peer review) dan pertimbangan Dewan Redaksi, naskah Anda berpotensi untuk diterbitkan setelah melakukan perbaikan sesuai catatan mitra bestari.
 
 DETAIL KEPUTUSAN EVALUASI:
 - ID Registrasi      : [ID NASKAH]
 - Judul Naskah       : [JUDUL NASKAH]
-- Tahap Evaluasi     : Penelaahan Sejawat Ganda (Double-Blind Peer Review)
+- Tahap Evaluasi     : Penelaahan Sejawat Ganda (Single-Blind Peer Review)
 - Tanggal Keputusan  : [TANGGAL KEPUTUSAN]
 - Keputusan          : PERLU REVISI (REVISIONS REQUIRED)
 - Tenggat Waktu Revisi: [TENGGAT REVISI]

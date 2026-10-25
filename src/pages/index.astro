@@ -188,7 +188,7 @@ const withVersion = (url?: string) => {
           </h2>
         </div>
         <p class="text-xs sm:text-sm text-slate-600 max-w-md">
-          Pengelolaan jurnal elektronik berbasis sistem penelaahan sejawat ganda (<em class="text-slate-800">double-blind peer review</em>) taat asas.
+          Pengelolaan jurnal elektronik berbasis sistem penelaahan sejawat ganda (<em class="text-slate-800">single-blind peer review</em>) taat asas.
         </p>
       </div>
 
@@ -274,7 +274,7 @@ const withVersion = (url?: string) => {
 
             <div class="flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-slate-600 pt-2 border-t border-slate-100">
               <div><strong>Frekuensi Terbit:</strong> {journalConfig.publicationFrequency || '4 Kali/Tahun (Maret, Juni, September, Desember)'}</div>
-              <div><strong>Penelaahan:</strong> Double-Blind Peer Review</div>
+              <div><strong>Penelaahan:</strong> Single-Blind Peer Review</div>
               <div><strong>Penerbit:</strong> {journalConfig.publisher}</div>
               {journalConfig.features?.showIssnBlock && (
                 <>
